@@ -21,7 +21,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V36</p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V37</p></header>
 <main>
 <div class="card intro"><b>撮影条件をそろえて分析精度を高めます。</b><br>ガイド撮影では中央・水平・全身位置をそろえます。撮影後はAIランドマークを検出し、3方向を統合して姿勢を可視化します。</div>
 <div class="views">
@@ -30,7 +30,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 <div class="card"><div class="head"><b>③ 左側面</b><span class="badge" id="badge-left">未登録</span></div><div class="stage" id="stage-left"><span>左側面写真を登録</span></div><div class="actions" style="grid-template-columns:1fr 1fr 1fr"><label class="btn gallery">📁 写真を選択<input id="gallery-left" type="file" accept="image/*"></label><label class="btn camera">📷 カメラ撮影<input id="camera-left" type="file" accept="image/*" capture="environment"></label><button type="button" class="btn guideBtn" data-guide="left" style="border:0;background:#172033;color:#fff;min-height:48px;border-radius:11px;font-size:11px;font-weight:900">📐 ガイド撮影</button></div><button type="button" class="adjustBtn" data-adjust="left" style="display:none;width:100%;margin-top:8px;border:1px solid #fdba74;background:#fff7ed;color:#9a3412;border-radius:11px;padding:11px;font-size:12px;font-weight:900">✋ ランドマークを微調整</button><div class="note">約2〜3m離れ、左側をカメラへ。スマホは胸〜みぞおちの高さ</div></div>
 </div>
 <div class="card">
- <div class="okbox" id="status">0 / 3 枚登録済み</div><div style="font-size:9px;color:#94a3b8;margin-top:4px;text-align:right">解析エンジン V36</div>
+ <div class="okbox" id="status">0 / 3 枚登録済み</div><div style="font-size:9px;color:#94a3b8;margin-top:4px;text-align:right">解析エンジン V37</div>
  <div style="margin-top:8px;padding:10px;border-radius:11px;background:#fff7ed;border:1px solid #fed7aa;font-size:11px;line-height:1.6;color:#9a3412">
   <b>✋ 手動微調整</b>　AI検出後、写真上のオレンジ色のポイントを指でドラッグして位置を修正できます。修正した位置が3D分析とスコアに反映されます。
  </div>
@@ -355,7 +355,7 @@ const host=document.getElementById("real3d"),
       old=document.getElementById("threeCanvas");
 
 let scene,camera,renderer,pivot,model,parts={},ready=false,drag=false,lastX=0,rotBoost=1;
-let bodySize=new THREE.Vector3(2,3.35,1);
+let bodySize=new THREE.Vector3(2,3.35,1), topMode=false, frontDistance=10.8, topDistance=8.8;
 
 function mat(color,opacity){
  return new THREE.MeshPhysicalMaterial({color,transparent:true,opacity,roughness:.32,metalness:.05,clearcoat:.35,side:THREE.DoubleSide});
@@ -376,17 +376,17 @@ function ring(color,r,y){
 }
 function fitCamera(kind="front"){
  if(!ready)return;
- const r=host.getBoundingClientRect(),aspect=Math.max(.45,r.width/Math.max(1,r.height));
- const vfov=THREE.MathUtils.degToRad(camera.fov),hfov=2*Math.atan(Math.tan(vfov/2)*aspect);
- let w=bodySize.x,h=bodySize.y;
- if(kind==="top"){w=Math.max(bodySize.x,bodySize.z);h=w;}
- const dist=Math.max((h*.62)/Math.tan(vfov/2),(w*.62)/Math.tan(hfov/2),4.6);
+ const r=host.getBoundingClientRect();
+ camera.aspect=Math.max(.45,r.width/Math.max(1,r.height));
  if(kind==="top"){
-   camera.position.set(0,dist,0.001);camera.up.set(0,0,-1);
+   camera.position.set(0,topDistance,0.001);
+   camera.up.set(0,0,-1);
  }else{
-   camera.position.set(0,0,dist);camera.up.set(0,1,0);
+   camera.position.set(0,0,frontDistance);
+   camera.up.set(0,1,0);
  }
- camera.lookAt(0,0,0);camera.updateProjectionMatrix();
+ camera.lookAt(0,0,0);
+ camera.updateProjectionMatrix();
 }
 async function init(){
  if(ready)return;
@@ -402,7 +402,7 @@ async function init(){
   l=new THREE.DirectionalLight(0x2dd4bf,2);l.position.set(-4,3,-3);scene.add(l);
   const grid=new THREE.GridHelper(6,14,0x31516a,0x162b3d);grid.position.y=-1.78;scene.add(grid);
 
-  // V36: model is centered INSIDE a fixed pivot. Only pivot rotates.
+  // V37: model is centered INSIDE a fixed pivot. Only pivot rotates.
   pivot=new THREE.Group();scene.add(pivot);
   model=new THREE.Group();pivot.add(model);
 
@@ -415,7 +415,7 @@ async function init(){
   const sc=3.35/Math.max(sz.x,sz.y,sz.z);
   model.scale.setScalar(sc);model.updateMatrixWorld(true);
 
-  // Center the rendered anatomy at pivot origin. This is the critical V36 fix.
+  // Center the rendered anatomy at pivot origin. This is the critical V37 fix.
   bb=new THREE.Box3().setFromObject(model);
   const ctr=bb.getCenter(new THREE.Vector3());
   model.position.sub(ctr);
@@ -450,29 +450,34 @@ function resize(){
 }
 function setView(kind){
  if(!ready)return;
+ const topBtn=document.getElementById("topTwist")||[...document.querySelectorAll("button")].find(b=>b.textContent.includes("上から見た捻れ"));
  if(kind==="top"){
-   pivot.rotation.y=0;fitCamera("top");
+   topMode=true;pivot.rotation.y=0;fitCamera("top");
+   if(topBtn)topBtn.textContent="◎ 上から見た捻れ ON";
  }else{
+   topMode=false;
    const ang=kind==="right"?Math.PI/2:kind==="left"?-Math.PI/2:kind==="diag"?-Math.PI/4:0;
-   pivot.rotation.y=ang;fitCamera(kind);
+   pivot.rotation.set(0,ang,0);fitCamera("front");
+   if(topBtn)topBtn.textContent="◎ 上から見た捻れ";
  }
 }
 function loop(){requestAnimationFrame(loop);if(renderer)renderer.render(scene,camera)}
 loop();
-window.addEventListener("resize",()=>{resize();if(ready)fitCamera("front")});
+window.addEventListener("resize",()=>{resize();if(ready)fitCamera(topMode?"top":"front")});
 window.addEventListener("wakaba-analysis",e=>init().then(()=>apply(e.detail)));
 
-host.addEventListener("pointerdown",e=>{if(!ready)return;drag=true;lastX=e.clientX;host.setPointerCapture(e.pointerId)});
-host.addEventListener("pointermove",e=>{if(drag&&ready){pivot.rotation.y+=(e.clientX-lastX)*.009;lastX=e.clientX}});
+host.addEventListener("pointerdown",e=>{if(!ready||topMode)return;drag=true;lastX=e.clientX;host.setPointerCapture(e.pointerId)});
+host.addEventListener("pointermove",e=>{if(drag&&ready&&!topMode){pivot.rotation.y+=(e.clientX-lastX)*.009;lastX=e.clientX}});
 host.addEventListener("pointerup",()=>drag=false);
 host.addEventListener("pointercancel",()=>drag=false);
 
 document.querySelectorAll(".view3d[data-a]").forEach(b=>b.addEventListener("click",()=>{
- const a=+b.dataset.a;setView(a===90?"right":a===-90?"left":a===-35||a===35?"diag":"front");
+ const a=+b.dataset.a;
+ setView(a===90?"right":a===-90?"left":a===-35||a===35?"diag":"front");
 }));
 const topBtn=document.getElementById("topTwist")||[...document.querySelectorAll("button")].find(b=>b.textContent.includes("上から見た捻れ"));
 if(topBtn)topBtn.addEventListener("click",()=>{
- setView("top");topBtn.textContent="◎ 上から見た捻れ ON";
+ setView(topMode?"front":"top");
 });
 const boostBtn=document.getElementById("twistBoostBtn")||[...document.querySelectorAll("button")].find(b=>b.textContent.includes("回旋表示"));
 if(boostBtn)boostBtn.addEventListener("click",()=>{
