@@ -21,7 +21,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V26.6</p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V27</p></header>
 <main>
 <div class="card intro"><b>撮影条件をそろえて分析精度を高めます。</b><br>ガイド撮影では中央・水平・全身位置をそろえます。撮影後はAIランドマークを検出し、3方向を統合して姿勢を可視化します。</div>
 <div class="views">
@@ -36,7 +36,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
  </div>
 </div>
 <div class="card" id="modelCard">
- <div class="head"><b>④ 3方向統合・姿勢可視化モデル</b><span class="badge" id="modelBadge">待機中</span></div>
+ <div class="head"><b>④ 3D人体メッシュ ＆ 体幹ねじれ表示</b><span class="badge" id="modelBadge">待機中</span></div>
  <button id="make3d" type="button" style="width:100%;border:0;border-radius:11px;padding:14px;background:#f97316;color:#fff;font-weight:900;font-size:14px">3方向のランドマークから3D分析を作成</button>
  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px">
   <button class="view3d" data-a="0">正面</button><button class="view3d" data-a="90">右</button><button class="view3d" data-a="-90">左</button><button class="view3d" data-a="35">斜め</button>
@@ -57,7 +57,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
   <div style="background:#fef2f2;border-radius:10px;padding:8px;text-align:center"><div style="font-size:10px;color:#64748b">相対捻れ傾向</div><b id="twistDeg">--</b><div id="twistText" style="font-size:9px;color:#64748b;margin-top:2px">参考推定差</div></div>
  </div>
  <div style="display:grid;grid-template-columns:2fr 1fr;gap:6px;margin-top:7px">
-   <button id="topTwist" type="button" class="view3d">◎ 上から見た捻れ</button>
+   <button id="topTwist" type="button" class="view3d">◎ 上から見た回旋</button>
    <button id="twistBoostBtn" type="button" class="view3d">回旋表示 ×5</button>
  </div>
  <div id="clinicalPanel" style="margin-top:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:11px;padding:9px;font-size:10px;color:#475569;line-height:1.7">
@@ -288,7 +288,33 @@ function wireLimb(a,b,r1,r2,col,alpha){var d={x:b.x-a.x,y:b.y-a.y,z:b.z-a.z},L=M
 function headMesh(p,col,alpha){var rings=[],ys=[-.20,-.10,.02,.13,.20],rs=[.10,.17,.18,.14,.07];for(var j=0;j<ys.length;j++){var c={x:p.x,y:p.y+ys[j],z:p.z};rings.push(meshRing(c,rs[j],rs[j]*.88,10));drawRing(rings[j],col,alpha,1.15)}for(var k=0;k<rings.length-1;k++)connectRings(rings[k],rings[k+1],col,alpha,1.05)}
 function drawHumanMesh(P,col,alpha,reference){var sm=mid(P.leftShoulder,P.rightShoulder,.5),hm=mid(P.leftHip,P.rightHip,.5),chest=mid(sm,hm,.34),waist=mid(sm,hm,.72),upper=mid(sm,hm,.18),lower=mid(sm,hm,.55),lowwaist=mid(sm,hm,.78),torso=[meshRing({x:sm.x,y:sm.y-.015,z:sm.z},.50,.215,18),meshRing(upper,.47,.255,18),meshRing(chest,.435,.27,18),meshRing(lower,.355,.235,18),meshRing(waist,.305,.205,18),meshRing(lowwaist,.34,.225,18),meshRing(hm,.405,.265,18)];torso.forEach(r=>drawRing(r,col,alpha,reference?1:1.35));for(var i=0;i<torso.length-1;i++)connectRings(torso[i],torso[i+1],col,alpha,reference?1:1.15);line(P.leftShoulder,sm,reference?1:2,col,alpha);line(sm,P.rightShoulder,reference?1:2,col,alpha);line(P.leftHip,hm,reference?1:2,col,alpha);line(hm,P.rightHip,reference?1:2,col,alpha);headMesh(P.head,col,alpha);wireLimb(P.leftShoulder,P.leftElbow,.105,.075,col,alpha);wireLimb(P.leftElbow,P.leftWrist,.075,.045,col,alpha);wireLimb(P.rightShoulder,P.rightElbow,.105,.075,col,alpha);wireLimb(P.rightElbow,P.rightWrist,.075,.045,col,alpha);wireLimb(P.leftHip,P.leftKnee,.145,.10,col,alpha);wireLimb(P.leftKnee,P.leftAnkle,.10,.06,col,alpha);wireLimb(P.rightHip,P.rightKnee,.145,.10,col,alpha);wireLimb(P.rightKnee,P.rightAnkle,.10,.06,col,alpha)}
 function neutralPose(){var p={};Object.keys(pts3).forEach(n=>p[n]={x:pts3[n].x,y:pts3[n].y,z:0});var sy=(p.leftShoulder.y+p.rightShoulder.y)/2,hy=(p.leftHip.y+p.rightHip.y)/2,ky=(p.leftKnee.y+p.rightKnee.y)/2,ay=(p.leftAnkle.y+p.rightAnkle.y)/2;p.head={x:0,y:pts3.head.y,z:0};p.leftShoulder={x:-.48,y:sy,z:0};p.rightShoulder={x:.48,y:sy,z:0};p.leftElbow={x:-.64,y:(sy+hy)/2,z:0};p.rightElbow={x:.64,y:(sy+hy)/2,z:0};p.leftWrist={x:-.67,y:hy+.02,z:0};p.rightWrist={x:.67,y:hy+.02,z:0};p.leftHip={x:-.27,y:hy,z:0};p.rightHip={x:.27,y:hy,z:0};p.leftKnee={x:-.28,y:ky,z:0};p.rightKnee={x:.28,y:ky,z:0};p.leftAnkle={x:-.28,y:ay,z:0};p.rightAnkle={x:.28,y:ay,z:0};return p}
-function draw(){var box=C.getBoundingClientRect();ctx.clearRect(0,0,box.width,box.height);if(!built)return;if(mode==="top"){drawTop();return}line({x:-1.25,y:0,z:0},{x:1.25,y:0,z:0},1,"#334155",1);line({x:0,y:.02,z:0},{x:0,y:3.15,z:0},2,"#94a3b8",.45);var sm=mid(pts3.leftShoulder,pts3.rightShoulder,.5),hm=mid(pts3.leftHip,pts3.rightHip,.5),chest=mid(sm,hm,.42),waist=mid(sm,hm,.72);drawHumanMesh(neutralPose(),"#94a3b8",.20,true);drawHumanMesh(pts3,"#2dd4bf",.92,false);line({x:sm.x,y:sm.y+.02,z:sm.z},pts3.head,2.2,"#ccfbf1",.9);line(pts3.leftShoulder,pts3.rightShoulder,6,"#22d3ee",1);line(pts3.leftHip,pts3.rightHip,6,"#f97316",1);var qS=project(sm),qH=project(hm),ar=(angle+thoraxYaw)*Math.PI/180,ap=(angle+pelvisYaw)*Math.PI/180;arrow2(qS.x-38*Math.cos(ar),qS.y-10*Math.sin(ar),qS.x+38*Math.cos(ar),qS.y+10*Math.sin(ar),"#22d3ee","胸郭");arrow2(qH.x-34*Math.cos(ap),qH.y-9*Math.sin(ap),qH.x+34*Math.cos(ap),qH.y+9*Math.sin(ap),"#f97316","骨盤");names.filter(n=>n!=="head").forEach(n=>circle(pts3[n],4.2,"#f97316"));var spine=[{x:pts3.head.x,y:pts3.head.y-.18,z:pts3.head.z},sm,chest,waist,hm];for(var i=0;i<spine.length-1;i++)line(spine[i],spine[i+1],3,"#ccfbf1",.95);ctx.fillStyle="#cbd5e1";ctx.font="11px -apple-system,sans-serif";ctx.fillText("人体ワイヤーフレーム｜指で左右に回転",12,20)}
+function floorGrid(){
+ ctx.save();ctx.strokeStyle="rgba(148,163,184,.16)";ctx.lineWidth=1;
+ var y0=H*.78;
+ for(var i=-6;i<=6;i++){ctx.beginPath();ctx.moveTo(W/2+i*10,y0-34);ctx.lineTo(W/2+i*42,H-8);ctx.stroke()}
+ for(var j=0;j<7;j++){var yy=y0+j*j*2.2;ctx.beginPath();ctx.moveTo(18,yy);ctx.lineTo(W-18,yy);ctx.stroke()}
+ ctx.restore();
+}
+function curvedArrow(cx,cy,rx,ry,cw,color,label){
+ ctx.save();ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=5;ctx.lineCap="round";
+ var a0=cw?.20*Math.PI:.80*Math.PI,a1=cw?1.72*Math.PI:-.72*Math.PI;
+ ctx.beginPath();ctx.ellipse(cx,cy,rx,ry,0,a0,a1,!cw);ctx.stroke();
+ var px=cx+rx*Math.cos(a1),py=cy+ry*Math.sin(a1);
+ var tx=-rx*Math.sin(a1)*(cw?1:-1),ty=ry*Math.cos(a1)*(cw?1:-1),ll=Math.hypot(tx,ty)||1;tx/=ll;ty/=ll;
+ ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px-tx*15-ty*8,py-ty*15+tx*8);ctx.lineTo(px-tx*15+ty*8,py-ty*15-tx*8);ctx.closePath();ctx.fill();
+ ctx.font="700 11px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText(label,cx,cy-ry-8);ctx.restore();
+}
+function rotationArrows(){
+ if(!built)return;
+ if(mode==="top"){
+   curvedArrow(W*.50,H*.36,W*.25,H*.075,thoraxYaw>=0,"#fb3b52","胸郭回旋");
+   curvedArrow(W*.50,H*.62,W*.21,H*.065,pelvisYaw>=0,"#fb923c","骨盤回旋");
+ }else{
+   curvedArrow(W*.50,H*.36,W*.22,H*.055,thoraxYaw>=0,"#fb3b52","胸郭");
+   curvedArrow(W*.50,H*.57,W*.18,H*.048,pelvisYaw>=0,"#fb923c","骨盤");
+ }
+}
+function draw(){var box=C.getBoundingClientRect();ctx.clearRect(0,0,box.width,box.height);floorGrid();if(!built)return;if(mode==="top"){drawTop();return}line({x:-1.25,y:0,z:0},{x:1.25,y:0,z:0},1,"#334155",1);line({x:0,y:.02,z:0},{x:0,y:3.15,z:0},2,"#94a3b8",.45);var sm=mid(pts3.leftShoulder,pts3.rightShoulder,.5),hm=mid(pts3.leftHip,pts3.rightHip,.5),chest=mid(sm,hm,.42),waist=mid(sm,hm,.72);drawHumanMesh(neutralPose(),"#94a3b8",.20,true);drawHumanMesh(pts3,"#2dd4bf",.92,false);line({x:sm.x,y:sm.y+.02,z:sm.z},pts3.head,2.2,"#ccfbf1",.9);line(pts3.leftShoulder,pts3.rightShoulder,6,"#22d3ee",1);line(pts3.leftHip,pts3.rightHip,6,"#f97316",1);var qS=project(sm),qH=project(hm),ar=(angle+thoraxYaw)*Math.PI/180,ap=(angle+pelvisYaw)*Math.PI/180;arrow2(qS.x-38*Math.cos(ar),qS.y-10*Math.sin(ar),qS.x+38*Math.cos(ar),qS.y+10*Math.sin(ar),"#22d3ee","胸郭");arrow2(qH.x-34*Math.cos(ap),qH.y-9*Math.sin(ap),qH.x+34*Math.cos(ap),qH.y+9*Math.sin(ap),"#f97316","骨盤");names.filter(n=>n!=="head").forEach(n=>circle(pts3[n],4.2,"#f97316"));var spine=[{x:pts3.head.x,y:pts3.head.y-.18,z:pts3.head.z},sm,chest,waist,hm];for(var i=0;i<spine.length-1;i++)line(spine[i],spine[i+1],3,"#ccfbf1",.95);ctx.fillStyle="#cbd5e1";ctx.font="11px -apple-system,sans-serif";ctx.fillText("3D人体メッシュ｜指で左右に回転",12,20);rotationArrows();}
 document.getElementById("make3d").onclick=build;document.querySelectorAll(".view3d[data-a]").forEach(b=>b.onclick=function(){mode="body";angle=+b.dataset.a;draw()});document.getElementById("topTwist").onclick=function(){if(!built)return;mode="top";draw()};
 document.getElementById("twistBoostBtn").onclick=function(){twistBoost=twistBoost===1?3:twistBoost===3?5:1;this.textContent="回旋表示 ×"+twistBoost;if(built&&mode==="top")draw()};
 C.onpointerdown=function(e){dragX=e.clientX;C.setPointerCapture(e.pointerId)};C.onpointermove=function(e){if(dragX==null||!built||mode==="top")return;angle+=(e.clientX-dragX)*.55;dragX=e.clientX;draw()};C.onpointerup=C.onpointercancel=function(){dragX=null};
