@@ -21,7 +21,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V26.4</p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V26.5</p></header>
 <main>
 <div class="card intro"><b>撮影条件をそろえて分析精度を高めます。</b><br>ガイド撮影では中央・水平・全身位置をそろえます。撮影後はAIランドマークを検出し、3方向を統合して姿勢を可視化します。</div>
 <div class="views">
@@ -123,6 +123,19 @@ var types=["front","right","left"],photos={front:null,right:null,left:null};wind
 var pointNames=["head","leftShoulder","rightShoulder","leftElbow","rightElbow","leftWrist","rightWrist","leftHip","rightHip","leftKnee","rightKnee","leftAnkle","rightAnkle"];
 var mpIndex={leftShoulder:11,rightShoulder:12,leftElbow:13,rightElbow:14,leftWrist:15,rightWrist:16,leftHip:23,rightHip:24,leftKnee:25,rightKnee:26,leftAnkle:27,rightAnkle:28};
 var edges=[[1,2],[1,3],[3,5],[2,4],[4,6],[1,7],[2,8],[7,8],[7,9],[9,11],[8,10],[10,12]];
+var sideDisplayNames=["head","leftShoulder","leftElbow","leftWrist","leftHip","leftKnee","leftAnkle"];
+var sideEdges=[[0,1],[1,2],[2,3],[1,4],[4,5],[5,6]];
+function avgPoint(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2}}
+function syncSidePairs(rec){
+ if(!rec)return;
+ [["leftShoulder","rightShoulder"],["leftElbow","rightElbow"],["leftWrist","rightWrist"],["leftHip","rightHip"],["leftKnee","rightKnee"],["leftAnkle","rightAnkle"]].forEach(function(pair){
+  var m=avgPoint(rec.points[pair[0]],rec.points[pair[1]]);
+  rec.points[pair[0]]={x:m.x,y:m.y};rec.points[pair[1]]={x:m.x,y:m.y};
+ });
+}
+function visibleNames(type){return type==="front"?pointNames:sideDisplayNames}
+function visibleEdges(type){return type==="front"?edges:sideEdges}
+
 function defaults(type){var side=type!=="front";return {head:{x:.5,y:.12},leftShoulder:{x:side?.48:.38,y:.27},rightShoulder:{x:side?.53:.62,y:.27},leftElbow:{x:side?.48:.32,y:.43},rightElbow:{x:side?.54:.68,y:.43},leftWrist:{x:side?.48:.30,y:.58},rightWrist:{x:side?.54:.70,y:.58},leftHip:{x:side?.48:.43,y:.56},rightHip:{x:side?.53:.57,y:.56},leftKnee:{x:side?.49:.44,y:.75},rightKnee:{x:side?.54:.56,y:.75},leftAnkle:{x:side?.49:.44,y:.94},rightAnkle:{x:side?.54:.56,y:.94}}}
 var pose=null,poseReady=false,queue=[],busy=false,pending=null;
 function count(){var n=types.filter(t=>!!photos[t]).length;document.getElementById("status").textContent=n+" / 3 枚登録済み"+(n===3?"　✓ 3方向すべて登録できました":"")}
@@ -142,11 +155,17 @@ types.forEach(function(type){var g=document.getElementById("gallery-"+type),c=do
 document.getElementById("retry").onclick=function(){var p=pending;document.getElementById("review").classList.remove("show");pending=null;if(p){p.input.value="";setTimeout(()=>p.input.click(),100)}};
 document.getElementById("use").onclick=function(){if(!pending)return;var p=pending;document.getElementById("review").classList.remove("show");pending=null;p.input.value="";save(p.type,p.file)};
 function geometry(type){var stage=document.getElementById("stage-"+type),img=stage.querySelector("img"),cv=document.getElementById("canvas-"+type);if(!img||!cv)return null;var sr=stage.getBoundingClientRect(),ir=img.getBoundingClientRect();return {cv:cv,sr:sr,ir:ir,ox:ir.left-sr.left,oy:ir.top-sr.top,w:ir.width,h:ir.height}}
-function draw(type){var rec=photos[type],g=geometry(type);if(!rec||!g)return;var d=devicePixelRatio||1,c=g.cv;c.width=Math.round(g.sr.width*d);c.height=Math.round(g.sr.height*d);var x=c.getContext("2d");x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,g.sr.width,g.sr.height);var pts=pointNames.map(n=>rec.points[n]);x.strokeStyle="rgba(20,184,166,.95)";x.lineWidth=3;edges.forEach(function(e){x.beginPath();x.moveTo(g.ox+pts[e[0]].x*g.w,g.oy+pts[e[0]].y*g.h);x.lineTo(g.ox+pts[e[1]].x*g.w,g.oy+pts[e[1]].y*g.h);x.stroke()});pts.forEach(function(q){x.beginPath();x.arc(g.ox+q.x*g.w,g.oy+q.y*g.h,7,0,Math.PI*2);x.fillStyle="#f97316";x.fill();x.strokeStyle="#fff";x.lineWidth=2;x.stroke()})}
+function draw(type){var rec=photos[type],g=geometry(type);if(!rec||!g)return;var d=devicePixelRatio||1,c=g.cv;c.width=Math.round(g.sr.width*d);c.height=Math.round(g.sr.height*d);var x=c.getContext("2d");x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,g.sr.width,g.sr.height);
+ var ns=visibleNames(type),pts=ns.map(n=>rec.points[n]),es=visibleEdges(type);x.strokeStyle="rgba(20,184,166,.95)";x.lineWidth=3;
+ es.forEach(function(e){x.beginPath();x.moveTo(g.ox+pts[e[0]].x*g.w,g.oy+pts[e[0]].y*g.h);x.lineTo(g.ox+pts[e[1]].x*g.w,g.oy+pts[e[1]].y*g.h);x.stroke()});
+ pts.forEach(function(q){x.beginPath();x.arc(g.ox+q.x*g.w,g.oy+q.y*g.h,7,0,Math.PI*2);x.fillStyle="#f97316";x.fill();x.strokeStyle="#fff";x.lineWidth=2;x.stroke()})
+}
 var drag=null;
 function setupDrag(type){var cv=document.getElementById("canvas-"+type);if(!cv||cv.dataset.dragReady)return;cv.dataset.dragReady="1";
- cv.onpointerdown=function(e){var g=geometry(type),rec=photos[type];if(!g||!rec)return;var xx=e.clientX-g.ir.left,yy=e.clientY-g.ir.top,best=null,bd=32;pointNames.forEach(function(n){var p=rec.points[n],dd=Math.hypot(xx-p.x*g.w,yy-p.y*g.h);if(dd<bd){bd=dd;best=n}});if(best){drag={type:type,name:best};cv.setPointerCapture(e.pointerId)}};
- cv.onpointermove=function(e){if(!drag||drag.type!==type)return;var g=geometry(type),p=photos[type].points[drag.name];p.x=Math.max(0,Math.min(1,(e.clientX-g.ir.left)/g.w));p.y=Math.max(0,Math.min(1,(e.clientY-g.ir.top)/g.h));draw(type);
+ cv.onpointerdown=function(e){var g=geometry(type),rec=photos[type];if(!g||!rec)return;var xx=e.clientX-g.ir.left,yy=e.clientY-g.ir.top,best=null,bd=32;visibleNames(type).forEach(function(n){var p=rec.points[n],dd=Math.hypot(xx-p.x*g.w,yy-p.y*g.h);if(dd<bd){bd=dd;best=n}});if(best){drag={type:type,name:best};cv.setPointerCapture(e.pointerId)}};
+ cv.onpointermove=function(e){if(!drag||drag.type!==type)return;var g=geometry(type),p=photos[type].points[drag.name];p.x=Math.max(0,Math.min(1,(e.clientX-g.ir.left)/g.w));p.y=Math.max(0,Math.min(1,(e.clientY-g.ir.top)/g.h));
+ if(type!=="front"){var map={leftShoulder:"rightShoulder",leftElbow:"rightElbow",leftWrist:"rightWrist",leftHip:"rightHip",leftKnee:"rightKnee",leftAnkle:"rightAnkle"};if(map[drag.name])rec.points[map[drag.name]]={x:p.x,y:p.y}}
+ draw(type);
  var mb=document.getElementById("modelBadge");if(mb){mb.textContent="補正後・再分析してください";mb.className="badge"}
 };cv.onpointerup=cv.onpointercancel=function(){drag=null};
 }
@@ -156,7 +175,7 @@ function blobImage(blob){return new Promise(function(resolve,reject){var u=URL.c
 function attachPose(){if(!window.Pose)return;try{pose=new Pose({locateFile:f=>"https://cdn.jsdelivr.net/npm/@mediapipe/pose/"+f});pose.setOptions({modelComplexity:1,smoothLandmarks:true,enableSegmentation:false,minDetectionConfidence:.4,minTrackingConfidence:.4});
  pose.onResults(function(res){var type=window.__wakabaCurrent,rec=photos[type],b=document.getElementById("badge-"+type);if(rec&&res.poseLandmarks){var lm=res.poseLandmarks,p={head:{x:(lm[0].x+lm[7].x+lm[8].x)/3,y:(lm[0].y+lm[7].y+lm[8].y)/3}};
  rec.rawLandmarks=lm.map(function(q,i){return {index:i,x:q.x,y:q.y,z:q.z,visibility:q.visibility}});
- Object.keys(mpIndex).forEach(function(k){var q=lm[mpIndex[k]];p[k]={x:q.x,y:q.y}});rec.points=p;rec.ai=true;b.textContent="AI検出済み";b.className="badge ok";draw(type)}else if(b){b.textContent="手動補正";b.className="badge ok"}busy=false;runQueue()});poseReady=true;runQueue()}catch(e){poseReady=false}}
+ Object.keys(mpIndex).forEach(function(k){var q=lm[mpIndex[k]];p[k]={x:q.x,y:q.y}});rec.points=p;if(type!=="front")syncSidePairs(rec);rec.ai=true;b.textContent="AI検出済み";b.className="badge ok";draw(type)}else if(b){b.textContent="手動補正";b.className="badge ok"}busy=false;runQueue()});poseReady=true;runQueue()}catch(e){poseReady=false}}
 var adjustType=null,adjustDrag=null,AC=document.getElementById("adjustCanvas"),AI=document.getElementById("adjustImg"),AS=document.getElementById("adjustStage");
 function adjustLayout(){
  if(!adjustType||!photos[adjustType]||!AI.naturalWidth)return null;
@@ -168,9 +187,9 @@ function adjustLayout(){
 function drawAdjust(){
  var g=adjustLayout();if(!g)return;var d=Math.min(devicePixelRatio||1,2),r=AC.getBoundingClientRect();
  AC.width=Math.round(r.width*d);AC.height=Math.round(r.height*d);var x=AC.getContext("2d");x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,r.width,r.height);
- var rec=photos[adjustType],pts=pointNames.map(n=>rec.points[n]);x.strokeStyle="rgba(20,184,166,.95)";x.lineWidth=4;
- edges.forEach(function(e){x.beginPath();x.moveTo(g.ox+pts[e[0]].x*g.w,g.oy+pts[e[0]].y*g.h);x.lineTo(g.ox+pts[e[1]].x*g.w,g.oy+pts[e[1]].y*g.h);x.stroke()});
- pointNames.forEach(function(n){var q=rec.points[n],px=g.ox+q.x*g.w,py=g.oy+q.y*g.h;x.beginPath();x.arc(px,py,12,0,Math.PI*2);x.fillStyle="#f97316";x.fill();x.strokeStyle="#fff";x.lineWidth=3;x.stroke()});
+ var rec=photos[adjustType],ns=visibleNames(adjustType),pts=ns.map(n=>rec.points[n]),es=visibleEdges(adjustType);x.strokeStyle="rgba(20,184,166,.95)";x.lineWidth=4;
+ es.forEach(function(e){x.beginPath();x.moveTo(g.ox+pts[e[0]].x*g.w,g.oy+pts[e[0]].y*g.h);x.lineTo(g.ox+pts[e[1]].x*g.w,g.oy+pts[e[1]].y*g.h);x.stroke()});
+ ns.forEach(function(n){var q=rec.points[n],px=g.ox+q.x*g.w,py=g.oy+q.y*g.h;x.beginPath();x.arc(px,py,12,0,Math.PI*2);x.fillStyle="#f97316";x.fill();x.strokeStyle="#fff";x.lineWidth=3;x.stroke()});
 }
 function openAdjust(type){
  if(!photos[type])return;adjustType=type;adjustDrag=null;document.getElementById("adjustTitle").textContent=guideName(type)+"｜ランドマーク微調整";
@@ -183,8 +202,10 @@ function closeAdjust(saveChanges){
 document.querySelectorAll(".adjustBtn").forEach(function(b){b.addEventListener("click",function(){openAdjust(b.getAttribute("data-adjust"))})});
 document.getElementById("adjustCancel").onclick=function(){closeAdjust(true)};
 document.getElementById("adjustDone").onclick=function(){closeAdjust(true)};
-AC.onpointerdown=function(e){if(!adjustType)return;var g=adjustLayout(),rec=photos[adjustType];if(!g||!rec)return;var x=e.clientX-g.sr.left,y=e.clientY-g.sr.top,best=null,bd=44;pointNames.forEach(function(n){var p=rec.points[n],dd=Math.hypot(x-(g.ox+p.x*g.w),y-(g.oy+p.y*g.h));if(dd<bd){bd=dd;best=n}});if(best){adjustDrag=best;AC.setPointerCapture(e.pointerId);e.preventDefault()}};
-AC.onpointermove=function(e){if(!adjustDrag||!adjustType)return;var g=adjustLayout(),p=photos[adjustType].points[adjustDrag];if(!g)return;p.x=Math.max(0,Math.min(1,(e.clientX-g.sr.left-g.ox)/g.w));p.y=Math.max(0,Math.min(1,(e.clientY-g.sr.top-g.oy)/g.h));drawAdjust();e.preventDefault()};
+AC.onpointerdown=function(e){if(!adjustType)return;var g=adjustLayout(),rec=photos[adjustType];if(!g||!rec)return;var x=e.clientX-g.sr.left,y=e.clientY-g.sr.top,best=null,bd=44;visibleNames(adjustType).forEach(function(n){var p=rec.points[n],dd=Math.hypot(x-(g.ox+p.x*g.w),y-(g.oy+p.y*g.h));if(dd<bd){bd=dd;best=n}});if(best){adjustDrag=best;AC.setPointerCapture(e.pointerId);e.preventDefault()}};
+AC.onpointermove=function(e){if(!adjustDrag||!adjustType)return;var g=adjustLayout(),p=photos[adjustType].points[adjustDrag];if(!g)return;p.x=Math.max(0,Math.min(1,(e.clientX-g.sr.left-g.ox)/g.w));p.y=Math.max(0,Math.min(1,(e.clientY-g.sr.top-g.oy)/g.h));
+ if(adjustType!=="front"){var map={leftShoulder:"rightShoulder",leftElbow:"rightElbow",leftWrist:"rightWrist",leftHip:"rightHip",leftKnee:"rightKnee",leftAnkle:"rightAnkle"};if(map[adjustDrag])photos[adjustType].points[map[adjustDrag]]={x:p.x,y:p.y}}
+ drawAdjust();e.preventDefault()};
 AC.onpointerup=AC.onpointercancel=function(){adjustDrag=null};
 addEventListener("resize",function(){if(adjustType)drawAdjust()});
 function loadAI(){var sc=document.createElement("script");sc.src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js";sc.async=true;sc.onload=attachPose;sc.onerror=function(){console.warn("AI library load failed; photo controls remain available")};document.body.appendChild(sc)}
@@ -219,7 +240,8 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  function mag(v){var a=Math.abs(v);return a<1.5?"ほぼ中間位":a<5?"軽度の回旋傾向":"回旋傾向あり"}
  document.getElementById("thoraxDeg").textContent=mag(thoraxYaw);document.getElementById("pelvisDeg").textContent=mag(pelvisYaw);document.getElementById("twistDeg").textContent=Math.abs(tw)<1.5?"小さい":"相対捻れあり";
  document.getElementById("thoraxText").textContent="参考推定 "+Math.abs(thoraxYaw).toFixed(1)+"°";document.getElementById("pelvisText").textContent="参考推定 "+Math.abs(pelvisYaw).toFixed(1)+"°";document.getElementById("twistText").textContent="参考差 "+Math.abs(tw).toFixed(1)+"°";
- var f=photos.front.points,sh=Math.atan2(f.rightShoulder.y-f.leftShoulder.y,f.rightShoulder.x-f.leftShoulder.x)*180/Math.PI,ph=Math.atan2(f.rightHip.y-f.leftHip.y,f.rightHip.x-f.leftHip.x)*180/Math.PI,midS=(f.leftShoulder.x+f.rightShoulder.x)/2,hs=(f.head.x-midS)*100;
+ function lineTilt(a,b){var d=Math.atan2(b.y-a.y,b.x-a.x)*180/Math.PI;while(d>90)d-=180;while(d<-90)d+=180;return d}
+ var f=photos.front.points,sh=lineTilt(f.leftShoulder,f.rightShoulder),ph=lineTilt(f.leftHip,f.rightHip),midS=(f.leftShoulder.x+f.rightShoulder.x)/2,hs=(f.head.x-midS)*100;
  document.getElementById("shoulderTilt").textContent="肩傾斜 "+(sh>=0?"+":"")+sh.toFixed(1)+"°";document.getElementById("pelvisTilt").textContent="骨盤傾斜 "+(ph>=0?"+":"")+ph.toFixed(1)+"°";document.getElementById("headShift").textContent="頭部偏位 "+(hs>=0?"右 ":"左 ")+Math.abs(hs).toFixed(1)+"%";
  function clampScore(v){return Math.max(0,Math.min(100,Math.round(v)))}
  function sideDeviation(rec){
