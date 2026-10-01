@@ -21,13 +21,13 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V26.3</p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V26.4</p></header>
 <main>
 <div class="card intro"><b>撮影条件をそろえて分析精度を高めます。</b><br>ガイド撮影では中央・水平・全身位置をそろえます。撮影後はAIランドマークを検出し、3方向を統合して姿勢を可視化します。</div>
 <div class="views">
-<div class="card"><div class="head"><b>① 正面</b><span class="badge" id="badge-front">未登録</span></div><div class="stage" id="stage-front"><span>正面写真を登録</span></div><div class="actions" style="grid-template-columns:1fr 1fr 1fr"><label class="btn gallery">📁 写真を選択<input id="gallery-front" type="file" accept="image/*"></label><label class="btn camera">📷 カメラ撮影<input id="camera-front" type="file" accept="image/*" capture="environment"></label><button type="button" class="btn guideBtn" data-guide="front" style="border:0;background:#172033;color:#fff;min-height:48px;border-radius:11px;font-size:11px;font-weight:900">📐 ガイド撮影</button></div><div class="note">約2〜3m離れ、スマホは胸〜みぞおちの高さ。頭から足先まで入るように撮影</div></div>
-<div class="card"><div class="head"><b>② 右側面</b><span class="badge" id="badge-right">未登録</span></div><div class="stage" id="stage-right"><span>右側面写真を登録</span></div><div class="actions" style="grid-template-columns:1fr 1fr 1fr"><label class="btn gallery">📁 写真を選択<input id="gallery-right" type="file" accept="image/*"></label><label class="btn camera">📷 カメラ撮影<input id="camera-right" type="file" accept="image/*" capture="environment"></label><button type="button" class="btn guideBtn" data-guide="right" style="border:0;background:#172033;color:#fff;min-height:48px;border-radius:11px;font-size:11px;font-weight:900">📐 ガイド撮影</button></div><div class="note">約2〜3m離れ、右側をカメラへ。スマホは胸〜みぞおちの高さ</div></div>
-<div class="card"><div class="head"><b>③ 左側面</b><span class="badge" id="badge-left">未登録</span></div><div class="stage" id="stage-left"><span>左側面写真を登録</span></div><div class="actions" style="grid-template-columns:1fr 1fr 1fr"><label class="btn gallery">📁 写真を選択<input id="gallery-left" type="file" accept="image/*"></label><label class="btn camera">📷 カメラ撮影<input id="camera-left" type="file" accept="image/*" capture="environment"></label><button type="button" class="btn guideBtn" data-guide="left" style="border:0;background:#172033;color:#fff;min-height:48px;border-radius:11px;font-size:11px;font-weight:900">📐 ガイド撮影</button></div><div class="note">約2〜3m離れ、左側をカメラへ。スマホは胸〜みぞおちの高さ</div></div>
+<div class="card"><div class="head"><b>① 正面</b><span class="badge" id="badge-front">未登録</span></div><div class="stage" id="stage-front"><span>正面写真を登録</span></div><div class="actions" style="grid-template-columns:1fr 1fr 1fr"><label class="btn gallery">📁 写真を選択<input id="gallery-front" type="file" accept="image/*"></label><label class="btn camera">📷 カメラ撮影<input id="camera-front" type="file" accept="image/*" capture="environment"></label><button type="button" class="btn guideBtn" data-guide="front" style="border:0;background:#172033;color:#fff;min-height:48px;border-radius:11px;font-size:11px;font-weight:900">📐 ガイド撮影</button></div><button type="button" class="adjustBtn" data-adjust="front" style="display:none;width:100%;margin-top:8px;border:1px solid #fdba74;background:#fff7ed;color:#9a3412;border-radius:11px;padding:11px;font-size:12px;font-weight:900">✋ ランドマークを微調整</button><div class="note">約2〜3m離れ、スマホは胸〜みぞおちの高さ。頭から足先まで入るように撮影</div></div>
+<div class="card"><div class="head"><b>② 右側面</b><span class="badge" id="badge-right">未登録</span></div><div class="stage" id="stage-right"><span>右側面写真を登録</span></div><div class="actions" style="grid-template-columns:1fr 1fr 1fr"><label class="btn gallery">📁 写真を選択<input id="gallery-right" type="file" accept="image/*"></label><label class="btn camera">📷 カメラ撮影<input id="camera-right" type="file" accept="image/*" capture="environment"></label><button type="button" class="btn guideBtn" data-guide="right" style="border:0;background:#172033;color:#fff;min-height:48px;border-radius:11px;font-size:11px;font-weight:900">📐 ガイド撮影</button></div><button type="button" class="adjustBtn" data-adjust="right" style="display:none;width:100%;margin-top:8px;border:1px solid #fdba74;background:#fff7ed;color:#9a3412;border-radius:11px;padding:11px;font-size:12px;font-weight:900">✋ ランドマークを微調整</button><div class="note">約2〜3m離れ、右側をカメラへ。スマホは胸〜みぞおちの高さ</div></div>
+<div class="card"><div class="head"><b>③ 左側面</b><span class="badge" id="badge-left">未登録</span></div><div class="stage" id="stage-left"><span>左側面写真を登録</span></div><div class="actions" style="grid-template-columns:1fr 1fr 1fr"><label class="btn gallery">📁 写真を選択<input id="gallery-left" type="file" accept="image/*"></label><label class="btn camera">📷 カメラ撮影<input id="camera-left" type="file" accept="image/*" capture="environment"></label><button type="button" class="btn guideBtn" data-guide="left" style="border:0;background:#172033;color:#fff;min-height:48px;border-radius:11px;font-size:11px;font-weight:900">📐 ガイド撮影</button></div><button type="button" class="adjustBtn" data-adjust="left" style="display:none;width:100%;margin-top:8px;border:1px solid #fdba74;background:#fff7ed;color:#9a3412;border-radius:11px;padding:11px;font-size:12px;font-weight:900">✋ ランドマークを微調整</button><div class="note">約2〜3m離れ、左側をカメラへ。スマホは胸〜みぞおちの高さ</div></div>
 </div>
 <div class="card">
  <div class="okbox" id="status">0 / 3 枚登録済み</div>
@@ -101,6 +101,19 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
  </div>
 </div>
 
+<div id="adjustModal" style="display:none;position:fixed;inset:0;background:#020617;z-index:12000;flex-direction:column">
+ <div style="height:58px;flex:0 0 58px;display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#0f172a;color:#fff">
+  <button id="adjustCancel" type="button" style="border:0;background:#334155;color:#fff;border-radius:999px;padding:9px 13px;font-weight:800">✕ 戻る</button>
+  <b id="adjustTitle">ランドマーク微調整</b>
+  <button id="adjustDone" type="button" style="border:0;background:#0f766e;color:#fff;border-radius:999px;padding:9px 13px;font-weight:900">✓ 調整完了</button>
+ </div>
+ <div id="adjustStage" style="position:relative;flex:1;min-height:0;overflow:hidden;background:#000;touch-action:none">
+  <img id="adjustImg" alt="" style="position:absolute;max-width:none;user-select:none;-webkit-user-drag:none">
+  <canvas id="adjustCanvas" style="position:absolute;inset:0;width:100%;height:100%;touch-action:none"></canvas>
+ </div>
+ <div style="flex:0 0 auto;background:#0f172a;color:#cbd5e1;text-align:center;padding:8px 12px calc(8px + env(safe-area-inset-bottom));font-size:11px">オレンジの点を指でドラッグして調整してください</div>
+</div>
+
 <div class="review" id="review"><div class="reviewbox"><h2>📷 撮影写真の確認</h2><img id="preview"><div class="reviewactions"><button class="retry" id="retry" type="button">↺ 撮り直す</button><button class="use" id="use" type="button">✓ この写真を使う</button></div></div></div>
 
 <script>
@@ -118,7 +131,9 @@ function save(type,file){
  var url=URL.createObjectURL(file);photos[type]={file:file,url:url,points:defaults(type),rawLandmarks:null,ai:false};
  var stage=document.getElementById("stage-"+type);stage.innerHTML="";var img=document.createElement("img");img.src=url;stage.appendChild(img);
  var cv=document.createElement("canvas");cv.className="landmarkCanvas";cv.id="canvas-"+type;stage.appendChild(cv);img.onload=function(){draw(type);setupDrag(type)};
- var b=document.getElementById("badge-"+type);b.textContent="登録済み";b.className="badge ok";count();enqueueAI(type);
+ var b=document.getElementById("badge-"+type);b.textContent="登録済み";b.className="badge ok";
+ var ab=document.querySelector('.adjustBtn[data-adjust="'+type+'"]');if(ab)ab.style.display="block";
+ count();enqueueAI(type);
 }
 types.forEach(function(type){var g=document.getElementById("gallery-"+type),c=document.getElementById("camera-"+type);
  g.addEventListener("change",function(){var f=g.files&&g.files[0];if(f)save(type,f);g.value=""});
@@ -142,6 +157,36 @@ function attachPose(){if(!window.Pose)return;try{pose=new Pose({locateFile:f=>"h
  pose.onResults(function(res){var type=window.__wakabaCurrent,rec=photos[type],b=document.getElementById("badge-"+type);if(rec&&res.poseLandmarks){var lm=res.poseLandmarks,p={head:{x:(lm[0].x+lm[7].x+lm[8].x)/3,y:(lm[0].y+lm[7].y+lm[8].y)/3}};
  rec.rawLandmarks=lm.map(function(q,i){return {index:i,x:q.x,y:q.y,z:q.z,visibility:q.visibility}});
  Object.keys(mpIndex).forEach(function(k){var q=lm[mpIndex[k]];p[k]={x:q.x,y:q.y}});rec.points=p;rec.ai=true;b.textContent="AI検出済み";b.className="badge ok";draw(type)}else if(b){b.textContent="手動補正";b.className="badge ok"}busy=false;runQueue()});poseReady=true;runQueue()}catch(e){poseReady=false}}
+var adjustType=null,adjustDrag=null,AC=document.getElementById("adjustCanvas"),AI=document.getElementById("adjustImg"),AS=document.getElementById("adjustStage");
+function adjustLayout(){
+ if(!adjustType||!photos[adjustType]||!AI.naturalWidth)return null;
+ var sr=AS.getBoundingClientRect(),iw=AI.naturalWidth,ih=AI.naturalHeight,scale=Math.min(sr.width/iw,sr.height/ih);
+ var w=iw*scale,h=ih*scale,ox=(sr.width-w)/2,oy=(sr.height-h)/2;
+ AI.style.width=w+"px";AI.style.height=h+"px";AI.style.left=ox+"px";AI.style.top=oy+"px";
+ return {w:w,h:h,ox:ox,oy:oy,sr:sr};
+}
+function drawAdjust(){
+ var g=adjustLayout();if(!g)return;var d=Math.min(devicePixelRatio||1,2),r=AC.getBoundingClientRect();
+ AC.width=Math.round(r.width*d);AC.height=Math.round(r.height*d);var x=AC.getContext("2d");x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,r.width,r.height);
+ var rec=photos[adjustType],pts=pointNames.map(n=>rec.points[n]);x.strokeStyle="rgba(20,184,166,.95)";x.lineWidth=4;
+ edges.forEach(function(e){x.beginPath();x.moveTo(g.ox+pts[e[0]].x*g.w,g.oy+pts[e[0]].y*g.h);x.lineTo(g.ox+pts[e[1]].x*g.w,g.oy+pts[e[1]].y*g.h);x.stroke()});
+ pointNames.forEach(function(n){var q=rec.points[n],px=g.ox+q.x*g.w,py=g.oy+q.y*g.h;x.beginPath();x.arc(px,py,12,0,Math.PI*2);x.fillStyle="#f97316";x.fill();x.strokeStyle="#fff";x.lineWidth=3;x.stroke()});
+}
+function openAdjust(type){
+ if(!photos[type])return;adjustType=type;adjustDrag=null;document.getElementById("adjustTitle").textContent=guideName(type)+"｜ランドマーク微調整";
+ document.getElementById("adjustModal").style.display="flex";AI.onload=function(){requestAnimationFrame(drawAdjust)};AI.src=photos[type].url;if(AI.complete)requestAnimationFrame(drawAdjust);
+}
+function closeAdjust(saveChanges){
+ if(adjustType&&saveChanges){draw(adjustType);var mb=document.getElementById("modelBadge");if(mb){mb.textContent="補正後・再分析してください";mb.className="badge"}}
+ document.getElementById("adjustModal").style.display="none";adjustType=null;adjustDrag=null;
+}
+document.querySelectorAll(".adjustBtn").forEach(function(b){b.addEventListener("click",function(){openAdjust(b.getAttribute("data-adjust"))})});
+document.getElementById("adjustCancel").onclick=function(){closeAdjust(true)};
+document.getElementById("adjustDone").onclick=function(){closeAdjust(true)};
+AC.onpointerdown=function(e){if(!adjustType)return;var g=adjustLayout(),rec=photos[adjustType];if(!g||!rec)return;var x=e.clientX-g.sr.left,y=e.clientY-g.sr.top,best=null,bd=44;pointNames.forEach(function(n){var p=rec.points[n],dd=Math.hypot(x-(g.ox+p.x*g.w),y-(g.oy+p.y*g.h));if(dd<bd){bd=dd;best=n}});if(best){adjustDrag=best;AC.setPointerCapture(e.pointerId);e.preventDefault()}};
+AC.onpointermove=function(e){if(!adjustDrag||!adjustType)return;var g=adjustLayout(),p=photos[adjustType].points[adjustDrag];if(!g)return;p.x=Math.max(0,Math.min(1,(e.clientX-g.sr.left-g.ox)/g.w));p.y=Math.max(0,Math.min(1,(e.clientY-g.sr.top-g.oy)/g.h));drawAdjust();e.preventDefault()};
+AC.onpointerup=AC.onpointercancel=function(){adjustDrag=null};
+addEventListener("resize",function(){if(adjustType)drawAdjust()});
 function loadAI(){var sc=document.createElement("script");sc.src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js";sc.async=true;sc.onload=attachPose;sc.onerror=function(){console.warn("AI library load failed; photo controls remain available")};document.body.appendChild(sc)}
 addEventListener("resize",()=>types.forEach(draw));setTimeout(loadAI,0);
 
