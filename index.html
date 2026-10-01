@@ -21,7 +21,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V25</p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V26.1</p></header>
 <main>
 <div class="card intro"><b>撮影条件をそろえて分析精度を高めます。</b><br>ガイド撮影では中央・水平・全身位置をそろえます。撮影後はAIランドマークを検出し、3方向を統合して姿勢を可視化します。</div>
 <div class="views">
@@ -74,9 +74,14 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
   <span id="chipCenter" style="background:#0f766e;color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800">中央線に合わせる</span>
   <span id="chipBody" style="background:#0f766e;color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800">頭頂→橙線・足→下線</span>
  </div>
- <div style="position:absolute;bottom:112px;left:18px;right:18px;background:rgba(15,23,42,.70);border-radius:12px;padding:8px 10px;color:#fff;font-size:10px">
-  <div style="display:flex;justify-content:space-between"><span>人体ガイド幅</span><span id="guideScaleLabel">100%</span></div>
-  <input id="guideScale" type="range" min="75" max="125" value="100" style="position:static;width:100%;height:28px;opacity:1">
+ <div style="position:absolute;right:8px;top:50%;transform:translateY(-50%);width:58px;height:250px;background:rgba(15,23,42,.72);border-radius:16px;color:#fff;font-size:10px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:10px 5px;box-sizing:border-box;z-index:2">
+  <div style="font-weight:800;text-align:center;line-height:1.25">人体<br>ガイド幅</div>
+  <span style="font-size:9px">125%</span>
+  <div style="position:relative;width:34px;height:150px;display:flex;align-items:center;justify-content:center">
+   <input id="guideScale" type="range" min="75" max="125" value="100" style="position:absolute;width:150px;height:28px;opacity:1;transform:rotate(-90deg);transform-origin:center">
+  </div>
+  <span id="guideScaleLabel" style="font-weight:900;font-size:11px">100%</span>
+  <span style="font-size:9px">75%</span>
  </div>
  <div style="position:absolute;bottom:max(22px,env(safe-area-inset-bottom));left:0;right:0;display:flex;justify-content:center">
   <button id="guideShot" type="button" style="width:76px;height:76px;border-radius:50%;border:6px solid rgba(255,255,255,.75);background:#fff;box-shadow:0 2px 15px #0008"></button>
