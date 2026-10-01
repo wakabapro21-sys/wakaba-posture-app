@@ -21,7 +21,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V33</p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V34</p></header>
 <main>
 <div class="card intro"><b>撮影条件をそろえて分析精度を高めます。</b><br>ガイド撮影では中央・水平・全身位置をそろえます。撮影後はAIランドマークを検出し、3方向を統合して姿勢を可視化します。</div>
 <div class="views">
@@ -30,7 +30,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 <div class="card"><div class="head"><b>③ 左側面</b><span class="badge" id="badge-left">未登録</span></div><div class="stage" id="stage-left"><span>左側面写真を登録</span></div><div class="actions" style="grid-template-columns:1fr 1fr 1fr"><label class="btn gallery">📁 写真を選択<input id="gallery-left" type="file" accept="image/*"></label><label class="btn camera">📷 カメラ撮影<input id="camera-left" type="file" accept="image/*" capture="environment"></label><button type="button" class="btn guideBtn" data-guide="left" style="border:0;background:#172033;color:#fff;min-height:48px;border-radius:11px;font-size:11px;font-weight:900">📐 ガイド撮影</button></div><button type="button" class="adjustBtn" data-adjust="left" style="display:none;width:100%;margin-top:8px;border:1px solid #fdba74;background:#fff7ed;color:#9a3412;border-radius:11px;padding:11px;font-size:12px;font-weight:900">✋ ランドマークを微調整</button><div class="note">約2〜3m離れ、左側をカメラへ。スマホは胸〜みぞおちの高さ</div></div>
 </div>
 <div class="card">
- <div class="okbox" id="status">0 / 3 枚登録済み</div><div style="font-size:9px;color:#94a3b8;margin-top:4px;text-align:right">解析エンジン V33</div>
+ <div class="okbox" id="status">0 / 3 枚登録済み</div><div style="font-size:9px;color:#94a3b8;margin-top:4px;text-align:right">解析エンジン V34</div>
  <div style="margin-top:8px;padding:10px;border-radius:11px;background:#fff7ed;border:1px solid #fed7aa;font-size:11px;line-height:1.6;color:#9a3412">
   <b>✋ 手動微調整</b>　AI検出後、写真上のオレンジ色のポイントを指でドラッグして位置を修正できます。修正した位置が3D分析とスコアに反映されます。
  </div>
@@ -374,29 +374,60 @@ async function init(){
   root=new THREE.Group();scene.add(root);
   const arr=await Promise.all(["skull","chest","pelvis","limbs"].map(loadGLB));
   ["skull","chest","pelvis","limbs"].forEach((n,i)=>{parts[n]=style(arr[i],mats[n]);root.add(parts[n])});
-  // BodyParts3D: upright + actual rendered bounds based auto-fit.
+  // V34: upright, normalize from actual rendered bounds, then fit camera to BOTH width and height.
   root.rotation.x=-Math.PI/2;
   root.updateMatrixWorld(true);
   let bb=new THREE.Box3().setFromObject(root), sz=bb.getSize(new THREE.Vector3()), ctr=bb.getCenter(new THREE.Vector3());
-  const targetH=3.45, sc=targetH/sz.y;
+  const longest=Math.max(sz.x,sz.y,sz.z), sc=3.35/longest;
   root.scale.setScalar(sc); root.updateMatrixWorld(true);
   bb=new THREE.Box3().setFromObject(root); ctr=bb.getCenter(new THREE.Vector3());
-  root.position.x-=ctr.x; root.position.y+=(-.03-bb.min.y); root.position.z-=ctr.z;
+  root.position.x-=ctr.x; root.position.y-=ctr.y; root.position.z-=ctr.z;
   root.rotation.y=0;
-  root.add(ring(0xff3655,.72,2.12));root.add(ring(0xff963f,.58,1.30));
+  root.add(ring(0xff3655,.72,.48));root.add(ring(0xff963f,.58,-.38));
   root.updateMatrixWorld(true);
-  bb=new THREE.Box3().setFromObject(root); ctr=bb.getCenter(new THREE.Vector3()); sz=bb.getSize(new THREE.Vector3());
-  const fov=THREE.MathUtils.degToRad(camera.fov), dist=(sz.y*.56)/Math.tan(fov/2);
-  camera.position.set(0,ctr.y,dist*1.16);camera.lookAt(0,ctr.y,0);
+  bb=new THREE.Box3().setFromObject(root); sz=bb.getSize(new THREE.Vector3());
+  function fitFront(){
+    const r=host.getBoundingClientRect(), aspect=Math.max(.45,r.width/Math.max(1,r.height));
+    const vfov=THREE.MathUtils.degToRad(camera.fov), hfov=2*Math.atan(Math.tan(vfov/2)*aspect);
+    const dH=(sz.y*.58)/Math.tan(vfov/2), dW=(sz.x*.58)/Math.tan(hfov/2);
+    const dist=Math.max(dH,dW,4.2);
+    camera.position.set(0,0,dist);camera.up.set(0,1,0);camera.lookAt(0,0,0);
+  }
+  fitFront();
   ready=true;host.style.display="block";old.style.visibility="hidden";statusText("BodyParts3D 読込完了｜全身表示｜指で左右に回転");
   resize();apply(window.WAKABA_3D_DATA||{});
  }catch(e){console.error(e);statusText("3D読込エラー："+(e&&e.message?e.message:"モデルを確認してください"));old.style.visibility="visible";}
 }
-function apply(d){if(!ready)return;const k=Math.PI/180;parts.chest.rotation.z=-(d.shoulderTilt||0)*k*1.5;parts.chest.rotation.y=(d.thoraxYaw||0)*k*3;parts.pelvis.rotation.z=-(d.pelvisTilt||0)*k*1.7;parts.pelvis.rotation.y=(d.pelvisYaw||0)*k*3;parts.skull.position.x=(d.headShift||0)*.008;}
-function resize(){if(!renderer)return;let r=host.getBoundingClientRect();renderer.setSize(r.width,r.height,false);camera.aspect=r.width/r.height;camera.updateProjectionMatrix()}
+let rotBoost=1;
+function apply(d){if(!ready)return;const k=Math.PI/180;
+ parts.chest.rotation.z=-(d.shoulderTilt||0)*k*1.5;
+ parts.chest.rotation.y=(d.thoraxYaw||0)*k*3*rotBoost;
+ parts.pelvis.rotation.z=-(d.pelvisTilt||0)*k*1.7;
+ parts.pelvis.rotation.y=(d.pelvisYaw||0)*k*3*rotBoost;
+ parts.skull.position.x=(d.headShift||0)*.008;
+}
+function resize(){if(!renderer)return;let r=host.getBoundingClientRect();renderer.setSize(r.width,r.height,false);camera.aspect=r.width/r.height;camera.updateProjectionMatrix();if(ready&&typeof fitFront==="function")fitFront()}
 function loop(){requestAnimationFrame(loop);if(renderer)renderer.render(scene,camera)}loop();
 window.addEventListener("resize",resize);window.addEventListener("wakaba-analysis",e=>init().then(()=>apply(e.detail)));
 host.addEventListener("pointerdown",e=>{drag=true;lastX=e.clientX;host.setPointerCapture(e.pointerId)});host.addEventListener("pointermove",e=>{if(drag&&ready){root.rotation.y+=(e.clientX-lastX)*.009;lastX=e.clientX}});host.addEventListener("pointerup",()=>drag=false);
-document.querySelectorAll(".view3d[data-a]").forEach(b=>b.addEventListener("click",()=>{if(ready)root.rotation.y=-(+b.dataset.a)*Math.PI/180}));
+function setView(kind){
+ if(!ready)return;
+ const bb=new THREE.Box3().setFromObject(root), size=bb.getSize(new THREE.Vector3());
+ const r=host.getBoundingClientRect(), aspect=Math.max(.45,r.width/Math.max(1,r.height));
+ const vfov=THREE.MathUtils.degToRad(camera.fov), hfov=2*Math.atan(Math.tan(vfov/2)*aspect);
+ const dist=Math.max((size.y*.62)/Math.tan(vfov/2),(size.x*.62)/Math.tan(hfov/2),4.4);
+ camera.up.set(0,1,0);
+ if(kind==="top"){camera.position.set(0,dist,0.001);camera.up.set(0,0,-1);camera.lookAt(0,0,0);}
+ else {camera.position.set(0,0,dist);camera.lookAt(0,0,0);
+   const ang=kind==="right"?Math.PI/2:kind==="left"?-Math.PI/2:kind==="diag"?-Math.PI/4:0;root.rotation.y=ang;}
+}
+document.querySelectorAll(".view3d[data-a]").forEach(b=>b.addEventListener("click",()=>{
+ const a=+b.dataset.a; setView(a===90?"right":a===-90?"left":a===-35||a===35?"diag":"front");
+}));
+const topBtn=[...document.querySelectorAll("button")].find(b=>b.textContent.includes("上から見た捻れ"));
+if(topBtn)topBtn.addEventListener("click",()=>setView("top"));
+const boostBtn=[...document.querySelectorAll("button")].find(b=>b.textContent.includes("回旋表示"));
+if(boostBtn)boostBtn.addEventListener("click",()=>{rotBoost=rotBoost===1?5:1;apply(window.WAKABA_3D_DATA||{});boostBtn.textContent=rotBoost===5?"回旋表示 ×5 ON":"回旋表示 ×5";});
+
 </script>
 </body></html>
