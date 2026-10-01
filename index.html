@@ -21,7 +21,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V26.5</p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V26.6</p></header>
 <main>
 <div class="card intro"><b>撮影条件をそろえて分析精度を高めます。</b><br>ガイド撮影では中央・水平・全身位置をそろえます。撮影後はAIランドマークを検出し、3方向を統合して姿勢を可視化します。</div>
 <div class="views">
@@ -30,7 +30,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 <div class="card"><div class="head"><b>③ 左側面</b><span class="badge" id="badge-left">未登録</span></div><div class="stage" id="stage-left"><span>左側面写真を登録</span></div><div class="actions" style="grid-template-columns:1fr 1fr 1fr"><label class="btn gallery">📁 写真を選択<input id="gallery-left" type="file" accept="image/*"></label><label class="btn camera">📷 カメラ撮影<input id="camera-left" type="file" accept="image/*" capture="environment"></label><button type="button" class="btn guideBtn" data-guide="left" style="border:0;background:#172033;color:#fff;min-height:48px;border-radius:11px;font-size:11px;font-weight:900">📐 ガイド撮影</button></div><button type="button" class="adjustBtn" data-adjust="left" style="display:none;width:100%;margin-top:8px;border:1px solid #fdba74;background:#fff7ed;color:#9a3412;border-radius:11px;padding:11px;font-size:12px;font-weight:900">✋ ランドマークを微調整</button><div class="note">約2〜3m離れ、左側をカメラへ。スマホは胸〜みぞおちの高さ</div></div>
 </div>
 <div class="card">
- <div class="okbox" id="status">0 / 3 枚登録済み</div>
+ <div class="okbox" id="status">0 / 3 枚登録済み</div><div style="font-size:9px;color:#94a3b8;margin-top:4px;text-align:right">解析エンジン V26.6</div>
  <div style="margin-top:8px;padding:10px;border-radius:11px;background:#fff7ed;border:1px solid #fed7aa;font-size:11px;line-height:1.6;color:#9a3412">
   <b>✋ 手動微調整</b>　AI検出後、写真上のオレンジ色のポイントを指でドラッグして位置を修正できます。修正した位置が3D分析とスコアに反映されます。
  </div>
@@ -175,7 +175,14 @@ function blobImage(blob){return new Promise(function(resolve,reject){var u=URL.c
 function attachPose(){if(!window.Pose)return;try{pose=new Pose({locateFile:f=>"https://cdn.jsdelivr.net/npm/@mediapipe/pose/"+f});pose.setOptions({modelComplexity:1,smoothLandmarks:true,enableSegmentation:false,minDetectionConfidence:.4,minTrackingConfidence:.4});
  pose.onResults(function(res){var type=window.__wakabaCurrent,rec=photos[type],b=document.getElementById("badge-"+type);if(rec&&res.poseLandmarks){var lm=res.poseLandmarks,p={head:{x:(lm[0].x+lm[7].x+lm[8].x)/3,y:(lm[0].y+lm[7].y+lm[8].y)/3}};
  rec.rawLandmarks=lm.map(function(q,i){return {index:i,x:q.x,y:q.y,z:q.z,visibility:q.visibility}});
- Object.keys(mpIndex).forEach(function(k){var q=lm[mpIndex[k]];p[k]={x:q.x,y:q.y}});rec.points=p;if(type!=="front")syncSidePairs(rec);rec.ai=true;b.textContent="AI検出済み";b.className="badge ok";draw(type)}else if(b){b.textContent="手動補正";b.className="badge ok"}busy=false;runQueue()});poseReady=true;runQueue()}catch(e){poseReady=false}}
+ Object.keys(mpIndex).forEach(function(k){var q=lm[mpIndex[k]];p[k]={x:q.x,y:q.y}});
+if(type!=="front"){
+ var useLeft=(type==="left"), pre=useLeft?"left":"right", other=useLeft?"right":"left";
+ ["Shoulder","Elbow","Wrist","Hip","Knee","Ankle"].forEach(function(part){
+   var q=p[pre+part]; p["left"+part]={x:q.x,y:q.y}; p["right"+part]={x:q.x,y:q.y};
+ });
+}
+rec.points=p;rec.ai=true;b.textContent="AI検出済み";b.className="badge ok";draw(type)}else if(b){b.textContent="手動補正";b.className="badge ok"}busy=false;runQueue()});poseReady=true;runQueue()}catch(e){poseReady=false}}
 var adjustType=null,adjustDrag=null,AC=document.getElementById("adjustCanvas"),AI=document.getElementById("adjustImg"),AS=document.getElementById("adjustStage");
 function adjustLayout(){
  if(!adjustType||!photos[adjustType]||!AI.naturalWidth)return null;
@@ -240,8 +247,12 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  function mag(v){var a=Math.abs(v);return a<1.5?"ほぼ中間位":a<5?"軽度の回旋傾向":"回旋傾向あり"}
  document.getElementById("thoraxDeg").textContent=mag(thoraxYaw);document.getElementById("pelvisDeg").textContent=mag(pelvisYaw);document.getElementById("twistDeg").textContent=Math.abs(tw)<1.5?"小さい":"相対捻れあり";
  document.getElementById("thoraxText").textContent="参考推定 "+Math.abs(thoraxYaw).toFixed(1)+"°";document.getElementById("pelvisText").textContent="参考推定 "+Math.abs(pelvisYaw).toFixed(1)+"°";document.getElementById("twistText").textContent="参考差 "+Math.abs(tw).toFixed(1)+"°";
- function lineTilt(a,b){var d=Math.atan2(b.y-a.y,b.x-a.x)*180/Math.PI;while(d>90)d-=180;while(d<-90)d+=180;return d}
- var f=photos.front.points,sh=lineTilt(f.leftShoulder,f.rightShoulder),ph=lineTilt(f.leftHip,f.rightHip),midS=(f.leftShoulder.x+f.rightShoulder.x)/2,hs=(f.head.x-midS)*100;
+ function horizontalTilt(a,b){
+   var dx=Math.abs(b.x-a.x),dy=b.y-a.y;
+   if(dx<0.0001)return 0;
+   return Math.atan2(dy,dx)*180/Math.PI;
+ }
+ var f=photos.front.points,sh=horizontalTilt(f.leftShoulder,f.rightShoulder),ph=horizontalTilt(f.leftHip,f.rightHip),midS=(f.leftShoulder.x+f.rightShoulder.x)/2,hs=(f.head.x-midS)*100;
  document.getElementById("shoulderTilt").textContent="肩傾斜 "+(sh>=0?"+":"")+sh.toFixed(1)+"°";document.getElementById("pelvisTilt").textContent="骨盤傾斜 "+(ph>=0?"+":"")+ph.toFixed(1)+"°";document.getElementById("headShift").textContent="頭部偏位 "+(hs>=0?"右 ":"左 ")+Math.abs(hs).toFixed(1)+"%";
  function clampScore(v){return Math.max(0,Math.min(100,Math.round(v)))}
  function sideDeviation(rec){
