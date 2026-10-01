@@ -21,7 +21,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V22</p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V23</p></header>
 <main>
 <div class="card intro"><b>撮影条件をそろえて分析精度を高めます。</b><br>ガイド撮影では中央・水平・全身位置をそろえます。撮影後はAIランドマークを検出し、3方向を統合して姿勢を可視化します。</div>
 <div class="views">
@@ -112,7 +112,7 @@ function geometry(type){var stage=document.getElementById("stage-"+type),img=sta
 function draw(type){var rec=photos[type],g=geometry(type);if(!rec||!g)return;var d=devicePixelRatio||1,c=g.cv;c.width=Math.round(g.sr.width*d);c.height=Math.round(g.sr.height*d);var x=c.getContext("2d");x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,g.sr.width,g.sr.height);var pts=pointNames.map(n=>rec.points[n]);x.strokeStyle="rgba(20,184,166,.95)";x.lineWidth=3;edges.forEach(function(e){x.beginPath();x.moveTo(g.ox+pts[e[0]].x*g.w,g.oy+pts[e[0]].y*g.h);x.lineTo(g.ox+pts[e[1]].x*g.w,g.oy+pts[e[1]].y*g.h);x.stroke()});pts.forEach(function(q){x.beginPath();x.arc(g.ox+q.x*g.w,g.oy+q.y*g.h,7,0,Math.PI*2);x.fillStyle="#f97316";x.fill();x.strokeStyle="#fff";x.lineWidth=2;x.stroke()})}
 var drag=null;
 function setupDrag(type){var cv=document.getElementById("canvas-"+type);if(!cv||cv.dataset.dragReady)return;cv.dataset.dragReady="1";
- cv.onpointerdown=function(e){var g=geometry(type),rec=photos[type];if(!g||!rec)return,xx=e.clientX-g.ir.left,yy=e.clientY-g.ir.top,best=null,bd=32;pointNames.forEach(function(n){var p=rec.points[n],dd=Math.hypot(xx-p.x*g.w,yy-p.y*g.h);if(dd<bd){bd=dd;best=n}});if(best){drag={type:type,name:best};cv.setPointerCapture(e.pointerId)}};
+ cv.onpointerdown=function(e){var g=geometry(type),rec=photos[type];if(!g||!rec)return;var xx=e.clientX-g.ir.left,yy=e.clientY-g.ir.top,best=null,bd=32;pointNames.forEach(function(n){var p=rec.points[n],dd=Math.hypot(xx-p.x*g.w,yy-p.y*g.h);if(dd<bd){bd=dd;best=n}});if(best){drag={type:type,name:best};cv.setPointerCapture(e.pointerId)}};
  cv.onpointermove=function(e){if(!drag||drag.type!==type)return;var g=geometry(type),p=photos[type].points[drag.name];p.x=Math.max(0,Math.min(1,(e.clientX-g.ir.left)/g.w));p.y=Math.max(0,Math.min(1,(e.clientY-g.ir.top)/g.h));draw(type)};cv.onpointerup=cv.onpointercancel=function(){drag=null};
 }
 function enqueueAI(type){queue=queue.filter(x=>x!==type);queue.push(type);runQueue()}
