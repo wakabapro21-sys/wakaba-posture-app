@@ -21,7 +21,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V29</p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V30</p></header>
 <main>
 <div class="card intro"><b>撮影条件をそろえて分析精度を高めます。</b><br>ガイド撮影では中央・水平・全身位置をそろえます。撮影後はAIランドマークを検出し、3方向を統合して姿勢を可視化します。</div>
 <div class="views">
@@ -30,7 +30,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 <div class="card"><div class="head"><b>③ 左側面</b><span class="badge" id="badge-left">未登録</span></div><div class="stage" id="stage-left"><span>左側面写真を登録</span></div><div class="actions" style="grid-template-columns:1fr 1fr 1fr"><label class="btn gallery">📁 写真を選択<input id="gallery-left" type="file" accept="image/*"></label><label class="btn camera">📷 カメラ撮影<input id="camera-left" type="file" accept="image/*" capture="environment"></label><button type="button" class="btn guideBtn" data-guide="left" style="border:0;background:#172033;color:#fff;min-height:48px;border-radius:11px;font-size:11px;font-weight:900">📐 ガイド撮影</button></div><button type="button" class="adjustBtn" data-adjust="left" style="display:none;width:100%;margin-top:8px;border:1px solid #fdba74;background:#fff7ed;color:#9a3412;border-radius:11px;padding:11px;font-size:12px;font-weight:900">✋ ランドマークを微調整</button><div class="note">約2〜3m離れ、左側をカメラへ。スマホは胸〜みぞおちの高さ</div></div>
 </div>
 <div class="card">
- <div class="okbox" id="status">0 / 3 枚登録済み</div><div style="font-size:9px;color:#94a3b8;margin-top:4px;text-align:right">解析エンジン V29</div>
+ <div class="okbox" id="status">0 / 3 枚登録済み</div><div style="font-size:9px;color:#94a3b8;margin-top:4px;text-align:right">解析エンジン V30</div>
  <div style="margin-top:8px;padding:10px;border-radius:11px;background:#fff7ed;border:1px solid #fed7aa;font-size:11px;line-height:1.6;color:#9a3412">
   <b>✋ 手動微調整</b>　AI検出後、写真上のオレンジ色のポイントを指でドラッグして位置を修正できます。修正した位置が3D分析とスコアに反映されます。
  </div>
@@ -49,7 +49,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
    <div style="background:#fff;border-radius:12px;padding:10px 3px"><div style="font-size:9px;color:#64748b">側面</div><b id="scoreSide" style="font-size:21px">--</b><div style="font-size:8px;color:#94a3b8">前後バランス</div></div>
    <div style="background:#fff;border-radius:12px;padding:10px 3px"><div style="font-size:9px;color:#64748b">回旋</div><b id="scoreTwist" style="font-size:21px">--</b><div style="font-size:8px;color:#94a3b8">相対ねじれ</div></div>
   </div>
-  <div style="font-size:9px;color:#64748b;line-height:1.5;margin-top:7px">※ 写真条件とランドマーク位置から算出する比較用の参考スコアです。医学的な診断値ではありません。</div>
+  <div style="font-size:9px;color:#64748b;line-height:1.5;margin-top:7px">※ 写真条件とランドマーク位置から算出する比較用の参考スコアです。医学的な診断値ではありません。目安：90〜100 良好／70〜89 軽度差／50〜69 中等度差／0〜49 大きな差。</div>
  </div>
  <div id="twistPanel" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px">
   <div style="background:#ecfeff;border-radius:10px;padding:8px;text-align:center"><div style="font-size:10px;color:#64748b">胸郭回旋傾向</div><b id="thoraxDeg">--</b><div id="thoraxText" style="font-size:9px;color:#64748b;margin-top:2px">参考推定</div></div>
@@ -67,7 +67,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
   <span id="headShift">頭部偏位 --</span><br>
   <span style="color:#94a3b8">※ 回旋角は3方向写真からの参考推定で、診断値・3Dスキャン値ではありません。AI内部ではMediaPipe 33点を保持し、表示点は手動補正できます。</span>
  </div>
- <div id="threeStage" style="height:560px;margin-top:8px;border-radius:13px;overflow:hidden;background:#0b1220;position:relative">
+ <div id="threeStage" style="height:650px;margin-top:8px;border-radius:13px;overflow:hidden;background:#0b1220;position:relative">
    <canvas id="threeCanvas" style="width:100%;height:100%;display:block;touch-action:none"></canvas>
    <div id="threeHint" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#94a3b8;text-align:center;font-size:12px;pointer-events:none">3枚登録後に分析ボタンを押してください。<br>表示後は指で左右に回転できます。</div>
  </div>
@@ -262,14 +262,14 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  }
  /* V29 若葉整体院 独自比較スコア
     軽度の左右差も施術前後比較で見えるよう、旧版より感度を高く設定。 */
- var frontPenalty=12 + Math.abs(sh)*4.0 + Math.abs(ph)*6.0 + Math.abs(hs)*2.0;
+ var frontPenalty=18 + Math.abs(sh)*4.5 + Math.abs(ph)*7.0 + Math.abs(hs)*2.2;
  var frontScore=clampScore(100-frontPenalty);
  var rawSide=(sideDeviation(photos.right)+sideDeviation(photos.left))/2;
- var sidePenalty=18 + rawSide*2.0;
+ var sidePenalty=25 + rawSide*2.15;
  var sideScore=clampScore(100-sidePenalty);
- /* 3方向写真の回旋推定が0°でも満点にはしない。写真ベース推定の上限を88点とする。 */
- var twistPenalty=12 + Math.abs(tw)*4.0 + Math.abs(thoraxYaw)*1.2 + Math.abs(pelvisYaw)*1.2;
- var twistScore=Math.min(88,clampScore(100-twistPenalty));
+ /* 写真ベースの回旋推定は0°でも満点扱いにしない */
+ var twistPenalty=22 + Math.abs(tw)*4.5 + Math.abs(thoraxYaw)*1.4 + Math.abs(pelvisYaw)*1.4;
+ var twistScore=Math.min(78,clampScore(100-twistPenalty));
  var totalScore=clampScore(frontScore*.45+sideScore*.35+twistScore*.20);
  document.getElementById("scoreTotal").textContent=totalScore;
  document.getElementById("scoreFront").textContent=frontScore;
@@ -277,7 +277,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  document.getElementById("scoreTwist").textContent=twistScore;
  built=true;document.getElementById("threeHint").style.display="none";var b=document.getElementById("modelBadge");b.textContent="3方向反映済み";b.className="badge ok";draw()}
 function rot(p){var a=angle*Math.PI/180,c=Math.cos(a),q=Math.sin(a);return{x:p.x*c-p.z*q,y:p.y,z:p.x*q+p.z*c}}
-function project(p){var r=rot(p),box=C.getBoundingClientRect(),sc=Math.min(box.width/2.45,box.height/3.15),pers=1/(1+r.z*.10);return{x:box.width/2+r.x*sc*pers,y:box.height-24-r.y*sc*pers,z:r.z}}
+function project(p){var r=rot(p),box=C.getBoundingClientRect(),sc=Math.min(box.width/2.20,box.height/3.05),pers=1/(1+r.z*.10);return{x:box.width/2+r.x*sc*pers,y:box.height-24-r.y*sc*pers,z:r.z}}
 function line(a,b,w,col,alpha){var A=project(a),B=project(b);ctx.globalAlpha=alpha==null?1:alpha;ctx.strokeStyle=col;ctx.lineWidth=w;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(A.x,A.y);ctx.lineTo(B.x,B.y);ctx.stroke();ctx.globalAlpha=1}
 function circle(p,r,col){var q=project(p);ctx.fillStyle=col;ctx.beginPath();ctx.arc(q.x,q.y,r,0,Math.PI*2);ctx.fill()}
 function mid(a,b,t){return{x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,z:a.z+(b.z-a.z)*t}}
@@ -292,14 +292,45 @@ function wireLimb(a,b,r1,r2,col,alpha){var d={x:b.x-a.x,y:b.y-a.y,z:b.z-a.z},L=M
 function headMesh(p,col,alpha){var rings=[],ys=[-.20,-.10,.02,.13,.20],rs=[.10,.17,.18,.14,.07];for(var j=0;j<ys.length;j++){var c={x:p.x,y:p.y+ys[j],z:p.z};rings.push(meshRing(c,rs[j],rs[j]*.88,10));drawRing(rings[j],col,alpha,1.15)}for(var k=0;k<rings.length-1;k++)connectRings(rings[k],rings[k+1],col,alpha,1.05)}
 function drawHumanMesh(P,col,alpha,reference){var sm=mid(P.leftShoulder,P.rightShoulder,.5),hm=mid(P.leftHip,P.rightHip,.5),chest=mid(sm,hm,.34),waist=mid(sm,hm,.72),upper=mid(sm,hm,.18),lower=mid(sm,hm,.55),lowwaist=mid(sm,hm,.78),torso=[meshRing({x:sm.x,y:sm.y-.015,z:sm.z},.50,.215,18),meshRing(upper,.47,.255,18),meshRing(chest,.435,.27,18),meshRing(lower,.355,.235,18),meshRing(waist,.305,.205,18),meshRing(lowwaist,.34,.225,18),meshRing(hm,.405,.265,18)];torso.forEach(r=>drawRing(r,col,alpha,reference?1:1.35));for(var i=0;i<torso.length-1;i++)connectRings(torso[i],torso[i+1],col,alpha,reference?1:1.15);line(P.leftShoulder,sm,reference?1:2,col,alpha);line(sm,P.rightShoulder,reference?1:2,col,alpha);line(P.leftHip,hm,reference?1:2,col,alpha);line(hm,P.rightHip,reference?1:2,col,alpha);headMesh(P.head,col,alpha);wireLimb(P.leftShoulder,P.leftElbow,.105,.075,col,alpha);wireLimb(P.leftElbow,P.leftWrist,.075,.045,col,alpha);wireLimb(P.rightShoulder,P.rightElbow,.105,.075,col,alpha);wireLimb(P.rightElbow,P.rightWrist,.075,.045,col,alpha);wireLimb(P.leftHip,P.leftKnee,.145,.10,col,alpha);wireLimb(P.leftKnee,P.leftAnkle,.10,.06,col,alpha);wireLimb(P.rightHip,P.rightKnee,.145,.10,col,alpha);wireLimb(P.rightKnee,P.rightAnkle,.10,.06,col,alpha)}
 function neutralPose(){var p={};Object.keys(pts3).forEach(n=>p[n]={x:pts3[n].x,y:pts3[n].y,z:0});var sy=(p.leftShoulder.y+p.rightShoulder.y)/2,hy=(p.leftHip.y+p.rightHip.y)/2,ky=(p.leftKnee.y+p.rightKnee.y)/2,ay=(p.leftAnkle.y+p.rightAnkle.y)/2;p.head={x:0,y:pts3.head.y,z:0};p.leftShoulder={x:-.48,y:sy,z:0};p.rightShoulder={x:.48,y:sy,z:0};p.leftElbow={x:-.64,y:(sy+hy)/2,z:0};p.rightElbow={x:.64,y:(sy+hy)/2,z:0};p.leftWrist={x:-.67,y:hy+.02,z:0};p.rightWrist={x:.67,y:hy+.02,z:0};p.leftHip={x:-.27,y:hy,z:0};p.rightHip={x:.27,y:hy,z:0};p.leftKnee={x:-.28,y:ky,z:0};p.rightKnee={x:.28,y:ky,z:0};p.leftAnkle={x:-.28,y:ay,z:0};p.rightAnkle={x:.28,y:ay,z:0};return p}
+function anatomyFill(P){
+ var ls=project(P.leftShoulder),rs=project(P.rightShoulder),lh=project(P.leftHip),rh=project(P.rightHip),hd=project(P.head);
+ var smx=(ls.x+rs.x)/2,smy=(ls.y+rs.y)/2,hmx=(lh.x+rh.x)/2,hmy=(lh.y+rh.y)/2;
+ ctx.save();
+ /* translucent body envelope */
+ var grad=ctx.createLinearGradient(smx,smy,hmx,hmy);grad.addColorStop(0,"rgba(34,211,238,.20)");grad.addColorStop(1,"rgba(45,212,191,.10)");
+ ctx.fillStyle=grad;ctx.strokeStyle="rgba(125,211,252,.48)";ctx.lineWidth=2;
+ ctx.beginPath();ctx.moveTo(ls.x,ls.y);ctx.quadraticCurveTo(smx-42,(smy+hmy)/2,lh.x,lh.y);ctx.lineTo(rh.x,rh.y);ctx.quadraticCurveTo(smx+42,(smy+hmy)/2,rs.x,rs.y);ctx.closePath();ctx.fill();ctx.stroke();
+ /* rib cage */
+ ctx.fillStyle="rgba(251,59,82,.20)";ctx.strokeStyle="rgba(251,59,82,.90)";ctx.lineWidth=2.5;
+ var chestY=smy+(hmy-smy)*.35, chestW=Math.max(38,Math.abs(rs.x-ls.x)*.40),chestH=Math.max(42,Math.abs(hmy-smy)*.33);
+ ctx.beginPath();ctx.ellipse(smx,chestY,chestW,chestH,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+ for(var r=1;r<=4;r++){ctx.globalAlpha=.55;ctx.beginPath();ctx.ellipse(smx,chestY-18+r*9,chestW*(1-r*.035),chestH*.18,0,0,Math.PI*2);ctx.stroke()}ctx.globalAlpha=1;
+ /* pelvis */
+ ctx.fillStyle="rgba(251,146,60,.30)";ctx.strokeStyle="rgba(251,146,60,.95)";ctx.lineWidth=3;
+ var pw=Math.max(34,Math.abs(rh.x-lh.x)*.72),phh=Math.max(20,Math.abs(hmy-smy)*.15);
+ ctx.beginPath();ctx.ellipse(hmx,hmy,pw,phh,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+ /* head glow */
+ var hg=ctx.createRadialGradient(hd.x,hd.y,4,hd.x,hd.y,28);hg.addColorStop(0,"rgba(125,211,252,.22)");hg.addColorStop(1,"rgba(125,211,252,0)");
+ ctx.fillStyle=hg;ctx.beginPath();ctx.arc(hd.x,hd.y,30,0,Math.PI*2);ctx.fill();
+ ctx.restore();
+}
+function curvedRotation(cx,cy,rx,ry,cw,col,label){
+ ctx.save();ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=7;ctx.lineCap="round";
+ var a0=cw?.15*Math.PI:.85*Math.PI,a1=cw?1.62*Math.PI:-.62*Math.PI;
+ ctx.beginPath();ctx.ellipse(cx,cy,rx,ry,0,a0,a1,!cw);ctx.stroke();
+ var px=cx+rx*Math.cos(a1),py=cy+ry*Math.sin(a1);
+ var tx=-rx*Math.sin(a1)*(cw?1:-1),ty=ry*Math.cos(a1)*(cw?1:-1),L=Math.hypot(tx,ty)||1;tx/=L;ty/=L;
+ ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px-tx*18-ty*10,py-ty*18+tx*10);ctx.lineTo(px-tx*18+ty*10,py-ty*18-tx*10);ctx.closePath();ctx.fill();
+ ctx.font="bold 13px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText(label,cx,cy-ry-10);ctx.restore();
+}
 function draw(){var box=C.getBoundingClientRect();ctx.clearRect(0,0,box.width,box.height);if(!built)return;if(mode==="top"){drawTop();return}
  ctx.save();ctx.strokeStyle="rgba(148,163,184,.12)";ctx.lineWidth=1;
  var gy=box.height*.84;
  for(var gi=-5;gi<=5;gi++){ctx.beginPath();ctx.moveTo(box.width/2+gi*8,gy-35);ctx.lineTo(box.width/2+gi*36,box.height-8);ctx.stroke()}
  for(var gj=0;gj<5;gj++){var yy=gy+gj*gj*3;ctx.beginPath();ctx.moveTo(20,yy);ctx.lineTo(box.width-20,yy);ctx.stroke()}
- ctx.restore();line({x:-1.25,y:0,z:0},{x:1.25,y:0,z:0},1,"#334155",1);line({x:0,y:.02,z:0},{x:0,y:3.15,z:0},2,"#94a3b8",.45);var sm=mid(pts3.leftShoulder,pts3.rightShoulder,.5),hm=mid(pts3.leftHip,pts3.rightHip,.5),chest=mid(sm,hm,.42),waist=mid(sm,hm,.72);drawHumanMesh(neutralPose(),"#94a3b8",.20,true);drawHumanMesh(pts3,"#2dd4bf",.92,false);line({x:sm.x,y:sm.y+.02,z:sm.z},pts3.head,2.2,"#ccfbf1",.9);line(pts3.leftShoulder,pts3.rightShoulder,6,"#22d3ee",1);line(pts3.leftHip,pts3.rightHip,6,"#f97316",1);var qS=project(sm),qH=project(hm),ar=(angle+thoraxYaw)*Math.PI/180,ap=(angle+pelvisYaw)*Math.PI/180;arrow2(qS.x-38*Math.cos(ar),qS.y-10*Math.sin(ar),qS.x+38*Math.cos(ar),qS.y+10*Math.sin(ar),"#22d3ee","胸郭");arrow2(qH.x-34*Math.cos(ap),qH.y-9*Math.sin(ap),qH.x+34*Math.cos(ap),qH.y+9*Math.sin(ap),"#f97316","骨盤");names.filter(n=>n!=="head").forEach(n=>circle(pts3[n],4.2,"#f97316"));var spine=[{x:pts3.head.x,y:pts3.head.y-.18,z:pts3.head.z},sm,chest,waist,hm];for(var i=0;i<spine.length-1;i++)line(spine[i],spine[i+1],3,"#ccfbf1",.95);var qs2=project(sm),qh2=project(hm);
- arrow2(qs2.x-62,qs2.y-22,qs2.x+62,qs2.y+22,"#fb3b52","胸郭回旋");
- arrow2(qh2.x-54,qh2.y-18,qh2.x+54,qh2.y+18,"#fb923c","骨盤回旋");
+ ctx.restore();line({x:-1.25,y:0,z:0},{x:1.25,y:0,z:0},1,"#334155",1);line({x:0,y:.02,z:0},{x:0,y:3.15,z:0},2,"#94a3b8",.45);var sm=mid(pts3.leftShoulder,pts3.rightShoulder,.5),hm=mid(pts3.leftHip,pts3.rightHip,.5),chest=mid(sm,hm,.42),waist=mid(sm,hm,.72);drawHumanMesh(neutralPose(),"#94a3b8",.16,true);anatomyFill(pts3);drawHumanMesh(pts3,"#67e8f9",.96,false);line({x:sm.x,y:sm.y+.02,z:sm.z},pts3.head,2.2,"#ccfbf1",.9);line(pts3.leftShoulder,pts3.rightShoulder,6,"#22d3ee",1);line(pts3.leftHip,pts3.rightHip,6,"#f97316",1);var qS=project(sm),qH=project(hm),ar=(angle+thoraxYaw)*Math.PI/180,ap=(angle+pelvisYaw)*Math.PI/180;arrow2(qS.x-38*Math.cos(ar),qS.y-10*Math.sin(ar),qS.x+38*Math.cos(ar),qS.y+10*Math.sin(ar),"#22d3ee","胸郭");arrow2(qH.x-34*Math.cos(ap),qH.y-9*Math.sin(ap),qH.x+34*Math.cos(ap),qH.y+9*Math.sin(ap),"#f97316","骨盤");names.filter(n=>n!=="head").forEach(n=>circle(pts3[n],4.2,"#f97316"));var spine=[{x:pts3.head.x,y:pts3.head.y-.18,z:pts3.head.z},sm,chest,waist,hm];for(var i=0;i<spine.length-1;i++)line(spine[i],spine[i+1],3,"#ccfbf1",.95);var qs2=project(sm),qh2=project(hm);
+ curvedRotation(qs2.x,qs2.y+26,Math.min(105,box.width*.26),34,thoraxYaw>=0,"#fb3b52","胸郭回旋");
+ curvedRotation(qh2.x,qh2.y+5,Math.min(92,box.width*.23),28,pelvisYaw>=0,"#fb923c","骨盤回旋");
  ctx.fillStyle="#cbd5e1";ctx.font="11px -apple-system,sans-serif";ctx.fillText("3D人体メッシュ｜指で左右に回転",12,20)}
 document.getElementById("make3d").onclick=build;document.querySelectorAll(".view3d[data-a]").forEach(b=>b.onclick=function(){mode="body";angle=+b.dataset.a;draw()});document.getElementById("topTwist").onclick=function(){if(!built)return;mode="top";draw()};
 document.getElementById("twistBoostBtn").onclick=function(){twistBoost=twistBoost===1?3:twistBoost===3?5:1;this.textContent="回旋表示 ×"+twistBoost;if(built&&mode==="top")draw()};
