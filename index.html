@@ -21,9 +21,9 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜撮影機能テスト版</p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V21</p></header>
 <main>
-<div class="card intro"><b>まず撮影機能だけを確実にします。</b><br>正面・右側面・左側面はそれぞれ別に保存されます。この版にはAI・3Dをあえて入れていません。</div>
+<div class="card intro"><b>撮影条件をそろえて分析精度を高めます。</b><br>ガイド撮影では中央・水平・全身位置をそろえます。撮影後はAIランドマークを検出し、3方向を統合して姿勢を可視化します。</div>
 <div class="views">
 <div class="card"><div class="head"><b>① 正面</b><span class="badge" id="badge-front">未登録</span></div><div class="stage" id="stage-front"><span>正面写真を登録</span></div><div class="actions" style="grid-template-columns:1fr 1fr 1fr"><label class="btn gallery">📁 写真を選択<input id="gallery-front" type="file" accept="image/*"></label><label class="btn camera">📷 カメラ撮影<input id="camera-front" type="file" accept="image/*" capture="environment"></label><button type="button" class="btn guideBtn" data-guide="front" style="border:0;background:#172033;color:#fff;min-height:48px;border-radius:11px;font-size:11px;font-weight:900">📐 ガイド撮影</button></div><div class="note">頭から足先まで入るように撮影</div></div>
 <div class="card"><div class="head"><b>② 右側面</b><span class="badge" id="badge-right">未登録</span></div><div class="stage" id="stage-right"><span>右側面写真を登録</span></div><div class="actions" style="grid-template-columns:1fr 1fr 1fr"><label class="btn gallery">📁 写真を選択<input id="gallery-right" type="file" accept="image/*"></label><label class="btn camera">📷 カメラ撮影<input id="camera-right" type="file" accept="image/*" capture="environment"></label><button type="button" class="btn guideBtn" data-guide="right" style="border:0;background:#172033;color:#fff;min-height:48px;border-radius:11px;font-size:11px;font-weight:900">📐 ガイド撮影</button></div><div class="note">右側をカメラへ向けて撮影</div></div>
@@ -70,6 +70,15 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
   <div id="guideTitle" style="background:rgba(15,23,42,.78);color:#fff;border-radius:999px;padding:9px 13px;font-size:12px;font-weight:900">正面ガイド</div>
  </div>
  <div id="levelMsg" style="position:absolute;top:70px;left:50%;transform:translateX(-50%);background:rgba(15,23,42,.72);color:#fff;border-radius:999px;padding:7px 12px;font-size:11px;white-space:nowrap">中央線と足元ラインに合わせてください</div>
+ <div style="position:absolute;top:112px;left:12px;right:12px;display:flex;justify-content:center;gap:6px;flex-wrap:wrap">
+  <span id="chipLevel" style="background:#92400e;color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800">水平 確認中</span>
+  <span id="chipCenter" style="background:#0f766e;color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800">中央線に合わせる</span>
+  <span id="chipBody" style="background:#0f766e;color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800">頭〜足を枠内へ</span>
+ </div>
+ <div style="position:absolute;bottom:112px;left:18px;right:18px;background:rgba(15,23,42,.70);border-radius:12px;padding:8px 10px;color:#fff;font-size:10px">
+  <div style="display:flex;justify-content:space-between"><span>人体ガイド幅</span><span id="guideScaleLabel">100%</span></div>
+  <input id="guideScale" type="range" min="75" max="125" value="100" style="position:static;width:100%;height:28px;opacity:1">
+ </div>
  <div style="position:absolute;bottom:max(22px,env(safe-area-inset-bottom));left:0;right:0;display:flex;justify-content:center">
   <button id="guideShot" type="button" style="width:76px;height:76px;border-radius:50%;border:6px solid rgba(255,255,255,.75);background:#fff;box-shadow:0 2px 15px #0008"></button>
  </div>
@@ -170,7 +179,7 @@ setTimeout(loadAI,0);
 
 
 // Guided in-app camera. Existing gallery and standard-camera inputs remain unchanged.
-var guideStream=null,guideType=null,GV=document.getElementById("guideVideo"),GO=document.getElementById("guideOverlay");
+var guideStream=null,guideType=null,guideScale=1,guideRoll=null,GV=document.getElementById("guideVideo"),GO=document.getElementById("guideOverlay");
 function guideName(t){return t==="front"?"正面":t==="right"?"右側面":"左側面"}
 function drawGuide(){
  if(document.getElementById("guideCam").style.display==="none")return;
@@ -184,7 +193,7 @@ function drawGuide(){
  x.strokeStyle="rgba(251,146,60,.9)";x.lineWidth=2;
  x.beginPath();x.moveTo(w*.24,top);x.lineTo(w*.76,top);x.stroke();
  // Human silhouette: front wider shoulders/pelvis; side narrow.
- var side=guideType!=="front", sw=side?w*.075:w*.20, hw=side?w*.055:w*.12;
+ var side=guideType!=="front", sw=(side?w*.075:w*.20)*guideScale, hw=(side?w*.055:w*.12)*guideScale;
  x.strokeStyle="rgba(45,212,191,.78)";x.lineWidth=3;
  x.beginPath();x.ellipse(cx,top+h*.055,side?w*.045:w*.06,h*.055,0,0,Math.PI*2);x.stroke();
  var neck=top+h*.115,should=top+h*.16,hip=top+h*.43,knee=top+h*.63,ank=floor;
@@ -194,10 +203,22 @@ function drawGuide(){
  else{L(cx-sw,should,cx-sw*1.35,top+h*.39);L(cx+sw,should,cx+sw*1.35,top+h*.39)}
  L(cx-hw,hip,cx-hw*.9,knee);L(cx-hw*.9,knee,cx-hw*.85,ank);
  L(cx+hw,hip,cx+hw*.9,knee);L(cx+hw*.9,knee,cx+hw*.85,ank);
- x.fillStyle="rgba(255,255,255,.88)";x.font="bold 11px -apple-system,sans-serif";x.fillText("頭頂",w*.12,top-6);x.fillText("足元・水平基準",w*.12,floor-8);
+ x.strokeStyle="rgba(255,255,255,.35)";x.lineWidth=1;x.setLineDash([5,5]);x.beginPath();x.moveTo(w*.18,hip);x.lineTo(w*.82,hip);x.stroke();x.setLineDash([]);
+ x.fillStyle="rgba(255,255,255,.88)";x.font="bold 11px -apple-system,sans-serif";x.fillText("頭頂",w*.12,top-6);x.fillText("足元・水平基準",w*.12,floor-8);x.fillText("カメラ高さ目安",w*.12,hip-7);
 }
+function updateLevel(){
+ var c=document.getElementById("chipLevel");if(!c)return;
+ if(guideRoll==null){c.textContent="水平 センサー待機";c.style.background="#475569";return}
+ var a=Math.abs(guideRoll);if(a<=2){c.textContent="✓ 水平 OK  "+guideRoll.toFixed(1)+"°";c.style.background="#15803d"}
+ else if(a<=5){c.textContent="水平 あと少し  "+guideRoll.toFixed(1)+"°";c.style.background="#a16207"}
+ else{c.textContent="スマホを水平に  "+guideRoll.toFixed(1)+"°";c.style.background="#b91c1c"}
+}
+function orientationHandler(e){if(document.getElementById("guideCam").style.display==="none")return;if(typeof e.gamma==="number"){guideRoll=e.gamma;updateLevel()}}
+window.addEventListener("deviceorientation",orientationHandler,true);
+var gs=document.getElementById("guideScale");gs.addEventListener("input",function(){guideScale=Number(gs.value)/100;document.getElementById("guideScaleLabel").textContent=gs.value+"%";drawGuide()});
 async function openGuide(t){
- guideType=t;document.getElementById("guideTitle").textContent=guideName(t)+"ガイド";
+ guideType=t;guideRoll=null;updateLevel();document.getElementById("guideTitle").textContent=guideName(t)+"ガイド";
+ if(window.DeviceOrientationEvent&&typeof DeviceOrientationEvent.requestPermission==="function"){try{await DeviceOrientationEvent.requestPermission()}catch(_){}}
  document.getElementById("guideCam").style.display="block";drawGuide();
  try{
   guideStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}},audio:false});
