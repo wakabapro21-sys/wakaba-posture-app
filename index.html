@@ -351,7 +351,7 @@ import * as THREE from "three";
 import {GLTFLoader} from "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/GLTFLoader.js";
 
 const host=document.getElementById("real3d"), status=document.getElementById("real3dStatus"), old=document.getElementById("threeCanvas");
-let scene,camera,renderer,pivot,model,parts={},ready=false,topMode=false,rotBoost=1;
+let scene,camera,renderer,pivot,model,parts={},ready=false,topMode=false,rotBoost=1,thoraxRing=null,pelvisRing=null;
 let dragging=false,lastX=0,activePointer=null;
 const FRONT_DISTANCE=6.15, TOP_DISTANCE=5.3, target=new THREE.Vector3(0,0,0);
 
@@ -385,6 +385,7 @@ function apply(d={}){
  const pelvisVisual=pelvisYaw*k*(rotBoost===5?5:1);
  parts.chest.rotation.y=chestVisual;parts.pelvis.rotation.y=pelvisVisual;
  parts.skull.position.x=parts.skull.userData.baseX+(Number(d.headShift)||0)*.008;
+ if(thoraxRing&&pelvisRing){const rs=rotBoost===5?1.35:1;thoraxRing.scale.setScalar(rs);pelvisRing.scale.setScalar(rs);}
 }
 async function init(){
  if(ready)return;
@@ -413,7 +414,7 @@ async function init(){
   model.position.add(pivot.position);pivot.position.set(0,0,0);model.updateMatrixWorld(true);
   // 最終bboxを使い、画面中心に対する微小誤差をmodelの親座標で補正。
   bb=new THREE.Box3().setFromObject(model);const fc=bb.getCenter(new THREE.Vector3());model.position.x-=fc.x;model.position.y-=fc.y;model.position.z-=fc.z;model.updateMatrixWorld(true);
-  pivot.add(makeRing(0xff3655,.70,.46));pivot.add(makeRing(0xff963f,.57,-.36));
+  thoraxRing=makeRing(0xff3655,.70,.46);pelvisRing=makeRing(0xff963f,.57,-.36);pivot.add(thoraxRing);pivot.add(pelvisRing);
   ready=true;host.style.display='block';old.style.visibility='hidden';old.style.pointerEvents='none';document.getElementById('threeHint').style.display='none';
   setView('front');apply(window.WAKABA_3D_DATA||{});statusText('BodyParts3D V43｜正面・中央固定｜指で360°回転');
  }catch(e){console.error(e);statusText('3D読込エラー：'+(e?.message||'モデルを確認してください'));old.style.visibility='visible';}
@@ -427,7 +428,7 @@ function setView(kind){
 }
 function rotateBy(dx){
  if(!ready)return;
- if(topMode){pivot.rotation.z-=dx*.012;}else{pivot.rotation.y+=dx*.012;}
+ pivot.rotation.y+=dx*.012;
 }
 function endDrag(){dragging=false;activePointer=null;}
 function loop(){requestAnimationFrame(loop);if(renderer)renderer.render(scene,camera);}loop();
@@ -437,7 +438,7 @@ window.addEventListener('wakaba-analysis',e=>init().then(()=>apply(e.detail)));
 // 旧Canvasのonclickを解除して、V42のWebGL操作だけを使う。
 const viewBtns=[...document.querySelectorAll('.view3d[data-a]')];viewBtns.forEach(b=>{b.onclick=null;b.addEventListener('click',e=>{e.preventDefault();const a=+b.dataset.a;setView(a===90?'right':a===-90?'left':Math.abs(a)===35?'diag':'front');});});
 const topBtn=document.getElementById('topTwist');topBtn.onclick=null;topBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;setView(topMode?'front':'top');});
-const boostBtn=document.getElementById('twistBoostBtn');boostBtn.onclick=null;boostBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;rotBoost=rotBoost===1?5:1;apply(window.WAKABA_3D_DATA||{});boostBtn.textContent=rotBoost===5?'回旋表示 ×5（表示強調）ON':'回旋表示 ×5（表示強調）';statusText('BodyParts3D V43｜回旋表示強調 '+(rotBoost===5?'×5 ON':'OFF')+'｜推定角のみ反映');});
+const boostBtn=document.getElementById('twistBoostBtn');boostBtn.onclick=null;boostBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;rotBoost=rotBoost===1?5:1;apply(window.WAKABA_3D_DATA||{});boostBtn.textContent=rotBoost===5?'回旋表示 ×5（表示強調）ON':'回旋表示 ×5（表示強調）';statusText('BodyParts3D V43｜回旋×5は表示強調｜推定角そのものは不変');});
 
 host.addEventListener('pointerdown',e=>{if(!ready)return;dragging=true;activePointer=e.pointerId;lastX=e.clientX;try{host.setPointerCapture(e.pointerId)}catch(_){}e.preventDefault();},{passive:false});
 host.addEventListener('pointermove',e=>{if(!dragging||activePointer!==e.pointerId)return;rotateBy(e.clientX-lastX);lastX=e.clientX;e.preventDefault();},{passive:false});
