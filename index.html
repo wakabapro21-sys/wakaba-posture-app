@@ -21,7 +21,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V43</p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V44</p></header>
 <main>
 <div class="card intro"><b>撮影条件をそろえて分析精度を高めます。</b><br>ガイド撮影では中央・水平・全身位置をそろえます。撮影後はAIランドマークを検出し、3方向を統合して姿勢を可視化します。</div>
 <div class="views">
@@ -30,7 +30,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 <div class="card"><div class="head"><b>③ 左側面</b><span class="badge" id="badge-left">未登録</span></div><div class="stage" id="stage-left"><span>左側面写真を登録</span></div><div class="actions" style="grid-template-columns:1fr 1fr 1fr"><label class="btn gallery">📁 写真を選択<input id="gallery-left" type="file" accept="image/*"></label><label class="btn camera">📷 カメラ撮影<input id="camera-left" type="file" accept="image/*" capture="environment"></label><button type="button" class="btn guideBtn" data-guide="left" style="border:0;background:#172033;color:#fff;min-height:48px;border-radius:11px;font-size:11px;font-weight:900">📐 ガイド撮影</button></div><button type="button" class="adjustBtn" data-adjust="left" style="display:none;width:100%;margin-top:8px;border:1px solid #fdba74;background:#fff7ed;color:#9a3412;border-radius:11px;padding:11px;font-size:12px;font-weight:900">✋ ランドマークを微調整</button><div class="note">約2〜3m離れ、左側をカメラへ。スマホは胸〜みぞおちの高さ</div></div>
 </div>
 <div class="card">
- <div class="okbox" id="status">0 / 3 枚登録済み</div><div style="font-size:9px;color:#94a3b8;margin-top:4px;text-align:right">解析エンジン V43</div>
+ <div class="okbox" id="status">0 / 3 枚登録済み</div><div style="font-size:9px;color:#94a3b8;margin-top:4px;text-align:right">解析エンジン V44</div>
  <div style="margin-top:8px;padding:10px;border-radius:11px;background:#fff7ed;border:1px solid #fed7aa;font-size:11px;line-height:1.6;color:#9a3412">
   <b>✋ 手動微調整</b>　AI検出後、写真上のオレンジ色のポイントを指でドラッグして位置を修正できます。修正した位置が3D分析とスコアに反映されます。
  </div>
@@ -246,11 +246,33 @@ var C=document.getElementById("threeCanvas"),ctx=C.getContext("2d"),angle=35,bui
 var names=["head","leftShoulder","rightShoulder","leftElbow","rightElbow","leftWrist","rightWrist","leftHip","rightHip","leftKnee","rightKnee","leftAnkle","rightAnkle"];
 function resize(){var r=C.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);C.width=Math.round(r.width*d);C.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);if(built)draw()}addEventListener("resize",resize);setTimeout(resize,0);
 function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!photos.right||!photos.left){alert("正面・右側面・左側面の3枚を登録してください。");return}
- names.forEach(function(n){var f=photos.front.points[n],r=photos.right.points[n],l=photos.left.points[n];pts3[n]={x:(f.x-.5)*2,y:(.98-f.y)*3,z:((r.x-.5)+(.5-l.x))*.72}});
- var sd=pts3.rightShoulder.z-pts3.leftShoulder.z,sw=Math.max(.12,Math.abs(pts3.rightShoulder.x-pts3.leftShoulder.x)),hd=pts3.rightHip.z-pts3.leftHip.z,hw=Math.max(.12,Math.abs(pts3.rightHip.x-pts3.leftHip.x));thoraxYaw=Math.atan2(sd,sw)*180/Math.PI;pelvisYaw=Math.atan2(hd,hw)*180/Math.PI;var tw=thoraxYaw-pelvisYaw;
+ /* V44 回旋推定v2: 左右側面のMediaPipe生ランドマークを、左右反転を補正して統合。
+    正面幅を基準に胸郭・骨盤の前後差を角度化する。3枚写真からの参考推定であり実測3Dではない。 */
+ function raw(rec,name){var i=mpIndex[name],q=rec&&rec.rawLandmarks&&rec.rawLandmarks[i];return q&&isFinite(q.x)?q:null}
+ function profileDepth(name){
+   var rr=raw(photos.right,name),ll=raw(photos.left,name);
+   var rrHipL=raw(photos.right,"leftHip"),rrHipR=raw(photos.right,"rightHip"),llHipL=raw(photos.left,"leftHip"),llHipR=raw(photos.left,"rightHip");
+   var rc=(rrHipL&&rrHipR)?(rrHipL.x+rrHipR.x)/2:.5,lc=(llHipL&&llHipR)?(llHipL.x+llHipR.x)/2:.5;
+   var vals=[],weights=[];
+   if(rr){vals.push(rr.x-rc);weights.push(Math.max(.15,rr.visibility||.5))}
+   if(ll){vals.push(-(ll.x-lc));weights.push(Math.max(.15,ll.visibility||.5))}
+   if(!vals.length){var r=photos.right.points[name],l=photos.left.points[name];return ((r.x-.5)+(.5-l.x))*.5}
+   var sum=0,w=0;for(var i=0;i<vals.length;i++){sum+=vals[i]*weights[i];w+=weights[i]}return sum/Math.max(.001,w);
+ }
+ var frontHeight=Math.max(.35,Math.abs(photos.front.points.head.y-(photos.front.points.leftAnkle.y+photos.front.points.rightAnkle.y)/2));
+ var depthScale=2.15/frontHeight;
+ names.forEach(function(n){var f=photos.front.points[n];pts3[n]={x:(f.x-.5)*2,y:(.98-f.y)*3,z:profileDepth(n)*depthScale}});
+ function yawFromProfiles(aName,bName){
+   var a=pts3[aName],b=pts3[bName],dz=b.z-a.z,dx=Math.max(.12,Math.abs(b.x-a.x));
+   var deg=Math.atan2(dz,dx)*180/Math.PI;return Math.max(-18,Math.min(18,deg));
+ }
+ thoraxYaw=yawFromProfiles("leftShoulder","rightShoulder");pelvisYaw=yawFromProfiles("leftHip","rightHip");
+ /* 低信頼・ほぼ完全側面での微小ノイズを抑制 */
+ if(Math.abs(thoraxYaw)<.35)thoraxYaw=0;if(Math.abs(pelvisYaw)<.35)pelvisYaw=0;
+ var tw=thoraxYaw-pelvisYaw;
  function mag(v){var a=Math.abs(v);return a<1.5?"ほぼ中間位":a<5?"軽度の回旋傾向":"回旋傾向あり"}
  document.getElementById("thoraxDeg").textContent=mag(thoraxYaw);document.getElementById("pelvisDeg").textContent=mag(pelvisYaw);document.getElementById("twistDeg").textContent=Math.abs(tw)<1.5?"小さい":"相対捻れあり";
- document.getElementById("thoraxText").textContent="参考推定 "+Math.abs(thoraxYaw).toFixed(1)+"°";document.getElementById("pelvisText").textContent="参考推定 "+Math.abs(pelvisYaw).toFixed(1)+"°";document.getElementById("twistText").textContent="参考差 "+Math.abs(tw).toFixed(1)+"°";
+ document.getElementById("thoraxText").textContent="3方向参考推定 "+Math.abs(thoraxYaw).toFixed(1)+"°";document.getElementById("pelvisText").textContent="3方向参考推定 "+Math.abs(pelvisYaw).toFixed(1)+"°";document.getElementById("twistText").textContent="参考差 "+Math.abs(tw).toFixed(1)+"°";
  function horizontalTilt(a,b){
    var dx=Math.abs(b.x-a.x),dy=b.y-a.y;
    if(dx<0.0001)return 0;
@@ -389,7 +411,7 @@ function apply(d={}){
 }
 async function init(){
  if(ready)return;
- statusText('BodyParts3D V43 読み込み中…');
+ statusText('BodyParts3D V44 読み込み中…');
  try{
   scene=new THREE.Scene();scene.background=new THREE.Color(0x07111f);
   camera=new THREE.PerspectiveCamera(34,1,.01,50);
@@ -416,7 +438,7 @@ async function init(){
   bb=new THREE.Box3().setFromObject(model);const fc=bb.getCenter(new THREE.Vector3());model.position.x-=fc.x;model.position.y-=fc.y;model.position.z-=fc.z;model.updateMatrixWorld(true);
   thoraxRing=makeRing(0xff3655,.70,.46);pelvisRing=makeRing(0xff963f,.57,-.36);pivot.add(thoraxRing);pivot.add(pelvisRing);
   ready=true;host.style.display='block';old.style.visibility='hidden';old.style.pointerEvents='none';document.getElementById('threeHint').style.display='none';
-  setView('front');apply(window.WAKABA_3D_DATA||{});statusText('BodyParts3D V43｜正面・中央固定｜指で360°回転');
+  setView('front');apply(window.WAKABA_3D_DATA||{});statusText('BodyParts3D V44｜正面・中央固定｜指で360°回転');
  }catch(e){console.error(e);statusText('3D読込エラー：'+(e?.message||'モデルを確認してください'));old.style.visibility='visible';}
 }
 function setView(kind){
@@ -424,7 +446,7 @@ function setView(kind){
  if(topMode){pivot.rotation.set(0,0,0);fitCamera('top');}
  else{const a=kind==='right'?Math.PI/2:kind==='left'?-Math.PI/2:kind==='diag'?-Math.PI/4:0;pivot.rotation.set(0,a,0);fitCamera('front');}
  const b=document.getElementById('topTwist');if(b)b.textContent=topMode?'◎ 上から見た捻れ ON':'◎ 上から見た捻れ';
- statusText('BodyParts3D V43｜'+(topMode?'上面表示':'画面中央固定')+'｜'+(topMode?'指で上面を360°回転':'指で360°回転'));
+ statusText('BodyParts3D V44｜'+(topMode?'上面表示':'画面中央固定')+'｜'+(topMode?'指で上面を360°回転':'指で360°回転'));
 }
 function rotateBy(dx){
  if(!ready)return;
@@ -438,7 +460,7 @@ window.addEventListener('wakaba-analysis',e=>init().then(()=>apply(e.detail)));
 // 旧Canvasのonclickを解除して、V42のWebGL操作だけを使う。
 const viewBtns=[...document.querySelectorAll('.view3d[data-a]')];viewBtns.forEach(b=>{b.onclick=null;b.addEventListener('click',e=>{e.preventDefault();const a=+b.dataset.a;setView(a===90?'right':a===-90?'left':Math.abs(a)===35?'diag':'front');});});
 const topBtn=document.getElementById('topTwist');topBtn.onclick=null;topBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;setView(topMode?'front':'top');});
-const boostBtn=document.getElementById('twistBoostBtn');boostBtn.onclick=null;boostBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;rotBoost=rotBoost===1?5:1;apply(window.WAKABA_3D_DATA||{});boostBtn.textContent=rotBoost===5?'回旋表示 ×5（表示強調）ON':'回旋表示 ×5（表示強調）';statusText('BodyParts3D V43｜回旋×5は表示強調｜推定角そのものは不変');});
+const boostBtn=document.getElementById('twistBoostBtn');boostBtn.onclick=null;boostBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;rotBoost=rotBoost===1?5:1;apply(window.WAKABA_3D_DATA||{});boostBtn.textContent=rotBoost===5?'回旋表示 ×5（表示強調）ON':'回旋表示 ×5（表示強調）';statusText('BodyParts3D V44｜回旋×5は表示強調｜推定角そのものは不変');});
 
 host.addEventListener('pointerdown',e=>{if(!ready)return;dragging=true;activePointer=e.pointerId;lastX=e.clientX;try{host.setPointerCapture(e.pointerId)}catch(_){}e.preventDefault();},{passive:false});
 host.addEventListener('pointermove',e=>{if(!dragging||activePointer!==e.pointerId)return;rotateBy(e.clientX-lastX);lastX=e.clientX;e.preventDefault();},{passive:false});
