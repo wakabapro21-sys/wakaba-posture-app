@@ -21,7 +21,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V40</p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V42</p></header>
 <main>
 <div class="card intro"><b>撮影条件をそろえて分析精度を高めます。</b><br>ガイド撮影では中央・水平・全身位置をそろえます。撮影後はAIランドマークを検出し、3方向を統合して姿勢を可視化します。</div>
 <div class="views">
@@ -30,7 +30,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 <div class="card"><div class="head"><b>③ 左側面</b><span class="badge" id="badge-left">未登録</span></div><div class="stage" id="stage-left"><span>左側面写真を登録</span></div><div class="actions" style="grid-template-columns:1fr 1fr 1fr"><label class="btn gallery">📁 写真を選択<input id="gallery-left" type="file" accept="image/*"></label><label class="btn camera">📷 カメラ撮影<input id="camera-left" type="file" accept="image/*" capture="environment"></label><button type="button" class="btn guideBtn" data-guide="left" style="border:0;background:#172033;color:#fff;min-height:48px;border-radius:11px;font-size:11px;font-weight:900">📐 ガイド撮影</button></div><button type="button" class="adjustBtn" data-adjust="left" style="display:none;width:100%;margin-top:8px;border:1px solid #fdba74;background:#fff7ed;color:#9a3412;border-radius:11px;padding:11px;font-size:12px;font-weight:900">✋ ランドマークを微調整</button><div class="note">約2〜3m離れ、左側をカメラへ。スマホは胸〜みぞおちの高さ</div></div>
 </div>
 <div class="card">
- <div class="okbox" id="status">0 / 3 枚登録済み</div><div style="font-size:9px;color:#94a3b8;margin-top:4px;text-align:right">解析エンジン V41</div>
+ <div class="okbox" id="status">0 / 3 枚登録済み</div><div style="font-size:9px;color:#94a3b8;margin-top:4px;text-align:right">解析エンジン V42</div>
  <div style="margin-top:8px;padding:10px;border-radius:11px;background:#fff7ed;border:1px solid #fed7aa;font-size:11px;line-height:1.6;color:#9a3412">
   <b>✋ 手動微調整</b>　AI検出後、写真上のオレンジ色のポイントを指でドラッグして位置を修正できます。修正した位置が3D分析とスコアに反映されます。
  </div>
@@ -350,184 +350,94 @@ C.onpointerdown=function(e){dragX=e.clientX;C.setPointerCapture(e.pointerId)};C.
 import * as THREE from "three";
 import {GLTFLoader} from "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/GLTFLoader.js";
 
-const host=document.getElementById("real3d"),
-      status=document.getElementById("real3dStatus"),
-      old=document.getElementById("threeCanvas");
+const host=document.getElementById("real3d"), status=document.getElementById("real3dStatus"), old=document.getElementById("threeCanvas");
+let scene,camera,renderer,pivot,model,parts={},ready=false,topMode=false,rotBoost=1;
+let dragging=false,lastX=0,activePointer=null;
+const FRONT_DISTANCE=6.15, TOP_DISTANCE=5.3, target=new THREE.Vector3(0,0,0);
 
-let scene,camera,renderer,pivot,model,parts={},ready=false,drag=false,lastX=0,rotBoost=1;
-let bodySize=new THREE.Vector3(2,3.35,1), topMode=false, frontDistance=10.8, topDistance=8.8;
-const viewTarget=new THREE.Vector3(0,0,0);
-
-function mat(color,opacity){
- return new THREE.MeshPhysicalMaterial({color,transparent:true,opacity,roughness:.32,metalness:.05,clearcoat:.35,side:THREE.DoubleSide});
+function mat(color,opacity){return new THREE.MeshPhysicalMaterial({color,transparent:true,opacity,roughness:.34,metalness:.04,clearcoat:.25,side:THREE.DoubleSide});}
+const mats={skull:mat(0xb8f3ff,.96),chest:mat(0xff405c,.84),pelvis:mat(0xff9a3c,.92),limbs:mat(0x8deaff,.94)};
+function statusText(t){status.textContent=t;}
+function loadGLB(name){return new Promise((resolve,reject)=>new GLTFLoader().load('./'+name+'.glb',g=>resolve(g.scene),undefined,reject));}
+function style(obj,m){obj.traverse(x=>{if(x.isMesh){x.material=m;if(x.geometry&&!x.geometry.attributes.normal)x.geometry.computeVertexNormals();}});return obj;}
+function makeRing(color,r,y){
+ const g=new THREE.Group();
+ const curve=new THREE.EllipseCurve(0,0,r,r*.40,.20,Math.PI*1.82,false,0);
+ const pts=curve.getPoints(72).map(p=>new THREE.Vector3(p.x,0,p.y));
+ g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color,transparent:true,opacity:.95})));
+ const tip=new THREE.Mesh(new THREE.ConeGeometry(.055,.16,16),new THREE.MeshBasicMaterial({color}));
+ tip.position.copy(pts[pts.length-1]); tip.rotation.z=-1.05; g.add(tip); g.position.y=y; return g;
 }
-const mats={
- skull:mat(0xb8f3ff,.96), chest:mat(0xff405c,.82),
- pelvis:mat(0xff9a3c,.90), limbs:mat(0x8deaff,.92)
-};
-function statusText(t){status.textContent=t}
-function loadGLB(name){return new Promise((res,rej)=>new GLTFLoader().load("./"+name+".glb",g=>res(g.scene),undefined,rej))}
-function style(o,m){o.traverse(x=>{if(x.isMesh){x.material=m;x.geometry.computeVertexNormals()}});return o}
-function ring(color,r,y){
- const g=new THREE.Group(),curve=new THREE.EllipseCurve(0,0,r,r*.38,.25,Math.PI*1.8,false,0);
- const pts=curve.getPoints(80).map(p=>new THREE.Vector3(p.x,0,p.y));
- g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color})));
- const c=new THREE.Mesh(new THREE.ConeGeometry(.065,.18,18),new THREE.MeshBasicMaterial({color}));
- c.position.copy(pts.at(-1));c.rotation.z=-1.05;g.add(c);g.position.y=y;return g;
+function resize(){if(!renderer)return;const r=host.getBoundingClientRect();renderer.setSize(Math.max(1,r.width),Math.max(1,r.height),false);camera.aspect=Math.max(.45,r.width/Math.max(1,r.height));camera.updateProjectionMatrix();}
+function fitCamera(kind='front'){
+ if(!ready)return; resize();
+ if(kind==='top'){camera.position.set(0,TOP_DISTANCE,.001);camera.up.set(0,0,-1);}else{camera.position.set(0,0,FRONT_DISTANCE);camera.up.set(0,1,0);}
+ camera.lookAt(target);camera.updateProjectionMatrix();
 }
-function fitCamera(kind="front"){
- if(!ready)return;
- const r=host.getBoundingClientRect();
- camera.aspect=Math.max(.45,r.width/Math.max(1,r.height));
- if(kind==="top"){
-   camera.position.set(0,topDistance,0.001);
-   camera.up.set(0,0,-1);
- }else{
-   camera.position.set(0,0,frontDistance);
-   camera.up.set(0,1,0);
- }
- camera.lookAt(viewTarget);
- camera.updateProjectionMatrix();
+function resetPartTransforms(){if(!ready)return;Object.values(parts).forEach(g=>g.rotation.set(0,0,0));}
+function apply(d={}){
+ if(!ready)return; resetPartTransforms(); const k=Math.PI/180;
+ const shoulder=Number(d.shoulderTilt)||0,pelvis=Number(d.pelvisTilt)||0,thorax=Number(d.thoraxYaw)||0,pelvisYaw=Number(d.pelvisYaw)||0;
+ parts.chest.rotation.z=-shoulder*k*1.5;
+ parts.pelvis.rotation.z=-pelvis*k*1.7;
+ // 写真推定値が0°付近でも×5時は肩・骨盤傾斜を補助量として可視化する。
+ const chestVisual=(thorax + (rotBoost===5?shoulder*.8:0))*k*(rotBoost===5?5:1);
+ const pelvisVisual=(pelvisYaw + (rotBoost===5?pelvis*.8:0))*k*(rotBoost===5?5:1);
+ parts.chest.rotation.y=chestVisual;parts.pelvis.rotation.y=pelvisVisual;
+ parts.skull.position.x=parts.skull.userData.baseX+(Number(d.headShift)||0)*.008;
 }
 async function init(){
  if(ready)return;
- statusText("本物の人体3Dモデルを読み込み中…");
+ statusText('BodyParts3D V42 読み込み中…');
  try{
-  scene=new THREE.Scene();scene.background=new THREE.Color(0x07111f);scene.fog=new THREE.Fog(0x07111f,7,14);
-  camera=new THREE.PerspectiveCamera(31,1,.01,40);
-  renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});
-  renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;
-  host.innerHTML="";host.appendChild(renderer.domElement);
-  scene.add(new THREE.HemisphereLight(0xc9f5ff,0x101827,2.3));
-  let l=new THREE.DirectionalLight(0xffffff,3);l.position.set(4,6,5);scene.add(l);
-  l=new THREE.DirectionalLight(0x2dd4bf,2);l.position.set(-4,3,-3);scene.add(l);
-  const grid=new THREE.GridHelper(6,14,0x31516a,0x162b3d);grid.position.y=-1.78;scene.add(grid);
-
-  // V37: model is centered INSIDE a fixed pivot. Only pivot rotates.
-  pivot=new THREE.Group();scene.add(pivot);
-  model=new THREE.Group();pivot.add(model);
-
-  const arr=await Promise.all(["skull","chest","pelvis","limbs"].map(loadGLB));
-  // V39: each anatomical part gets its own pivot at its visual center.
-  // Rotating chest/pelvis no longer swings the whole model away from screen center.
-  ["skull","chest","pelvis","limbs"].forEach((n,i)=>{
-    const obj=style(arr[i],mats[n]);
-    obj.updateMatrixWorld(true);
-    const pb=new THREE.Box3().setFromObject(obj);
-    const pc=pb.getCenter(new THREE.Vector3());
-    const g=new THREE.Group();
-    obj.position.sub(pc);
-    g.position.copy(pc);
-    g.add(obj);
-    model.add(g);
-    parts[n]=g;
-  });
-
-  model.rotation.x=-Math.PI/2;
-  model.rotation.z=Math.PI/2; // V39: BodyParts3Dの正面を画面正面へ合わせる
-  model.updateMatrixWorld(true);
-  let bb=new THREE.Box3().setFromObject(model),sz=bb.getSize(new THREE.Vector3());
-  const sc=3.35/Math.max(sz.x,sz.y,sz.z);
-  model.scale.setScalar(sc);model.updateMatrixWorld(true);
-
-  // Center the rendered anatomy at pivot origin. This is the critical V37 fix.
-  bb=new THREE.Box3().setFromObject(model);
-  const ctr=bb.getCenter(new THREE.Vector3());
-  model.position.sub(ctr);
-  model.updateMatrixWorld(true);
-
-  bb=new THREE.Box3().setFromObject(model);
-  // V40: rendered anatomy bounding-box center is the camera target.
-  // This fixes BodyParts3D source-origin offsets that kept the body on the right edge.
-  const finalCenter=bb.getCenter(new THREE.Vector3());
-  model.position.x-=finalCenter.x; model.position.y-=finalCenter.y; model.position.z-=finalCenter.z;
-  model.updateMatrixWorld(true);
-  bb=new THREE.Box3().setFromObject(model);
-  viewTarget.set(0,0,0);
-  bodySize.copy(bb.getSize(new THREE.Vector3()));
-  pivot.add(ring(0xff3655,.72,.48));
-  pivot.add(ring(0xff963f,.58,-.38));
-  pivot.rotation.set(0,0,0);
-
-  ready=true;host.style.display="block";old.style.visibility="hidden";
-  resize();fitCamera("front");apply(window.WAKABA_3D_DATA||{});
-  statusText("BodyParts3D V41｜中央固定｜指で左右に回転");
- }catch(e){
-  console.error(e);statusText("3D読込エラー："+(e&&e.message?e.message:"モデルを確認してください"));
-  old.style.visibility="visible";
- }
-}
-function apply(d){
- if(!ready)return;const k=Math.PI/180;
- parts.chest.rotation.z=-(d.shoulderTilt||0)*k*1.5;
- const ty=((d.thoraxYaw||0) + (rotBoost===5?(d.shoulderTilt||0)*.8:0))*k*3*rotBoost, py=((d.pelvisYaw||0) + (rotBoost===5?(d.pelvisTilt||0)*.8:0))*k*3*rotBoost;
- parts.chest.rotation.y=ty; parts.chest.rotation.x=ty*.35;
- parts.pelvis.rotation.z=-(d.pelvisTilt||0)*k*1.7;
- parts.pelvis.rotation.y=py; parts.pelvis.rotation.x=py*.35;
- parts.skull.position.x=(d.headShift||0)*.008;
-}
-function resize(){
- if(!renderer)return;
- const r=host.getBoundingClientRect();
- renderer.setSize(r.width,r.height,false);camera.aspect=r.width/r.height;camera.updateProjectionMatrix();
+  scene=new THREE.Scene();scene.background=new THREE.Color(0x07111f);
+  camera=new THREE.PerspectiveCamera(34,1,.01,50);
+  renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.outputColorSpace=THREE.SRGBColorSpace;
+  host.innerHTML='';host.appendChild(renderer.domElement);renderer.domElement.style.cssText='width:100%;height:100%;display:block;touch-action:none';
+  scene.add(new THREE.HemisphereLight(0xd7f8ff,0x101827,2.4));
+  let dl=new THREE.DirectionalLight(0xffffff,3.2);dl.position.set(4,6,6);scene.add(dl);dl=new THREE.DirectionalLight(0x2dd4bf,1.8);dl.position.set(-4,2,-3);scene.add(dl);
+  const grid=new THREE.GridHelper(6,12,0x31516a,0x162b3d);grid.position.y=-1.68;scene.add(grid);
+  pivot=new THREE.Group();scene.add(pivot);model=new THREE.Group();pivot.add(model);
+  const names=['skull','chest','pelvis','limbs'];const arr=await Promise.all(names.map(loadGLB));
+  // V42: まずBodyParts3D本来の座標関係のまま1体に統合する。
+  names.forEach((n,i)=>{const obj=style(arr[i],mats[n]);obj.updateMatrixWorld(true);const b=new THREE.Box3().setFromObject(obj),c=b.getCenter(new THREE.Vector3());const g=new THREE.Group();obj.position.sub(c);g.position.copy(c);g.userData.baseX=c.x;g.add(obj);model.add(g);parts[n]=g;});
+  // 重要: 回転後のworld中心をmodel.positionから引く旧方式を廃止。
+  // source座標で先に人体全体の中心を原点へ移し、その後に向きと縮尺を適用する。
+  model.updateMatrixWorld(true);let bb=new THREE.Box3().setFromObject(model);const sourceCenter=bb.getCenter(new THREE.Vector3());
+  names.forEach(n=>{parts[n].position.sub(sourceCenter);parts[n].userData.baseX=parts[n].position.x;});
+  model.rotation.set(-Math.PI/2,0,Math.PI/2);model.updateMatrixWorld(true);
+  bb=new THREE.Box3().setFromObject(model);const size=bb.getSize(new THREE.Vector3());const scale=3.35/Math.max(size.x,size.y,size.z);model.scale.setScalar(scale);model.updateMatrixWorld(true);
+  // 念のため外側pivotのworld中心を一度だけ補正。以後pivot自身のpositionは変更しない。
+  bb=new THREE.Box3().setFromObject(model);const wc=bb.getCenter(new THREE.Vector3());pivot.position.set(-wc.x,-wc.y,-wc.z);pivot.updateMatrixWorld(true);
+  // 補正後の人体中心を回転中心にするため、pivotの変換をmodel側へ焼き直す。
+  model.position.add(pivot.position);pivot.position.set(0,0,0);model.updateMatrixWorld(true);
+  // 最終bboxを使い、画面中心に対する微小誤差をmodelの親座標で補正。
+  bb=new THREE.Box3().setFromObject(model);const fc=bb.getCenter(new THREE.Vector3());model.position.x-=fc.x;model.position.y-=fc.y;model.position.z-=fc.z;model.updateMatrixWorld(true);
+  pivot.add(makeRing(0xff3655,.70,.46));pivot.add(makeRing(0xff963f,.57,-.36));
+  ready=true;host.style.display='block';old.style.visibility='hidden';old.style.pointerEvents='none';document.getElementById('threeHint').style.display='none';
+  setView('front');apply(window.WAKABA_3D_DATA||{});statusText('BodyParts3D V42｜正面・中央固定｜指で360°回転');
+ }catch(e){console.error(e);statusText('3D読込エラー：'+(e?.message||'モデルを確認してください'));old.style.visibility='visible';}
 }
 function setView(kind){
- if(!ready)return;
- const topBtn=document.getElementById("topTwist")||[...document.querySelectorAll("button")].find(b=>b.textContent.includes("上から見た捻れ"));
- if(kind==="top"){
-   topMode=true;pivot.rotation.y=0;fitCamera("top");
-   if(topBtn)topBtn.textContent="◎ 上から見た捻れ ON";
- }else{
-   topMode=false;
-   const ang=kind==="right"?Math.PI/2:kind==="left"?-Math.PI/2:kind==="diag"?-Math.PI/4:0;
-   pivot.rotation.set(0,ang,0);fitCamera("front");
-   if(topBtn)topBtn.textContent="◎ 上から見た捻れ";
- }
+ if(!ready)return;topMode=kind==='top';
+ if(topMode){pivot.rotation.set(0,0,0);fitCamera('top');}
+ else{const a=kind==='right'?Math.PI/2:kind==='left'?-Math.PI/2:kind==='diag'?-Math.PI/4:0;pivot.rotation.set(0,a,0);fitCamera('front');}
+ const b=document.getElementById('topTwist');if(b)b.textContent=topMode?'◎ 上から見た捻れ ON':'◎ 上から見た捻れ';
+ statusText('BodyParts3D V42｜'+(topMode?'上面表示':'画面中央固定')+'｜'+(topMode?'もう一度で正面へ':'指で360°回転'));
 }
-function loop(){requestAnimationFrame(loop);if(renderer)renderer.render(scene,camera)}
-loop();
-window.addEventListener("resize",()=>{resize();if(ready)fitCamera(topMode?"top":"front")});
-window.addEventListener("wakaba-analysis",e=>init().then(()=>apply(e.detail)));
+function rotateBy(dx){if(!ready||topMode)return;pivot.rotation.y+=dx*.012;}
+function endDrag(){dragging=false;activePointer=null;}
+function loop(){requestAnimationFrame(loop);if(renderer)renderer.render(scene,camera);}loop();
+window.addEventListener('resize',()=>{if(ready)fitCamera(topMode?'top':'front');});
+window.addEventListener('wakaba-analysis',e=>init().then(()=>apply(e.detail)));
 
-// V41: Android/iPhone both supported. Drag starts on the renderer itself and
-// movement is tracked on window so rotation continues even if the finger leaves the 3D element.
-let activePointer=null, lastTouchX=null;
-function rotateBy(dx){if(!ready||topMode||!pivot)return;pivot.rotation.y+=dx*.012;}
-function endDrag(){drag=false;activePointer=null;lastTouchX=null;}
-host.addEventListener("pointerdown",e=>{
- if(!ready||topMode)return; drag=true;activePointer=e.pointerId;lastX=e.clientX;
- try{host.setPointerCapture(e.pointerId)}catch(_){} e.preventDefault();
-},{passive:false});
-window.addEventListener("pointermove",e=>{
- if(!drag||!ready||topMode||activePointer!==e.pointerId)return;
- rotateBy(e.clientX-lastX);lastX=e.clientX;e.preventDefault();
-},{passive:false});
-window.addEventListener("pointerup",e=>{if(activePointer===e.pointerId)endDrag()});
-window.addEventListener("pointercancel",e=>{if(activePointer===e.pointerId)endDrag()});
-// Touch fallback for browsers where Pointer Events on WebGL are unreliable.
-host.addEventListener("touchstart",e=>{
- if(!ready||topMode||!e.touches.length)return;drag=true;lastTouchX=e.touches[0].clientX;e.preventDefault();
-},{passive:false});
-host.addEventListener("touchmove",e=>{
- if(!drag||!ready||topMode||lastTouchX==null||!e.touches.length)return;
- const x=e.touches[0].clientX;rotateBy(x-lastTouchX);lastTouchX=x;e.preventDefault();
-},{passive:false});
-host.addEventListener("touchend",endDrag,{passive:true});
-host.addEventListener("touchcancel",endDrag,{passive:true});
+// 旧Canvasのonclickを解除して、V42のWebGL操作だけを使う。
+const viewBtns=[...document.querySelectorAll('.view3d[data-a]')];viewBtns.forEach(b=>{b.onclick=null;b.addEventListener('click',e=>{e.preventDefault();const a=+b.dataset.a;setView(a===90?'right':a===-90?'left':Math.abs(a)===35?'diag':'front');});});
+const topBtn=document.getElementById('topTwist');topBtn.onclick=null;topBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;setView(topMode?'front':'top');});
+const boostBtn=document.getElementById('twistBoostBtn');boostBtn.onclick=null;boostBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;rotBoost=rotBoost===1?5:1;apply(window.WAKABA_3D_DATA||{});boostBtn.textContent=rotBoost===5?'回旋表示 ×5 ON':'回旋表示 ×5';statusText('BodyParts3D V42｜回旋強調 '+(rotBoost===5?'ON':'OFF')+'｜胸郭・骨盤へ反映');});
 
-document.querySelectorAll(".view3d[data-a]").forEach(b=>b.addEventListener("click",()=>{
- const a=+b.dataset.a;
- setView(a===90?"right":a===-90?"left":a===-35||a===35?"diag":"front");
-}));
-const topBtn=document.getElementById("topTwist")||[...document.querySelectorAll("button")].find(b=>b.textContent.includes("上から見た捻れ"));
-if(topBtn)topBtn.addEventListener("click",e=>{
- e.preventDefault(); e.stopImmediatePropagation();
- setView(topMode?"front":"top");
-},true);
-const boostBtn=document.getElementById("twistBoostBtn")||[...document.querySelectorAll("button")].find(b=>b.textContent.includes("回旋表示"));
-if(boostBtn)boostBtn.addEventListener("click",()=>{
- rotBoost=rotBoost===1?5:1;apply(window.WAKABA_3D_DATA||{});
- boostBtn.textContent=rotBoost===5?"回旋表示 ×5 ON":"回旋表示 ×5";
-});
+host.addEventListener('pointerdown',e=>{if(!ready||topMode)return;dragging=true;activePointer=e.pointerId;lastX=e.clientX;try{host.setPointerCapture(e.pointerId)}catch(_){}e.preventDefault();},{passive:false});
+host.addEventListener('pointermove',e=>{if(!dragging||activePointer!==e.pointerId)return;rotateBy(e.clientX-lastX);lastX=e.clientX;e.preventDefault();},{passive:false});
+host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel',endDrag);
 </script>
 </body></html>
