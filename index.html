@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V64</title>
+<title>AI姿勢＆3次元歪み分析システム V65</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -378,7 +378,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  if(totalScore>=90)typeText="全体バランス良好型";
  document.getElementById("postureType").textContent=typeText;
  document.getElementById("postureSummary").textContent="総合 "+totalScore+"点。正面 "+frontScore+"点／側面 "+sideScore+"点／回旋 "+twistScore+"点として、3方向の特徴を比較しています。";
- if(typeof saveAnalysisHistory==="function") saveAnalysisHistory(totalScore,frontScore,sideScore,twistScore,typeText);
+ if(typeof window.saveAnalysisHistory==="function") window.saveAnalysisHistory(totalScore,frontScore,sideScore,twistScore,typeText);
  document.getElementById("mainFinding").textContent=main.key+"のバランス";
  document.getElementById("mainFindingDetail").textContent=main.detail+"　今回の3項目では「"+main.key+"」の参考スコアが最も低く、変化を追いやすいポイントです。";
  document.getElementById("reportFront").textContent=reportBand(frontScore);
@@ -606,6 +606,7 @@ host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel'
  function showHistory(c){$('v63HistoryName').textContent=c.name||'';const h=getHistory(c.id),host=$('v63HistoryList');const compare=h.length>=2?'<button class="v64compare" id="v64CompareBtn">最新2回を Before / After 比較</button>':'';host.innerHTML=compare+(h.length?h.map(x=>'<div class="v63item"><b>'+esc(new Date(x.date).toLocaleString('ja-JP'))+'</b><div class="v63scores"><div class="v63score">総合<br><b>'+x.total+'</b></div><div class="v63score">正面<br><b>'+x.front+'</b></div><div class="v63score">側面<br><b>'+x.side+'</b></div><div class="v63score">回旋<br><b>'+x.twist+'</b></div></div><div style="font-size:10px;color:#475569;margin-top:7px">'+esc(x.type||'')+'</div></div>').join(''):'<div class="v61empty" style="margin-top:12px">まだ分析履歴がありません。</div>');const cb=$('v64CompareBtn');if(cb)cb.onclick=()=>showCompare(c,h[1],h[0]);$('v63HistoryModal').classList.add('on')}
  function showCompare(c,before,after){$('v64CompareName').textContent=c.name||'';const d=(a,b)=>{const n=Number(b)-Number(a);return (n>0?'+':'')+n};const card=(label,x)=>'<div class="v64card"><div class="v64head">'+label+'<br><span style="font-size:9px;color:#64748b">'+esc(new Date(x.date).toLocaleString('ja-JP'))+'</span></div><div class="v64metric"><span>総合</span><b class="v64big">'+x.total+'</b></div><div class="v64metric"><span>正面</span><b>'+x.front+'</b></div><div class="v64metric"><span>側面</span><b>'+x.side+'</b></div><div class="v64metric"><span>回旋</span><b>'+x.twist+'</b></div><div style="font-size:9px;color:#475569;margin-top:7px">'+esc(x.type||'')+'</div></div>';$('v64CompareBody').innerHTML='<div class="v64grid">'+card('施術前',before)+card('施術後',after)+'</div><div class="v64delta"><b>変化量</b><br>総合 <b>'+d(before.total,after.total)+'</b>点　｜　正面 <b>'+d(before.front,after.front)+'</b>　｜　側面 <b>'+d(before.side,after.side)+'</b>　｜　回旋 <b>'+d(before.twist,after.twist)+'</b><div class="v64note">※スコアの変化は撮影条件の影響を受けます。同じ位置・距離・姿勢条件での撮影を推奨します。</div></div>';$('v63HistoryModal').classList.remove('on');$('v64CompareModal').classList.add('on')}
  function saveAnalysisHistory(total,front,side,twist,type){try{const c=JSON.parse(sessionStorage.getItem('wakaba_v61_current')||'null');if(!c||!c.id)return;const h=getHistory(c.id);h.unshift({date:new Date().toISOString(),total,front,side,twist,type});localStorage.setItem(historyKey(c.id),JSON.stringify(h.slice(0,30)))}catch(e){}}
+ window.saveAnalysisHistory=saveAnalysisHistory;
  function esc(v){return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
  function render(){const a=customers(),host=$('v61List'); if(!a.length){host.innerHTML='<div class="v61empty"><b>まだ顧客が登録されていません</b><br><br>「＋ 新規登録」から最初の顧客を登録してください。</div>';return} host.innerHTML=a.map((c,i)=>'<div class="v61row"><div class="v61avatar">'+esc((c.name||'?').slice(0,1))+'</div><div class="v61meta"><div class="v61name">'+esc(c.name)+'</div><div class="v61sub">'+esc([c.kana,c.sex,c.birth].filter(Boolean).join(' ｜ ')||'登録情報あり')+'</div></div><button class="v63hist" data-h="'+i+'">履歴</button><button class="v61start" data-i="'+i+'">姿勢分析</button></div>').join(''); host.querySelectorAll('.v61start').forEach(b=>b.onclick=()=>start(a[+b.dataset.i])); host.querySelectorAll('.v63hist').forEach(b=>b.onclick=()=>showHistory(a[+b.dataset.h]))}
  function start(c){sessionStorage.setItem('wakaba_v61_current',JSON.stringify(c)); $('v61CurrentName').textContent=c.name||'ゲスト'; document.body.classList.add('v61-analysis'); window.scrollTo(0,0)}
