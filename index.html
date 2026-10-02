@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システムv62</title>
+<title>AI姿勢＆3次元歪み分析システム V63</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -23,6 +23,10 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 <style id="v61-customer-css">
 #v61Home{max-width:760px;margin:14px auto;padding:0 14px}.v61bar{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:10px}.v61title{font-size:18px;font-weight:900}.v61btn{border:0;border-radius:11px;padding:12px 14px;background:#0f766e;color:#fff;font-weight:900}.v61ghost{background:#fff;color:#0f766e;border:1px solid #0f766e}.v61list{display:grid;gap:8px}.v61row{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px rgba(15,23,42,.04)}.v61avatar{width:44px;height:44px;border-radius:50%;background:#ccfbf1;color:#0f766e;display:grid;place-items:center;font-weight:900;font-size:18px;flex:0 0 auto}.v61meta{min-width:0;flex:1}.v61name{font-weight:900;font-size:14px}.v61sub{font-size:10px;color:#64748b;margin-top:3px}.v61start{border:0;border-radius:10px;padding:9px 10px;background:#f97316;color:#fff;font-weight:900;font-size:11px}.v61empty{background:#fff;border:1px dashed #cbd5e1;border-radius:14px;padding:26px;text-align:center;color:#64748b;font-size:12px}.v61modal{display:none;position:fixed;inset:0;background:rgba(2,6,23,.55);z-index:20000;padding:18px;align-items:center;justify-content:center}.v61modal.on{display:flex}.v61sheet{width:min(100%,520px);background:#fff;border-radius:18px;padding:18px}.v61sheet h2{margin:0 0 12px;font-size:18px}.v61field{display:grid;gap:5px;margin:10px 0}.v61field label{font-size:11px;font-weight:800;color:#475569}.v61field input,.v61field select{width:100%;border:1px solid #cbd5e1;border-radius:10px;padding:12px;font-size:14px;background:#fff}.v61actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}#v61AnalysisTop{display:none;max-width:760px;margin:10px auto 0;padding:0 14px}.v61current{background:#ecfeff;border:1px solid #99f6e4;border-radius:12px;padding:10px;font-size:11px;color:#134e4a;display:flex;justify-content:space-between;align-items:center;gap:8px}body.v61-analysis #v61Home{display:none}body:not(.v61-analysis) main{display:none}body.v61-analysis #v61AnalysisTop{display:block}
 </style>
+
+<style id="v63-history-css">
+.v63hist{border:0;border-radius:10px;padding:9px 10px;background:#0f766e;color:#fff;font-weight:900;font-size:11px;margin-left:4px}.v63modal{display:none;position:fixed;inset:0;background:rgba(2,6,23,.58);z-index:21000;padding:18px;align-items:center;justify-content:center}.v63modal.on{display:flex}.v63sheet{width:min(100%,560px);max-height:82vh;overflow:auto;background:#fff;border-radius:18px;padding:16px}.v63item{border:1px solid #e2e8f0;border-radius:12px;padding:11px;margin-top:8px}.v63scores{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:7px}.v63score{background:#f8fafc;border-radius:8px;text-align:center;padding:6px;font-size:10px}.v63close{width:100%;margin-top:12px;border:0;border-radius:11px;padding:12px;background:#0f766e;color:#fff;font-weight:900}
+</style>
 </head>
 <body>
 <header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析</p></header>
@@ -31,6 +35,8 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
  <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
  <div id="v61List" class="v61list"></div>
 </section>
+
+<div class="v63modal" id="v63HistoryModal"><div class="v63sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:18px">分析履歴</b><div id="v63HistoryName" style="font-size:11px;color:#64748b;margin-top:2px"></div></div></div><div id="v63HistoryList"></div><button class="v63close" id="v63HistoryClose">閉じる</button></div></div>
 <div id="v61AnalysisTop"><div class="v61current"><span>分析中：<b id="v61CurrentName">ゲスト</b></span><button class="v61btn v61ghost" id="v61Back" style="padding:8px 10px">顧客一覧へ</button></div></div>
 <div class="v61modal" id="v61Modal"><div class="v61sheet"><h2>新規顧客登録</h2><div class="v61field"><label>氏名 *</label><input id="v61Name" autocomplete="name"></div><div class="v61field"><label>フリガナ</label><input id="v61Kana"></div><div class="v61field"><label>性別</label><select id="v61Sex"><option value="">未設定</option><option>男性</option><option>女性</option><option>その他</option></select></div><div class="v61field"><label>生年月日</label><input id="v61Birth" type="date"></div><div class="v61field"><label>電話番号</label><input id="v61Tel" inputmode="tel"></div><div class="v61actions"><button class="v61btn v61ghost" id="v61Cancel">キャンセル</button><button class="v61btn" id="v61Save">登録</button></div></div></div>
 <main>
@@ -366,6 +372,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  if(totalScore>=90)typeText="全体バランス良好型";
  document.getElementById("postureType").textContent=typeText;
  document.getElementById("postureSummary").textContent="総合 "+totalScore+"点。正面 "+frontScore+"点／側面 "+sideScore+"点／回旋 "+twistScore+"点として、3方向の特徴を比較しています。";
+ if(typeof saveAnalysisHistory==="function") saveAnalysisHistory(totalScore,frontScore,sideScore,twistScore,typeText);
  document.getElementById("mainFinding").textContent=main.key+"のバランス";
  document.getElementById("mainFindingDetail").textContent=main.detail+"　今回の3項目では「"+main.key+"」の参考スコアが最も低く、変化を追いやすいポイントです。";
  document.getElementById("reportFront").textContent=reportBand(frontScore);
@@ -588,13 +595,17 @@ host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel'
  const KEY='wakaba_v61_customers'; const $=id=>document.getElementById(id);
  function customers(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return []}}
  function put(a){localStorage.setItem(KEY,JSON.stringify(a))}
+ function historyKey(id){return 'wakaba_v63_history_'+id}
+ function getHistory(id){try{return JSON.parse(localStorage.getItem(historyKey(id))||'[]')}catch(e){return []}}
+ function showHistory(c){$('v63HistoryName').textContent=c.name||'';const h=getHistory(c.id),host=$('v63HistoryList');host.innerHTML=h.length?h.map(x=>'<div class="v63item"><b>'+esc(new Date(x.date).toLocaleString('ja-JP'))+'</b><div class="v63scores"><div class="v63score">総合<br><b>'+x.total+'</b></div><div class="v63score">正面<br><b>'+x.front+'</b></div><div class="v63score">側面<br><b>'+x.side+'</b></div><div class="v63score">回旋<br><b>'+x.twist+'</b></div></div><div style="font-size:10px;color:#475569;margin-top:7px">'+esc(x.type||'')+'</div></div>').join(''):'<div class="v61empty" style="margin-top:12px">まだ分析履歴がありません。</div>';$('v63HistoryModal').classList.add('on')}
+ function saveAnalysisHistory(total,front,side,twist,type){try{const c=JSON.parse(sessionStorage.getItem('wakaba_v61_current')||'null');if(!c||!c.id)return;const h=getHistory(c.id);h.unshift({date:new Date().toISOString(),total,front,side,twist,type});localStorage.setItem(historyKey(c.id),JSON.stringify(h.slice(0,30)))}catch(e){}}
  function esc(v){return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
- function render(){const a=customers(),host=$('v61List'); if(!a.length){host.innerHTML='<div class="v61empty"><b>まだ顧客が登録されていません</b><br><br>「＋ 新規登録」から最初の顧客を登録してください。</div>';return} host.innerHTML=a.map((c,i)=>'<div class="v61row"><div class="v61avatar">'+esc((c.name||'?').slice(0,1))+'</div><div class="v61meta"><div class="v61name">'+esc(c.name)+'</div><div class="v61sub">'+esc([c.kana,c.sex,c.birth].filter(Boolean).join(' ｜ ')||'登録情報あり')+'</div></div><button class="v61start" data-i="'+i+'">姿勢分析</button></div>').join(''); host.querySelectorAll('.v61start').forEach(b=>b.onclick=()=>start(a[+b.dataset.i]))}
+ function render(){const a=customers(),host=$('v61List'); if(!a.length){host.innerHTML='<div class="v61empty"><b>まだ顧客が登録されていません</b><br><br>「＋ 新規登録」から最初の顧客を登録してください。</div>';return} host.innerHTML=a.map((c,i)=>'<div class="v61row"><div class="v61avatar">'+esc((c.name||'?').slice(0,1))+'</div><div class="v61meta"><div class="v61name">'+esc(c.name)+'</div><div class="v61sub">'+esc([c.kana,c.sex,c.birth].filter(Boolean).join(' ｜ ')||'登録情報あり')+'</div></div><button class="v63hist" data-h="'+i+'">履歴</button><button class="v61start" data-i="'+i+'">姿勢分析</button></div>').join(''); host.querySelectorAll('.v61start').forEach(b=>b.onclick=()=>start(a[+b.dataset.i])); host.querySelectorAll('.v63hist').forEach(b=>b.onclick=()=>showHistory(a[+b.dataset.h]))}
  function start(c){sessionStorage.setItem('wakaba_v61_current',JSON.stringify(c)); $('v61CurrentName').textContent=c.name||'ゲスト'; document.body.classList.add('v61-analysis'); window.scrollTo(0,0)}
  function home(){document.body.classList.remove('v61-analysis');window.scrollTo(0,0);render()}
  $('v61Add').onclick=()=>{$('v61Modal').classList.add('on');$('v61Name').focus()}; $('v61Cancel').onclick=()=>$('v61Modal').classList.remove('on'); $('v61Back').onclick=home;
  $('v61Save').onclick=()=>{const name=$('v61Name').value.trim();if(!name){alert('氏名を入力してください');return}const a=customers();a.unshift({id:Date.now(),name,kana:$('v61Kana').value.trim(),sex:$('v61Sex').value,birth:$('v61Birth').value,tel:$('v61Tel').value.trim(),created:new Date().toISOString()});put(a);['v61Name','v61Kana','v61Birth','v61Tel'].forEach(id=>$(id).value='');$('v61Sex').value='';$('v61Modal').classList.remove('on');render()};
- $('v61Modal').addEventListener('click',e=>{if(e.target===$('v61Modal'))$('v61Modal').classList.remove('on')});
+ $('v61Modal').addEventListener('click',e=>{if(e.target===$('v61Modal'))$('v61Modal').classList.remove('on')}); $('v63HistoryClose').onclick=()=>$('v63HistoryModal').classList.remove('on'); $('v63HistoryModal').addEventListener('click',e=>{if(e.target===$('v63HistoryModal'))$('v63HistoryModal').classList.remove('on')});
  render();
 })();
 </script>
