@@ -35,7 +35,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V68</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V69</span></p></header>
 
 <section id="v61Home">
  <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
@@ -218,15 +218,17 @@ var drag=null;
 function setupDrag(type){var cv=document.getElementById("canvas-"+type);if(!cv||cv.dataset.dragReady)return;cv.dataset.dragReady="1";
  cv.onpointerdown=function(e){var g=geometry(type),rec=photos[type];if(!g||!rec)return;var xx=e.clientX-g.ir.left,yy=e.clientY-g.ir.top,best=null,bd=32;visibleNames(type).forEach(function(n){var p=rec.points[n],dd=Math.hypot(xx-p.x*g.w,yy-p.y*g.h);if(dd<bd){bd=dd;best=n}});if(best){drag={type:type,name:best};cv.setPointerCapture(e.pointerId)}};
  cv.onpointermove=function(e){if(!drag||drag.type!==type)return;var g=geometry(type),p=photos[type].points[drag.name];p.x=Math.max(0,Math.min(1,(e.clientX-g.ir.left)/g.w));p.y=Math.max(0,Math.min(1,(e.clientY-g.ir.top)/g.h));
- if(type!=="front"){var map={leftShoulder:"rightShoulder",leftElbow:"rightElbow",leftWrist:"rightWrist",leftHip:"rightHip",leftKnee:"rightKnee",leftAnkle:"rightAnkle"};if(map[drag.name])rec.points[map[drag.name]]={x:p.x,y:p.y}}
- draw(type);
+ if(type!=="front"){var map={leftShoulder:"rightShoulder",leftElbow:"rightElbow",leftWrist:"rightWrist",leftHip:"rightHip",leftKnee:"rightKnee",leftAnkle:"rightAnkle"};if(map[drag.name])photos[type].points[map[drag.name]]={x:p.x,y:p.y}}
+ photos[type].manualAdjusted=true; draw(type);
  var mb=document.getElementById("modelBadge");if(mb){mb.textContent="補正後・再分析してください";mb.className="badge"}
 };cv.onpointerup=cv.onpointercancel=function(){drag=null};
 }
 function enqueueAI(type){queue=queue.filter(x=>x!==type);queue.push(type);runQueue()}
-async function runQueue(){if(busy||!poseReady||!queue.length)return;busy=true;var type=queue.shift(),rec=photos[type];if(!rec){busy=false;runQueue();return}var b=document.getElementById("badge-"+type);b.textContent="AI解析中";b.className="badge";try{window.__wakabaCurrent=type;await pose.send({image:await blobImage(rec.file)})}catch(e){b.textContent="手動補正";b.className="badge ok";busy=false;runQueue()}}
+async function runQueue(){if(busy||!poseReady||!queue.length)return;busy=true;var type=queue.shift(),rec=photos[type];if(!rec){busy=false;runQueue();return}var b=document.getElementById("badge-"+type);b.textContent="AI解析中";b.className="badge";try{window.__wakabaCurrent=type;await pose.send({image:await blobImage(rec.file)})}catch(e){console.warn("Pose send failed",e);var retry=Number(rec.aiRetry||0);busy=false;if(retry<1){rec.aiRetry=retry+1;b.textContent="AI再初期化中";b.className="badge";queue.unshift(type);resetPoseEngine();setTimeout(function(){attachPose()},180);return}rec.aiFailed=true;b.textContent="AI解析失敗・再選択";b.className="badge";resetPoseEngine();alert("AI解析を再初期化しました。\nこの写真をもう一度選択してください。");}}
 function blobImage(blob){return new Promise(function(resolve,reject){var u=URL.createObjectURL(blob),i=new Image();i.onload=function(){URL.revokeObjectURL(u);resolve(i)};i.onerror=reject;i.src=u})}
-function attachPose(){if(!window.Pose)return;try{pose=new Pose({locateFile:f=>"https://cdn.jsdelivr.net/npm/@mediapipe/pose/"+f});pose.setOptions({modelComplexity:1,smoothLandmarks:true,enableSegmentation:false,minDetectionConfidence:.4,minTrackingConfidence:.4});
+function resetPoseEngine(){try{if(pose&&typeof pose.close==="function")pose.close()}catch(e){}pose=null;poseReady=false;busy=false;window.__wakabaCurrent=null}
+window.wakabaResetPoseEngine=resetPoseEngine;
+function attachPose(){if(!window.Pose||poseReady)return;try{pose=new Pose({locateFile:f=>"https://cdn.jsdelivr.net/npm/@mediapipe/pose/"+f});pose.setOptions({modelComplexity:1,smoothLandmarks:true,enableSegmentation:false,minDetectionConfidence:.4,minTrackingConfidence:.4});
  pose.onResults(function(res){var type=window.__wakabaCurrent,rec=photos[type],b=document.getElementById("badge-"+type);if(rec&&res.poseLandmarks){var lm=res.poseLandmarks,p={head:{x:(lm[0].x+lm[7].x+lm[8].x)/3,y:(lm[0].y+lm[7].y+lm[8].y)/3}};
  rec.rawLandmarks=lm.map(function(q,i){return {index:i,x:q.x,y:q.y,z:q.z,visibility:q.visibility}});
  Object.keys(mpIndex).forEach(function(k){var q=lm[mpIndex[k]];p[k]={x:q.x,y:q.y}});
@@ -270,6 +272,13 @@ AC.onpointermove=function(e){if(!adjustDrag||!adjustType)return;var g=adjustLayo
 AC.onpointerup=AC.onpointercancel=function(){adjustDrag=null};
 addEventListener("resize",function(){if(adjustType)drawAdjust()});
 function loadAI(){var sc=document.createElement("script");sc.src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js";sc.async=true;sc.onload=attachPose;sc.onerror=function(){console.warn("AI library load failed; photo controls remain available")};document.body.appendChild(sc)}
+window.wakabaResetAnalysisSession=function(){
+ queue=[];busy=false;pending=null;resetPoseEngine();
+ types.forEach(function(t){var r=photos[t];if(r&&r.url)try{URL.revokeObjectURL(r.url)}catch(e){}photos[t]=null;var st=document.getElementById("stage-"+t);if(st)st.innerHTML="<span>"+(t==="front"?"正面":t==="right"?"右側面":"左側面")+"写真を登録</span>";var b=document.getElementById("badge-"+t);if(b){b.textContent="未登録";b.className="badge"}var ab=document.querySelector('.adjustBtn[data-adjust="'+t+'"]');if(ab)ab.style.display="none"});
+ ["scoreTotal","scoreFront","scoreSide","scoreTwist"].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent="--"});
+ var mb=document.getElementById("modelBadge");if(mb){mb.textContent="待機中";mb.className="badge"}count();
+ setTimeout(function(){attachPose()},120);
+};
 addEventListener("resize",()=>types.forEach(draw));setTimeout(loadAI,0);
 
 var guideStream=null,guideType=null,guideScale=1,guideRoll=null,guideSensorTimer=null,GV=document.getElementById("guideVideo"),GO=document.getElementById("guideOverlay");
@@ -309,7 +318,7 @@ addEventListener("resize",drawGuide);count();
 var C=document.getElementById("threeCanvas"),ctx=C.getContext("2d"),angle=35,built=false,pts3={},dragX=null,mode="body",thoraxYaw=0,pelvisYaw=0,twistBoost=5;
 var names=["head","leftShoulder","rightShoulder","leftElbow","rightElbow","leftWrist","rightWrist","leftHip","rightHip","leftKnee","rightKnee","leftAnkle","rightAnkle"];
 function resize(){var r=C.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);C.width=Math.round(r.width*d);C.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);if(built)draw()}addEventListener("resize",resize);setTimeout(resize,0);
-function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!photos.right||!photos.left){alert("正面・右側面・左側面の3枚を登録してください。");return}
+function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!photos.right||!photos.left){alert("正面・右側面・左側面の3枚を登録してください。");return}if(types.some(function(t){return photos[t].aiFailed||(!photos[t].ai&&!photos[t].manualAdjusted)})){alert("3枚すべてのAI解析が完了してから3D分析を作成してください。\n解析失敗と表示された写真は、もう一度選択してください。");return}
  var mpIndex={head:0,leftShoulder:11,rightShoulder:12,leftElbow:13,rightElbow:14,leftWrist:15,rightWrist:16,leftHip:23,rightHip:24,leftKnee:25,rightKnee:26,leftAnkle:27,rightAnkle:28};
  /* V45 回旋推定v2: 左右側面のMediaPipe生ランドマークを、左右反転を補正して統合。
     正面幅を基準に胸郭・骨盤の前後差を角度化する。3枚写真からの参考推定であり実測3Dではない。 */
@@ -615,7 +624,7 @@ host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel'
  const rows=specs.map(([label,key,unit])=>{const b=metricValue(before,key),a=metricValue(after,key),r=improve(before,after,key);return '<div class="v67row"><span>'+label+'</span><b>'+fmt(b,unit)+'</b><b>'+fmt(a,unit)+'</b><span class="'+r.cls+'">'+r.txt+'</span></div>'}).join('');
  $('v64CompareBody').innerHTML='<div class="v64grid">'+card('施術前',before)+card('施術後',after)+'</div><div class="v64delta"><b>スコア変化</b>　総合 <b>'+(scoreDelta>0?'+':'')+scoreDelta+'</b>点<div class="v67section">姿勢数値の変化</div><div class="v67row" style="font-weight:900;color:#64748b"><span>項目</span><b>施術前</b><b>施術後</b><span>変化</span></div>'+rows+'<div class="v64note">※「改善」は写真上の左右差・偏位・回旋の絶対値が小さくなった場合の表示です。診断や治療効果の判定ではありません。同じ位置・距離・姿勢条件で比較してください。</div></div>';$('v63HistoryModal').classList.remove('on');$('v64CompareModal').classList.add('on')}
  function makeThumb(type){try{const rec=window.WAKABA_PHOTOS&&window.WAKABA_PHOTOS[type];if(!rec)return null;if(rec.historyThumb)return rec.historyThumb;const stage=document.getElementById('stage-'+type),img=stage&&stage.querySelector('img');if(!img||!img.complete||!img.naturalWidth)return null;const maxW=240,scale=Math.min(1,maxW/img.naturalWidth),w=Math.max(1,Math.round(img.naturalWidth*scale)),h=Math.max(1,Math.round(img.naturalHeight*scale)),cv=document.createElement('canvas');cv.width=w;cv.height=h;const cx=cv.getContext('2d');cx.drawImage(img,0,0,w,h);rec.historyThumb=cv.toDataURL('image/jpeg',.62);return rec.historyThumb}catch(e){console.error('V68 thumbnail error',type,e);return null}}
- function saveAnalysisHistory(total,front,side,twist,type){try{const raw=sessionStorage.getItem('wakaba_v61_current')||localStorage.getItem('wakaba_v66_current');const c=JSON.parse(raw||'null');if(!c||!c.id){console.warn('V67 history: current customer missing');return false}const d=window.WAKABA_3D_DATA||{};const metrics={shoulderTilt:Number(d.shoulderTilt),pelvisTilt:Number(d.pelvisTilt),headShift:Number(d.headShift),thoraxYaw:Number(d.thoraxYaw),pelvisYaw:Number(d.pelvisYaw),relativeTwist:Number(d.relativeTwist),sideDeviation:Number(d.sideDeviation)};const photos={front:makeThumb('front'),right:makeThumb('right'),left:makeThumb('left')};const h=getHistory(c.id);h.unshift({version:68,date:new Date().toISOString(),total:Number(total),front:Number(front),side:Number(side),twist:Number(twist),type:String(type||''),metrics,photos});let keep=h.slice(0,30);while(keep.length){try{localStorage.setItem(historyKey(c.id),JSON.stringify(keep));break}catch(q){keep.pop()}}return keep.length>0}catch(e){console.error('V67 history save error',e);return false}}
+ function saveAnalysisHistory(total,front,side,twist,type){try{const raw=sessionStorage.getItem('wakaba_v61_current')||localStorage.getItem('wakaba_v66_current');const c=JSON.parse(raw||'null');if(!c||!c.id){console.warn('V67 history: current customer missing');return false}const d=window.WAKABA_3D_DATA||{};const metrics={shoulderTilt:Number(d.shoulderTilt),pelvisTilt:Number(d.pelvisTilt),headShift:Number(d.headShift),thoraxYaw:Number(d.thoraxYaw),pelvisYaw:Number(d.pelvisYaw),relativeTwist:Number(d.relativeTwist),sideDeviation:Number(d.sideDeviation)};const photos={front:makeThumb('front'),right:makeThumb('right'),left:makeThumb('left')};const h=getHistory(c.id);h.unshift({version:69,date:new Date().toISOString(),total:Number(total),front:Number(front),side:Number(side),twist:Number(twist),type:String(type||''),metrics,photos});let keep=h.slice(0,30);while(keep.length){try{localStorage.setItem(historyKey(c.id),JSON.stringify(keep));break}catch(q){keep.pop()}}return keep.length>0}catch(e){console.error('V67 history save error',e);return false}}
  window.saveAnalysisHistory=saveAnalysisHistory;
  window.addEventListener('wakaba-analysis',function(){
    const total=document.getElementById('scoreTotal')?.textContent;
@@ -627,7 +636,7 @@ host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel'
  });
  function esc(v){return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
  function render(){const a=customers(),host=$('v61List'); if(!a.length){host.innerHTML='<div class="v61empty"><b>まだ顧客が登録されていません</b><br><br>「＋ 新規登録」から最初の顧客を登録してください。</div>';return} host.innerHTML=a.map((c,i)=>'<div class="v61row"><div class="v61avatar">'+esc((c.name||'?').slice(0,1))+'</div><div class="v61meta"><div class="v61name">'+esc(c.name)+'</div><div class="v61sub">'+esc([c.kana,c.sex,c.birth].filter(Boolean).join(' ｜ ')||'登録情報あり')+'</div></div><button class="v63hist" data-h="'+i+'">履歴</button><button class="v61start" data-i="'+i+'">姿勢分析</button></div>').join(''); host.querySelectorAll('.v61start').forEach(b=>b.onclick=()=>start(a[+b.dataset.i])); host.querySelectorAll('.v63hist').forEach(b=>b.onclick=()=>showHistory(a[+b.dataset.h]))}
- function start(c){const raw=JSON.stringify(c);sessionStorage.setItem('wakaba_v61_current',raw);localStorage.setItem('wakaba_v66_current',raw); $('v61CurrentName').textContent=c.name||'ゲスト'; document.body.classList.add('v61-analysis'); window.scrollTo(0,0)}
+ function start(c){const raw=JSON.stringify(c);sessionStorage.setItem('wakaba_v61_current',raw);localStorage.setItem('wakaba_v66_current',raw); if(typeof window.wakabaResetAnalysisSession==='function')window.wakabaResetAnalysisSession(); $('v61CurrentName').textContent=c.name||'ゲスト'; document.body.classList.add('v61-analysis'); window.scrollTo(0,0)}
  function home(){document.body.classList.remove('v61-analysis');window.scrollTo(0,0);render()}
  $('v61Add').onclick=()=>{$('v61Modal').classList.add('on');$('v61Name').focus()}; $('v61Cancel').onclick=()=>$('v61Modal').classList.remove('on'); $('v61Back').onclick=home;
  $('v61Save').onclick=()=>{const name=$('v61Name').value.trim();if(!name){alert('氏名を入力してください');return}const a=customers();a.unshift({id:Date.now(),name,kana:$('v61Kana').value.trim(),sex:$('v61Sex').value,birth:$('v61Birth').value,tel:$('v61Tel').value.trim(),created:new Date().toISOString()});put(a);['v61Name','v61Kana','v61Birth','v61Tel'].forEach(id=>$(id).value='');$('v61Sex').value='';$('v61Modal').classList.remove('on');render()};
