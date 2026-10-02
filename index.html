@@ -36,9 +36,9 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
  </div>
 </div>
 <div class="card" id="modelCard">
- <div class="head"><b>④ 3方向統合・姿勢可視化モデル</b><span class="badge" id="modelBadge">待機中</span></div>
+ <div class="head"><b>④ 3方向統合・姿勢可視化モデル <span style="font-size:10px;color:#0f766e;background:#ccfbf1;border-radius:999px;padding:4px 7px;margin-left:4px">V55</span></b><span class="badge" id="modelBadge">待機中</span></div>
  <button id="make3d" type="button" style="width:100%;border:0;border-radius:11px;padding:14px;background:#f97316;color:#fff;font-weight:900;font-size:14px">3方向のランドマークから3D分析を作成</button>
- <div id="scorePanel" style="margin-top:10px;border:1px solid #cbd5e1;border-radius:14px;padding:12px;background:linear-gradient(135deg,#f8fafc,#ecfeff)">
+ <div id="scorePanel" style="margin-top:10px;border:2px solid #0f766e;border-radius:14px;padding:12px;background:linear-gradient(135deg,#f0fdfa,#ecfeff);box-shadow:0 4px 14px rgba(15,118,110,.12)">
   <div style="font-size:12px;font-weight:900;color:#172033;margin-bottom:8px">姿勢バランススコア <span style="font-size:9px;color:#64748b;font-weight:500">独自基準・参考評価</span></div>
   <div style="display:grid;grid-template-columns:1.25fr repeat(3,1fr);gap:6px;text-align:center">
    <div style="background:#0f766e;color:#fff;border-radius:12px;padding:10px 4px"><div style="font-size:9px">総合</div><b id="scoreTotal" style="font-size:27px">--</b><span style="font-size:10px"> /100</span></div>
@@ -329,6 +329,8 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  document.getElementById("scoreFront").textContent=frontScore;
  document.getElementById("scoreSide").textContent=sideScore;
  document.getElementById("scoreTwist").textContent=twistScore;
+ // V55: 分析直後にスコアが画面上部へ来る
+ setTimeout(function(){var sp=document.getElementById("scorePanel");if(sp)sp.scrollIntoView({behavior:"smooth",block:"start"});},180);
  function reportBand(s){return s>=90?"バランス良好":s>=70?"軽度の差":s>=50?"中等度の差":"大きな差"}
  var dims=[
    {key:"正面",score:frontScore,detail:"肩の傾き "+Math.abs(sh).toFixed(1)+"°・骨盤の傾き "+Math.abs(ph).toFixed(1)+"°・頭部偏位 "+Math.abs(hs).toFixed(1)+"%"},
@@ -467,11 +469,11 @@ function makeRing(color,r,y){
  const g=new THREE.Group();
  const ellipse=new THREE.EllipseCurve(0,0,r,r*.40,.20,Math.PI*1.82,false,0);
  const pts=ellipse.getPoints(72).map(p=>new THREE.Vector3(p.x,0,p.y));
- // V54: スマホでも太さが確実に出る3Dチューブ矢印
+ // V55: スマホでも一目で分かる太い3Dチューブ矢印
  const path=new THREE.CatmullRomCurve3(pts,false,'centripetal');
- const tube=new THREE.Mesh(new THREE.TubeGeometry(path,96,.028,10,false),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.98}));
+ const tube=new THREE.Mesh(new THREE.TubeGeometry(path,96,.060,14,false),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.98}));
  g.add(tube);
- const tip=new THREE.Mesh(new THREE.ConeGeometry(.085,.23,20),new THREE.MeshBasicMaterial({color}));
+ const tip=new THREE.Mesh(new THREE.ConeGeometry(.145,.36,24),new THREE.MeshBasicMaterial({color}));
  tip.position.copy(pts[pts.length-1]); tip.rotation.z=-1.05; g.add(tip); g.position.y=y; return g;
 }
 function resize(){if(!renderer)return;const r=host.getBoundingClientRect();renderer.setSize(Math.max(1,r.width),Math.max(1,r.height),false);camera.aspect=Math.max(.45,r.width/Math.max(1,r.height));camera.updateProjectionMatrix();}
@@ -495,7 +497,7 @@ function apply(d={}){
 }
 async function init(){
  if(ready)return;
- statusText('BodyParts3D V54 読み込み中…');
+ statusText('BodyParts3D V55 読み込み中…');
  try{
   scene=new THREE.Scene();scene.background=new THREE.Color(0x07111f);
   camera=new THREE.PerspectiveCamera(34,1,.01,50);
