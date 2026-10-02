@@ -352,23 +352,23 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    add(tight,"後面：後頭下筋群・腰背部筋群の過緊張傾向候補");
    add(weak,"前面：深頸屈筋群・腹部深層筋の機能低下傾向候補");
    add(weak,"後面：下部僧帽筋・殿筋群の機能低下傾向候補");
-   add(care,"頭部と体幹の前後バランスを優先して確認し、胸郭前面・股関節前面の柔軟性と体幹・殿筋の安定性を評価する");
+   add(care,"頭部と体幹の前後バランスに差があり、胸郭前面・股関節前面の柔軟性と体幹・殿筋の安定性に改善余地があります");
  }
  if(frontScore<70){
    var hi=sh<0?"右":"左", lo=sh<0?"左":"右";
    add(tight,"後面："+hi+"側の上部僧帽筋・肩甲挙筋、腰方形筋の緊張傾向候補");
    add(weak,"後面："+lo+"側の肩甲帯安定筋・中殿筋の機能低下傾向候補");
-   add(care,"左右差は肩・骨盤の高さだけで決めず、荷重、股関節、肩甲帯の左右差を合わせて確認する");
+   add(care,"肩・骨盤の高さに加え、荷重、股関節、肩甲帯にも左右差の傾向があります");
  }
  if(twistScore<70){
    var rotSide=tw>=0?"右":"左";
    add(tight,"体幹：胸郭・骨盤の相対回旋に伴う斜腹筋群、脊柱起立筋、多裂筋の左右差候補（"+rotSide+"回旋方向を要確認）");
    add(weak,"体幹：腹斜筋群・多裂筋など回旋制御筋の協調性低下候補");
-   add(care,"胸郭と骨盤の回旋可動性・左右差を別々に確認し、必要に応じて回旋制御を再教育する");
+   add(care,"胸郭と骨盤の回旋可動性に左右差があり、回旋制御にも改善余地があります");
  }
- if(!tight.length){add(tight,"大きな偏りは少なめ。局所の過緊張は触診・可動域で確認")};
- if(!weak.length){add(weak,"大きな偏りは少なめ。筋力・運動制御は個別検査で確認")};
- if(!care.length){add(care,"現状のバランス維持を基本に、可動域・筋力・動作時の左右差を確認する")};
+ if(!tight.length){add(tight,"大きな偏りは少なめですが、局所的な過緊張がみられる可能性があります")};
+ if(!weak.length){add(weak,"大きな偏りは少なめですが、筋力・運動制御に左右差がみられる可能性があります")};
+ if(!care.length){add(care,"全体のバランスは比較的安定しており、可動域・筋力・動作時の左右差を整える余地があります")};
  document.getElementById("muscleTight").innerHTML=tight.map(function(x){return "・"+x}).join("<br>");
  document.getElementById("muscleWeak").innerHTML=weak.map(function(x){return "・"+x}).join("<br>");
  document.getElementById("careDirection").innerHTML=care.map(function(x){return "✓ "+x}).join("<br>");
@@ -518,7 +518,7 @@ async function init(){
   bb=new THREE.Box3().setFromObject(model);const fc=bb.getCenter(new THREE.Vector3());model.position.x-=fc.x;model.position.y-=fc.y;model.position.z-=fc.z;model.updateMatrixWorld(true);
   thoraxRing=makeRing(0xff3655,.70,.46);pelvisRing=makeRing(0xff963f,.57,-.36);pivot.add(thoraxRing);pivot.add(pelvisRing);
   ready=true;host.style.display='block';old.style.visibility='hidden';old.style.pointerEvents='none';document.getElementById('threeHint').style.display='none';
-  setView('front');apply(window.WAKABA_3D_DATA||{});statusText('BodyParts3D V47｜正面・中央固定｜指で360°回転');
+  setView('front');apply(window.WAKABA_3D_DATA||{});statusText('BodyParts3D V48｜正面・中央固定｜指で360°回転');
  }catch(e){console.error(e);statusText('3D読込エラー：'+(e?.message||'モデルを確認してください'));old.style.visibility='visible';}
 }
 function setView(kind){
@@ -526,7 +526,7 @@ function setView(kind){
  if(topMode){pivot.rotation.set(0,0,0);fitCamera('top');}
  else{const a=kind==='right'?Math.PI/2:kind==='left'?-Math.PI/2:kind==='diag'?-Math.PI/4:0;pivot.rotation.set(0,a,0);fitCamera('front');}
  const b=document.getElementById('topTwist');if(b)b.textContent=topMode?'◎ 上から見た捻れ ON':'◎ 上から見た捻れ';
- statusText('BodyParts3D V47｜'+(topMode?'上面表示':'画面中央固定')+'｜'+(topMode?'指で上面を360°回転':'指で360°回転'));
+ statusText('BodyParts3D V48｜'+(topMode?'上面表示':'画面中央固定')+'｜'+(topMode?'指で上面を360°回転':'指で360°回転'));
 }
 function rotateBy(dx){
  if(!ready)return;
@@ -540,7 +540,7 @@ window.addEventListener('wakaba-analysis',e=>init().then(()=>apply(e.detail)));
 // 旧Canvasのonclickを解除して、V42のWebGL操作だけを使う。
 const viewBtns=[...document.querySelectorAll('.view3d[data-a]')];viewBtns.forEach(b=>{b.onclick=null;b.addEventListener('click',e=>{e.preventDefault();const a=+b.dataset.a;setView(a===90?'right':a===-90?'left':Math.abs(a)===35?'diag':'front');});});
 const topBtn=document.getElementById('topTwist');topBtn.onclick=null;topBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;setView(topMode?'front':'top');});
-const boostBtn=document.getElementById('twistBoostBtn');boostBtn.onclick=null;boostBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;rotBoost=rotBoost===1?5:1;apply(window.WAKABA_3D_DATA||{});boostBtn.textContent=rotBoost===5?'回旋表示 ×5（表示強調）ON':'回旋表示 ×5（表示強調）';statusText('BodyParts3D V47｜回旋×5は表示強調｜推定角そのものは不変');});
+const boostBtn=document.getElementById('twistBoostBtn');boostBtn.onclick=null;boostBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;rotBoost=rotBoost===1?5:1;apply(window.WAKABA_3D_DATA||{});boostBtn.textContent=rotBoost===5?'回旋表示 ×5（表示強調）ON':'回旋表示 ×5（表示強調）';statusText('BodyParts3D V48｜回旋×5は表示強調｜推定角そのものは不変');});
 
 host.addEventListener('pointerdown',e=>{if(!ready)return;dragging=true;activePointer=e.pointerId;lastX=e.clientX;try{host.setPointerCapture(e.pointerId)}catch(_){}e.preventDefault();},{passive:false});
 host.addEventListener('pointermove',e=>{if(!dragging||activePointer!==e.pointerId)return;rotateBy(e.clientX-lastX);lastX=e.clientX;e.preventDefault();},{passive:false});
