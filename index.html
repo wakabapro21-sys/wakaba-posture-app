@@ -482,12 +482,25 @@ function makeRing(color,r,y){
  const g=new THREE.Group();
  const ellipse=new THREE.EllipseCurve(0,0,r,r*.40,.20,Math.PI*1.82,false,0);
  const pts=ellipse.getPoints(72).map(p=>new THREE.Vector3(p.x,0,p.y));
- // V57: V56からさらに半分の太さ
+ // V58: V57の線幅は維持し、矢尻だけ自然な接線方向へ変更
  const path=new THREE.CatmullRomCurve3(pts,false,'centripetal');
  const tube=new THREE.Mesh(new THREE.TubeGeometry(path,96,.015,12,false),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.98}));
  g.add(tube);
- const tip=new THREE.Mesh(new THREE.ConeGeometry(.040,.12,20),new THREE.MeshBasicMaterial({color}));
- tip.position.copy(pts[pts.length-1]); tip.rotation.z=-1.05; g.add(tip); g.position.y=y; return g;
+ // V58: 円錐ではなく、カーブの接線方向に沿う薄い三角形の矢尻
+ const end=pts[pts.length-1];
+ const tangent=path.getTangent(1).normalize();
+ const side=new THREE.Vector3(-tangent.z,0,tangent.x).normalize();
+ const arrowLen=.115, arrowHalf=.050;
+ const base=end.clone().addScaledVector(tangent,-arrowLen);
+ const tri=new THREE.BufferGeometry();
+ tri.setAttribute('position',new THREE.Float32BufferAttribute([
+   end.x,.002,end.z,
+   base.x+side.x*arrowHalf,.002,base.z+side.z*arrowHalf,
+   base.x-side.x*arrowHalf,.002,base.z-side.z*arrowHalf
+ ],3));
+ tri.computeVertexNormals();
+ const tip=new THREE.Mesh(tri,new THREE.MeshBasicMaterial({color,side:THREE.DoubleSide,transparent:true,opacity:.98}));
+ g.add(tip); g.position.y=y; return g;
 }
 function resize(){if(!renderer)return;const r=host.getBoundingClientRect();renderer.setSize(Math.max(1,r.width),Math.max(1,r.height),false);camera.aspect=Math.max(.45,r.width/Math.max(1,r.height));camera.updateProjectionMatrix();}
 function fitCamera(kind='front'){
