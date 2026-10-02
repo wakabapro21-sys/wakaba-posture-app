@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V76</title>
+<title>AI姿勢＆3次元歪み分析システム V77</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -34,16 +34,21 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 <style id="v63-history-css">
 .v63hist{border:0;border-radius:10px;padding:9px 10px;background:#0f766e;color:#fff;font-weight:900;font-size:11px;margin-left:4px}.v63modal{display:none;position:fixed;inset:0;background:rgba(2,6,23,.58);z-index:21000;padding:18px;align-items:center;justify-content:center}.v63modal.on{display:flex}.v63sheet{width:min(100%,560px);max-height:82vh;overflow:auto;background:#fff;border-radius:18px;padding:16px}.v63item{border:1px solid #e2e8f0;border-radius:12px;padding:11px;margin-top:8px}.v63scores{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:7px}.v63score{background:#f8fafc;border-radius:8px;text-align:center;padding:6px;font-size:10px}.v63close{width:100%;margin-top:12px;border:0;border-radius:11px;padding:12px;background:#0f766e;color:#fff;font-weight:900}
 </style>
-</head>
+<style id="v77-ui-css">
+.v77header{display:flex;justify-content:space-between;align-items:center;gap:10px}.v77menubtn{border:1px solid rgba(255,255,255,.6);background:rgba(255,255,255,.12);color:#fff;border-radius:10px;padding:10px 12px;font-weight:900;letter-spacing:.08em}.v77shade{display:none;position:fixed;inset:0;background:rgba(2,6,23,.5);z-index:29990}.v77shade.on{display:block}.v77drawer{position:fixed;z-index:30000;right:-330px;top:0;height:100dvh;width:min(86vw,330px);background:#fff;box-shadow:-10px 0 30px rgba(2,6,23,.2);transition:right .22s ease;padding:0 0 18px}.v77drawer.on{right:0}.v77drawerHead{background:#0f766e;color:#fff;padding:20px;display:flex;justify-content:space-between;align-items:center}.v77drawerHead button{border:0;background:transparent;color:#fff;font-size:28px}.v77drawer>button{width:100%;border:0;border-bottom:1px solid #eef2f4;background:#fff;text-align:left;padding:17px 22px;font-size:14px;font-weight:800;color:#334155}.v77drawerFoot{padding:20px;color:#94a3b8;font-size:10px}.v77search{margin:0 0 10px}.v77search input{width:100%;border:1px solid #dbe4ea;border-radius:12px;background:#fff;padding:12px 14px;font-size:14px}.v77detailHead{display:flex;align-items:center;gap:12px;padding-bottom:12px;border-bottom:1px solid #eef2f4}.v77stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0}.v77stat{background:#f8fafc;border-radius:10px;padding:10px 5px;text-align:center;font-size:9px;color:#64748b}.v77stat b{display:block;font-size:18px;color:#0f766e;margin-top:2px}.v77primary,.v77secondary{width:100%;border-radius:11px;padding:13px;font-weight:900;margin-top:8px}.v77primary{border:0;background:#f97316;color:#fff}.v77secondary{border:1px solid #0f766e;background:#fff;color:#0f766e}.v77secondary:disabled{opacity:.45}.v77report{border:1px solid #e2e8f0;border-radius:12px;padding:11px;margin-top:9px}.v77reportTop{display:flex;justify-content:space-between;gap:8px;font-size:11px}.v77reportScores{font-size:10px;color:#64748b;margin-top:5px}.v61row{cursor:pointer}.v61start{white-space:nowrap}
+</style></head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V76</span></p></header>
+<header class="v77header"><div><h1>AI姿勢＆3次元歪み分析システム</h1><p>わかば整体院・接骨院 <span style="font-size:9px;opacity:.75">V77</span></p></div><button id="v77MenuBtn" class="v77menubtn" aria-label="メニュー">☰ MENU</button></header>
+<div id="v77Shade" class="v77shade"></div><aside id="v77Drawer" class="v77drawer"><div class="v77drawerHead"><b>MENU</b><button id="v77MenuClose">×</button></div><button data-v77="customers">👥 顧客一覧</button><button data-v77="reports">▤ 分析レポート一覧</button><button data-v77="mypage">○ マイページ</button><button data-v77="notice">♢ お知らせ</button><button data-v77="help">？ ヘルプ</button><button data-v77="settings">⚙ 設定</button><div class="v77drawerFoot">V77 管理画面</div></aside>
 
 <section id="v61Home">
- <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
+ <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して詳細・分析履歴を確認</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div><div class="v77search"><input id="v77Search" placeholder="氏名・フリガナで検索"></div>
  <div id="v61List" class="v61list"></div>
 </section>
 
 
+<div class="v63modal" id="v77DetailModal"><div class="v63sheet"><div class="v77detailHead"><div class="v61avatar" id="v77DetailAvatar">患</div><div><b id="v77DetailName" style="font-size:19px"></b><div id="v77DetailSub" class="v61sub"></div></div></div><div id="v77DetailStats" class="v77stats"></div><button class="v77primary" id="v77NewAnalysis">＋ 新規姿勢分析</button><button class="v77secondary" id="v77OpenHistory">分析履歴を見る</button><button class="v77secondary" id="v77ShareFuture" disabled>LINEで結果を共有 <small>（今後追加）</small></button><button class="v63close" id="v77DetailClose">閉じる</button></div></div>
+<div class="v63modal" id="v77ReportsModal"><div class="v63sheet"><b style="font-size:18px">分析レポート一覧</b><div id="v77ReportsList"></div><button class="v63close" id="v77ReportsClose">閉じる</button></div></div>
 <div class="v63modal" id="v64CompareModal"><div class="v63sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:18px">施術前 / 施術後 比較</b><div id="v64CompareName" style="font-size:11px;color:#64748b;margin-top:2px"></div></div></div><div id="v64CompareBody"></div><button class="v63close" id="v64CompareClose">閉じる</button></div></div>
 <div class="v63modal" id="v63HistoryModal"><div class="v63sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:18px">分析履歴</b><div id="v63HistoryName" style="font-size:11px;color:#64748b;margin-top:2px"></div></div></div><div id="v63HistoryList"></div><button class="v63close" id="v63HistoryClose">閉じる</button></div></div>
 <div id="v61AnalysisTop"><div class="v61current"><span>分析中：<b id="v61CurrentName">ゲスト</b></span><button class="v61btn v61ghost" id="v61Back" style="padding:8px 10px">顧客一覧へ</button></div></div>
@@ -595,7 +600,7 @@ function apply(d={}){
 }
 async function init(){
  if(ready)return;
- statusText('BodyParts3D V76 読み込み中…');
+ statusText('BodyParts3D V77 読み込み中…');
  try{
   scene=new THREE.Scene();scene.background=new THREE.Color(0x07111f);
   camera=new THREE.PerspectiveCamera(34,1,.01,50);
@@ -622,7 +627,7 @@ async function init(){
   bb=new THREE.Box3().setFromObject(model);const fc=bb.getCenter(new THREE.Vector3());model.position.x-=fc.x;model.position.y-=fc.y;model.position.z-=fc.z;model.updateMatrixWorld(true);
   thoraxRing=makeRing(0xff3655,.70,.46);pelvisRing=makeRing(0xff963f,.57,-.36);pivot.add(thoraxRing);pivot.add(pelvisRing);
   ready=true;host.style.display='block';old.style.visibility='hidden';old.style.pointerEvents='none';document.getElementById('threeHint').style.display='none';
-  setView('front');apply(window.WAKABA_3D_DATA||{});statusText('BodyParts3D V76｜正面・中央固定｜指で360°回転');
+  setView('front');apply(window.WAKABA_3D_DATA||{});statusText('BodyParts3D V77｜正面・中央固定｜指で360°回転');
  }catch(e){console.error(e);statusText('3D読込エラー：'+(e?.message||'モデルを確認してください'));old.style.visibility='visible';}
 }
 function setView(kind){
@@ -630,7 +635,7 @@ function setView(kind){
  if(topMode){pivot.rotation.set(0,0,0);fitCamera('top');}
  else{const a=kind==='right'?Math.PI/2:kind==='left'?-Math.PI/2:kind==='diag'?-Math.PI/4:0;pivot.rotation.set(0,a,0);fitCamera('front');}
  const b=document.getElementById('topTwist');if(b)b.textContent=topMode?'◎ 上から見た捻れ ON':'◎ 上から見た捻れ';
- statusText('BodyParts3D V76｜'+(topMode?'上面表示':'画面中央固定')+'｜'+(topMode?'指で上面を360°回転':'指で360°回転'));
+ statusText('BodyParts3D V77｜'+(topMode?'上面表示':'画面中央固定')+'｜'+(topMode?'指で上面を360°回転':'指で360°回転'));
 }
 function rotateBy(dx){
  if(!ready)return;
@@ -645,7 +650,7 @@ window.addEventListener('wakaba-analysis',e=>{const wasStopped=!renderActive;ren
 // 旧Canvasのonclickを解除して、V42のWebGL操作だけを使う。
 const viewBtns=[...document.querySelectorAll('.view3d[data-a]')];viewBtns.forEach(b=>{b.onclick=null;b.addEventListener('click',e=>{e.preventDefault();const a=+b.dataset.a;setView(a===90?'right':a===-90?'left':Math.abs(a)===35?'diag':'front');});});
 const topBtn=document.getElementById('topTwist');topBtn.onclick=null;topBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;setView(topMode?'front':'top');});
-const boostBtn=document.getElementById('twistBoostBtn');boostBtn.onclick=null;boostBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;rotBoost=rotBoost===1?5:1;apply(window.WAKABA_3D_DATA||{});boostBtn.textContent=rotBoost===5?'回旋表示 ×5（表示強調）ON':'回旋表示 ×5（表示強調）';statusText('BodyParts3D V76｜回旋×5は表示強調｜推定角そのものは不変');});
+const boostBtn=document.getElementById('twistBoostBtn');boostBtn.onclick=null;boostBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;rotBoost=rotBoost===1?5:1;apply(window.WAKABA_3D_DATA||{});boostBtn.textContent=rotBoost===5?'回旋表示 ×5（表示強調）ON':'回旋表示 ×5（表示強調）';statusText('BodyParts3D V77｜回旋×5は表示強調｜推定角そのものは不変');});
 
 host.addEventListener('pointerdown',e=>{if(!ready)return;dragging=true;activePointer=e.pointerId;lastX=e.clientX;try{host.setPointerCapture(e.pointerId)}catch(_){}e.preventDefault();},{passive:false});
 host.addEventListener('pointermove',e=>{if(!dragging||activePointer!==e.pointerId)return;rotateBy(e.clientX-lastX);lastX=e.clientX;e.preventDefault();},{passive:false});
@@ -686,12 +691,25 @@ host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel'
    if([total,front,side,twist].every(v=>v!=null && v!=='' && v!=='--')) saveAnalysisHistory(total,front,side,twist,type);
  });
  function esc(v){return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
- function render(){const a=customers(),host=$('v61List'); if(!a.length){host.innerHTML='<div class="v61empty"><b>まだ顧客が登録されていません</b><br><br>「＋ 新規登録」から最初の顧客を登録してください。</div>';return} host.innerHTML=a.map((c,i)=>'<div class="v61row"><div class="v61avatar">'+esc((c.name||'?').slice(0,1))+'</div><div class="v61meta"><div class="v61name">'+esc(c.name)+'</div><div class="v61sub">'+esc([c.kana,c.sex,c.birth].filter(Boolean).join(' ｜ ')||'登録情報あり')+'</div></div><button class="v63hist" data-h="'+i+'">履歴</button><button class="v61start" data-i="'+i+'">姿勢分析</button></div>').join(''); host.querySelectorAll('.v61start').forEach(b=>b.onclick=()=>start(a[+b.dataset.i])); host.querySelectorAll('.v63hist').forEach(b=>b.onclick=()=>showHistory(a[+b.dataset.h]))}
+ function render(){const all=customers(),q=($('v77Search')?.value||'').trim().toLowerCase(),a=q?all.filter(c=>String(c.name||'').toLowerCase().includes(q)||String(c.kana||'').toLowerCase().includes(q)):all,host=$('v61List'); if(!a.length){host.innerHTML='<div class="v61empty"><b>'+(q?'該当する顧客がいません':'まだ顧客が登録されていません')+'</b><br><br>'+(q?'検索条件を変更してください。':'「＋ 新規登録」から最初の顧客を登録してください。')+'</div>';return} host.innerHTML=a.map((c,i)=>{const h=getHistory(c.id),last=h[0];return '<div class="v61row" data-d="'+i+'"><div class="v61avatar">'+esc((c.name||'?').slice(0,1))+'</div><div class="v61meta"><div class="v61name">'+esc(c.name)+'</div><div class="v61sub">'+esc([c.kana,c.sex,c.birth].filter(Boolean).join(' ｜ ')||'登録情報あり')+(last?' ｜ 最新 '+last.total+'点':' ｜ 未分析')+'</div></div><span style="color:#94a3b8;font-size:22px">›</span></div>'}).join(''); host.querySelectorAll('[data-d]').forEach(r=>r.onclick=()=>showDetail(a[+r.dataset.d]))} 
+let v77Current=null;
+function showDetail(c){v77Current=c;const h=getHistory(c.id),last=h[0];$('v77DetailAvatar').textContent=(c.name||'?').slice(0,1);$('v77DetailName').textContent=c.name||'';$('v77DetailSub').textContent=[c.kana,c.sex,c.birth,c.tel].filter(Boolean).join(' ｜ ');$('v77DetailStats').innerHTML='<div class="v77stat">分析回数<b>'+h.length+'</b></div><div class="v77stat">最新スコア<b>'+(last?last.total:'--')+'</b></div><div class="v77stat">回旋<b>'+(last?last.twist:'--')+'</b></div>';$('v77DetailModal').classList.add('on')}
+function showReports(){const rows=[];customers().forEach(c=>getHistory(c.id).forEach(h=>rows.push({c,h})));rows.sort((a,b)=>new Date(b.h.date)-new Date(a.h.date));$('v77ReportsList').innerHTML=rows.length?rows.map(x=>'<div class="v77report"><div class="v77reportTop"><b>'+esc(x.c.name)+'</b><span>'+esc(new Date(x.h.date).toLocaleDateString('ja-JP'))+'</span></div><div class="v77reportScores">総合 '+x.h.total+'点 ｜ 正面 '+x.h.front+' ｜ 側面 '+x.h.side+' ｜ 回旋 '+x.h.twist+'</div></div>').join(''):'<div class="v61empty" style="margin-top:12px">分析レポートはまだありません。</div>';$('v77ReportsModal').classList.add('on')}
+
  function start(c){const raw=JSON.stringify(c);sessionStorage.setItem('wakaba_v61_current',raw);localStorage.setItem('wakaba_v66_current',raw); if(typeof window.wakabaResetAnalysisSession==='function')window.wakabaResetAnalysisSession(); $('v61CurrentName').textContent=c.name||'ゲスト'; document.body.classList.add('v61-analysis'); window.scrollTo(0,0)}
  function home(){document.body.classList.remove('v61-analysis');window.scrollTo(0,0);render()}
  $('v61Add').onclick=()=>{$('v61Modal').classList.add('on');$('v61Name').focus()}; $('v61Cancel').onclick=()=>$('v61Modal').classList.remove('on'); $('v61Back').onclick=home;
  $('v61Save').onclick=()=>{const name=$('v61Name').value.trim();if(!name){alert('氏名を入力してください');return}const a=customers();a.unshift({id:Date.now(),name,kana:$('v61Kana').value.trim(),sex:$('v61Sex').value,birth:$('v61Birth').value,tel:$('v61Tel').value.trim(),created:new Date().toISOString()});put(a);['v61Name','v61Kana','v61Birth','v61Tel'].forEach(id=>$(id).value='');$('v61Sex').value='';$('v61Modal').classList.remove('on');render()};
  $('v61Modal').addEventListener('click',e=>{if(e.target===$('v61Modal'))$('v61Modal').classList.remove('on')}); $('v63HistoryClose').onclick=()=>$('v63HistoryModal').classList.remove('on'); $('v64CompareClose').onclick=()=>$('v64CompareModal').classList.remove('on'); $('v63HistoryModal').addEventListener('click',e=>{if(e.target===$('v63HistoryModal'))$('v63HistoryModal').classList.remove('on')});
+
+ const openMenu=()=>{$('v77Drawer').classList.add('on');$('v77Shade').classList.add('on')},closeMenu=()=>{$('v77Drawer').classList.remove('on');$('v77Shade').classList.remove('on')};
+ $('v77MenuBtn').onclick=openMenu;$('v77MenuClose').onclick=closeMenu;$('v77Shade').onclick=closeMenu;
+ document.querySelectorAll('[data-v77]').forEach(b=>b.onclick=()=>{const k=b.dataset.v77;closeMenu();if(k==='customers')home();else if(k==='reports')showReports();else alert({'mypage':'マイページ','notice':'お知らせ','help':'ヘルプ','settings':'設定'}[k]+'は今後のバージョンで追加します。')});
+ $('v77DetailClose').onclick=()=>$('v77DetailModal').classList.remove('on');$('v77ReportsClose').onclick=()=>$('v77ReportsModal').classList.remove('on');
+ $('v77NewAnalysis').onclick=()=>{if(v77Current){$('v77DetailModal').classList.remove('on');start(v77Current)}};
+ $('v77OpenHistory').onclick=()=>{if(v77Current){$('v77DetailModal').classList.remove('on');showHistory(v77Current)}};
+ $('v77DetailModal').addEventListener('click',e=>{if(e.target===$('v77DetailModal'))$('v77DetailModal').classList.remove('on')});$('v77ReportsModal').addEventListener('click',e=>{if(e.target===$('v77ReportsModal'))$('v77ReportsModal').classList.remove('on')});
+ $('v77Search').addEventListener('input',render);
  render();
 })();
 </script>
