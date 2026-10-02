@@ -482,17 +482,17 @@ function makeRing(color,r,y){
  const g=new THREE.Group();
  const ellipse=new THREE.EllipseCurve(0,0,r,r*.40,.20,Math.PI*1.82,false,0);
  const pts=ellipse.getPoints(72).map(p=>new THREE.Vector3(p.x,0,p.y));
- // V59: V59の線幅・矢尻サイズを維持し、矢尻の軸だけリングの接線方向へ合わせる
+ // V60: 回旋矢印のみ修正。円錐型矢尻をリング終端の接線と完全に平行にし、側面からも輪郭が見える形状にする
  const path=new THREE.CatmullRomCurve3(pts,false,'centripetal');
  const tube=new THREE.Mesh(new THREE.TubeGeometry(path,96,.015,12,false),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.98}));
  g.add(tube);
- const tip=new THREE.Mesh(new THREE.ConeGeometry(.040,.12,20),new THREE.MeshBasicMaterial({color}));
+ const tip=new THREE.Mesh(new THREE.ConeGeometry(.050,.12,24),new THREE.MeshBasicMaterial({color,side:THREE.DoubleSide}));
  const end=pts[pts.length-1].clone();
  const tangent=path.getTangent(1).normalize();
- // ConeGeometryの長軸(+Y)をカーブ終端の接線へ正確に向ける
+ // ConeGeometryの長軸(+Y)をリング終端の接線方向へ合わせる
  tip.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),tangent);
- // 円錐の先端がリング終端に自然につながる位置へ配置
- tip.position.copy(end).addScaledVector(tangent,-.055);
+ // 円錐の先端をリング終端へ置き、軸はリング線と平行のままにする
+ tip.position.copy(end).addScaledVector(tangent,-.060);
  g.add(tip); g.position.y=y; return g;
 }
 function resize(){if(!renderer)return;const r=host.getBoundingClientRect();renderer.setSize(Math.max(1,r.width),Math.max(1,r.height),false);camera.aspect=Math.max(.45,r.width/Math.max(1,r.height));camera.updateProjectionMatrix();}
