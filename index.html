@@ -30,7 +30,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 <div class="card"><div class="head"><b>③ 左側面</b><span class="badge" id="badge-left">未登録</span></div><div class="stage" id="stage-left"><span>左側面写真を登録</span></div><div class="actions" style="grid-template-columns:1fr 1fr 1fr"><label class="btn gallery">📁 写真を選択<input id="gallery-left" type="file" accept="image/*"></label><label class="btn camera">📷 カメラ撮影<input id="camera-left" type="file" accept="image/*" capture="environment"></label><button type="button" class="btn guideBtn" data-guide="left" style="border:0;background:#172033;color:#fff;min-height:48px;border-radius:11px;font-size:11px;font-weight:900">📐 ガイド撮影</button></div><button type="button" class="adjustBtn" data-adjust="left" style="display:none;width:100%;margin-top:8px;border:1px solid #fdba74;background:#fff7ed;color:#9a3412;border-radius:11px;padding:11px;font-size:12px;font-weight:900">✋ ランドマークを微調整</button><div class="note">約2〜3m離れ、左側をカメラへ。スマホは胸〜みぞおちの高さ</div></div>
 </div>
 <div class="card">
- <div class="okbox" id="status">0 / 3 枚登録済み</div><div style="font-size:9px;color:#94a3b8;margin-top:4px;text-align:right">解析エンジン V45</div>
+ <div class="okbox" id="status">0 / 3 枚登録済み</div><div style="font-size:9px;color:#94a3b8;margin-top:4px;text-align:right">解析エンジン V46</div>
  <div style="margin-top:8px;padding:10px;border-radius:11px;background:#fff7ed;border:1px solid #fed7aa;font-size:11px;line-height:1.6;color:#9a3412">
   <b>✋ 手動微調整</b>　AI検出後、写真上のオレンジ色のポイントを指でドラッグして位置を修正できます。修正した位置が3D分析とスコアに反映されます。
  </div>
@@ -40,6 +40,22 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
  <button id="make3d" type="button" style="width:100%;border:0;border-radius:11px;padding:14px;background:#f97316;color:#fff;font-weight:900;font-size:14px">3方向のランドマークから3D分析を作成</button>
  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px">
   <button class="view3d" data-a="0">正面</button><button class="view3d" data-a="90">右</button><button class="view3d" data-a="-90">左</button><button class="view3d" data-a="35">斜め</button>
+ </div>
+ <div id="patientReport" style="margin-top:10px;border:1px solid #99f6e4;border-radius:16px;padding:13px;background:linear-gradient(135deg,#f0fdfa,#ffffff)">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px"><b style="font-size:15px;color:#134e4a">あなたの姿勢タイプ</b><span style="font-size:9px;background:#ccfbf1;color:#0f766e;padding:5px 8px;border-radius:999px;font-weight:800">若葉整体院 独自分析</span></div>
+  <div id="postureType" style="font-size:22px;font-weight:900;color:#0f766e;line-height:1.25">3方向分析後に表示</div>
+  <div id="postureSummary" style="font-size:11px;color:#475569;line-height:1.7;margin-top:7px">正面・左右側面の3枚を分析すると、今回の特徴をわかりやすく表示します。</div>
+  <div style="margin-top:11px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:10px">
+   <div style="font-size:10px;color:#64748b;font-weight:800">今回もっとも目立つポイント</div>
+   <div id="mainFinding" style="font-size:16px;font-weight:900;color:#172033;margin-top:4px">--</div>
+   <div id="mainFindingDetail" style="font-size:10px;color:#64748b;line-height:1.6;margin-top:4px">分析後に表示します。</div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px">
+   <div style="background:#ecfeff;border-radius:10px;padding:8px;text-align:center"><div style="font-size:9px;color:#64748b">正面</div><b id="reportFront">--</b></div>
+   <div style="background:#fff7ed;border-radius:10px;padding:8px;text-align:center"><div style="font-size:9px;color:#64748b">側面</div><b id="reportSide">--</b></div>
+   <div style="background:#fef2f2;border-radius:10px;padding:8px;text-align:center"><div style="font-size:9px;color:#64748b">回旋</div><b id="reportTwist">--</b></div>
+  </div>
+  <div style="font-size:9px;color:#94a3b8;line-height:1.5;margin-top:8px">※ 写真とランドマークから得た比較用の参考評価です。医学的診断ではありません。</div>
  </div>
  <div id="scorePanel" style="margin-top:10px;border:1px solid #cbd5e1;border-radius:14px;padding:12px;background:linear-gradient(135deg,#f8fafc,#ecfeff)">
   <div style="font-size:12px;font-weight:900;color:#172033;margin-bottom:8px">姿勢バランススコア <span style="font-size:9px;color:#64748b;font-weight:500">若葉整体院 独自基準・参考評価</span></div>
@@ -303,6 +319,22 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  document.getElementById("scoreFront").textContent=frontScore;
  document.getElementById("scoreSide").textContent=sideScore;
  document.getElementById("scoreTwist").textContent=twistScore;
+ function reportBand(s){return s>=90?"バランス良好":s>=70?"軽度の差":s>=50?"中等度の差":"大きな差"}
+ var dims=[
+   {key:"正面",score:frontScore,detail:"肩の傾き "+Math.abs(sh).toFixed(1)+"°・骨盤の傾き "+Math.abs(ph).toFixed(1)+"°・頭部偏位 "+Math.abs(hs).toFixed(1)+"%"},
+   {key:"側面",score:sideScore,detail:"頭部と体幹の前後バランスに差がみられます。"},
+   {key:"回旋",score:twistScore,detail:"胸郭 "+Math.abs(thoraxYaw).toFixed(1)+"°・骨盤 "+Math.abs(pelvisYaw).toFixed(1)+"°・相対差 "+Math.abs(tw).toFixed(1)+"°"}
+ ];
+ dims.sort(function(a,b){return a.score-b.score});var main=dims[0];
+ var typeText=main.key==="正面"?"左右バランス型":main.key==="側面"?"前後バランス型":"回旋バランス型";
+ if(totalScore>=90)typeText="全体バランス良好型";
+ document.getElementById("postureType").textContent=typeText;
+ document.getElementById("postureSummary").textContent="総合 "+totalScore+"点。正面 "+frontScore+"点／側面 "+sideScore+"点／回旋 "+twistScore+"点として、3方向の特徴を比較しています。";
+ document.getElementById("mainFinding").textContent=main.key+"のバランス";
+ document.getElementById("mainFindingDetail").textContent=main.detail+"　今回の3項目では「"+main.key+"」の参考スコアが最も低く、変化を追いやすいポイントです。";
+ document.getElementById("reportFront").textContent=reportBand(frontScore);
+ document.getElementById("reportSide").textContent=reportBand(sideScore);
+ document.getElementById("reportTwist").textContent=reportBand(twistScore);
  built=true;document.getElementById("threeHint").style.display="none";var b=document.getElementById("modelBadge");b.textContent="3方向反映済み";b.className="badge ok";
 window.WAKABA_3D_DATA={thoraxYaw:thoraxYaw,pelvisYaw:pelvisYaw,shoulderTilt:sh,pelvisTilt:ph,headShift:hs};
 window.dispatchEvent(new CustomEvent("wakaba-analysis",{detail:window.WAKABA_3D_DATA}));draw()}
@@ -368,7 +400,7 @@ document.getElementById("make3d").onclick=function(){
     if(badge){badge.textContent="解析中…";badge.className="badge"}
     build();
   }catch(err){
-    console.error("V45 build error",err);
+    console.error("V46 build error",err);
     if(badge){badge.textContent="解析エラー: "+(err&&err.message?err.message:String(err));badge.className="badge"}
     alert("3D分析エラー: "+(err&&err.message?err.message:String(err)));
   }
@@ -422,7 +454,7 @@ function apply(d={}){
 }
 async function init(){
  if(ready)return;
- statusText('BodyParts3D V45 読み込み中…');
+ statusText('BodyParts3D V46 読み込み中…');
  try{
   scene=new THREE.Scene();scene.background=new THREE.Color(0x07111f);
   camera=new THREE.PerspectiveCamera(34,1,.01,50);
@@ -449,7 +481,7 @@ async function init(){
   bb=new THREE.Box3().setFromObject(model);const fc=bb.getCenter(new THREE.Vector3());model.position.x-=fc.x;model.position.y-=fc.y;model.position.z-=fc.z;model.updateMatrixWorld(true);
   thoraxRing=makeRing(0xff3655,.70,.46);pelvisRing=makeRing(0xff963f,.57,-.36);pivot.add(thoraxRing);pivot.add(pelvisRing);
   ready=true;host.style.display='block';old.style.visibility='hidden';old.style.pointerEvents='none';document.getElementById('threeHint').style.display='none';
-  setView('front');apply(window.WAKABA_3D_DATA||{});statusText('BodyParts3D V45｜正面・中央固定｜指で360°回転');
+  setView('front');apply(window.WAKABA_3D_DATA||{});statusText('BodyParts3D V46｜正面・中央固定｜指で360°回転');
  }catch(e){console.error(e);statusText('3D読込エラー：'+(e?.message||'モデルを確認してください'));old.style.visibility='visible';}
 }
 function setView(kind){
@@ -457,7 +489,7 @@ function setView(kind){
  if(topMode){pivot.rotation.set(0,0,0);fitCamera('top');}
  else{const a=kind==='right'?Math.PI/2:kind==='left'?-Math.PI/2:kind==='diag'?-Math.PI/4:0;pivot.rotation.set(0,a,0);fitCamera('front');}
  const b=document.getElementById('topTwist');if(b)b.textContent=topMode?'◎ 上から見た捻れ ON':'◎ 上から見た捻れ';
- statusText('BodyParts3D V45｜'+(topMode?'上面表示':'画面中央固定')+'｜'+(topMode?'指で上面を360°回転':'指で360°回転'));
+ statusText('BodyParts3D V46｜'+(topMode?'上面表示':'画面中央固定')+'｜'+(topMode?'指で上面を360°回転':'指で360°回転'));
 }
 function rotateBy(dx){
  if(!ready)return;
@@ -471,7 +503,7 @@ window.addEventListener('wakaba-analysis',e=>init().then(()=>apply(e.detail)));
 // 旧Canvasのonclickを解除して、V42のWebGL操作だけを使う。
 const viewBtns=[...document.querySelectorAll('.view3d[data-a]')];viewBtns.forEach(b=>{b.onclick=null;b.addEventListener('click',e=>{e.preventDefault();const a=+b.dataset.a;setView(a===90?'right':a===-90?'left':Math.abs(a)===35?'diag':'front');});});
 const topBtn=document.getElementById('topTwist');topBtn.onclick=null;topBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;setView(topMode?'front':'top');});
-const boostBtn=document.getElementById('twistBoostBtn');boostBtn.onclick=null;boostBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;rotBoost=rotBoost===1?5:1;apply(window.WAKABA_3D_DATA||{});boostBtn.textContent=rotBoost===5?'回旋表示 ×5（表示強調）ON':'回旋表示 ×5（表示強調）';statusText('BodyParts3D V45｜回旋×5は表示強調｜推定角そのものは不変');});
+const boostBtn=document.getElementById('twistBoostBtn');boostBtn.onclick=null;boostBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;rotBoost=rotBoost===1?5:1;apply(window.WAKABA_3D_DATA||{});boostBtn.textContent=rotBoost===5?'回旋表示 ×5（表示強調）ON':'回旋表示 ×5（表示強調）';statusText('BodyParts3D V46｜回旋×5は表示強調｜推定角そのものは不変');});
 
 host.addEventListener('pointerdown',e=>{if(!ready)return;dragging=true;activePointer=e.pointerId;lastX=e.clientX;try{host.setPointerCapture(e.pointerId)}catch(_){}e.preventDefault();},{passive:false});
 host.addEventListener('pointermove',e=>{if(!dragging||activePointer!==e.pointerId)return;rotateBy(e.clientX-lastX);lastX=e.clientX;e.preventDefault();},{passive:false});
