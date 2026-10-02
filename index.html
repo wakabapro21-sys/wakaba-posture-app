@@ -38,6 +38,16 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 <div class="card" id="modelCard">
  <div class="head"><b>④ 3方向統合・姿勢可視化モデル</b><span class="badge" id="modelBadge">待機中</span></div>
  <button id="make3d" type="button" style="width:100%;border:0;border-radius:11px;padding:14px;background:#f97316;color:#fff;font-weight:900;font-size:14px">3方向のランドマークから3D分析を作成</button>
+ <div id="scorePanel" style="margin-top:10px;border:1px solid #cbd5e1;border-radius:14px;padding:12px;background:linear-gradient(135deg,#f8fafc,#ecfeff)">
+  <div style="font-size:12px;font-weight:900;color:#172033;margin-bottom:8px">姿勢バランススコア <span style="font-size:9px;color:#64748b;font-weight:500">独自基準・参考評価</span></div>
+  <div style="display:grid;grid-template-columns:1.25fr repeat(3,1fr);gap:6px;text-align:center">
+   <div style="background:#0f766e;color:#fff;border-radius:12px;padding:10px 4px"><div style="font-size:9px">総合</div><b id="scoreTotal" style="font-size:27px">--</b><span style="font-size:10px"> /100</span></div>
+   <div style="background:#fff;border-radius:12px;padding:10px 3px"><div style="font-size:9px;color:#64748b">正面</div><b id="scoreFront" style="font-size:21px">--</b><div style="font-size:8px;color:#94a3b8">左右バランス</div></div>
+   <div style="background:#fff;border-radius:12px;padding:10px 3px"><div style="font-size:9px;color:#64748b">側面</div><b id="scoreSide" style="font-size:21px">--</b><div style="font-size:8px;color:#94a3b8">前後バランス</div></div>
+   <div style="background:#fff;border-radius:12px;padding:10px 3px"><div style="font-size:9px;color:#64748b">回旋</div><b id="scoreTwist" style="font-size:21px">--</b><div style="font-size:8px;color:#94a3b8">相対ねじれ</div></div>
+  </div>
+  <div style="font-size:9px;color:#64748b;line-height:1.5;margin-top:7px">※ 写真条件とランドマーク位置から算出する比較用の参考スコアです。医学的な診断値ではありません。目安：90〜100 良好／70〜89 軽度差／50〜69 中等度差／0〜49 大きな差。</div>
+ </div>
  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px">
   <button class="view3d" data-a="0">正面</button><button class="view3d" data-a="90">右</button><button class="view3d" data-a="-90">左</button><button class="view3d" data-a="35">斜め</button>
  </div>
@@ -65,16 +75,6 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
   </div>
   <div style="margin-top:8px;border-radius:11px;padding:10px;background:#f0fdfa"><div style="font-size:10px;font-weight:900;color:#0f766e">施術・セルフケアの方向性</div><div id="careDirection" style="font-size:10px;color:#475569;line-height:1.7;margin-top:4px">分析後に表示します。</div></div>
   <div style="font-size:9px;color:#94a3b8;line-height:1.5;margin-top:7px">※ 写真上の姿勢特徴から推定した参考候補です。実際の筋緊張・筋力は触診、可動域、筋力検査などと合わせて確認してください。</div>
- </div>
- <div id="scorePanel" style="margin-top:10px;border:1px solid #cbd5e1;border-radius:14px;padding:12px;background:linear-gradient(135deg,#f8fafc,#ecfeff)">
-  <div style="font-size:12px;font-weight:900;color:#172033;margin-bottom:8px">姿勢バランススコア <span style="font-size:9px;color:#64748b;font-weight:500">独自基準・参考評価</span></div>
-  <div style="display:grid;grid-template-columns:1.25fr repeat(3,1fr);gap:6px;text-align:center">
-   <div style="background:#0f766e;color:#fff;border-radius:12px;padding:10px 4px"><div style="font-size:9px">総合</div><b id="scoreTotal" style="font-size:27px">--</b><span style="font-size:10px"> /100</span></div>
-   <div style="background:#fff;border-radius:12px;padding:10px 3px"><div style="font-size:9px;color:#64748b">正面</div><b id="scoreFront" style="font-size:21px">--</b><div style="font-size:8px;color:#94a3b8">左右バランス</div></div>
-   <div style="background:#fff;border-radius:12px;padding:10px 3px"><div style="font-size:9px;color:#64748b">側面</div><b id="scoreSide" style="font-size:21px">--</b><div style="font-size:8px;color:#94a3b8">前後バランス</div></div>
-   <div style="background:#fff;border-radius:12px;padding:10px 3px"><div style="font-size:9px;color:#64748b">回旋</div><b id="scoreTwist" style="font-size:21px">--</b><div style="font-size:8px;color:#94a3b8">相対ねじれ</div></div>
-  </div>
-  <div style="font-size:9px;color:#64748b;line-height:1.5;margin-top:7px">※ 写真条件とランドマーク位置から算出する比較用の参考スコアです。医学的な診断値ではありません。目安：90〜100 良好／70〜89 軽度差／50〜69 中等度差／0〜49 大きな差。</div>
  </div>
  <div id="twistPanel" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px">
   <div style="background:#ecfeff;border-radius:10px;padding:8px;text-align:center"><div style="font-size:10px;color:#64748b">胸郭回旋傾向</div><b id="thoraxDeg">--</b><div id="thoraxText" style="font-size:9px;color:#64748b;margin-top:2px">参考推定</div></div>
@@ -381,7 +381,7 @@ function project(p){var r=rot(p),box=C.getBoundingClientRect(),sc=Math.min(box.w
 function line(a,b,w,col,alpha){var A=project(a),B=project(b);ctx.globalAlpha=alpha==null?1:alpha;ctx.strokeStyle=col;ctx.lineWidth=w;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(A.x,A.y);ctx.lineTo(B.x,B.y);ctx.stroke();ctx.globalAlpha=1}
 function circle(p,r,col){var q=project(p);ctx.fillStyle=col;ctx.beginPath();ctx.arc(q.x,q.y,r,0,Math.PI*2);ctx.fill()}
 function mid(a,b,t){return{x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,z:a.z+(b.z-a.z)*t}}
-function arrow2(x1,y1,x2,y2,col,label){ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=5;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();var a=Math.atan2(y2-y1,x2-x1);ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-13*Math.cos(a-.55),y2-13*Math.sin(a-.55));ctx.lineTo(x2-13*Math.cos(a+.55),y2-13*Math.sin(a+.55));ctx.closePath();ctx.fill();ctx.font="bold 12px -apple-system,sans-serif";ctx.fillText(label,x1+8,y1-10)}
+function arrow2(x1,y1,x2,y2,col,label){ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=8;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();var a=Math.atan2(y2-y1,x2-x1);ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-18*Math.cos(a-.55),y2-18*Math.sin(a-.55));ctx.lineTo(x2-18*Math.cos(a+.55),y2-18*Math.sin(a+.55));ctx.closePath();ctx.fill();ctx.font="bold 12px -apple-system,sans-serif";ctx.fillText(label,x1+8,y1-10)}
 function drawTop(){var box=C.getBoundingClientRect(),cx=box.width/2,cy=box.height/2,rx=Math.min(box.width*.31,125),ry=58;ctx.fillStyle="#cbd5e1";ctx.font="bold 13px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("上から見た回旋傾向（視認性のため ×"+twistBoost+"）",cx,35);ctx.textAlign="start";ctx.strokeStyle="#475569";ctx.lineWidth=2;ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(cx,65);ctx.lineTo(cx,box.height-55);ctx.stroke();ctx.setLineDash([]);
  function ellipseYaw(y,yaw,col,label){ctx.save();ctx.translate(cx,y);ctx.rotate(yaw*twistBoost*Math.PI/180);ctx.strokeStyle=col;ctx.lineWidth=7;ctx.globalAlpha=.9;ctx.beginPath();ctx.ellipse(0,0,rx,ry,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;arrow2(-rx*.72,0,rx*.82,0,col,label+" 実測推定 "+Math.abs(yaw).toFixed(1)+"°");ctx.restore()}
  ellipseYaw(cy-85,thoraxYaw,"#14b8a6","胸郭");ellipseYaw(cy+90,pelvisYaw,"#f97316","骨盤");var tw=thoraxYaw-pelvisYaw;ctx.fillStyle="#f8fafc";ctx.font="bold 18px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("参考推定差 "+Math.abs(tw).toFixed(1)+"°｜表示のみ×"+twistBoost,cx,box.height-22);ctx.textAlign="start"}
@@ -415,7 +415,7 @@ function anatomyFill(P){
  ctx.restore();
 }
 function curvedRotation(cx,cy,rx,ry,cw,col,label){
- ctx.save();ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=7;ctx.lineCap="round";
+ ctx.save();ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=10;ctx.lineCap="round";
  var a0=cw?.15*Math.PI:.85*Math.PI,a1=cw?1.62*Math.PI:-.62*Math.PI;
  ctx.beginPath();ctx.ellipse(cx,cy,rx,ry,0,a0,a1,!cw);ctx.stroke();
  var px=cx+rx*Math.cos(a1),py=cy+ry*Math.sin(a1);
@@ -465,10 +465,13 @@ function loadGLB(name){return new Promise((resolve,reject)=>new GLTFLoader().loa
 function style(obj,m){obj.traverse(x=>{if(x.isMesh){x.material=m;if(x.geometry&&!x.geometry.attributes.normal)x.geometry.computeVertexNormals();}});return obj;}
 function makeRing(color,r,y){
  const g=new THREE.Group();
- const curve=new THREE.EllipseCurve(0,0,r,r*.40,.20,Math.PI*1.82,false,0);
- const pts=curve.getPoints(72).map(p=>new THREE.Vector3(p.x,0,p.y));
- g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color,transparent:true,opacity:.95})));
- const tip=new THREE.Mesh(new THREE.ConeGeometry(.055,.16,16),new THREE.MeshBasicMaterial({color}));
+ const ellipse=new THREE.EllipseCurve(0,0,r,r*.40,.20,Math.PI*1.82,false,0);
+ const pts=ellipse.getPoints(72).map(p=>new THREE.Vector3(p.x,0,p.y));
+ // V54: スマホでも太さが確実に出る3Dチューブ矢印
+ const path=new THREE.CatmullRomCurve3(pts,false,'centripetal');
+ const tube=new THREE.Mesh(new THREE.TubeGeometry(path,96,.028,10,false),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.98}));
+ g.add(tube);
+ const tip=new THREE.Mesh(new THREE.ConeGeometry(.085,.23,20),new THREE.MeshBasicMaterial({color}));
  tip.position.copy(pts[pts.length-1]); tip.rotation.z=-1.05; g.add(tip); g.position.y=y; return g;
 }
 function resize(){if(!renderer)return;const r=host.getBoundingClientRect();renderer.setSize(Math.max(1,r.width),Math.max(1,r.height),false);camera.aspect=Math.max(.45,r.width/Math.max(1,r.height));camera.updateProjectionMatrix();}
@@ -492,7 +495,7 @@ function apply(d={}){
 }
 async function init(){
  if(ready)return;
- statusText('BodyParts3D V51 読み込み中…');
+ statusText('BodyParts3D V54 読み込み中…');
  try{
   scene=new THREE.Scene();scene.background=new THREE.Color(0x07111f);
   camera=new THREE.PerspectiveCamera(34,1,.01,50);
