@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>若葉整体院 姿勢写真登録</title>
+<title>AI姿勢＆3次元歪み分析システム</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -21,7 +21,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>若葉整体院・接骨院｜AI姿勢分析 開発版 V44</p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析</p></header>
 <main>
 <div class="card intro"><b>撮影条件をそろえて分析精度を高めます。</b><br>ガイド撮影では中央・水平・全身位置をそろえます。撮影後はAIランドマークを検出し、3方向を統合して姿勢を可視化します。</div>
 <div class="views">
@@ -30,7 +30,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 <div class="card"><div class="head"><b>③ 左側面</b><span class="badge" id="badge-left">未登録</span></div><div class="stage" id="stage-left"><span>左側面写真を登録</span></div><div class="actions" style="grid-template-columns:1fr 1fr 1fr"><label class="btn gallery">📁 写真を選択<input id="gallery-left" type="file" accept="image/*"></label><label class="btn camera">📷 カメラ撮影<input id="camera-left" type="file" accept="image/*" capture="environment"></label><button type="button" class="btn guideBtn" data-guide="left" style="border:0;background:#172033;color:#fff;min-height:48px;border-radius:11px;font-size:11px;font-weight:900">📐 ガイド撮影</button></div><button type="button" class="adjustBtn" data-adjust="left" style="display:none;width:100%;margin-top:8px;border:1px solid #fdba74;background:#fff7ed;color:#9a3412;border-radius:11px;padding:11px;font-size:12px;font-weight:900">✋ ランドマークを微調整</button><div class="note">約2〜3m離れ、左側をカメラへ。スマホは胸〜みぞおちの高さ</div></div>
 </div>
 <div class="card">
- <div class="okbox" id="status">0 / 3 枚登録済み</div><div style="font-size:9px;color:#94a3b8;margin-top:4px;text-align:right">解析エンジン V47</div>
+ <div class="okbox" id="status">0 / 3 枚登録済み</div><div style="font-size:9px;color:#94a3b8;margin-top:4px;text-align:right">解析エンジン V46</div>
  <div style="margin-top:8px;padding:10px;border-radius:11px;background:#fff7ed;border:1px solid #fed7aa;font-size:11px;line-height:1.6;color:#9a3412">
   <b>✋ 手動微調整</b>　AI検出後、写真上のオレンジ色のポイントを指でドラッグして位置を修正できます。修正した位置が3D分析とスコアに反映されます。
  </div>
@@ -42,7 +42,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
   <button class="view3d" data-a="0">正面</button><button class="view3d" data-a="90">右</button><button class="view3d" data-a="-90">左</button><button class="view3d" data-a="35">斜め</button>
  </div>
  <div id="patientReport" style="margin-top:10px;border:1px solid #99f6e4;border-radius:16px;padding:13px;background:linear-gradient(135deg,#f0fdfa,#ffffff)">
-  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px"><b style="font-size:15px;color:#134e4a">あなたの姿勢タイプ</b><span style="font-size:9px;background:#ccfbf1;color:#0f766e;padding:5px 8px;border-radius:999px;font-weight:800">若葉整体院 独自分析</span></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px"><b style="font-size:15px;color:#134e4a">あなたの姿勢タイプ</b><span style="font-size:9px;background:#ccfbf1;color:#0f766e;padding:5px 8px;border-radius:999px;font-weight:800">独自姿勢分析</span></div>
   <div id="postureType" style="font-size:22px;font-weight:900;color:#0f766e;line-height:1.25">3方向分析後に表示</div>
   <div id="postureSummary" style="font-size:11px;color:#475569;line-height:1.7;margin-top:7px">正面・左右側面の3枚を分析すると、今回の特徴をわかりやすく表示します。</div>
   <div style="margin-top:11px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:10px">
@@ -57,21 +57,17 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
   </div>
   <div style="font-size:9px;color:#94a3b8;line-height:1.5;margin-top:8px">※ 写真とランドマークから得た比較用の参考評価です。医学的診断ではありません。</div>
  </div>
- <div id="muscleAdvicePanel" style="margin-top:10px;border:1px solid #dbeafe;border-radius:14px;padding:12px;background:#fff">
-  <div style="font-size:14px;font-weight:900;color:#172033">体の前面・後面｜筋緊張＆筋力低下の参考分析</div>
-  <div style="font-size:9px;color:#64748b;line-height:1.5;margin-top:4px">※ 写真上の姿勢パターンから考えられる筋バランスの参考情報です。筋緊張・筋力低下を写真だけで確定するものではありません。</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-   <div style="border:1px solid #fed7aa;background:#fff7ed;border-radius:12px;padding:10px"><b style="font-size:11px;color:#c2410c">🔥 緊張・短縮しやすい筋肉</b><div id="tightMuscles" style="font-size:10px;color:#475569;line-height:1.75;margin-top:6px">3方向分析後に表示</div></div>
-   <div style="border:1px solid #bfdbfe;background:#eff6ff;border-radius:12px;padding:10px"><b style="font-size:11px;color:#1d4ed8">💪 弱化・伸長しやすい筋肉</b><div id="weakMuscles" style="font-size:10px;color:#475569;line-height:1.75;margin-top:6px">3方向分析後に表示</div></div>
+ <div id="muscleBalancePanel" style="margin-top:10px;border:1px solid #e2e8f0;border-radius:16px;padding:13px;background:#fff">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px"><b style="font-size:14px;color:#172033">体の前面・後面別 筋バランス分析</b><span style="font-size:9px;background:#f1f5f9;color:#475569;padding:5px 8px;border-radius:999px;font-weight:800">姿勢からみた傾向候補</span></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+   <div style="border:1px solid #fecaca;background:#fff7f7;border-radius:12px;padding:10px"><div style="font-size:11px;font-weight:900;color:#dc2626;margin-bottom:7px">🔥 緊張・短縮しやすい筋肉</div><div id="muscleTight" style="font-size:10px;color:#475569;line-height:1.75">3方向分析後に表示します。</div></div>
+   <div style="border:1px solid #bfdbfe;background:#f8fbff;border-radius:12px;padding:10px"><div style="font-size:11px;font-weight:900;color:#2563eb;margin-bottom:7px">● 弱化・伸長しやすい筋肉</div><div id="muscleWeak" style="font-size:10px;color:#475569;line-height:1.75">3方向分析後に表示します。</div></div>
   </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
-   <div style="background:#f8fafc;border-radius:12px;padding:10px"><b style="font-size:11px;color:#334155">身体の前面</b><div id="frontBodyAdvice" style="font-size:10px;color:#475569;line-height:1.7;margin-top:5px">分析後に表示します。</div></div>
-   <div style="background:#f8fafc;border-radius:12px;padding:10px"><b style="font-size:11px;color:#334155">身体の後面</b><div id="backBodyAdvice" style="font-size:10px;color:#475569;line-height:1.7;margin-top:5px">分析後に表示します。</div></div>
-  </div>
-  <div style="margin-top:8px;border-radius:12px;padding:10px;background:#f0fdfa"><b style="font-size:11px;color:#0f766e">施術・セルフケアの方向性</b><div id="careAdvice" style="font-size:10px;color:#475569;line-height:1.7;margin-top:5px">分析後に表示します。</div></div>
+  <div style="margin-top:8px;border-radius:11px;padding:10px;background:#f0fdfa"><div style="font-size:10px;font-weight:900;color:#0f766e">施術・セルフケアの方向性</div><div id="careDirection" style="font-size:10px;color:#475569;line-height:1.7;margin-top:4px">分析後に表示します。</div></div>
+  <div style="font-size:9px;color:#94a3b8;line-height:1.5;margin-top:7px">※ 写真上の姿勢特徴から推定した参考候補です。実際の筋緊張・筋力は触診、可動域、筋力検査などと合わせて確認してください。</div>
  </div>
  <div id="scorePanel" style="margin-top:10px;border:1px solid #cbd5e1;border-radius:14px;padding:12px;background:linear-gradient(135deg,#f8fafc,#ecfeff)">
-  <div style="font-size:12px;font-weight:900;color:#172033;margin-bottom:8px">姿勢バランススコア <span style="font-size:9px;color:#64748b;font-weight:500">若葉整体院 独自基準・参考評価</span></div>
+  <div style="font-size:12px;font-weight:900;color:#172033;margin-bottom:8px">姿勢バランススコア <span style="font-size:9px;color:#64748b;font-weight:500">独自基準・参考評価</span></div>
   <div style="display:grid;grid-template-columns:1.25fr repeat(3,1fr);gap:6px;text-align:center">
    <div style="background:#0f766e;color:#fff;border-radius:12px;padding:10px 4px"><div style="font-size:9px">総合</div><b id="scoreTotal" style="font-size:27px">--</b><span style="font-size:10px"> /100</span></div>
    <div style="background:#fff;border-radius:12px;padding:10px 3px"><div style="font-size:9px;color:#64748b">正面</div><b id="scoreFront" style="font-size:21px">--</b><div style="font-size:8px;color:#94a3b8">左右バランス</div></div>
@@ -316,7 +312,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    var head=Math.abs(p.head.x-smx)*100,trunk=Math.abs(smx-hmx)*100;
    return head*1.7+trunk*1.25;
  }
- /* V29 若葉整体院 独自比較スコア
+ /* V47 独自比較スコア
     軽度の左右差も施術前後比較で見えるよう、旧版より感度を高く設定。 */
  /* V33: 基準感は維持しつつ、改善・悪化への感度を高める */
  function dz(v,z){v=Math.abs(v);return Math.max(0,v-z)}
@@ -348,40 +344,34 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  document.getElementById("reportFront").textContent=reportBand(frontScore);
  document.getElementById("reportSide").textContent=reportBand(sideScore);
  document.getElementById("reportTwist").textContent=reportBand(twistScore);
- /* V47: 姿勢パターンに基づく筋バランス参考表示（診断ではない） */
- var tight=[],weak=[],frontAdv=[],backAdv=[],care=[];
+ /* V47 筋バランス：写真姿勢からの傾向候補。診断や筋力測定の代用にはしない。 */
+ var tight=[],weak=[],care=[];
  function add(arr,v){if(arr.indexOf(v)<0)arr.push(v)}
- var sideStrong=sideScore<70, frontStrong=frontScore<70, twistStrong=twistScore<70;
- if(sideStrong){
-   add(tight,"胸鎖乳突筋・斜角筋（頭部前方位の代償）"); add(tight,"大胸筋・小胸筋（肩甲帯前方化の代償）");
-   add(weak,"頸部深層屈筋群"); add(weak,"僧帽筋中部・下部／前鋸筋");
-   frontAdv.push("胸部・頸部前面は短縮傾向を想定し、呼吸と胸郭可動性も確認します。");
-   backAdv.push("肩甲帯安定筋と頸胸移行部の支持性を確認します。");
-   care.push("胸部前面のストレッチ、胸郭モビリティ、肩甲帯安定化エクササイズを候補にします。");
+ if(sideScore<70){
+   add(tight,"前面：大胸筋・小胸筋、胸鎖乳突筋、腸腰筋の緊張傾向候補");
+   add(tight,"後面：後頭下筋群・腰背部筋群の過緊張傾向候補");
+   add(weak,"前面：深頸屈筋群・腹部深層筋の機能低下傾向候補");
+   add(weak,"後面：下部僧帽筋・殿筋群の機能低下傾向候補");
+   add(care,"頭部と体幹の前後バランスを優先して確認し、胸郭前面・股関節前面の柔軟性と体幹・殿筋の安定性を評価する");
  }
- if(frontStrong || Math.abs(ph)>=1.5){
-   add(tight,"腰方形筋・脊柱起立筋（左右差の代償）"); add(tight,"中殿筋・大腿筋膜張筋（荷重差の代償）");
-   add(weak,"中殿筋・腹斜筋群（反対側を含め左右比較）"); add(weak,"体幹深層安定筋群");
-   frontAdv.push("骨盤・肩の左右差に伴う体幹側方筋群の代償を左右比較します。");
-   backAdv.push("腰背部・殿筋群の左右の緊張差と荷重パターンを確認します。");
-   care.push("骨盤周囲・股関節の可動性と左右荷重を確認し、左右差に応じて個別に調整します。");
+ if(frontScore<70){
+   var hi=sh<0?"右":"左", lo=sh<0?"左":"右";
+   add(tight,"後面："+hi+"側の上部僧帽筋・肩甲挙筋、腰方形筋の緊張傾向候補");
+   add(weak,"後面："+lo+"側の肩甲帯安定筋・中殿筋の機能低下傾向候補");
+   add(care,"左右差は肩・骨盤の高さだけで決めず、荷重、股関節、肩甲帯の左右差を合わせて確認する");
  }
- if(twistStrong || Math.abs(tw)>=2){
-   add(tight,"腹斜筋群・多裂筋（回旋代償）"); add(tight,"広背筋・胸腰筋膜周囲");
-   add(weak,"腹斜筋群・多裂筋（回旋制御側）"); add(weak,"殿筋群・体幹回旋安定筋");
-   frontAdv.push("胸郭と骨盤の相対的な回旋差に伴う腹斜筋群の左右差を確認します。");
-   backAdv.push("胸腰移行部、多裂筋、広背筋周囲の回旋代償を確認します。");
-   care.push("胸郭回旋モビリティと骨盤・体幹の分離運動を行い、左右差を再評価します。");
+ if(twistScore<70){
+   var rotSide=tw>=0?"右":"左";
+   add(tight,"体幹：胸郭・骨盤の相対回旋に伴う斜腹筋群、脊柱起立筋、多裂筋の左右差候補（"+rotSide+"回旋方向を要確認）");
+   add(weak,"体幹：腹斜筋群・多裂筋など回旋制御筋の協調性低下候補");
+   add(care,"胸郭と骨盤の回旋可動性・左右差を別々に確認し、必要に応じて回旋制御を再教育する");
  }
- if(!tight.length){add(tight,"顕著な短縮パターンは小さいため、触診・可動域検査で確認");add(weak,"顕著な弱化パターンは小さいため、左右の筋出力を実測で確認");}
- if(!frontAdv.length)frontAdv.push("大きな前面代償は目立ちません。胸郭・股関節前面の柔軟性を左右比較します。");
- if(!backAdv.length)backAdv.push("大きな後面代償は目立ちません。脊柱・肩甲帯・殿筋群の左右差を確認します。");
- if(!care.length)care.push("現状を基準として、可動域・筋出力・症状を合わせて必要部位のみ調整します。");
- document.getElementById("tightMuscles").innerHTML=tight.map(function(x){return "・"+x}).join("<br>");
- document.getElementById("weakMuscles").innerHTML=weak.map(function(x){return "・"+x}).join("<br>");
- document.getElementById("frontBodyAdvice").innerHTML=frontAdv.map(function(x){return "・"+x}).join("<br>");
- document.getElementById("backBodyAdvice").innerHTML=backAdv.map(function(x){return "・"+x}).join("<br>");
- document.getElementById("careAdvice").innerHTML=care.map(function(x){return "・"+x}).join("<br>");
+ if(!tight.length){add(tight,"大きな偏りは少なめ。局所の過緊張は触診・可動域で確認")};
+ if(!weak.length){add(weak,"大きな偏りは少なめ。筋力・運動制御は個別検査で確認")};
+ if(!care.length){add(care,"現状のバランス維持を基本に、可動域・筋力・動作時の左右差を確認する")};
+ document.getElementById("muscleTight").innerHTML=tight.map(function(x){return "・"+x}).join("<br>");
+ document.getElementById("muscleWeak").innerHTML=weak.map(function(x){return "・"+x}).join("<br>");
+ document.getElementById("careDirection").innerHTML=care.map(function(x){return "✓ "+x}).join("<br>");
  built=true;document.getElementById("threeHint").style.display="none";var b=document.getElementById("modelBadge");b.textContent="3方向反映済み";b.className="badge ok";
 window.WAKABA_3D_DATA={thoraxYaw:thoraxYaw,pelvisYaw:pelvisYaw,shoulderTilt:sh,pelvisTilt:ph,headShift:hs};
 window.dispatchEvent(new CustomEvent("wakaba-analysis",{detail:window.WAKABA_3D_DATA}));draw()}
@@ -447,7 +437,7 @@ document.getElementById("make3d").onclick=function(){
     if(badge){badge.textContent="解析中…";badge.className="badge"}
     build();
   }catch(err){
-    console.error("V47 build error",err);
+    console.error("V46 build error",err);
     if(badge){badge.textContent="解析エラー: "+(err&&err.message?err.message:String(err));badge.className="badge"}
     alert("3D分析エラー: "+(err&&err.message?err.message:String(err)));
   }
