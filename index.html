@@ -93,9 +93,22 @@ header{padding-right:16px!important;padding-bottom:54px!important}
  #v77MenuBtn{position:absolute!important;top:18px!important;right:18px!important;bottom:auto!important;background:#fff!important;color:#0f766e!important}
 }
 </style>
+
+<style>
+/* V80: MENU higher on mobile */
+@media(max-width:699px){
+  #v77MenuBtn{
+    position:fixed!important;
+    top:auto!important;
+    right:18px!important;
+    bottom:120px!important;
+    z-index:1100!important;
+  }
+}
+</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V79</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V80</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
