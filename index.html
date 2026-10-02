@@ -92,7 +92,14 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
   <span id="headShift">頭部偏位 --</span><br>
   <span style="color:#94a3b8">※ 回旋角は3方向写真からの参考推定で、診断値・3Dスキャン値ではありません。AI内部ではMediaPipe 33点を保持し、表示点は手動補正できます。</span>
  </div>
- <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px"><button id="humanViewBtn" type="button" class="view3d" style="background:#0f766e;color:#fff;border-color:#0f766e">人体表示</button><button id="skeletonViewBtn" type="button" class="view3d">骨格表示</button></div>
+ <div id="displayModePanel" style="margin-top:10px;padding:10px;border:2px solid #14b8a6;border-radius:13px;background:#f0fdfa">
+  <div style="font-size:11px;font-weight:900;color:#0f766e;margin-bottom:7px">3D表示切替｜V52.1</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+   <button id="humanViewBtn" type="button" class="view3d" style="background:#0f766e;color:#fff;border-color:#0f766e">👤 人体</button>
+   <button id="skeletonViewBtn" type="button" class="view3d">🦴 骨格</button>
+   <button id="comboViewBtn" type="button" class="view3d">👤＋🦴 重ねる</button>
+  </div>
+ </div>
  <div id="threeStage" style="height:650px;margin-top:8px;border-radius:13px;overflow:hidden;background:#0b1220;position:relative">
    <canvas id="threeCanvas" style="width:100%;height:100%;display:block;touch-action:none"></canvas>
 <div id="real3d" style="position:absolute;inset:0;display:none;touch-action:none"></div>
@@ -475,7 +482,7 @@ function makeRing(color,r,y){
 function humanMat(){return new THREE.MeshPhysicalMaterial({color:0x78d7d0,transparent:true,opacity:.72,roughness:.55,metalness:0,clearcoat:.08,side:THREE.DoubleSide});}
 function addCapsule(group,r,len,pos,rotZ=0){const g=new THREE.CapsuleGeometry(r,len,8,18),m=new THREE.Mesh(g,humanMat());m.position.set(...pos);m.rotation.z=rotZ;group.add(m);return m;}
 function buildHuman(){human=new THREE.Group();pivot.add(human);const skin=humanMat();const head=new THREE.Mesh(new THREE.SphereGeometry(.25,28,22),skin);head.scale.set(.82,1.08,.88);head.position.y=1.37;human.add(head);const chest=new THREE.Group(),pelvis=new THREE.Group(),limbs=new THREE.Group();human.add(chest,pelvis,limbs);humanParts={head,chest,pelvis,limbs};const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.36,.66,10,24),skin);torso.scale.set(1.05,1,.62);torso.position.y=.55;chest.add(torso);const hip=new THREE.Mesh(new THREE.SphereGeometry(.40,28,20),skin);hip.scale.set(1,.62,.68);hip.position.y=-.20;pelvis.add(hip);addCapsule(limbs,.105,.72,[-.47,.47,0],-.10);addCapsule(limbs,.105,.72,[.47,.47,0],.10);addCapsule(limbs,.145,1.08,[-.22,-.87,0],-.025);addCapsule(limbs,.145,1.08,[.22,-.87,0],.025);}
-function setDisplayMode(mode){displayMode=mode;if(!ready)return;const isHuman=mode==='human';if(human)human.visible=isHuman;if(model)model.visible=!isHuman;const hb=document.getElementById('humanViewBtn'),sb=document.getElementById('skeletonViewBtn');hb.style.background=isHuman?'#0f766e':'#fff';hb.style.color=isHuman?'#fff':'#334155';sb.style.background=!isHuman?'#0f766e':'#fff';sb.style.color=!isHuman?'#fff':'#334155';statusText((isHuman?'人体3D':'BodyParts3D骨格')+'｜指で360°回転');}
+function setDisplayMode(mode){displayMode=mode;if(!ready)return;const showHuman=mode==='human'||mode==='combo',showSkeleton=mode==='skeleton'||mode==='combo';if(human)human.visible=showHuman;if(model)model.visible=showSkeleton;const ids={human:'humanViewBtn',skeleton:'skeletonViewBtn',combo:'comboViewBtn'};Object.keys(ids).forEach(k=>{const b=document.getElementById(ids[k]);if(!b)return;const on=k===mode;b.style.background=on?'#0f766e':'#fff';b.style.color=on?'#fff':'#334155';b.style.borderColor=on?'#0f766e':'#cbd5e1';});statusText((mode==='human'?'人体3D':mode==='skeleton'?'BodyParts3D骨格':'人体＋骨格')+'｜V52.1｜指で360°回転');}
 function resize(){if(!renderer)return;const r=host.getBoundingClientRect();renderer.setSize(Math.max(1,r.width),Math.max(1,r.height),false);camera.aspect=Math.max(.45,r.width/Math.max(1,r.height));camera.updateProjectionMatrix();}
 function fitCamera(kind='front'){
  if(!ready)return; resize();
@@ -498,7 +505,7 @@ function apply(d={}){
 }
 async function init(){
  if(ready)return;
- statusText('BodyParts3D V51 読み込み中…');
+ statusText('3D V52.1 読み込み中…');
  try{
   scene=new THREE.Scene();scene.background=new THREE.Color(0x07111f);
   camera=new THREE.PerspectiveCamera(34,1,.01,50);
@@ -533,7 +540,7 @@ function setView(kind){
  if(topMode){pivot.rotation.set(0,0,0);fitCamera('top');}
  else{const a=kind==='right'?Math.PI/2:kind==='left'?-Math.PI/2:kind==='diag'?-Math.PI/4:0;pivot.rotation.set(0,a,0);fitCamera('front');}
  const b=document.getElementById('topTwist');if(b)b.textContent=topMode?'◎ 上から見た捻れ ON':'◎ 上から見た捻れ';
- statusText('BodyParts3D V52｜'+(topMode?'上面表示':'画面中央固定')+'｜'+(topMode?'指で上面を360°回転':'指で360°回転'));
+ statusText('3D V52.1｜'+(topMode?'上面表示':'画面中央固定')+'｜'+(topMode?'指で上面を360°回転':'指で360°回転'));
 }
 function rotateBy(dx){
  if(!ready)return;
@@ -547,9 +554,9 @@ window.addEventListener('wakaba-analysis',e=>init().then(()=>apply(e.detail)));
 // 旧Canvasのonclickを解除して、V42のWebGL操作だけを使う。
 const viewBtns=[...document.querySelectorAll('.view3d[data-a]')];viewBtns.forEach(b=>{b.onclick=null;b.addEventListener('click',e=>{e.preventDefault();const a=+b.dataset.a;setView(a===90?'right':a===-90?'left':Math.abs(a)===35?'diag':'front');});});
 const topBtn=document.getElementById('topTwist');topBtn.onclick=null;topBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;setView(topMode?'front':'top');});
-const boostBtn=document.getElementById('twistBoostBtn');boostBtn.onclick=null;boostBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;rotBoost=rotBoost===1?5:1;apply(window.WAKABA_3D_DATA||{});boostBtn.textContent=rotBoost===5?'回旋表示 ×5（表示強調）ON':'回旋表示 ×5（表示強調）';statusText('BodyParts3D V52｜回旋×5は表示強調｜推定角そのものは不変');});
+const boostBtn=document.getElementById('twistBoostBtn');boostBtn.onclick=null;boostBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;rotBoost=rotBoost===1?5:1;apply(window.WAKABA_3D_DATA||{});boostBtn.textContent=rotBoost===5?'回旋表示 ×5（表示強調）ON':'回旋表示 ×5（表示強調）';statusText('3D V52.1｜回旋×5は表示強調｜推定角そのものは不変');});
 
-document.getElementById('humanViewBtn').addEventListener('click',()=>setDisplayMode('human'));document.getElementById('skeletonViewBtn').addEventListener('click',()=>setDisplayMode('skeleton'));
+document.getElementById('humanViewBtn').addEventListener('click',()=>setDisplayMode('human'));document.getElementById('skeletonViewBtn').addEventListener('click',()=>setDisplayMode('skeleton'));document.getElementById('comboViewBtn').addEventListener('click',()=>setDisplayMode('combo'));
 host.addEventListener('pointerdown',e=>{if(!ready)return;dragging=true;activePointer=e.pointerId;lastX=e.clientX;try{host.setPointerCapture(e.pointerId)}catch(_){}e.preventDefault();},{passive:false});
 host.addEventListener('pointermove',e=>{if(!dragging||activePointer!==e.pointerId)return;rotateBy(e.clientX-lastX);lastX=e.clientX;e.preventDefault();},{passive:false});
 host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel',endDrag);
