@@ -125,9 +125,35 @@ header{padding-right:16px!important;padding-bottom:54px!important}
   }
 }
 </style>
+
+<style>
+/* V82: MENU belongs in the customer-list toolbar */
+@media(max-width:699px){
+  #v77MenuBtn{
+    position:static!important;
+    inset:auto!important;
+    display:block!important;
+    margin:0 0 8px auto!important;
+    width:auto!important;
+    background:#172033!important;
+    color:#fff!important;
+    border:0!important;
+    border-radius:11px!important;
+    padding:9px 14px!important;
+    box-shadow:none!important;
+    font-size:12px!important;
+  }
+  .v77MenuSlot{
+    display:flex!important;
+    justify-content:flex-end!important;
+    align-items:center!important;
+    margin:0 0 6px!important;
+  }
+}
+</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V81</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V82</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -812,4 +838,17 @@ $('v77History').onclick=()=>{if(!selected)return;home();const i=cs().findIndex(x
 $('v77Line').onclick=()=>alert('LINE共有は次の段階で接続します。');$('v77Edit').onclick=()=>alert('登録情報の編集は次の管理機能で追加します。');
 document.addEventListener('click',e=>{const row=e.target.closest?.('.v61row');if(!row||e.target.closest('button'))return;const rows=[...document.querySelectorAll('#v61List .v61row')],i=rows.indexOf(row),a=cs();if(i>=0&&a[i])patient(a[i])});
 })();
-</script></body></html>
+</script>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var home=document.getElementById('v61Home');
+  var btn=document.getElementById('v77MenuBtn');
+  if(home&&btn){
+    var slot=document.createElement('div');
+    slot.className='v77MenuSlot';
+    home.insertBefore(slot,home.firstChild);
+    slot.appendChild(btn);
+  }
+});
+</script>
+</body></html>
