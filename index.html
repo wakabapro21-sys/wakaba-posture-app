@@ -106,9 +106,28 @@ header{padding-right:16px!important;padding-bottom:54px!important}
   }
 }
 </style>
+
+<style>
+/* V81: MENU beside the customer-list controls, not floating at the bottom */
+@media(max-width:699px){
+  #v77MenuBtn{
+    position:absolute!important;
+    top:190px!important;
+    right:18px!important;
+    bottom:auto!important;
+    z-index:45!important;
+    background:#172033!important;
+    color:#fff!important;
+    border:2px solid #fff!important;
+    border-radius:12px!important;
+    padding:10px 14px!important;
+    box-shadow:0 4px 14px rgba(15,23,42,.18)!important;
+  }
+}
+</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V80</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V81</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
