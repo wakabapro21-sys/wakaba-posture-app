@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V74</title>
+<title>AI姿勢＆3次元歪み分析システム V75</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -36,7 +36,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V74</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V75</span></p></header>
 
 <section id="v61Home">
  <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
@@ -94,7 +94,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
   <div style="font-size:9px;color:#94a3b8;line-height:1.5;margin-top:8px">※ 写真とランドマークから得た比較用の参考評価です。医学的診断ではありません。</div>
  </div>
  <div id="alignmentPanel" style="margin-top:10px;border:1px solid #bae6fd;border-radius:16px;padding:13px;background:linear-gradient(135deg,#f0fdfa,#f8fafc)">
-  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b style="font-size:15px;color:#172033">脚軸・推定重心・骨盤/脊柱マップ</b><span style="font-size:9px;background:#ccfbf1;color:#0f766e;padding:5px 8px;border-radius:999px;font-weight:800">V74</span></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b style="font-size:15px;color:#172033">脚軸・推定重心・骨盤/脊柱マップ</b><span style="font-size:9px;background:#ccfbf1;color:#0f766e;padding:5px 8px;border-radius:999px;font-weight:800">V75</span></div>
   <div style="font-size:9px;color:#64748b;line-height:1.5;margin-top:5px">正面・側面写真のランドマークから算出する参考推定です。足圧計・X線・医学的診断の代用ではありません。</div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
    <div style="background:#fff;border-radius:12px;padding:10px"><div style="font-size:10px;color:#64748b">X脚・O脚の参考傾向</div><b id="legAxisType" style="display:block;font-size:18px;color:#0f766e;margin-top:4px">分析後に表示</b><div id="legAxisDiagram" style="height:180px;margin-top:8px;border-radius:12px;background:#f8fafc;overflow:hidden"><svg viewBox="0 0 200 180" width="100%" height="100%" aria-label="脚軸模式図"><text x="100" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="#475569">股関節 → 膝 → 足首</text><line x1="100" y1="28" x2="100" y2="160" stroke="#cbd5e1" stroke-dasharray="5 5"/><polyline id="legLineL" points="55,38 60,95 58,155" fill="none" stroke="#14b8a6" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><polyline id="legLineR" points="145,38 140,95 142,155" fill="none" stroke="#14b8a6" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="55" cy="38" r="7" fill="#0f766e"/><circle cx="145" cy="38" r="7" fill="#0f766e"/><circle id="legKneeL" cx="60" cy="95" r="9" fill="#f59e0b"/><circle id="legKneeR" cx="140" cy="95" r="9" fill="#f59e0b"/><circle cx="58" cy="155" r="7" fill="#0f766e"/><circle cx="142" cy="155" r="7" fill="#0f766e"/><text x="55" y="174" text-anchor="middle" font-size="10" fill="#64748b">左脚</text><text x="145" y="174" text-anchor="middle" font-size="10" fill="#64748b">右脚</text></svg></div><div id="legAxisDetail" style="font-size:10px;color:#475569;line-height:1.55;margin-top:4px">--</div></div>
@@ -380,8 +380,10 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  var rawSide=(sideDeviation(photos.right)+sideDeviation(photos.left))/2;
  var sidePenalty=19 + dz(rawSide,.35)*3.25;
  var sideScore=clampScore(100-sidePenalty);
- var twistPenalty=15 + dz(tw,.30)*7.0 + dz(thoraxYaw,.25)*3.0 + dz(pelvisYaw,.25)*3.0;
- var twistScore=Math.min(85,clampScore(100-twistPenalty));
+ /* V75: 回旋スコアは胸郭と骨盤の絶対向きではなく、相対捻れを主評価にする。
+    両者が同方向を向く撮影角度の影響で0点化しないよう補正。 */
+ var twistPenalty=8 + dz(tw,.50)*8.5;
+ var twistScore=Math.min(92,clampScore(100-twistPenalty));
  var totalScore=clampScore(frontScore*.45+sideScore*.35+twistScore*.20);
  document.getElementById("scoreTotal").textContent=totalScore;
  document.getElementById("scoreFront").textContent=frontScore;
@@ -569,22 +571,31 @@ function fitCamera(kind='front'){
  if(kind==='top'){camera.position.set(0,TOP_DISTANCE,.001);camera.up.set(0,0,-1);}else{camera.position.set(0,0,FRONT_DISTANCE);camera.up.set(0,1,0);}
  camera.lookAt(target);camera.updateProjectionMatrix();
 }
-function resetPartTransforms(){if(!ready)return;Object.values(parts).forEach(g=>g.rotation.set(0,0,0));}
+function resetPartTransforms(){if(!ready)return;Object.values(parts).forEach(g=>{g.rotation.set(0,0,0);g.quaternion.identity();});}
 function apply(d={}){
  if(!ready)return; resetPartTransforms(); const k=Math.PI/180;
  const shoulder=Number(d.shoulderTilt)||0,pelvis=Number(d.pelvisTilt)||0,thorax=Number(d.thoraxYaw)||0,pelvisYaw=Number(d.pelvisYaw)||0;
- parts.chest.rotation.z=-shoulder*k*1.5;
- parts.pelvis.rotation.z=-pelvis*k*1.7;
- // V43: ×5は推定回旋角だけを視覚強調する。0.0°なら人体を捏造して捻らない。
- const chestVisual=thorax*k*(rotBoost===5?5:1);
- const pelvisVisual=pelvisYaw*k*(rotBoost===5?5:1);
- parts.chest.rotation.y=chestVisual;parts.pelvis.rotation.y=pelvisVisual;
+ /* V75: BodyParts3Dの親modelは座標系変換で回転済み。
+    旧版は子パーツのlocal Y/Zをそのまま回していたため、画面上の上下・回旋軸と一致せず
+    胸郭や骨盤が横倒しになることがあった。表示座標のY(回旋)・Z(傾斜)を
+    modelのlocal軸へ逆変換してからクォータニオンで適用する。 */
+ const invParent=model.quaternion.clone().invert();
+ const yawAxis=new THREE.Vector3(0,1,0).applyQuaternion(invParent).normalize();
+ const tiltAxis=new THREE.Vector3(0,0,1).applyQuaternion(invParent).normalize();
+ const boost=rotBoost===5?5:1;
+ function posePart(g,yawDeg,tiltDeg){
+   const qYaw=new THREE.Quaternion().setFromAxisAngle(yawAxis,yawDeg*k*boost);
+   const qTilt=new THREE.Quaternion().setFromAxisAngle(tiltAxis,tiltDeg*k);
+   g.quaternion.copy(qYaw).multiply(qTilt);
+ }
+ posePart(parts.chest,thorax,-shoulder*1.5);
+ posePart(parts.pelvis,pelvisYaw,-pelvis*1.7);
  parts.skull.position.x=parts.skull.userData.baseX+(Number(d.headShift)||0)*.008;
  if(thoraxRing&&pelvisRing){const rs=rotBoost===5?1.35:1;thoraxRing.scale.setScalar(rs);pelvisRing.scale.setScalar(rs);}
 }
 async function init(){
  if(ready)return;
- statusText('BodyParts3D V56 読み込み中…');
+ statusText('BodyParts3D V75 読み込み中…');
  try{
   scene=new THREE.Scene();scene.background=new THREE.Color(0x07111f);
   camera=new THREE.PerspectiveCamera(34,1,.01,50);
@@ -611,7 +622,7 @@ async function init(){
   bb=new THREE.Box3().setFromObject(model);const fc=bb.getCenter(new THREE.Vector3());model.position.x-=fc.x;model.position.y-=fc.y;model.position.z-=fc.z;model.updateMatrixWorld(true);
   thoraxRing=makeRing(0xff3655,.70,.46);pelvisRing=makeRing(0xff963f,.57,-.36);pivot.add(thoraxRing);pivot.add(pelvisRing);
   ready=true;host.style.display='block';old.style.visibility='hidden';old.style.pointerEvents='none';document.getElementById('threeHint').style.display='none';
-  setView('front');apply(window.WAKABA_3D_DATA||{});statusText('BodyParts3D V48｜正面・中央固定｜指で360°回転');
+  setView('front');apply(window.WAKABA_3D_DATA||{});statusText('BodyParts3D V75｜正面・中央固定｜指で360°回転');
  }catch(e){console.error(e);statusText('3D読込エラー：'+(e?.message||'モデルを確認してください'));old.style.visibility='visible';}
 }
 function setView(kind){
@@ -619,7 +630,7 @@ function setView(kind){
  if(topMode){pivot.rotation.set(0,0,0);fitCamera('top');}
  else{const a=kind==='right'?Math.PI/2:kind==='left'?-Math.PI/2:kind==='diag'?-Math.PI/4:0;pivot.rotation.set(0,a,0);fitCamera('front');}
  const b=document.getElementById('topTwist');if(b)b.textContent=topMode?'◎ 上から見た捻れ ON':'◎ 上から見た捻れ';
- statusText('BodyParts3D V48｜'+(topMode?'上面表示':'画面中央固定')+'｜'+(topMode?'指で上面を360°回転':'指で360°回転'));
+ statusText('BodyParts3D V75｜'+(topMode?'上面表示':'画面中央固定')+'｜'+(topMode?'指で上面を360°回転':'指で360°回転'));
 }
 function rotateBy(dx){
  if(!ready)return;
@@ -633,7 +644,7 @@ window.addEventListener('wakaba-analysis',e=>init().then(()=>apply(e.detail)));
 // 旧Canvasのonclickを解除して、V42のWebGL操作だけを使う。
 const viewBtns=[...document.querySelectorAll('.view3d[data-a]')];viewBtns.forEach(b=>{b.onclick=null;b.addEventListener('click',e=>{e.preventDefault();const a=+b.dataset.a;setView(a===90?'right':a===-90?'left':Math.abs(a)===35?'diag':'front');});});
 const topBtn=document.getElementById('topTwist');topBtn.onclick=null;topBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;setView(topMode?'front':'top');});
-const boostBtn=document.getElementById('twistBoostBtn');boostBtn.onclick=null;boostBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;rotBoost=rotBoost===1?5:1;apply(window.WAKABA_3D_DATA||{});boostBtn.textContent=rotBoost===5?'回旋表示 ×5（表示強調）ON':'回旋表示 ×5（表示強調）';statusText('BodyParts3D V48｜回旋×5は表示強調｜推定角そのものは不変');});
+const boostBtn=document.getElementById('twistBoostBtn');boostBtn.onclick=null;boostBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;rotBoost=rotBoost===1?5:1;apply(window.WAKABA_3D_DATA||{});boostBtn.textContent=rotBoost===5?'回旋表示 ×5（表示強調）ON':'回旋表示 ×5（表示強調）';statusText('BodyParts3D V75｜回旋×5は表示強調｜推定角そのものは不変');});
 
 host.addEventListener('pointerdown',e=>{if(!ready)return;dragging=true;activePointer=e.pointerId;lastX=e.clientX;try{host.setPointerCapture(e.pointerId)}catch(_){}e.preventDefault();},{passive:false});
 host.addEventListener('pointermove',e=>{if(!dragging||activePointer!==e.pointerId)return;rotateBy(e.clientX-lastX);lastX=e.clientX;e.preventDefault();},{passive:false});
