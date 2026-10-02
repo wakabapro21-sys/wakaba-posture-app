@@ -68,9 +68,34 @@ header{padding-right:16px!important;padding-bottom:54px!important}
   #v77MenuBtn{top:18px!important;bottom:auto!important}
 }
 </style>
+
+<style>
+/* V79: definitive mobile MENU placement */
+@media(max-width:699px){
+  header{padding-right:16px!important;padding-bottom:22px!important}
+  #v77MenuBtn{
+    position:fixed!important;
+    top:auto!important;
+    right:18px!important;
+    bottom:22px!important;
+    z-index:1100!important;
+    background:#172033!important;
+    color:#fff!important;
+    border:2px solid #fff!important;
+    border-radius:999px!important;
+    padding:12px 16px!important;
+    box-shadow:0 6px 20px rgba(15,23,42,.28)!important;
+    font-size:12px!important;
+    line-height:1!important;
+  }
+}
+@media(min-width:700px){
+ #v77MenuBtn{position:absolute!important;top:18px!important;right:18px!important;bottom:auto!important;background:#fff!important;color:#0f766e!important}
+}
+</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V78</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V79</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
