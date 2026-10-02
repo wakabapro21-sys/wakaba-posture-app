@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V70</title>
+<title>AI姿勢＆3次元歪み分析システム V71</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -36,7 +36,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V70</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V71</span></p></header>
 
 <section id="v61Home">
  <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
@@ -92,6 +92,15 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
    <div style="background:#fef2f2;border-radius:10px;padding:8px;text-align:center"><div style="font-size:9px;color:#64748b">回旋</div><b id="reportTwist">--</b></div>
   </div>
   <div style="font-size:9px;color:#94a3b8;line-height:1.5;margin-top:8px">※ 写真とランドマークから得た比較用の参考評価です。医学的診断ではありません。</div>
+ </div>
+ <div id="alignmentPanel" style="margin-top:10px;border:1px solid #bae6fd;border-radius:16px;padding:13px;background:linear-gradient(135deg,#f0fdfa,#f8fafc)">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b style="font-size:15px;color:#172033">脚軸・推定重心・骨盤/脊柱マップ</b><span style="font-size:9px;background:#ccfbf1;color:#0f766e;padding:5px 8px;border-radius:999px;font-weight:800">V71</span></div>
+  <div style="font-size:9px;color:#64748b;line-height:1.5;margin-top:5px">正面・側面写真のランドマークから算出する参考推定です。足圧計・X線・医学的診断の代用ではありません。</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+   <div style="background:#fff;border-radius:12px;padding:10px"><div style="font-size:10px;color:#64748b">X脚・O脚の参考傾向</div><b id="legAxisType" style="display:block;font-size:18px;color:#0f766e;margin-top:4px">分析後に表示</b><div id="legAxisDetail" style="font-size:10px;color:#475569;line-height:1.55;margin-top:4px">--</div></div>
+   <div style="background:#fff;border-radius:12px;padding:10px"><div style="font-size:10px;color:#64748b">画像からの推定重心</div><b id="cogText" style="display:block;font-size:18px;color:#0f766e;margin-top:4px">分析後に表示</b><div id="cogBox" style="position:relative;height:115px;margin-top:6px;border-radius:10px;background:#f8fafc;overflow:hidden"><div style="position:absolute;left:50%;top:8px;bottom:8px;border-left:1px solid #94a3b8"></div><div style="position:absolute;left:8px;right:8px;top:50%;border-top:1px solid #94a3b8"></div><div style="position:absolute;left:20%;top:18%;width:23%;height:70%;border-radius:45%;background:#e2e8f0"></div><div style="position:absolute;right:20%;top:18%;width:23%;height:70%;border-radius:45%;background:#e2e8f0"></div><div id="cogDot" style="position:absolute;left:50%;top:50%;width:18px;height:18px;border-radius:50%;background:#14b8a6;border:5px solid rgba(45,212,191,.35);transform:translate(-50%,-50%);box-sizing:content-box"></div></div></div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:10px;margin-top:8px"><div style="font-size:10px;color:#64748b">骨盤・脊柱バランスマップ（写真推定）</div><div id="balanceMap" style="position:relative;height:190px;margin-top:8px;border-left:2px solid #475569;border-bottom:2px solid #475569;background:linear-gradient(90deg,#f8fafc 49.5%,#e2e8f0 50%,#f8fafc 50.5%),linear-gradient(#f8fafc 49.5%,#e2e8f0 50%,#f8fafc 50.5%)"><span style="position:absolute;left:8px;top:8px;font-size:10px">平背傾向</span><span style="position:absolute;right:8px;top:8px;font-size:10px">猫背×反り腰傾向</span><span style="position:absolute;left:8px;bottom:8px;font-size:10px">後方バランス</span><span style="position:absolute;right:8px;bottom:8px;font-size:10px">前方バランス</span><div id="balanceStar" style="position:absolute;left:50%;top:50%;font-size:28px;color:#14b8a6;transform:translate(-50%,-50%)">★</div></div><div id="balanceMapText" style="font-size:10px;color:#475569;line-height:1.55;margin-top:7px">分析後に表示します。</div></div>
  </div>
  <div id="muscleBalancePanel" style="margin-top:10px;border:1px solid #e2e8f0;border-radius:16px;padding:13px;background:#fff">
   <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px"><b style="font-size:14px;color:#172033">体の前面・後面別 筋バランス分析</b><span style="font-size:9px;background:#f1f5f9;color:#475569;padding:5px 8px;border-radius:999px;font-weight:800">姿勢からみた傾向候補</span></div>
@@ -319,7 +328,7 @@ addEventListener("resize",drawGuide);count();
 var C=document.getElementById("threeCanvas"),ctx=C.getContext("2d"),angle=35,built=false,pts3={},dragX=null,mode="body",thoraxYaw=0,pelvisYaw=0,twistBoost=5;
 var names=["head","leftShoulder","rightShoulder","leftElbow","rightElbow","leftWrist","rightWrist","leftHip","rightHip","leftKnee","rightKnee","leftAnkle","rightAnkle"];
 function resize(){var r=C.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);C.width=Math.round(r.width*d);C.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);if(built)draw()}addEventListener("resize",resize);setTimeout(resize,0);
-function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!photos.right||!photos.left){alert("正面・右側面・左側面の3枚を登録してください。");return}if(types.some(function(t){return photos[t].aiFailed||(!photos[t].ai&&!photos[t].manualAdjusted)})){alert("3枚すべてのAI解析が完了してから3D分析を作成してください。\n解析失敗と表示された写真は、もう一度選択してください。");return}
+function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!photos.right||!photos.left){alert("正面・右側面・左側面の3枚を登録してください。");return}if(["front","right","left"].some(function(t){return photos[t].aiFailed||(!photos[t].ai&&!photos[t].manualAdjusted)})){alert("3枚すべてのAI解析が完了してから3D分析を作成してください。\n解析失敗と表示された写真は、もう一度選択してください。");return}
  var mpIndex={head:0,leftShoulder:11,rightShoulder:12,leftElbow:13,rightElbow:14,leftWrist:15,rightWrist:16,leftHip:23,rightHip:24,leftKnee:25,rightKnee:26,leftAnkle:27,rightAnkle:28};
  /* V45 回旋推定v2: 左右側面のMediaPipe生ランドマークを、左右反転を補正して統合。
     正面幅を基準に胸郭・骨盤の前後差を角度化する。3枚写真からの参考推定であり実測3Dではない。 */
@@ -377,6 +386,24 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  document.getElementById("scoreFront").textContent=frontScore;
  document.getElementById("scoreSide").textContent=sideScore;
  document.getElementById("scoreTwist").textContent=twistScore;
+ /* V71 脚軸・推定重心・骨盤/脊柱バランス。写真ランドマークからの参考推定 */
+ function angle3(a,b,c){var ux=a.x-b.x,uy=a.y-b.y,vx=c.x-b.x,vy=c.y-b.y,du=Math.hypot(ux,uy)||1,dv=Math.hypot(vx,vy)||1,co=Math.max(-1,Math.min(1,(ux*vx+uy*vy)/(du*dv)));return Math.acos(co)*180/Math.PI}
+ function lineOffset(h,k,a){var dx=a.x-h.x,dy=a.y-h.y,L=Math.hypot(dx,dy)||1;return ((k.x-h.x)*dy-(k.y-h.y)*dx)/L}
+ var lkAng=angle3(f.leftHip,f.leftKnee,f.leftAnkle),rkAng=angle3(f.rightHip,f.rightKnee,f.rightAnkle);
+ var lOff=lineOffset(f.leftHip,f.leftKnee,f.leftAnkle),rOff=lineOffset(f.rightHip,f.rightKnee,f.rightAnkle),axis=(Math.abs(lOff)+Math.abs(rOff))*50;
+ var axisType=axis<.7?"ほぼ中間位":((lOff-rOff)>0?"X脚方向の傾向":"O脚方向の傾向");
+ document.getElementById("legAxisType").textContent=axisType;
+ document.getElementById("legAxisDetail").textContent="膝角度 左 "+lkAng.toFixed(1)+"° / 右 "+rkAng.toFixed(1)+"°　脚軸偏位の参考値 "+axis.toFixed(1);
+ var ankleMid=(f.leftAnkle.x+f.rightAnkle.x)/2,hipMid=(f.leftHip.x+f.rightHip.x)/2,shouldMid=(f.leftShoulder.x+f.rightShoulder.x)/2;
+ var cogX=(ankleMid*.20+hipMid*.45+shouldMid*.35),cogShift=(cogX-.5)*100;
+ var cogLabel=Math.abs(cogShift)<1.5?"ほぼ中央":(cogShift>0?"右寄り傾向":"左寄り傾向");
+ document.getElementById("cogText").textContent=cogLabel;
+ var cd=document.getElementById("cogDot");if(cd){cd.style.left=Math.max(15,Math.min(85,50+cogShift*2.2))+"%";cd.style.top="50%"}
+ function sideAP(rec){var p=rec.points,ank=(p.leftAnkle.x+p.rightAnkle.x)/2,hip=(p.leftHip.x+p.rightHip.x)/2,sho=(p.leftShoulder.x+p.rightShoulder.x)/2;return {pelvis:(hip-ank)*100,trunk:(sho-hip)*100}}
+ var sr=sideAP(photos.right),sl=sideAP(photos.left),pelAP=(sr.pelvis-sl.pelvis)/2,trAP=(sr.trunk-sl.trunk)/2;
+ var bx=Math.max(8,Math.min(92,50+pelAP*2.0)),by=Math.max(8,Math.min(92,50-trAP*2.0)),star=document.getElementById("balanceStar");if(star){star.style.left=bx+"%";star.style.top=by+"%"}
+ document.getElementById("balanceMapText").textContent="骨盤の前後位置参考 "+(pelAP>=0?"+":"")+pelAP.toFixed(1)+" / 体幹の前後偏位参考 "+(trAP>=0?"+":"")+trAP.toFixed(1)+"。撮影条件の影響を受けるため経時比較用の参考値です。";
+ window.WAKABA_ALIGNMENT={leftKneeAngle:lkAng,rightKneeAngle:rkAng,legAxisType:axisType,cogShift:cogShift,pelvisAP:pelAP,trunkAP:trAP};
  // V56: 分析直後にスコアが画面上部へ来る
  setTimeout(function(){var sp=document.getElementById("scorePanel");if(sp)sp.scrollIntoView({behavior:"smooth",block:"start"});},180);
  function reportBand(s){return s>=90?"バランス良好":s>=70?"軽度の差":s>=50?"中等度の差":"大きな差"}
