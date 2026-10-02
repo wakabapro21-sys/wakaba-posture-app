@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V71</title>
+<title>AI姿勢＆3次元歪み分析システム V72</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -36,7 +36,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V71</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V72</span></p></header>
 
 <section id="v61Home">
  <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
@@ -94,7 +94,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
   <div style="font-size:9px;color:#94a3b8;line-height:1.5;margin-top:8px">※ 写真とランドマークから得た比較用の参考評価です。医学的診断ではありません。</div>
  </div>
  <div id="alignmentPanel" style="margin-top:10px;border:1px solid #bae6fd;border-radius:16px;padding:13px;background:linear-gradient(135deg,#f0fdfa,#f8fafc)">
-  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b style="font-size:15px;color:#172033">脚軸・推定重心・骨盤/脊柱マップ</b><span style="font-size:9px;background:#ccfbf1;color:#0f766e;padding:5px 8px;border-radius:999px;font-weight:800">V71</span></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b style="font-size:15px;color:#172033">脚軸・推定重心・骨盤/脊柱マップ</b><span style="font-size:9px;background:#ccfbf1;color:#0f766e;padding:5px 8px;border-radius:999px;font-weight:800">V72</span></div>
   <div style="font-size:9px;color:#64748b;line-height:1.5;margin-top:5px">正面・側面写真のランドマークから算出する参考推定です。足圧計・X線・医学的診断の代用ではありません。</div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
    <div style="background:#fff;border-radius:12px;padding:10px"><div style="font-size:10px;color:#64748b">X脚・O脚の参考傾向</div><b id="legAxisType" style="display:block;font-size:18px;color:#0f766e;margin-top:4px">分析後に表示</b><div id="legAxisDetail" style="font-size:10px;color:#475569;line-height:1.55;margin-top:4px">--</div></div>
@@ -181,9 +181,10 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 <div class="review" id="review"><div class="reviewbox"><h2>📷 撮影写真の確認</h2><img id="preview"><div class="reviewactions"><button class="retry" id="retry" type="button">↺ 撮り直す</button><button class="use" id="use" type="button">✓ この写真を使う</button></div></div></div>
 
 <script>
+window.WAKABA_PHOTO_TYPES=["front","right","left"];
 (function(){
 "use strict";
-var types=["front","right","left"],photos={front:null,right:null,left:null};window.WAKABA_PHOTOS=photos;
+var photoTypes=["front","right","left"],photos={front:null,right:null,left:null};window.WAKABA_PHOTOS=photos;
 var pointNames=["head","leftShoulder","rightShoulder","leftElbow","rightElbow","leftWrist","rightWrist","leftHip","rightHip","leftKnee","rightKnee","leftAnkle","rightAnkle"];
 var mpIndex={leftShoulder:11,rightShoulder:12,leftElbow:13,rightElbow:14,leftWrist:15,rightWrist:16,leftHip:23,rightHip:24,leftKnee:25,rightKnee:26,leftAnkle:27,rightAnkle:28};
 var edges=[[1,2],[1,3],[3,5],[2,4],[4,6],[1,7],[2,8],[7,8],[7,9],[9,11],[8,10],[10,12]];
@@ -202,7 +203,7 @@ function visibleEdges(type){return type==="front"?edges:sideEdges}
 
 function defaults(type){var side=type!=="front";return {head:{x:.5,y:.12},leftShoulder:{x:side?.48:.38,y:.27},rightShoulder:{x:side?.53:.62,y:.27},leftElbow:{x:side?.48:.32,y:.43},rightElbow:{x:side?.54:.68,y:.43},leftWrist:{x:side?.48:.30,y:.58},rightWrist:{x:side?.54:.70,y:.58},leftHip:{x:side?.48:.43,y:.56},rightHip:{x:side?.53:.57,y:.56},leftKnee:{x:side?.49:.44,y:.75},rightKnee:{x:side?.54:.56,y:.75},leftAnkle:{x:side?.49:.44,y:.94},rightAnkle:{x:side?.54:.56,y:.94}}}
 var pose=null,poseReady=false,queue=[],busy=false,pending=null;
-function count(){var n=types.filter(t=>!!photos[t]).length;document.getElementById("status").textContent=n+" / 3 枚登録済み"+(n===3?"　✓ 3方向すべて登録できました":"")}
+function count(){var n=photoTypes.filter(t=>!!photos[t]).length;document.getElementById("status").textContent=n+" / 3 枚登録済み"+(n===3?"　✓ 3方向すべて登録できました":"")}
 function save(type,file){
  if(!file)return;if(photos[type]&&photos[type].url)URL.revokeObjectURL(photos[type].url);
  var url=URL.createObjectURL(file);photos[type]={file:file,url:url,points:defaults(type),rawLandmarks:null,ai:false};
@@ -212,7 +213,7 @@ function save(type,file){
  var ab=document.querySelector('.adjustBtn[data-adjust="'+type+'"]');if(ab)ab.style.display="block";
  count();enqueueAI(type);
 }
-types.forEach(function(type){var g=document.getElementById("gallery-"+type),c=document.getElementById("camera-"+type);
+photoTypes.forEach(function(type){var g=document.getElementById("gallery-"+type),c=document.getElementById("camera-"+type);
  g.addEventListener("change",function(){var f=g.files&&g.files[0];if(f)save(type,f);g.value=""});
  c.addEventListener("change",function(){var f=c.files&&c.files[0];if(!f)return;pending={type:type,file:f,input:c};document.getElementById("preview").src=URL.createObjectURL(f);document.getElementById("review").classList.add("show")});
 });
@@ -284,12 +285,12 @@ addEventListener("resize",function(){if(adjustType)drawAdjust()});
 function loadAI(){var sc=document.createElement("script");sc.src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js";sc.async=true;sc.onload=attachPose;sc.onerror=function(){console.warn("AI library load failed; photo controls remain available")};document.body.appendChild(sc)}
 window.wakabaResetAnalysisSession=function(){
  queue=[];busy=false;pending=null;resetPoseEngine();
- types.forEach(function(t){var r=photos[t];if(r&&r.url)try{URL.revokeObjectURL(r.url)}catch(e){}photos[t]=null;var st=document.getElementById("stage-"+t);if(st)st.innerHTML="<span>"+(t==="front"?"正面":t==="right"?"右側面":"左側面")+"写真を登録</span>";var b=document.getElementById("badge-"+t);if(b){b.textContent="未登録";b.className="badge"}var ab=document.querySelector('.adjustBtn[data-adjust="'+t+'"]');if(ab)ab.style.display="none"});
+ photoTypes.forEach(function(t){var r=photos[t];if(r&&r.url)try{URL.revokeObjectURL(r.url)}catch(e){}photos[t]=null;var st=document.getElementById("stage-"+t);if(st)st.innerHTML="<span>"+(t==="front"?"正面":t==="right"?"右側面":"左側面")+"写真を登録</span>";var b=document.getElementById("badge-"+t);if(b){b.textContent="未登録";b.className="badge"}var ab=document.querySelector('.adjustBtn[data-adjust="'+t+'"]');if(ab)ab.style.display="none"});
  ["scoreTotal","scoreFront","scoreSide","scoreTwist"].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent="--"});
  var mb=document.getElementById("modelBadge");if(mb){mb.textContent="待機中";mb.className="badge"}count();
  setTimeout(function(){attachPose()},120);
 };
-addEventListener("resize",()=>types.forEach(draw));setTimeout(loadAI,0);
+addEventListener("resize",()=>photoTypes.forEach(draw));setTimeout(loadAI,0);
 
 var guideStream=null,guideType=null,guideScale=1,guideRoll=null,guideSensorTimer=null,GV=document.getElementById("guideVideo"),GO=document.getElementById("guideOverlay");
 function guideName(t){return t==="front"?"正面":t==="right"?"右側面":"左側面"}
@@ -386,7 +387,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  document.getElementById("scoreFront").textContent=frontScore;
  document.getElementById("scoreSide").textContent=sideScore;
  document.getElementById("scoreTwist").textContent=twistScore;
- /* V71 脚軸・推定重心・骨盤/脊柱バランス。写真ランドマークからの参考推定 */
+ /* V72 脚軸・推定重心・骨盤/脊柱バランス。写真ランドマークからの参考推定 */
  function angle3(a,b,c){var ux=a.x-b.x,uy=a.y-b.y,vx=c.x-b.x,vy=c.y-b.y,du=Math.hypot(ux,uy)||1,dv=Math.hypot(vx,vy)||1,co=Math.max(-1,Math.min(1,(ux*vx+uy*vy)/(du*dv)));return Math.acos(co)*180/Math.PI}
  function lineOffset(h,k,a){var dx=a.x-h.x,dy=a.y-h.y,L=Math.hypot(dx,dy)||1;return ((k.x-h.x)*dy-(k.y-h.y)*dx)/L}
  var lkAng=angle3(f.leftHip,f.leftKnee,f.leftAnkle),rkAng=angle3(f.rightHip,f.rightKnee,f.rightAnkle);
