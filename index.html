@@ -19,9 +19,20 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 .okbox{font-size:12px;line-height:1.6;color:#166534;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:10px}
 @media(max-width:780px){.views{grid-template-columns:1fr}.stage{min-height:350px}}
 </style>
+
+<style id="v61-customer-css">
+#v61Home{max-width:760px;margin:14px auto;padding:0 14px}.v61bar{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:10px}.v61title{font-size:18px;font-weight:900}.v61btn{border:0;border-radius:11px;padding:12px 14px;background:#0f766e;color:#fff;font-weight:900}.v61ghost{background:#fff;color:#0f766e;border:1px solid #0f766e}.v61list{display:grid;gap:8px}.v61row{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px rgba(15,23,42,.04)}.v61avatar{width:44px;height:44px;border-radius:50%;background:#ccfbf1;color:#0f766e;display:grid;place-items:center;font-weight:900;font-size:18px;flex:0 0 auto}.v61meta{min-width:0;flex:1}.v61name{font-weight:900;font-size:14px}.v61sub{font-size:10px;color:#64748b;margin-top:3px}.v61start{border:0;border-radius:10px;padding:9px 10px;background:#f97316;color:#fff;font-weight:900;font-size:11px}.v61empty{background:#fff;border:1px dashed #cbd5e1;border-radius:14px;padding:26px;text-align:center;color:#64748b;font-size:12px}.v61modal{display:none;position:fixed;inset:0;background:rgba(2,6,23,.55);z-index:20000;padding:18px;align-items:center;justify-content:center}.v61modal.on{display:flex}.v61sheet{width:min(100%,520px);background:#fff;border-radius:18px;padding:18px}.v61sheet h2{margin:0 0 12px;font-size:18px}.v61field{display:grid;gap:5px;margin:10px 0}.v61field label{font-size:11px;font-weight:800;color:#475569}.v61field input,.v61field select{width:100%;border:1px solid #cbd5e1;border-radius:10px;padding:12px;font-size:14px;background:#fff}.v61actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}#v61AnalysisTop{display:none;max-width:760px;margin:10px auto 0;padding:0 14px}.v61current{background:#ecfeff;border:1px solid #99f6e4;border-radius:12px;padding:10px;font-size:11px;color:#134e4a;display:flex;justify-content:space-between;align-items:center;gap:8px}body.v61-analysis #v61Home{display:none}body:not(.v61-analysis) main{display:none}body.v61-analysis #v61AnalysisTop{display:block}
+</style>
 </head>
 <body>
 <header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析</p></header>
+
+<section id="v61Home">
+ <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
+ <div id="v61List" class="v61list"></div>
+</section>
+<div id="v61AnalysisTop"><div class="v61current"><span>分析中：<b id="v61CurrentName">ゲスト</b></span><button class="v61btn v61ghost" id="v61Back" style="padding:8px 10px">顧客一覧へ</button></div></div>
+<div class="v61modal" id="v61Modal"><div class="v61sheet"><h2>新規顧客登録</h2><div class="v61field"><label>氏名 *</label><input id="v61Name" autocomplete="name"></div><div class="v61field"><label>フリガナ</label><input id="v61Kana"></div><div class="v61field"><label>性別</label><select id="v61Sex"><option value="">未設定</option><option>男性</option><option>女性</option><option>その他</option></select></div><div class="v61field"><label>生年月日</label><input id="v61Birth" type="date"></div><div class="v61field"><label>電話番号</label><input id="v61Tel" inputmode="tel"></div><div class="v61actions"><button class="v61btn v61ghost" id="v61Cancel">キャンセル</button><button class="v61btn" id="v61Save">登録</button></div></div></div>
 <main>
 <div class="card intro"><b>撮影条件をそろえて分析精度を高めます。</b><br>ガイド撮影では中央・水平・全身位置をそろえます。撮影後はAIランドマークを検出し、3方向を統合して姿勢を可視化します。</div>
 <div class="views">
@@ -570,5 +581,21 @@ const boostBtn=document.getElementById('twistBoostBtn');boostBtn.onclick=null;bo
 host.addEventListener('pointerdown',e=>{if(!ready)return;dragging=true;activePointer=e.pointerId;lastX=e.clientX;try{host.setPointerCapture(e.pointerId)}catch(_){}e.preventDefault();},{passive:false});
 host.addEventListener('pointermove',e=>{if(!dragging||activePointer!==e.pointerId)return;rotateBy(e.clientX-lastX);lastX=e.clientX;e.preventDefault();},{passive:false});
 host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel',endDrag);
+</script>
+
+<script id="v61-customer-js">
+(function(){
+ const KEY='wakaba_v61_customers'; const $=id=>document.getElementById(id);
+ function customers(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return []}}
+ function put(a){localStorage.setItem(KEY,JSON.stringify(a))}
+ function esc(v){return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+ function render(){const a=customers(),host=$('v61List'); if(!a.length){host.innerHTML='<div class="v61empty"><b>まだ顧客が登録されていません</b><br><br>「＋ 新規登録」から最初の顧客を登録してください。</div>';return} host.innerHTML=a.map((c,i)=>'<div class="v61row"><div class="v61avatar">'+esc((c.name||'?').slice(0,1))+'</div><div class="v61meta"><div class="v61name">'+esc(c.name)+'</div><div class="v61sub">'+esc([c.kana,c.sex,c.birth].filter(Boolean).join(' ｜ ')||'登録情報あり')+'</div></div><button class="v61start" data-i="'+i+'">姿勢分析</button></div>').join(''); host.querySelectorAll('.v61start').forEach(b=>b.onclick=()=>start(a[+b.dataset.i]))}
+ function start(c){sessionStorage.setItem('wakaba_v61_current',JSON.stringify(c)); $('v61CurrentName').textContent=c.name||'ゲスト'; document.body.classList.add('v61-analysis'); window.scrollTo(0,0)}
+ function home(){document.body.classList.remove('v61-analysis');window.scrollTo(0,0);render()}
+ $('v61Add').onclick=()=>{$('v61Modal').classList.add('on');$('v61Name').focus()}; $('v61Cancel').onclick=()=>$('v61Modal').classList.remove('on'); $('v61Back').onclick=home;
+ $('v61Save').onclick=()=>{const name=$('v61Name').value.trim();if(!name){alert('氏名を入力してください');return}const a=customers();a.unshift({id:Date.now(),name,kana:$('v61Kana').value.trim(),sex:$('v61Sex').value,birth:$('v61Birth').value,tel:$('v61Tel').value.trim(),created:new Date().toISOString()});put(a);['v61Name','v61Kana','v61Birth','v61Tel'].forEach(id=>$(id).value='');$('v61Sex').value='';$('v61Modal').classList.remove('on');render()};
+ $('v61Modal').addEventListener('click',e=>{if(e.target===$('v61Modal'))$('v61Modal').classList.remove('on')});
+ render();
+})();
 </script>
 </body></html>
