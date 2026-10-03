@@ -326,7 +326,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V99</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V98</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1122,81 +1122,4 @@ document.addEventListener('DOMContentLoaded',function(){
  });
 })();
 </script>
-
-
-<!-- V99 Firebase safe migration: localStorage remains the source of truth. -->
-<script type="module" id="v99-firebase-safe-migration">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCC4vKry9DQnQxwPWOMEy-xbiAzFJ3n6ic",
-  authDomain: "wakaba-posture.firebaseapp.com",
-  projectId: "wakaba-posture",
-  storageBucket: "wakaba-posture.firebasestorage.app",
-  messagingSenderId: "992802796991",
-  appId: "1:992802796991:web:461ab115f39be2795b5d0a",
-  measurementId: "G-1C96FJQPF6"
-};
-
-const CUSTOMER_KEY = 'wakaba_v61_customers';
-const HISTORY_PREFIX = 'wakaba_v63_history_';
-const MIGRATION_KEY = 'wakaba_v99_firestore_migration';
-
-function readJSON(key, fallback){
-  try { const v=JSON.parse(localStorage.getItem(key)||'null'); return v ?? fallback; }
-  catch(e){ return fallback; }
-}
-function customers(){
-  const a=readJSON(CUSTOMER_KEY, []);
-  return Array.isArray(a)?a:[];
-}
-function historyFor(id){
-  const a=readJSON(HISTORY_PREFIX+id, []);
-  return Array.isArray(a)?a:[];
-}
-function cleanForFirestore(value){
-  if(value===undefined) return null;
-  if(value===null || ['string','number','boolean'].includes(typeof value)) return value;
-  if(Array.isArray(value)) return value.map(cleanForFirestore);
-  if(typeof value==='object'){
-    const o={}; for(const [k,v] of Object.entries(value)) o[k]=cleanForFirestore(v); return o;
-  }
-  return String(value);
-}
-function migrationState(extra={}){
-  const old=readJSON(MIGRATION_KEY, {});
-  localStorage.setItem(MIGRATION_KEY, JSON.stringify({...old,...extra,updatedAt:new Date().toISOString()}));
-}
-
-async function migrateExistingLocalData(){
-  const list=customers();
-  if(!list.length){ migrationState({status:'no-local-customers',customerCount:0}); return; }
-  let app,db;
-  try { app=initializeApp(firebaseConfig); db=getFirestore(app); }
-  catch(e){ console.warn('V99 Firebase init failed; local data preserved.',e); migrationState({status:'firebase-init-failed',error:String(e)}); return; }
-
-  let ok=0,failed=0;
-  for(const c of list){
-    if(!c || c.id==null) continue;
-    const id=String(c.id), h=historyFor(c.id);
-    try{
-      await setDoc(doc(db,'patients',id), cleanForFirestore({...c,localId:c.id,historyCount:h.length,migratedAt:serverTimestamp()}), {merge:true});
-      for(let i=0;i<h.length;i++){
-        const x=h[i]||{};
-        const hid=String(x.date||('history-'+i)).replace(/[^a-zA-Z0-9_-]/g,'_');
-        await setDoc(doc(db,'patients',id,'history',hid), cleanForFirestore({...x,localIndex:i,migratedAt:serverTimestamp()}), {merge:true});
-      }
-      ok++;
-    }catch(e){ failed++; console.warn('V99 migration failed for patient '+id+'; local copy preserved.',e); }
-  }
-  migrationState({status:failed?'partial':'copied',customerCount:list.length,copiedCustomers:ok,failedCustomers:failed});
-  window.dispatchEvent(new CustomEvent('wakaba-v99-migration',{detail:{total:list.length,ok,failed}}));
-}
-
-// Important: V99 never removes or overwrites existing local customer/history keys.
-window.WAKABA_V99_FIREBASE = { migrateExistingLocalData, customers, historyFor };
-window.addEventListener('DOMContentLoaded',()=>{ setTimeout(migrateExistingLocalData,900); });
-</script>
-
 </body></html>
