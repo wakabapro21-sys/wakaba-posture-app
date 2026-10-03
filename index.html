@@ -309,17 +309,24 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 
 <style>
-/* V97: LINE share selectable saved analysis + official LINE QR - verified rebuild */
+/* V95: LINE share latest saved analysis only */
 .v95shareBox{margin-top:16px;padding:14px;border:1px solid #bbf7d0;border-radius:16px;background:#f0fdf4}
 .v95shareBox b{display:block;font-size:14px;color:#166534}.v95sharePreview{margin-top:8px;font-size:12px;line-height:1.7;color:#334155;white-space:pre-line}
 #v95LineShare{width:100%;margin-top:12px;border:0;border-radius:15px;min-height:56px;background:#06c755;color:#fff;font-size:17px;font-weight:900}
 .v95mini{margin-top:8px;font-size:10px;line-height:1.55;color:#64748b}
-.v96selectLabel{display:block;margin-top:10px;font-size:11px;font-weight:900;color:#166534}.v96select{width:100%;margin-top:5px;min-height:46px;border:1px solid #bbf7d0;border-radius:12px;background:#fff;color:#172033;padding:8px 10px;font-size:12px}
-.v96qrBox{margin-top:14px;padding:14px;border:1px solid #bbf7d0;border-radius:16px;background:#fff;text-align:center}.v96qrTitle{font-size:14px;font-weight:900;color:#166534}.v96qrText{margin-top:5px;font-size:10px;line-height:1.55;color:#64748b}.v96qrImg{display:block;width:min(220px,72vw);height:auto;margin:12px auto 4px;border-radius:12px}.v96qrHint{font-size:10px;color:#475569;line-height:1.55}
+</style>
+
+<style>
+/* V98: selectable history + official LINE QR */
+.v98selectBox{margin-top:16px;padding:14px;border:1px solid #99f6e4;border-radius:16px;background:#f0fdfa}
+.v98selectBox label{display:block;font-size:12px;font-weight:900;color:#115e59;margin-bottom:7px}
+#v98HistorySelect{width:100%;min-height:48px;border:1px solid #cbd5e1;border-radius:12px;background:#fff;padding:8px 10px;font-size:12px;color:#1e293b}
+.v98qrBox{margin-top:14px;padding:14px;border:1px solid #bbf7d0;border-radius:16px;background:#fff;text-align:center}
+.v98qrBox b{display:block;color:#166534;font-size:14px;margin-bottom:8px}.v98qrBox img{display:block;width:min(220px,72vw);height:auto;margin:0 auto;border-radius:8px}.v98qrBox p{font-size:10px;line-height:1.5;color:#64748b;margin:8px 0 0}
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V97</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V98</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1029,55 +1036,30 @@ document.addEventListener('DOMContentLoaded',function(){
 
 <div id="v88LineModal" aria-hidden="true">
   <div class="v88lineBox" role="dialog" aria-modal="true" aria-labelledby="v88LineTitle">
-    <div class="v88lineHead">
-      <div>
-        <div class="v88lineTitle" id="v88LineTitle">LINEで分析結果を渡す</div>
-        <div class="v88lineSub">保存済みの分析履歴から送りたい結果を選び、LINEへ共有できます。</div>
-      </div>
-      <button class="v88close" id="v88LineClose" type="button">×</button>
-    </div>
-    <div class="v88patient"><b id="v88LinePatient">選択中の患者</b><span>分析履歴を選択して共有</span></div>
-    <div class="v95shareBox">
-      <b>共有する分析結果を選択</b>
-      <label class="v96selectLabel" for="v96HistorySelect">分析履歴</label>
-      <select id="v96HistorySelect" class="v96select"></select>
-      <div class="v95sharePreview" id="v95SharePreview">保存済みの分析を読み込みます。</div>
-      <button id="v95LineShare" type="button">LINEで選択した結果を共有</button>
-      <div class="v95mini">スマホの共有画面を開きます。LINEを選ぶと、選択した分析結果の要約を送れます。</div>
-    </div>
-    <div class="v96qrBox">
-      <div class="v96qrTitle">LINE公式アカウントを友だち追加</div>
-      <div class="v96qrText">患者さんのスマホでこのQRコードを読み取ってください。</div>
-      <img class="v96qrImg" src="https://qr-official.line.me/gs/M_505zwknr_GW.png?oat_content=qr" alt="LINE公式アカウント 友だち追加QRコード">
-      <div class="v96qrHint">QRコードを読み取れない場合は、下のボタンから友だち追加できます。</div>
-    </div>
+    <div class="v88lineHead"><div><div class="v88lineTitle" id="v88LineTitle">LINEで分析結果を渡す</div><div class="v88lineSub">保存済みの分析履歴から、共有したい結果を選べます。</div></div><button class="v88close" id="v88LineClose" type="button">×</button></div>
+    <div class="v88patient"><b id="v88LinePatient">選択中の患者</b><span>分析履歴を選んで共有</span></div>
+    <div class="v98selectBox"><label for="v98HistorySelect">共有する分析結果を選択</label><select id="v98HistorySelect"></select></div>
+    <div class="v95shareBox"><b>選択した分析結果</b><div class="v95sharePreview" id="v95SharePreview">保存済みの分析履歴を読み込みます。</div><button id="v95LineShare" type="button">選択した結果をLINEで共有</button><div class="v95mini">スマホの共有画面を開きます。LINEを選ぶと、選択した結果の要約を送れます。</div></div>
+    <div class="v98qrBox"><b>LINE公式アカウント 友だち追加QRコード</b><img src="https://qr-official.line.me/gs/M_505zwknr_GW.png?oat_content=qr" alt="LINE公式アカウント友だち追加QRコード"><p>患者さんのスマホで読み取ると、LINE公式アカウントを友だち追加できます。</p></div>
     <button class="v88lineBtn" id="v88LineAdd" type="button">LINE公式アカウントを友だち追加</button>
     <button class="v88copyBtn" id="v88LineCopy" type="button">患者専用リンク（クラウド実装後）</button>
-    <div class="v88note">V97では保存済みの好きな分析結果を選んでLINE共有できます。写真付きの患者専用WebレポートURLは、ログイン・クラウド実装後に安全な専用URLとして接続します。</div>
+    <div class="v88note">V98では保存済みの分析履歴を選んでLINEへ共有できます。写真付き患者専用WebレポートURLはクラウド実装後に接続します。</div>
   </div>
 </div>
-
 <script>
 (function(){
-  function byId(id){return document.getElementById(id)}
-  function currentPatientName(){var el=document.querySelector('#v77Patient .v77patientName');return el?el.textContent.trim():'選択中の患者'}
-  function currentPatientId(){try{var cs=JSON.parse(localStorage.getItem('wakaba_v61_customers')||'[]');var name=currentPatientName();var c=cs.find(function(x){return String(x.name||'')===name});return c&&c.id!=null?c.id:null}catch(e){return null}}
-  function history(){var id=currentPatientId();if(id==null)return[];try{var h=JSON.parse(localStorage.getItem('wakaba_v63_history_'+id)||'[]');return Array.isArray(h)?h:[]}catch(e){return[]}}
-  function selectedAnalysis(){var h=history(),sel=byId('v96HistorySelect'),i=sel?Number(sel.value):0;return h[i]||null}
-  function analysisText(x){var name=currentPatientName();if(!x)return'';var d='';try{d=new Date(x.date).toLocaleString('ja-JP')}catch(e){}return '【わかば姿勢分析】\n'+name+' 様\n分析日時：'+d+'\n\n総合：'+x.total+'/100\n正面：'+x.front+'\n側面：'+x.side+'\n回旋：'+x.twist+'\n姿勢タイプ：'+(x.type||'--')+'\n\n※写真から算出した比較用の参考評価で、医学的診断ではありません。'}
-  function refreshPreview(){var el=byId('v95SharePreview');if(!el)return;var t=analysisText(selectedAnalysis());el.textContent=t||'この患者には、まだ共有できる分析履歴がありません。'}
-  function fillHistory(){var sel=byId('v96HistorySelect');if(!sel)return;var h=history();sel.innerHTML=h.length?h.map(function(x,i){var d='';try{d=new Date(x.date).toLocaleString('ja-JP')}catch(e){}return '<option value="'+i+'">'+d+' ｜ 総合 '+x.total+'</option>'}).join(''):'<option value="">分析履歴がありません</option>';sel.disabled=!h.length;refreshPreview()}
-  function openLine(){var m=byId('v88LineModal');if(!m)return;byId('v88LinePatient').textContent=currentPatientName();fillHistory();m.classList.add('v88open');m.setAttribute('aria-hidden','false')}
-  function closeLine(){var m=byId('v88LineModal');if(!m)return;m.classList.remove('v88open');m.setAttribute('aria-hidden','true')}
-  document.addEventListener('DOMContentLoaded',function(){
-    var old=byId('v77Line');if(old){var clone=old.cloneNode(true);old.parentNode.replaceChild(clone,old);clone.addEventListener('click',openLine)}
-    byId('v88LineClose')?.addEventListener('click',closeLine);
-    byId('v88LineModal')?.addEventListener('click',function(e){if(e.target===this)closeLine()});
-    byId('v96HistorySelect')?.addEventListener('change',refreshPreview);
-    byId('v88LineAdd')?.addEventListener('click',function(){window.open('https://lin.ee/T0Gk3sJ','_blank','noopener,noreferrer')});
-    byId('v95LineShare')?.addEventListener('click',async function(){var t=analysisText(selectedAnalysis());if(!t){alert('共有できる分析履歴がありません。');return}try{if(navigator.share){await navigator.share({title:'わかば姿勢分析',text:t});return}}catch(e){if(e&&e.name==='AbortError')return}window.open('https://line.me/R/share?text='+encodeURIComponent(t),'_blank','noopener,noreferrer')});
-    byId('v88LineCopy')?.addEventListener('click',function(){alert('患者専用WebレポートURLは、クラウド実装後に接続します。V97では上の履歴選択から結果を共有してください。')});
-  });
+ function byId(id){return document.getElementById(id)}
+ function patientName(){var e=document.querySelector('#v77Patient .v77patientName');return e?e.textContent.trim():'選択中の患者'}
+ function patientId(){try{var a=JSON.parse(localStorage.getItem('wakaba_v61_customers')||'[]'),n=patientName(),c=a.find(function(x){return String(x.name||'')===n});return c&&c.id!=null?c.id:null}catch(e){return null}}
+ function history(){var id=patientId();if(id==null)return[];try{var a=JSON.parse(localStorage.getItem('wakaba_v63_history_'+id)||'[]');return Array.isArray(a)?a:[]}catch(e){return[]}}
+ function selected(){var a=history(),el=byId('v98HistorySelect'),i=el?Number(el.value):0;return a[i]||null}
+ function fmtDate(x){try{return new Date(x.date).toLocaleString('ja-JP')}catch(e){return String(x.date||'')}}
+ function textFor(x){if(!x)return'';return '【わかば姿勢分析】\n'+patientName()+' 様\n分析日時：'+fmtDate(x)+'\n\n総合：'+x.total+'/100\n正面：'+x.front+'\n側面：'+x.side+'\n回旋：'+x.twist+'\n姿勢タイプ：'+(x.type||'--')+'\n\n※写真から算出した比較用の参考評価で、医学的診断ではありません。'}
+ function preview(){var e=byId('v95SharePreview'),x=selected();if(e)e.textContent=x?textFor(x):'この患者には、まだ共有できる分析履歴がありません。'}
+ function fill(){var el=byId('v98HistorySelect'),a=history();if(!el)return;el.innerHTML=a.length?a.map(function(x,i){return '<option value="'+i+'">'+fmtDate(x)+' ｜ 総合 '+x.total+'</option>'}).join(''):'<option value="">分析履歴がありません</option>';el.disabled=!a.length;preview()}
+ function open(){var m=byId('v88LineModal');if(!m)return;byId('v88LinePatient').textContent=patientName();fill();m.classList.add('v88open');m.setAttribute('aria-hidden','false')}
+ function close(){var m=byId('v88LineModal');if(!m)return;m.classList.remove('v88open');m.setAttribute('aria-hidden','true')}
+ document.addEventListener('DOMContentLoaded',function(){var old=byId('v77Line');if(old){var c=old.cloneNode(true);old.parentNode.replaceChild(c,old);c.addEventListener('click',open)}byId('v88LineClose')?.addEventListener('click',close);byId('v88LineModal')?.addEventListener('click',function(e){if(e.target===this)close()});byId('v98HistorySelect')?.addEventListener('change',preview);byId('v88LineAdd')?.addEventListener('click',function(){window.open('https://lin.ee/T0Gk3sJ','_blank','noopener,noreferrer')});byId('v95LineShare')?.addEventListener('click',async function(){var t=textFor(selected());if(!t){alert('共有できる分析履歴がありません。');return}try{if(navigator.share){await navigator.share({title:'わかば姿勢分析',text:t});return}}catch(e){if(e&&e.name==='AbortError')return}window.open('https://line.me/R/share?text='+encodeURIComponent(t),'_blank','noopener,noreferrer')});byId('v88LineCopy')?.addEventListener('click',function(){alert('患者専用WebレポートURLは、クラウド実装後に接続します。')})});
 })();
 </script>
 
