@@ -326,7 +326,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V113</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V114</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -336,7 +336,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 <section class="v77page" id="v77Mypage"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>マイページ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>プロフィール</b><span>南 昇吾</span></div><div class="v77settingRow"><b>院名</b><span>わかば整体院・接骨院</span></div><div class="v77settingRow"><b>メールアドレス</b><span class="v77muted">クラウド版で設定</span></div><div class="v77settingRow"><b>パスワード</b><span class="v77muted">クラウド版で設定</span></div></div></section>
 <section class="v77page" id="v77News"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>お知らせ</h2><span></span></div><div class="v77card v77empty">現在、お知らせはありません。</div></section>
 <section class="v77page" id="v77Help"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>ヘルプ・お問い合わせ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>撮影・カメラについて</b><span>›</span></div><div class="v77settingRow"><b>分析について</b><span>›</span></div><div class="v77settingRow"><b>顧客データについて</b><span>›</span></div><div class="v77settingRow"><b>お問い合わせ</b><span>›</span></div></div></section>
-<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V113 有効</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">安全コピー準備</span></div></div></section>
+<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V114 有効</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
 <section id="v61Home">
  <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
  <div id="v61List" class="v61list"></div>
@@ -1133,7 +1133,7 @@ document.addEventListener('DOMContentLoaded',function(){
   <div class="v100row"><input id="v100Email" type="email" autocomplete="username" placeholder="Firebase管理者メール"></div>
   <div class="v100row"><input id="v100Pass" type="password" autocomplete="current-password" placeholder="パスワード"><button id="v100SignIn" class="v100btn">ログイン</button></div>
  </div>
- <div id="v100Actions" style="display:none"><div class="v100row"><div style="flex:1;padding:8px 10px;border-radius:10px;background:#ecfdf5;color:#047857;font-size:10px;font-weight:900">✓ V113 院別データ安全コピー（V110安全同期を継承）</div></div><div id="v112ClinicAccount" style="margin:8px 0 10px;padding:11px 12px;border:1px solid #bfdbfe;border-radius:12px;background:#eff6ff;font-size:10px;line-height:1.65;color:#1e3a8a"><b style="font-size:12px">🏥 院アカウント</b><div id="v112ClinicEmail">ログイン確認中…</div><div id="v112ClinicId" style="word-break:break-all;color:#64748b"></div><div style="margin-top:5px;color:#475569">V113ではUIDを院IDとして、旧 /patients を院別領域へ安全コピーします。旧データは削除・変更しません。</div></div>
+ <div id="v100Actions" style="display:none"><div class="v100row"><div style="flex:1;padding:8px 10px;border-radius:10px;background:#ecfdf5;color:#047857;font-size:10px;font-weight:900">✓ V114 院別保存 ON（旧 /patients はバックアップとして保持）</div></div><div id="v112ClinicAccount" style="margin:8px 0 10px;padding:11px 12px;border:1px solid #bfdbfe;border-radius:12px;background:#eff6ff;font-size:10px;line-height:1.65;color:#1e3a8a"><b style="font-size:12px">🏥 院アカウント</b><div id="v112ClinicEmail">ログイン確認中…</div><div id="v112ClinicId" style="word-break:break-all;color:#64748b"></div><div style="margin-top:5px;color:#475569">V114ではUIDを院IDとして、患者・履歴の保存先と復元元を院別領域に切り替えます。旧 /patients は削除・変更しません。</div></div>
   <div class="v100row"><button id="v100Sync" class="v100btn secondary" style="flex:1">端末→Firebaseへコピー</button></div>
   <div class="v100row"><button id="v102Restore" class="v100btn" style="flex:1;background:#0f766e">Firebase→この端末へ安全復元</button><button id="v100SignOut" class="v100btn gray">ログアウト</button></div>
  </div>
@@ -1171,15 +1171,15 @@ async function v104SyncPatient(c){
  const id=String(c.id);
  try{
   status.textContent='自動同期中';
-  await setDoc(doc(db,'patients',id),{...c,localId:id,updatedAt:serverTimestamp()},{merge:true});
-  const chk=await getDoc(doc(db,'patients',id));
+  await setDoc(doc(db,'clinics',auth.currentUser.uid,'patients',id),{...c,localId:id,updatedAt:serverTimestamp()},{merge:true});
+  const chk=await getDoc(doc(db,'clinics',auth.currentUser.uid,'patients',id));
   if(!chk.exists()) throw new Error('write verification failed');
   status.textContent='自動同期済み';
   msg.innerHTML='<span class="v100ok">✓ 顧客「'+String(c.name||'')+'」をFirebaseへ保存・確認しました。写真は送信していません。</span>';
   return true;
  }catch(e){console.error('V104 patient auto sync',e);status.textContent='同期失敗';msg.innerHTML='<span class="v100err">端末保存は成功しましたが、Firebase自動保存に失敗しました。端末データは残っています。</span>';return false}
 }
-async function v104SyncLatestHistory(id){if(!auth.currentUser||!id)return;try{const hs=histories(id);if(!hs.length)return;const h=hs[0],hid=String(h.date||'history_latest').replaceAll('/','-');await setDoc(doc(db,'patients',String(id),'histories',hid),{...h,patientId:String(id),updatedAt:serverTimestamp()},{merge:true});status.textContent='自動同期済み'}catch(e){console.error('V104 history auto sync',e);status.textContent='履歴同期失敗'}}
+async function v104SyncLatestHistory(id){if(!auth.currentUser||!id)return;try{const hs=histories(id);if(!hs.length)return;const h=hs[0],hid=String(h.date||'history_latest').replaceAll('/','-');await setDoc(doc(db,'clinics',auth.currentUser.uid,'patients',String(id),'histories',hid),{...h,patientId:String(id),updatedAt:serverTimestamp()},{merge:true});status.textContent='自動同期済み'}catch(e){console.error('V104 history auto sync',e);status.textContent='履歴同期失敗'}}
 async function v104SyncAllPatients(){
  if(!auth.currentUser)return null;
 
@@ -1226,7 +1226,7 @@ async function v104SyncAllPatients(){
  // Read the REAL /patients collection from the Firebase server first.
  let beforeSnap;
  try{
-  beforeSnap=await getDocsFromServer(collection(db,'patients'));
+  beforeSnap=await getDocsFromServer(collection(db,'clinics',auth.currentUser.uid,'patients'));
  }catch(e){
   console.error('V110 initial server collection read',e);
   return {local:localIds.length,cloud:null,missing:localIds,idFixed,verifyError:true};
@@ -1244,7 +1244,7 @@ async function v104SyncAllPatients(){
    const safe={...c};
    delete safe.photos; delete safe.photo; delete safe.images;
    delete safe.frontPhoto; delete safe.rightPhoto; delete safe.leftPhoto;
-   await setDoc(doc(db,'patients',id),{...safe,localId:id,updatedAt:serverTimestamp()});
+   await setDoc(doc(db,'clinics',auth.currentUser.uid,'patients',id),{...safe,localId:id,updatedAt:serverTimestamp()});
    added++;
   }catch(e){
    console.error('V110 missing-only create',id,e);
@@ -1256,7 +1256,7 @@ async function v104SyncAllPatients(){
  // Firebase count shown to the user.
  let afterSnap;
  try{
-  afterSnap=await getDocsFromServer(collection(db,'patients'));
+  afterSnap=await getDocsFromServer(collection(db,'clinics',auth.currentUser.uid,'patients'));
  }catch(e){
   console.error('V110 final server collection read',e);
   return {local:localIds.length,cloud:null,missing:localIds,idFixed,added,failed,verifyError:true};
@@ -1281,11 +1281,11 @@ document.getElementById('v61Save')?.addEventListener('click',()=>setTimeout(()=>
 async function restoreAll(){
  const btn=$('v102Restore'); if(btn)btn.disabled=true; status.textContent='復元中'; msg.textContent='Firebaseを確認しています…';
  try{
-  const snap=await getDocs(collection(db,'patients')); const local=patients(); const byId=new Map(local.map(c=>[String(c.id),c])); let added=0,hAdded=0;
+  const snap=await getDocs(collection(db,'clinics',auth.currentUser.uid,'patients')); const local=patients(); const byId=new Map(local.map(c=>[String(c.id),c])); let added=0,hAdded=0;
   for(const d of snap.docs){
    const raw=d.data()||{}; const id=String(raw.localId||raw.id||d.id); const cloud={...raw,id:raw.id??id}; delete cloud.updatedAt; delete cloud.localId;
    if(!byId.has(id)){local.unshift(cloud);byId.set(id,cloud);added++}
-   const hsnap=await getDocs(collection(db,'patients',d.id,'histories')); let lh=[]; try{lh=JSON.parse(localStorage.getItem('wakaba_v63_history_'+id)||'[]')}catch(e){}
+   const hsnap=await getDocs(collection(db,'clinics',auth.currentUser.uid,'patients',d.id,'histories')); let lh=[]; try{lh=JSON.parse(localStorage.getItem('wakaba_v63_history_'+id)||'[]')}catch(e){}
    const keys=new Set(lh.map((h,i)=>String(h.date||h.created||('local_'+i))));
    for(const hd of hsnap.docs){const h={...(hd.data()||{})};delete h.updatedAt;delete h.patientId;const k=String(h.date||h.created||hd.id);if(!keys.has(k)){lh.push(h);keys.add(k);hAdded++}}
    lh.sort((a,b)=>String(b.date||b.created||'').localeCompare(String(a.date||a.created||''))); localStorage.setItem('wakaba_v63_history_'+id,JSON.stringify(lh.slice(0,30)));
@@ -1305,11 +1305,11 @@ async function uploadAll(){
   if(!r || r.cloud===null) throw new Error('server verification failed');
   if(r.missing.length){
    status.textContent='未同期あり';
-   msg.innerHTML='<span class="v100err">⚠ 同期後もFirebaseに存在しない患者 '+r.missing.length+'件（ID: '+r.missing.join(', ')+'）。既存データは削除していません。</span>';
+   msg.innerHTML='<span class="v100err">⚠ 同期後も院別Firebaseに存在しない患者 '+r.missing.length+'件（ID: '+r.missing.join(', ')+'）。既存データは削除していません。</span>';
   }else{
    localStorage.setItem('wakaba_v100_last_cloud_copy',new Date().toISOString());
    status.textContent='サーバー確認済み';
-   msg.innerHTML='<span class="v100ok">✓ V110同期完了：端末 '+r.local+'件 / Firebase実在 '+r.cloud+'件。新規追加 '+r.added+'件'+(r.idFixed?'、端末の重複患者IDを '+r.idFixed+'件安全に補正':'')+'。既存Firebase患者は上書き・削除していません。写真は送信していません。</span>';
+   msg.innerHTML='<span class="v100ok">✓ V110同期完了：端末 '+r.local+'件 / 院別Firebase実在 '+r.cloud+'件。新規追加 '+r.added+'件'+(r.idFixed?'、端末の重複患者IDを '+r.idFixed+'件安全に補正':'')+'。既存院別Firebase患者は上書き・削除していません。写真は送信していません。</span>';
   }
  }catch(e){
   console.error(e); status.textContent='同期失敗';
@@ -1318,7 +1318,7 @@ async function uploadAll(){
 }
 $('v100SignIn').onclick=async()=>{msg.textContent='ログイン確認中…';try{await signInWithEmailAndPassword(auth,$('v100Email').value.trim(),$('v100Pass').value);$('v100Pass').value=''}catch(e){console.error(e);msg.innerHTML='<span class="v100err">ログインできません。メールアドレスとパスワードを確認してください。</span>'}};
 $('v100SignOut').onclick=()=>signOut(auth);$('v100Sync').onclick=uploadAll;$('v102Restore').onclick=restoreAll;
-onAuthStateChanged(auth,async u=>{if(u){localStorage.setItem('wakaba_clinic_uid',u.uid);localStorage.setItem('wakaba_clinic_email',u.email||'');const ce=$('v112ClinicEmail'),ci=$('v112ClinicId');if(ce)ce.textContent='ログイン：'+(u.email||'メール未設定');if(ci)ci.textContent='院ID：'+u.uid;status.textContent='ログイン済み';$('v100Login').style.display='none';$('v100Actions').style.display='block';msg.innerHTML='<span class="v100ok">V110：患者IDをFirebaseで1件ずつ実在確認し、存在しない患者だけ追加します。既存患者は上書き・削除しません。写真は送りません。</span>';const r=await v104SyncAllPatients();if(r){if(r.cloud!==null && r.missing.length===0){status.textContent='サーバー確認済み';msg.innerHTML='<span class="v100ok">✓ V110安定版：サーバー実在確認OK：端末 '+r.local+'件 / Firebase実在 '+r.cloud+'件。新規追加 '+(r.added||0)+'件'+(r.idFixed?'、重複患者IDを '+r.idFixed+'件安全に補正':'')+'。端末の患者IDはすべてFirebase上に存在します。</span>'}else if(r.cloud!==null){status.textContent='未同期あり';msg.innerHTML='<span class="v100err">⚠ サーバー確認：端末 '+r.local+'件 / Firebase '+r.cloud+'件。Firebaseに見つからない患者 '+r.missing.length+'件（ID: '+r.missing.join(', ')+'）。端末データは残っています。</span>'}else{status.textContent='確認失敗';msg.innerHTML='<span class="v100err">Firebaseへの書き込み後、サーバー実在確認に失敗しました。端末データは残っています。</span>'}}}else{status.textContent='未接続';$('v100Login').style.display='block';$('v100Actions').style.display='none';msg.textContent='端末データが原本です。Firebaseへ自動同期するにはログインしてください。写真は送信しません。'}});
+onAuthStateChanged(auth,async u=>{if(u){localStorage.setItem('wakaba_clinic_uid',u.uid);localStorage.setItem('wakaba_clinic_email',u.email||'');const ce=$('v112ClinicEmail'),ci=$('v112ClinicId');if(ce)ce.textContent='ログイン：'+(u.email||'メール未設定');if(ci)ci.textContent='院ID：'+u.uid;status.textContent='ログイン済み';$('v100Login').style.display='none';$('v100Actions').style.display='block';msg.innerHTML='<span class="v100ok">V110：患者IDをFirebaseで1件ずつ実在確認し、存在しない患者だけ追加します。既存患者は上書き・削除しません。写真は送りません。</span>';const r=await v104SyncAllPatients();if(r){if(r.cloud!==null && r.missing.length===0){status.textContent='サーバー確認済み';msg.innerHTML='<span class="v100ok">✓ V110安定版：サーバー実在確認OK：端末 '+r.local+'件 / 院別Firebase実在 '+r.cloud+'件。新規追加 '+(r.added||0)+'件'+(r.idFixed?'、重複患者IDを '+r.idFixed+'件安全に補正':'')+'。端末の患者IDはすべて院別Firebase上に存在します。</span>'}else if(r.cloud!==null){status.textContent='未同期あり';msg.innerHTML='<span class="v100err">⚠ サーバー確認：端末 '+r.local+'件 / Firebase '+r.cloud+'件。Firebaseに見つからない患者 '+r.missing.length+'件（ID: '+r.missing.join(', ')+'）。端末データは残っています。</span>'}else{status.textContent='確認失敗';msg.innerHTML='<span class="v100err">Firebaseへの書き込み後、サーバー実在確認に失敗しました。端末データは残っています。</span>'}}}else{status.textContent='未接続';$('v100Login').style.display='block';$('v100Actions').style.display='none';msg.textContent='端末データが原本です。Firebaseへ自動同期するにはログインしてください。写真は送信しません。'}});
 </script>
 
 
@@ -1327,6 +1327,9 @@ onAuthStateChanged(auth,async u=>{if(u){localStorage.setItem('wakaba_clinic_uid'
 #v113MigrateBtn{width:100%;margin-top:8px;border:0;border-radius:10px;padding:11px;background:#f97316;color:#fff;font-weight:900}
 #v113MigrateBtn:disabled{opacity:.55}.v113ok{color:#047857}.v113err{color:#b91c1c}
 </style>
+
+<style id="v114-style">#v114Mode{margin:8px 0;padding:10px 12px;border:1px solid #86efac;border-radius:12px;background:#f0fdf4;color:#166534;font-size:10px;line-height:1.6;font-weight:700}</style>
+<script id="v114-ui">document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{const a=document.getElementById('v112ClinicAccount');if(a&&!document.getElementById('v114Mode')){const d=document.createElement('div');d.id='v114Mode';d.innerHTML='🔒 <b>V114 院別保存モード</b><br>新規患者・分析履歴・復元はログイン中の院ID専用領域を使用します。旧 /patients はバックアップとして残し、削除・変更しません。';a.insertAdjacentElement('afterend',d)}},500)});</script>
 <script type="module" id="v113-migration-js">
 import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
 import {getAuth} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
@@ -1336,7 +1339,7 @@ function mountV113(){
  const actions=document.getElementById('v100Actions');
  if(!actions||document.getElementById('v113Migration')) return;
  const box=document.createElement('div'); box.id='v113Migration';
- box.innerHTML='<b>🏥 院別データ領域 V113</b><div id="v113MigrationStatus" style="margin-top:4px">まだコピーしていません。旧 /patients はそのまま残します。</div><button id="v113MigrateBtn" type="button">院別領域へ安全コピー</button>';
+ box.innerHTML='<b>🏥 院別データ領域（移行確認）</b><div id="v113MigrationStatus" style="margin-top:4px">まだコピーしていません。旧 /patients はそのまま残します。</div><button id="v113MigrateBtn" type="button">旧データから再確認コピー</button>';
  const acct=document.getElementById('v112ClinicAccount'); (acct||actions.firstElementChild)?.after(box);
  document.getElementById('v113MigrateBtn')?.addEventListener('click',migrateV113);
 }
