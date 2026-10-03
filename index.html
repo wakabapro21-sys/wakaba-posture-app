@@ -326,7 +326,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V115</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V116</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -336,7 +336,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 <section class="v77page" id="v77Mypage"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>マイページ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>プロフィール</b><span>南 昇吾</span></div><div class="v77settingRow"><b>院名</b><span>わかば整体院・接骨院</span></div><div class="v77settingRow"><b>メールアドレス</b><span class="v77muted">クラウド版で設定</span></div><div class="v77settingRow"><b>パスワード</b><span class="v77muted">クラウド版で設定</span></div></div></section>
 <section class="v77page" id="v77News"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>お知らせ</h2><span></span></div><div class="v77card v77empty">現在、お知らせはありません。</div></section>
 <section class="v77page" id="v77Help"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>ヘルプ・お問い合わせ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>撮影・カメラについて</b><span>›</span></div><div class="v77settingRow"><b>分析について</b><span>›</span></div><div class="v77settingRow"><b>顧客データについて</b><span>›</span></div><div class="v77settingRow"><b>お問い合わせ</b><span>›</span></div></div></section>
-<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V115 有効</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
+<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V116 DataGuard</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
 <section id="v61Home">
  <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
  <div id="v61List" class="v61list"></div>
@@ -1401,6 +1401,47 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
  },550);
 });
+</script>
+
+
+<style id="v116-dataguard-style">
+#v116DataGuard{margin:8px 0;padding:10px 12px;border:1px solid #93c5fd;border-radius:12px;background:#eff6ff;color:#1e3a8a;font-size:10px;line-height:1.6}#v116DataGuard b{font-size:11px}
+</style>
+<script id="v116-dataguard-local">
+(function(){
+ const DB='wakaba_local_dataguard_v116', STORE='kv', CUSTOMER='wakaba_v61_customers', HP='wakaba_v63_history_';
+ function relevant(k){return k===CUSTOMER || k.startsWith(HP) || k==='wakaba_v66_current'}
+ function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(STORE))r.result.createObjectStore(STORE)};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+ async function idbPut(k,v){try{const db=await openDB();await new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put(v,k);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)});db.close()}catch(e){console.warn('V116 IDB backup',e)}}
+ async function idbGet(k){try{const db=await openDB();const v=await new Promise((res,rej)=>{const r=db.transaction(STORE,'readonly').objectStore(STORE).get(k);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});db.close();return v}catch(e){return undefined}}
+ async function mirrorAll(){for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(relevant(k)){const v=localStorage.getItem(k);if(v!=null)await idbPut(k,v)}}}
+ async function recoverIfNeeded(){
+  let cur=[];try{cur=JSON.parse(localStorage.getItem(CUSTOMER)||'[]')}catch(e){}
+  if(Array.isArray(cur)&&cur.length)return false;
+  const bak=await idbGet(CUSTOMER);if(!bak)return false;
+  let arr=[];try{arr=JSON.parse(bak||'[]')}catch(e){}
+  if(!Array.isArray(arr)||!arr.length)return false;
+  localStorage.setItem(CUSTOMER,bak);
+  for(const c of arr){if(!c||c.id==null)continue;const k=HP+String(c.id);if(!localStorage.getItem(k)){const h=await idbGet(k);if(h)localStorage.setItem(k,h)}}
+  sessionStorage.setItem('wakaba_v116_recovered','1');return true;
+ }
+ // Keep V115's compact history photos: max 240 px / JPEG 0.62. No photo is uploaded to Firebase.
+ const origSet=Storage.prototype.setItem, origRemove=Storage.prototype.removeItem;
+ Storage.prototype.setItem=function(k,v){const out=origSet.apply(this,arguments);if(this===localStorage&&relevant(String(k)))idbPut(String(k),String(v));return out};
+ Storage.prototype.removeItem=function(k){if(this===localStorage&&relevant(String(k))){const old=this.getItem(k);if(old!=null)idbPut(String(k),old)}return origRemove.apply(this,arguments)};
+ async function boot(){
+  const recovered=await recoverIfNeeded();
+  if(recovered){setTimeout(()=>location.reload(),150);return}
+  await mirrorAll();
+  setTimeout(()=>{
+   const anchor=document.getElementById('v115SecurityPrep')||document.getElementById('v114Mode');
+   if(anchor&&!document.getElementById('v116DataGuard')){const d=document.createElement('div');d.id='v116DataGuard';d.innerHTML='💾 <b>V116 ローカルDataGuard ON</b><br>患者・履歴・縮小写真を端末内のIndexedDBへ二重保存します。履歴写真は長辺240px・JPEG圧縮の小さい画像です。<br><span style="color:#1d4ed8">写真はFirebaseへ送信しません。端末データが空になった場合はローカルバックアップから自動復元します。</span>';anchor.insertAdjacentElement('afterend',d)}
+  },650);
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+ window.addEventListener('wakaba:v103-history-saved',()=>setTimeout(mirrorAll,50));
+ window.addEventListener('wakaba:v103-patient-saved',()=>setTimeout(mirrorAll,50));
+})();
 </script>
 
 </body></html>
