@@ -212,7 +212,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 }
 </style>
 <style>
-/* V88 patient detail polish */
+/* V89 patient detail polish */
 #v77Patient .v77pageHead{
   align-items:center!important;
   margin-bottom:14px!important;
@@ -260,7 +260,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 
 <style>
-/* V88: LINE patient handoff modal */
+/* V89: LINE patient handoff modal */
 #v88LineModal{position:fixed;inset:0;z-index:5000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.58)}
 #v88LineModal.v88open{display:flex}
 .v88lineBox{width:min(100%,430px);max-height:88vh;overflow:auto;background:#fff;border-radius:24px;padding:22px;box-shadow:0 24px 70px rgba(15,23,42,.28)}
@@ -279,7 +279,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V88</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V89</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -995,7 +995,7 @@ document.addEventListener('DOMContentLoaded',function(){
     </ol>
     <button class="v88lineBtn" id="v88LineAdd" type="button">LINE友だち追加へ</button>
     <button class="v88copyBtn" id="v88LineCopy" type="button">患者専用リンクをコピー</button>
-    <div class="v88note">現在は画面と導線の作成段階です。実際の友だち追加・患者識別・安全なレポート公開は、LINE公式アカウントとクラウド側を接続してから有効化します。</div>
+    <div class="v88note">LINE友だち追加は接続済みです。患者識別と患者専用レポートの安全な公開は、次の段階でクラウド側と接続して有効化します。</div>
   </div>
 </div>
 
@@ -1025,7 +1025,7 @@ document.addEventListener('DOMContentLoaded',function(){
     byId('v88LineClose')?.addEventListener('click',closeLine);
     byId('v88LineModal')?.addEventListener('click',function(e){if(e.target===this)closeLine()});
     byId('v88LineAdd')?.addEventListener('click',function(){
-      alert('次の段階で、わかば整体院のLINE公式アカウントの友だち追加URLをここへ接続します。');
+      window.open('https://lin.ee/T0Gk3sJ','_blank','noopener,noreferrer');
     });
     byId('v88LineCopy')?.addEventListener('click',function(){
       alert('次の段階で、患者ごとに発行する専用レポートURLをここへ接続します。');
