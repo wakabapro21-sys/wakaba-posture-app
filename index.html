@@ -336,7 +336,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 <section class="v77page" id="v77Mypage"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>マイページ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>プロフィール</b><span>南 昇吾</span></div><div class="v77settingRow"><b>院名</b><span>わかば整体院・接骨院</span></div><div class="v77settingRow"><b>メールアドレス</b><span class="v77muted">クラウド版で設定</span></div><div class="v77settingRow"><b>パスワード</b><span class="v77muted">クラウド版で設定</span></div></div></section>
 <section class="v77page" id="v77News"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>お知らせ</h2><span></span></div><div class="v77card v77empty">現在、お知らせはありません。</div></section>
 <section class="v77page" id="v77Help"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>ヘルプ・お問い合わせ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>撮影・カメラについて</b><span>›</span></div><div class="v77settingRow"><b>分析について</b><span>›</span></div><div class="v77settingRow"><b>顧客データについて</b><span>›</span></div><div class="v77settingRow"><b>お問い合わせ</b><span>›</span></div></div></section>
-<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V115 有効</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存＋セキュリティ準備 ON</span></div></div></section>
+<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V115 有効</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
 <section id="v61Home">
  <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
  <div id="v61List" class="v61list"></div>
@@ -1133,7 +1133,7 @@ document.addEventListener('DOMContentLoaded',function(){
   <div class="v100row"><input id="v100Email" type="email" autocomplete="username" placeholder="Firebase管理者メール"></div>
   <div class="v100row"><input id="v100Pass" type="password" autocomplete="current-password" placeholder="パスワード"><button id="v100SignIn" class="v100btn">ログイン</button></div>
  </div>
- <div id="v100Actions" style="display:none"><div class="v100row"><div style="flex:1;padding:8px 10px;border-radius:10px;background:#ecfdf5;color:#047857;font-size:10px;font-weight:900">✓ V115 院別セキュリティ準備 ON（V114院別保存を継承）</div></div><div id="v112ClinicAccount" style="margin:8px 0 10px;padding:11px 12px;border:1px solid #bfdbfe;border-radius:12px;background:#eff6ff;font-size:10px;line-height:1.65;color:#1e3a8a"><b style="font-size:12px">🏥 院アカウント</b><div id="v112ClinicEmail">ログイン確認中…</div><div id="v112ClinicId" style="word-break:break-all;color:#64748b"></div><div style="margin-top:5px;color:#475569">V115ではV114の院別保存を維持し、Firestore Security Rulesで院ID＝ログインUIDだけを許可する準備をします。旧 /patients は削除・変更しません。</div></div>
+ <div id="v100Actions" style="display:none"><div class="v100row"><div style="flex:1;padding:8px 10px;border-radius:10px;background:#ecfdf5;color:#047857;font-size:10px;font-weight:900">✓ V114 院別保存 ON（旧 /patients はバックアップとして保持）</div></div><div id="v112ClinicAccount" style="margin:8px 0 10px;padding:11px 12px;border:1px solid #bfdbfe;border-radius:12px;background:#eff6ff;font-size:10px;line-height:1.65;color:#1e3a8a"><b style="font-size:12px">🏥 院アカウント</b><div id="v112ClinicEmail">ログイン確認中…</div><div id="v112ClinicId" style="word-break:break-all;color:#64748b"></div><div style="margin-top:5px;color:#475569">V114ではUIDを院IDとして、患者・履歴の保存先と復元元を院別領域に切り替えます。旧 /patients は削除・変更しません。</div></div>
   <div class="v100row"><button id="v100Sync" class="v100btn secondary" style="flex:1">端末→Firebaseへコピー</button></div>
   <div class="v100row"><button id="v102Restore" class="v100btn" style="flex:1;background:#0f766e">Firebase→この端末へ安全復元</button><button id="v100SignOut" class="v100btn gray">ログアウト</button></div>
  </div>
@@ -1385,19 +1385,21 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 </script>
 
 
-<style id="v115-security-style">
-#v115Security{margin:10px 0;padding:12px;border:1px solid #c4b5fd;border-radius:12px;background:#f5f3ff;color:#4c1d95;font-size:10px;line-height:1.65}#v115Security b{font-size:12px}#v115Security .ok{color:#047857;font-weight:900}#v115Security .warn{color:#b45309;font-weight:900}
+<style id="v115-style">
+#v115SecurityPrep{margin:8px 0;padding:10px 12px;border:1px solid #c4b5fd;border-radius:12px;background:#f5f3ff;color:#4c1d95;font-size:10px;line-height:1.6}
+#v115SecurityPrep b{font-size:11px}
 </style>
-<script id="v115-security-ui">
+<script id="v115-ui">
 document.addEventListener('DOMContentLoaded',()=>{
  setTimeout(()=>{
-  const mode=document.getElementById('v114Mode')||document.getElementById('v112ClinicAccount');
-  if(mode&&!document.getElementById('v115Security')){
-   const d=document.createElement('div');d.id='v115Security';
-   d.innerHTML='🛡️ <b>V115 院別アクセス分離・準備</b><br><span class="ok">✓ アプリの保存先：ログインUID専用 /clinics/{UID}/patients</span><br><span class="ok">✓ 履歴・復元：同じUID専用領域</span><br><span class="warn">次の作業：Firebase Security Rulesを院ID＝ログインUIDだけ許可に変更すると、他院アカウントからの読み書きをサーバー側で遮断できます。</span><br>※ V115だけで「完全遮断済み」とは表示しません。Rules適用後にV116で確認します。';
-   mode.insertAdjacentElement('afterend',d);
+  const anchor=document.getElementById('v114Mode') || document.getElementById('v112ClinicAccount');
+  if(anchor && !document.getElementById('v115SecurityPrep')){
+   const d=document.createElement('div');
+   d.id='v115SecurityPrep';
+   d.innerHTML='🛡️ <b>V115 院別アクセス分離・準備</b><br>アプリ側はログイン中のUIDを院IDとして院別領域だけを参照します。次の段階でFirestore Security Rulesを設定し、サーバー側でも他院領域へのアクセスを遮断します。<br><span style="color:#6d28d9">※ V114の院別保存・既存患者・履歴・旧 /patients バックアップは変更しません。</span>';
+   anchor.insertAdjacentElement('afterend',d);
   }
- },600);
+ },550);
 });
 </script>
 
