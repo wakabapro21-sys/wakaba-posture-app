@@ -309,7 +309,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 
 <style>
-/* V96: LINE share selectable saved analysis + official LINE QR */
+/* V97: LINE share selectable saved analysis + official LINE QR - verified rebuild */
 .v95shareBox{margin-top:16px;padding:14px;border:1px solid #bbf7d0;border-radius:16px;background:#f0fdf4}
 .v95shareBox b{display:block;font-size:14px;color:#166534}.v95sharePreview{margin-top:8px;font-size:12px;line-height:1.7;color:#334155;white-space:pre-line}
 #v95LineShare{width:100%;margin-top:12px;border:0;border-radius:15px;min-height:56px;background:#06c755;color:#fff;font-size:17px;font-weight:900}
@@ -319,7 +319,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V96</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V97</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1053,7 +1053,7 @@ document.addEventListener('DOMContentLoaded',function(){
     </div>
     <button class="v88lineBtn" id="v88LineAdd" type="button">LINE公式アカウントを友だち追加</button>
     <button class="v88copyBtn" id="v88LineCopy" type="button">患者専用リンク（クラウド実装後）</button>
-    <div class="v88note">V96では保存済みの好きな分析結果を選んでLINE共有できます。写真付きの患者専用WebレポートURLは、ログイン・クラウド実装後に安全な専用URLとして接続します。</div>
+    <div class="v88note">V97では保存済みの好きな分析結果を選んでLINE共有できます。写真付きの患者専用WebレポートURLは、ログイン・クラウド実装後に安全な専用URLとして接続します。</div>
   </div>
 </div>
 
@@ -1076,7 +1076,7 @@ document.addEventListener('DOMContentLoaded',function(){
     byId('v96HistorySelect')?.addEventListener('change',refreshPreview);
     byId('v88LineAdd')?.addEventListener('click',function(){window.open('https://lin.ee/T0Gk3sJ','_blank','noopener,noreferrer')});
     byId('v95LineShare')?.addEventListener('click',async function(){var t=analysisText(selectedAnalysis());if(!t){alert('共有できる分析履歴がありません。');return}try{if(navigator.share){await navigator.share({title:'わかば姿勢分析',text:t});return}}catch(e){if(e&&e.name==='AbortError')return}window.open('https://line.me/R/share?text='+encodeURIComponent(t),'_blank','noopener,noreferrer')});
-    byId('v88LineCopy')?.addEventListener('click',function(){alert('患者専用WebレポートURLは、クラウド実装後に接続します。V96では上の履歴選択から結果を共有してください。')});
+    byId('v88LineCopy')?.addEventListener('click',function(){alert('患者専用WebレポートURLは、クラウド実装後に接続します。V97では上の履歴選択から結果を共有してください。')});
   });
 })();
 </script>
