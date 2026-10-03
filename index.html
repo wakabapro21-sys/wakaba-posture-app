@@ -210,14 +210,81 @@ header{padding-right:16px!important;padding-bottom:54px!important}
    font-size:14px!important;
  }
 }
-</style></head>
+</style>
+<style>
+/* V88 patient detail polish */
+#v77Patient .v77pageHead{
+  align-items:center!important;
+  margin-bottom:14px!important;
+}
+#v77Patient .v77pageHead h2{font-size:22px!important}
+#v77Patient .v77card:first-of-type{
+  padding:18px!important;
+  border-radius:20px!important;
+}
+#v77Patient .v77patientTop{
+  padding-bottom:15px!important;
+  border-bottom:1px solid #e8eef3!important;
+}
+#v77Patient .v77avatar{
+  width:64px!important;height:64px!important;
+  font-size:27px!important;
+}
+#v77Patient .v77patientName{font-size:23px!important}
+#v77Patient .v77grid{
+  grid-template-columns:1fr 1fr!important;
+  gap:10px!important;
+  margin-top:16px!important;
+}
+#v77Patient .v77big{
+  min-height:58px!important;
+  padding:10px 8px!important;
+  border-radius:14px!important;
+  font-size:14px!important;
+  line-height:1.25!important;
+}
+#v77Patient #v77Start{background:#f97316!important}
+#v77Patient #v77History{background:#0f766e!important}
+#v77Patient #v77Line{background:#06c755!important}
+#v77Patient #v77Edit{background:#e2e8f0!important;color:#172033!important}
+#v77Patient .v77card:last-of-type{
+  border-left:5px solid #14b8a6!important;
+}
+.v87hint{
+  margin-top:12px;padding:10px 12px;border-radius:12px;
+  background:#f0fdfa;color:#0f766e;font-size:12px;font-weight:700;line-height:1.5;
+}
+@media(max-width:420px){
+ #v77Patient .v77big{font-size:13px!important}
+}
+</style>
+
+<style>
+/* V88: LINE patient handoff modal */
+#v88LineModal{position:fixed;inset:0;z-index:5000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.58)}
+#v88LineModal.v88open{display:flex}
+.v88lineBox{width:min(100%,430px);max-height:88vh;overflow:auto;background:#fff;border-radius:24px;padding:22px;box-shadow:0 24px 70px rgba(15,23,42,.28)}
+.v88lineHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.v88lineTitle{font-size:22px;font-weight:900;color:#172033}
+.v88lineSub{margin-top:5px;font-size:13px;line-height:1.55;color:#64748b}
+.v88close{border:0;background:#f1f5f9;color:#172033;width:42px;height:42px;border-radius:12px;font-size:22px;font-weight:900}
+.v88patient{margin-top:16px;padding:14px;border-radius:16px;background:#f8fafc}
+.v88patient b{display:block;font-size:16px;color:#172033}
+.v88steps{margin:16px 0 0;padding:0;list-style:none;display:grid;gap:10px}
+.v88steps li{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.5;color:#334155}
+.v88num{flex:0 0 26px;height:26px;border-radius:50%;display:grid;place-items:center;background:#dcfce7;color:#15803d;font-weight:900}
+.v88lineBtn{width:100%;margin-top:18px;border:0;border-radius:15px;min-height:56px;background:#06c755;color:#fff;font-size:17px;font-weight:900}
+.v88copyBtn{width:100%;margin-top:10px;border:1px solid #cbd5e1;border-radius:15px;min-height:50px;background:#fff;color:#172033;font-size:14px;font-weight:800}
+.v88note{margin-top:12px;padding:11px 12px;border-radius:12px;background:#fff7ed;color:#9a3412;font-size:12px;line-height:1.55}
+</style>
+</head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V86</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V88</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
 <div class="v77overlay" id="v77Menu"><aside class="v77drawer"><div class="v77drawerHead"><div><b>MENU</b><div class="v77muted">わかば姿勢分析</div></div><button class="v77x" id="v77MenuClose">×</button></div><div class="v77nav"><button class="primary" data-v77="home">👥 顧客一覧</button><button data-v77="reports">📋 分析レポート一覧</button><button data-v77="mypage">👤 マイページ</button><button data-v77="news">🔔 お知らせ</button><button data-v77="help">❓ ヘルプ・お問い合わせ</button><button data-v77="settings">⚙️ 設定</button></div></aside></div>
-<section class="v77page" id="v77Patient"><div class="v77pageHead"><button class="v77back" data-v77home>← 顧客一覧</button><h2>顧客詳細</h2><span></span></div><div class="v77card"><div class="v77patientTop"><div class="v77avatar" id="v77PatientAvatar">患</div><div><div class="v77patientName" id="v77PatientName"></div><div class="v77muted" id="v77PatientSub"></div></div></div><div class="v77grid"><button class="v77big v77orange" id="v77Start">姿勢分析を開始</button><button class="v77big v77green" id="v77History">分析履歴を見る</button><button class="v77big v77line" id="v77Line">LINEで結果を共有</button><button class="v77big v77soft" id="v77Edit">登録情報</button></div></div><div class="v77card"><b>最新の分析</b><div id="v77Latest" class="v77muted" style="margin-top:10px"></div></div></section>
+<section class="v77page" id="v77Patient"><div class="v77pageHead"><button class="v77back" data-v77home>← 顧客一覧</button><h2>顧客詳細</h2><span></span></div><div class="v77card"><div class="v77patientTop"><div class="v77avatar" id="v77PatientAvatar">患</div><div><div class="v77patientName" id="v77PatientName"></div><div class="v77muted" id="v77PatientSub"></div></div></div><div class="v77grid"><button class="v77big v77orange" id="v77Start">姿勢分析を開始</button><button class="v77big v77green" id="v77History">分析履歴を見る</button><button class="v77big v77line" id="v77Line">LINEで結果を共有</button><button class="v77big v77soft" id="v77Edit">登録情報</button></div><div class="v87hint">分析結果は患者ごとに保存し、今後LINEから患者専用レポートを確認できるようにします。</div></div><div class="v77card"><b>最新の分析</b><div id="v77Latest" class="v77muted" style="margin-top:10px"></div></div></section>
 <section class="v77page" id="v77Reports"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>分析レポート一覧</h2><span></span></div><div id="v77ReportList"></div></section>
 <section class="v77page" id="v77Mypage"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>マイページ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>プロフィール</b><span>南 昇吾</span></div><div class="v77settingRow"><b>院名</b><span>わかば整体院・接骨院</span></div><div class="v77settingRow"><b>メールアドレス</b><span class="v77muted">クラウド版で設定</span></div><div class="v77settingRow"><b>パスワード</b><span class="v77muted">クラウド版で設定</span></div></div></section>
 <section class="v77page" id="v77News"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>お知らせ</h2><span></span></div><div class="v77card v77empty">現在、お知らせはありません。</div></section>
@@ -909,5 +976,61 @@ document.addEventListener('DOMContentLoaded',function(){
     slot.appendChild(btn);
   }
 });
+</script>
+
+<div id="v88LineModal" aria-hidden="true">
+  <div class="v88lineBox" role="dialog" aria-modal="true" aria-labelledby="v88LineTitle">
+    <div class="v88lineHead">
+      <div>
+        <div class="v88lineTitle" id="v88LineTitle">LINEで分析結果を渡す</div>
+        <div class="v88lineSub">患者さんがLINE公式アカウントを友だち追加した後、自分の姿勢分析レポートを確認できる導線です。</div>
+      </div>
+      <button class="v88close" id="v88LineClose" type="button">×</button>
+    </div>
+    <div class="v88patient"><b id="v88LinePatient">選択中の患者</b><span>最新の分析結果を共有</span></div>
+    <ol class="v88steps">
+      <li><span class="v88num">1</span><span>患者さんにLINE公式アカウントを友だち追加してもらいます。</span></li>
+      <li><span class="v88num">2</span><span>患者専用のレポートリンクをLINEで送ります。</span></li>
+      <li><span class="v88num">3</span><span>患者さんはスマホから自分の分析結果を確認します。</span></li>
+    </ol>
+    <button class="v88lineBtn" id="v88LineAdd" type="button">LINE友だち追加へ</button>
+    <button class="v88copyBtn" id="v88LineCopy" type="button">患者専用リンクをコピー</button>
+    <div class="v88note">現在は画面と導線の作成段階です。実際の友だち追加・患者識別・安全なレポート公開は、LINE公式アカウントとクラウド側を接続してから有効化します。</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function byId(id){return document.getElementById(id)}
+  function currentPatientName(){
+    var el=document.querySelector('#v77Patient .v77patientName');
+    return el ? el.textContent.trim() : '選択中の患者';
+  }
+  function openLine(){
+    var m=byId('v88LineModal'); if(!m) return;
+    byId('v88LinePatient').textContent=currentPatientName();
+    m.classList.add('v88open'); m.setAttribute('aria-hidden','false');
+  }
+  function closeLine(){
+    var m=byId('v88LineModal'); if(!m) return;
+    m.classList.remove('v88open'); m.setAttribute('aria-hidden','true');
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    var old=byId('v77Line');
+    if(old){
+      var clone=old.cloneNode(true);
+      old.parentNode.replaceChild(clone,old);
+      clone.addEventListener('click',openLine);
+    }
+    byId('v88LineClose')?.addEventListener('click',closeLine);
+    byId('v88LineModal')?.addEventListener('click',function(e){if(e.target===this)closeLine()});
+    byId('v88LineAdd')?.addEventListener('click',function(){
+      alert('次の段階で、わかば整体院のLINE公式アカウントの友だち追加URLをここへ接続します。');
+    });
+    byId('v88LineCopy')?.addEventListener('click',function(){
+      alert('次の段階で、患者ごとに発行する専用レポートURLをここへ接続します。');
+    });
+  });
+})();
 </script>
 </body></html>
