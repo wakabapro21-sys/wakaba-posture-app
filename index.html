@@ -326,7 +326,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V116</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V117</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -336,7 +336,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 <section class="v77page" id="v77Mypage"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>マイページ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>プロフィール</b><span>南 昇吾</span></div><div class="v77settingRow"><b>院名</b><span>わかば整体院・接骨院</span></div><div class="v77settingRow"><b>メールアドレス</b><span class="v77muted">クラウド版で設定</span></div><div class="v77settingRow"><b>パスワード</b><span class="v77muted">クラウド版で設定</span></div></div></section>
 <section class="v77page" id="v77News"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>お知らせ</h2><span></span></div><div class="v77card v77empty">現在、お知らせはありません。</div></section>
 <section class="v77page" id="v77Help"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>ヘルプ・お問い合わせ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>撮影・カメラについて</b><span>›</span></div><div class="v77settingRow"><b>分析について</b><span>›</span></div><div class="v77settingRow"><b>顧客データについて</b><span>›</span></div><div class="v77settingRow"><b>お問い合わせ</b><span>›</span></div></div></section>
-<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V116 DataGuard</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
+<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V117 DataGuard確認</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
 <section id="v61Home">
  <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
  <div id="v61List" class="v61list"></div>
@@ -1441,6 +1441,35 @@ document.addEventListener('DOMContentLoaded',()=>{
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
  window.addEventListener('wakaba:v103-history-saved',()=>setTimeout(mirrorAll,50));
  window.addEventListener('wakaba:v103-patient-saved',()=>setTimeout(mirrorAll,50));
+})();
+</script>
+
+
+<style id="v117-dataguard-check-style">
+#v117DataGuardCheck{margin:8px 0;padding:12px;border:1px solid #86efac;border-radius:12px;background:#f0fdf4;color:#14532d;font-size:10px;line-height:1.55}
+#v117DataGuardCheck b{font-size:11px}#v117DataGuardCheck .v117grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}
+#v117DataGuardCheck .v117cell{background:#fff;border:1px solid #bbf7d0;border-radius:9px;padding:8px}#v117DataGuardCheck .v117num{font-size:15px;font-weight:800;color:#166534}
+#v117Refresh{margin-top:9px;width:100%;border:0;border-radius:9px;padding:9px;background:#15803d;color:white;font-weight:800}
+</style>
+<script id="v117-dataguard-check">
+(function(){
+ const DB='wakaba_local_dataguard_v116', STORE='kv', CUSTOMER='wakaba_v61_customers', HP='wakaba_v63_history_';
+ function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(STORE))r.result.createObjectStore(STORE)};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+ async function getAll(){const db=await openDB();const rows=await new Promise((res,rej)=>{const out=[];const req=db.transaction(STORE,'readonly').objectStore(STORE).openCursor();req.onsuccess=e=>{const c=e.target.result;if(c){out.push([c.key,c.value]);c.continue()}else res(out)};req.onerror=()=>rej(req.error)});db.close();return rows}
+ function arr(v){try{const x=JSON.parse(v||'[]');return Array.isArray(x)?x:[]}catch(e){return[]}}
+ function photoCount(h){let n=0;const walk=x=>{if(!x)return;if(typeof x==='string'){if(x.startsWith('data:image/'))n++;return}if(Array.isArray(x)){x.forEach(walk);return}if(typeof x==='object')Object.values(x).forEach(walk)};walk(h);return n}
+ async function stats(){
+  const localPatients=arr(localStorage.getItem(CUSTOMER)); const rows=await getAll(); const m=new Map(rows);
+  const backupPatients=arr(m.get(CUSTOMER)); let histories=0, photos=0;
+  for(const [k,v] of rows){if(String(k).startsWith(HP)){const h=arr(v);histories+=h.length;photos+=photoCount(h)}}
+  const stamp=new Date().toLocaleString('ja-JP'); localStorage.setItem('wakaba_v117_lastcheck',stamp);
+  return {lp:localPatients.length,bp:backupPatients.length,histories,photos,stamp,ok:localPatients.length===backupPatients.length&&backupPatients.length>0};
+ }
+ async function render(){
+  let box=document.getElementById('v117DataGuardCheck'); if(!box)return; try{const s=await stats();box.innerHTML='🛡️ <b>V117 DataGuardバックアップ確認</b><div class="v117grid"><div class="v117cell">端末の患者<br><span class="v117num">'+s.lp+'件</span></div><div class="v117cell">バックアップ患者<br><span class="v117num">'+s.bp+'件</span></div><div class="v117cell">バックアップ履歴<br><span class="v117num">'+s.histories+'件</span></div><div class="v117cell">保存画像データ<br><span class="v117num">'+s.photos+'個</span></div></div><div style="margin-top:8px;font-weight:700">'+(s.ok?'✓ 患者数は一致しています':'⚠ 患者数が一致していません。削除操作はせず、再確認してください')+'</div><div style="margin-top:3px;color:#4b5563">確認：'+s.stamp+'　※写真はFirebaseへ送信しません。</div><button id="v117Refresh">バックアップ状態を再確認</button>';document.getElementById('v117Refresh').onclick=render}catch(e){box.innerHTML='🛡️ <b>V117 DataGuardバックアップ確認</b><br>⚠ IndexedDBの確認に失敗しました。データ削除は行っていません。'}
+ }
+ function mount(){setTimeout(()=>{const anchor=document.getElementById('v116DataGuard');if(anchor&&!document.getElementById('v117DataGuardCheck')){const d=document.createElement('div');d.id='v117DataGuardCheck';d.innerHTML='🛡️ <b>V117 DataGuardバックアップ確認</b><br>確認中…';anchor.insertAdjacentElement('afterend',d);render()}},850)}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 })();
 </script>
 
