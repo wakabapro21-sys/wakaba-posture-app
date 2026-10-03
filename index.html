@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V76</title>
+<title>AI姿勢＆3次元歪み分析システム V103</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -326,7 +326,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V102</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V103</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -982,7 +982,7 @@ host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel'
  $('v64CompareBody').innerHTML=dates+'<div class="v70hero"><div class="v70scoreline"><div class="v70scorebox"><small>Before・総合</small><strong>'+before.total+'</strong></div><div class="v70arrow">→</div><div class="v70scorebox"><small>After・総合</small><strong>'+after.total+'</strong></div></div><div class="v70change">総合スコア変化　'+sign+scoreDelta+'点</div></div>'+types+'<div class="v93compareLead">選択した2回の保存データを同じ画面で比較しています。写真・スコア・姿勢数値を順番に確認できます。</div>'+view('front','正面写真の比較')+view('right','右側面写真の比較')+view('left','左側面写真の比較')+'<div class="v67section">スコア詳細</div><div class="v70metricRow" style="font-weight:900;color:#64748b"><span>項目</span><b>Before</b><b>After</b><span>差</span></div>'+scoreRow('総合',before.total,after.total)+scoreRow('正面',before.front,after.front)+scoreRow('側面',before.side,after.side)+scoreRow('回旋',before.twist,after.twist)+'<div class="v67section">姿勢数値の変化</div><div class="v70metricRow" style="font-weight:900;color:#64748b"><span>項目</span><b>Before</b><b>After</b><span>変化</span></div>'+rows+'<div class="v64note">※「改善」は写真上の左右差・偏位・回旋の絶対値が小さくなった場合の比較表示です。医学的な診断や治療効果の判定ではありません。同じ位置・距離・姿勢条件で撮影してください。</div>';
  $('v63HistoryModal').classList.remove('on');$('v64CompareModal').classList.add('on')}
  function makeThumb(type){try{const rec=window.WAKABA_PHOTOS&&window.WAKABA_PHOTOS[type];if(!rec)return null;if(rec.historyThumb)return rec.historyThumb;const stage=document.getElementById('stage-'+type),img=stage&&stage.querySelector('img');if(!img||!img.complete||!img.naturalWidth)return null;const maxW=240,scale=Math.min(1,maxW/img.naturalWidth),w=Math.max(1,Math.round(img.naturalWidth*scale)),h=Math.max(1,Math.round(img.naturalHeight*scale)),cv=document.createElement('canvas');cv.width=w;cv.height=h;const cx=cv.getContext('2d');cx.drawImage(img,0,0,w,h);rec.historyThumb=cv.toDataURL('image/jpeg',.62);return rec.historyThumb}catch(e){console.error('V68 thumbnail error',type,e);return null}}
- function saveAnalysisHistory(total,front,side,twist,type){try{const raw=sessionStorage.getItem('wakaba_v61_current')||localStorage.getItem('wakaba_v66_current');const c=JSON.parse(raw||'null');if(!c||!c.id){console.warn('V67 history: current customer missing');return false}const d=window.WAKABA_3D_DATA||{};const metrics={shoulderTilt:Number(d.shoulderTilt),pelvisTilt:Number(d.pelvisTilt),headShift:Number(d.headShift),thoraxYaw:Number(d.thoraxYaw),pelvisYaw:Number(d.pelvisYaw),relativeTwist:Number(d.relativeTwist),sideDeviation:Number(d.sideDeviation)};const photos={front:makeThumb('front'),right:makeThumb('right'),left:makeThumb('left')};const h=getHistory(c.id);h.unshift({version:70,date:new Date().toISOString(),total:Number(total),front:Number(front),side:Number(side),twist:Number(twist),type:String(type||''),metrics,photos});let keep=h.slice(0,30);while(keep.length){try{localStorage.setItem(historyKey(c.id),JSON.stringify(keep));break}catch(q){keep.pop()}}return keep.length>0}catch(e){console.error('V67 history save error',e);return false}}
+ function saveAnalysisHistory(total,front,side,twist,type){try{const raw=sessionStorage.getItem('wakaba_v61_current')||localStorage.getItem('wakaba_v66_current');const c=JSON.parse(raw||'null');if(!c||!c.id){console.warn('V67 history: current customer missing');return false}const d=window.WAKABA_3D_DATA||{};const metrics={shoulderTilt:Number(d.shoulderTilt),pelvisTilt:Number(d.pelvisTilt),headShift:Number(d.headShift),thoraxYaw:Number(d.thoraxYaw),pelvisYaw:Number(d.pelvisYaw),relativeTwist:Number(d.relativeTwist),sideDeviation:Number(d.sideDeviation)};const photos={front:makeThumb('front'),right:makeThumb('right'),left:makeThumb('left')};const h=getHistory(c.id);h.unshift({version:70,date:new Date().toISOString(),total:Number(total),front:Number(front),side:Number(side),twist:Number(twist),type:String(type||''),metrics,photos});let keep=h.slice(0,30);while(keep.length){try{localStorage.setItem(historyKey(c.id),JSON.stringify(keep));break}catch(q){keep.pop()}}if(keep.length>0){try{window.dispatchEvent(new CustomEvent('wakaba:v103-history-saved',{detail:{id:c.id}}))}catch(e){}}return keep.length>0}catch(e){console.error('V67 history save error',e);return false}}
  window.saveAnalysisHistory=saveAnalysisHistory;
  window.addEventListener('wakaba-analysis',function(){
    const total=document.getElementById('scoreTotal')?.textContent;
@@ -997,7 +997,7 @@ host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel'
  function start(c){const raw=JSON.stringify(c);sessionStorage.setItem('wakaba_v61_current',raw);localStorage.setItem('wakaba_v66_current',raw); if(typeof window.wakabaResetAnalysisSession==='function')window.wakabaResetAnalysisSession(); $('v61CurrentName').textContent=c.name||'ゲスト'; document.body.classList.add('v61-analysis'); window.scrollTo(0,0)}
  function home(){document.body.classList.remove('v61-analysis');window.scrollTo(0,0);render()}
  $('v61Add').onclick=()=>{$('v61Modal').classList.add('on');$('v61Name').focus()}; $('v61Cancel').onclick=()=>$('v61Modal').classList.remove('on'); $('v61Back').onclick=home;
- $('v61Save').onclick=()=>{const name=$('v61Name').value.trim();if(!name){alert('氏名を入力してください');return}const a=customers();a.unshift({id:Date.now(),name,kana:$('v61Kana').value.trim(),sex:$('v61Sex').value,birth:$('v61Birth').value,tel:$('v61Tel').value.trim(),created:new Date().toISOString()});put(a);['v61Name','v61Kana','v61Birth','v61Tel'].forEach(id=>$(id).value='');$('v61Sex').value='';$('v61Modal').classList.remove('on');render()};
+ $('v61Save').onclick=()=>{const name=$('v61Name').value.trim();if(!name){alert('氏名を入力してください');return}const a=customers();a.unshift({id:Date.now(),name,kana:$('v61Kana').value.trim(),sex:$('v61Sex').value,birth:$('v61Birth').value,tel:$('v61Tel').value.trim(),created:new Date().toISOString()});put(a);try{window.dispatchEvent(new CustomEvent('wakaba:v103-patient-saved',{detail:a[0]}))}catch(e){};['v61Name','v61Kana','v61Birth','v61Tel'].forEach(id=>$(id).value='');$('v61Sex').value='';$('v61Modal').classList.remove('on');render()};
  $('v91DetailClose').onclick=()=>$('v91DetailModal').classList.remove('on');$('v91DetailModal').addEventListener('click',e=>{if(e.target===$('v91DetailModal'))$('v91DetailModal').classList.remove('on')});
  $('v61Modal').addEventListener('click',e=>{if(e.target===$('v61Modal'))$('v61Modal').classList.remove('on')}); $('v63HistoryClose').onclick=()=>$('v63HistoryModal').classList.remove('on'); $('v64CompareClose').onclick=()=>$('v64CompareModal').classList.remove('on'); $('v63HistoryModal').addEventListener('click',e=>{if(e.target===$('v63HistoryModal'))$('v63HistoryModal').classList.remove('on')});
  render();
@@ -1133,7 +1133,7 @@ document.addEventListener('DOMContentLoaded',function(){
   <div class="v100row"><input id="v100Email" type="email" autocomplete="username" placeholder="Firebase管理者メール"></div>
   <div class="v100row"><input id="v100Pass" type="password" autocomplete="current-password" placeholder="パスワード"><button id="v100SignIn" class="v100btn">ログイン</button></div>
  </div>
- <div id="v100Actions" style="display:none">
+ <div id="v100Actions" style="display:none"><div class="v100row"><div style="flex:1;padding:8px 10px;border-radius:10px;background:#ecfdf5;color:#047857;font-size:10px;font-weight:900">✓ V103 自動同期 ON（顧客登録・分析履歴）</div></div>
   <div class="v100row"><button id="v100Sync" class="v100btn secondary" style="flex:1">端末→Firebaseへコピー</button></div>
   <div class="v100row"><button id="v102Restore" class="v100btn" style="flex:1;background:#0f766e">Firebase→この端末へ安全復元</button><button id="v100SignOut" class="v100btn gray">ログアウト</button></div>
  </div>
@@ -1165,6 +1165,10 @@ const $=id=>document.getElementById(id), status=$('v100Status'),msg=$('v100Msg')
 function patients(){try{return JSON.parse(localStorage.getItem('wakaba_v61_customers')||'[]')}catch(e){return[]}}
 function cleanHistory(x){if(!x||typeof x!=='object')return x;const y={...x};delete y.photos;return y}
 function histories(id){try{return JSON.parse(localStorage.getItem('wakaba_v63_history_'+id)||'[]').map(cleanHistory)}catch(e){return[]}}
+async function v103SyncPatient(c){if(!auth.currentUser||!c||!c.id)return;const id=String(c.id);try{await setDoc(doc(db,'patients',id),{...c,localId:id,updatedAt:serverTimestamp()},{merge:true});status.textContent='自動同期済み'}catch(e){console.error('V103 patient auto sync',e);status.textContent='端末保存済み';}}
+async function v103SyncLatestHistory(id){if(!auth.currentUser||!id)return;try{const hs=histories(id);if(!hs.length)return;const h=hs[0],hid=String(h.date||'history_latest').replaceAll('/','-');await setDoc(doc(db,'patients',String(id),'histories',hid),{...h,patientId:String(id),updatedAt:serverTimestamp()},{merge:true});status.textContent='自動同期済み'}catch(e){console.error('V103 history auto sync',e);status.textContent='端末保存済み';}}
+window.addEventListener('wakaba:v103-patient-saved',e=>v103SyncPatient(e.detail));
+window.addEventListener('wakaba:v103-history-saved',e=>v103SyncLatestHistory(e.detail&&e.detail.id));
 async function restoreAll(){
  const btn=$('v102Restore'); if(btn)btn.disabled=true; status.textContent='復元中'; msg.textContent='Firebaseを確認しています…';
  try{
@@ -1185,7 +1189,7 @@ async function restoreAll(){
 async function uploadAll(){const list=patients();if(!list.length){msg.innerHTML='<span class="v100err">端末に顧客が0件のためコピーしていません。</span>';return} $('v100Sync').disabled=true;status.textContent='同期中';try{for(const c of list){const id=String(c.id);await setDoc(doc(db,'patients',id),{...c,localId:id,updatedAt:serverTimestamp()},{merge:true});const hs=histories(c.id);for(let i=0;i<hs.length;i++){const h=hs[i],hid=String(h.date||('history_'+i)).replaceAll('/','-');await setDoc(doc(db,'patients',id,'histories',hid),{...h,patientId:id,updatedAt:serverTimestamp()},{merge:true})}}localStorage.setItem('wakaba_v100_last_cloud_copy',new Date().toISOString());status.textContent='同期済み';msg.innerHTML='<span class="v100ok">コピー成功：顧客 '+list.length+'件。端末データはそのまま残っています。写真は送信していません。</span>'}catch(e){console.error(e);status.textContent='同期失敗';msg.innerHTML='<span class="v100err">Firebaseへのコピーに失敗しました。端末データは変更していません。</span>'}finally{$('v100Sync').disabled=false}}
 $('v100SignIn').onclick=async()=>{msg.textContent='ログイン確認中…';try{await signInWithEmailAndPassword(auth,$('v100Email').value.trim(),$('v100Pass').value);$('v100Pass').value=''}catch(e){console.error(e);msg.innerHTML='<span class="v100err">ログインできません。メールアドレスとパスワードを確認してください。</span>'}};
 $('v100SignOut').onclick=()=>signOut(auth);$('v100Sync').onclick=uploadAll;$('v102Restore').onclick=restoreAll;
-onAuthStateChanged(auth,u=>{if(u){status.textContent='ログイン済み';$('v100Login').style.display='none';$('v100Actions').style.display='block';msg.textContent='準備OKです。「端末データをFirebaseへコピー」を押すまでクラウドには書き込みません。'}else{status.textContent='未接続';$('v100Login').style.display='block';$('v100Actions').style.display='none';msg.textContent='端末データが原本です。ログイン後も、コピーを押すまではFirebaseへ書き込みません。写真は送信しません。'}});
+onAuthStateChanged(auth,u=>{if(u){status.textContent='ログイン済み';$('v100Login').style.display='none';$('v100Actions').style.display='block';msg.innerHTML='<span class="v100ok">V103 自動同期ON：新規顧客と新しい分析履歴を自動保存します。写真はFirebaseへ送りません。</span>'}else{status.textContent='未接続';$('v100Login').style.display='block';$('v100Actions').style.display='none';msg.textContent='端末データが原本です。ログイン後も、コピーを押すまではFirebaseへ書き込みません。写真は送信しません。'}});
 </script>
 
 </body></html>
