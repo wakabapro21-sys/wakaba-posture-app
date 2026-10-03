@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V103</title>
+<title>AI姿勢＆3次元歪み分析システム V104</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -326,7 +326,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V103</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V104</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1133,7 +1133,7 @@ document.addEventListener('DOMContentLoaded',function(){
   <div class="v100row"><input id="v100Email" type="email" autocomplete="username" placeholder="Firebase管理者メール"></div>
   <div class="v100row"><input id="v100Pass" type="password" autocomplete="current-password" placeholder="パスワード"><button id="v100SignIn" class="v100btn">ログイン</button></div>
  </div>
- <div id="v100Actions" style="display:none"><div class="v100row"><div style="flex:1;padding:8px 10px;border-radius:10px;background:#ecfdf5;color:#047857;font-size:10px;font-weight:900">✓ V103 自動同期 ON（顧客登録・分析履歴）</div></div>
+ <div id="v100Actions" style="display:none"><div class="v100row"><div style="flex:1;padding:8px 10px;border-radius:10px;background:#ecfdf5;color:#047857;font-size:10px;font-weight:900">✓ V104 自動同期 ON（顧客登録・分析履歴）</div></div>
   <div class="v100row"><button id="v100Sync" class="v100btn secondary" style="flex:1">端末→Firebaseへコピー</button></div>
   <div class="v100row"><button id="v102Restore" class="v100btn" style="flex:1;background:#0f766e">Firebase→この端末へ安全復元</button><button id="v100SignOut" class="v100btn gray">ログアウト</button></div>
  </div>
@@ -1158,17 +1158,32 @@ document.addEventListener('DOMContentLoaded',()=>{
 <script type="module" id="v100-firebase-js">
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
 import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
-import {getFirestore,doc,setDoc,serverTimestamp,collection,getDocs} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
+import {getFirestore,doc,setDoc,getDoc,serverTimestamp,collection,getDocs} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
 const firebaseConfig={apiKey:'AIzaSyCC4vKry9DQnQxwPWOMEy-xbiAzFJ3n6ic',authDomain:'wakaba-posture.firebaseapp.com',projectId:'wakaba-posture',storageBucket:'wakaba-posture.firebasestorage.app',messagingSenderId:'992802796991',appId:'1:992802796991:web:461ab115f39be2795b5d0a',measurementId:'G-1C96FJQPF6'};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const $=id=>document.getElementById(id), status=$('v100Status'),msg=$('v100Msg');
 function patients(){try{return JSON.parse(localStorage.getItem('wakaba_v61_customers')||'[]')}catch(e){return[]}}
 function cleanHistory(x){if(!x||typeof x!=='object')return x;const y={...x};delete y.photos;return y}
 function histories(id){try{return JSON.parse(localStorage.getItem('wakaba_v63_history_'+id)||'[]').map(cleanHistory)}catch(e){return[]}}
-async function v103SyncPatient(c){if(!auth.currentUser||!c||!c.id)return;const id=String(c.id);try{await setDoc(doc(db,'patients',id),{...c,localId:id,updatedAt:serverTimestamp()},{merge:true});status.textContent='自動同期済み'}catch(e){console.error('V103 patient auto sync',e);status.textContent='端末保存済み';}}
-async function v103SyncLatestHistory(id){if(!auth.currentUser||!id)return;try{const hs=histories(id);if(!hs.length)return;const h=hs[0],hid=String(h.date||'history_latest').replaceAll('/','-');await setDoc(doc(db,'patients',String(id),'histories',hid),{...h,patientId:String(id),updatedAt:serverTimestamp()},{merge:true});status.textContent='自動同期済み'}catch(e){console.error('V103 history auto sync',e);status.textContent='端末保存済み';}}
-window.addEventListener('wakaba:v103-patient-saved',e=>v103SyncPatient(e.detail));
-window.addEventListener('wakaba:v103-history-saved',e=>v103SyncLatestHistory(e.detail&&e.detail.id));
+async function v104SyncPatient(c){
+ if(!c||!c.id)return false;
+ if(!auth.currentUser){status.textContent='同期待ち';return false}
+ const id=String(c.id);
+ try{
+  status.textContent='自動同期中';
+  await setDoc(doc(db,'patients',id),{...c,localId:id,updatedAt:serverTimestamp()},{merge:true});
+  const chk=await getDoc(doc(db,'patients',id));
+  if(!chk.exists()) throw new Error('write verification failed');
+  status.textContent='自動同期済み';
+  msg.innerHTML='<span class="v100ok">✓ 顧客「'+String(c.name||'')+'」をFirebaseへ保存・確認しました。写真は送信していません。</span>';
+  return true;
+ }catch(e){console.error('V104 patient auto sync',e);status.textContent='同期失敗';msg.innerHTML='<span class="v100err">端末保存は成功しましたが、Firebase自動保存に失敗しました。端末データは残っています。</span>';return false}
+}
+async function v104SyncLatestHistory(id){if(!auth.currentUser||!id)return;try{const hs=histories(id);if(!hs.length)return;const h=hs[0],hid=String(h.date||'history_latest').replaceAll('/','-');await setDoc(doc(db,'patients',String(id),'histories',hid),{...h,patientId:String(id),updatedAt:serverTimestamp()},{merge:true});status.textContent='自動同期済み'}catch(e){console.error('V104 history auto sync',e);status.textContent='履歴同期失敗'}}
+async function v104SyncAllPatients(){if(!auth.currentUser)return null;const list=patients();let ok=0;for(const c of list){try{const id=String(c.id);await setDoc(doc(db,'patients',id),{...c,localId:id,updatedAt:serverTimestamp()},{merge:true});ok++}catch(e){console.error('V104 backlog sync',e)}}return ok}
+window.addEventListener('wakaba:v103-patient-saved',e=>v104SyncPatient(e.detail));
+window.addEventListener('wakaba:v103-history-saved',e=>v104SyncLatestHistory(e.detail&&e.detail.id));
+document.getElementById('v61Save')?.addEventListener('click',()=>setTimeout(()=>{const a=patients();if(a[0])v104SyncPatient(a[0])},180),true);
 async function restoreAll(){
  const btn=$('v102Restore'); if(btn)btn.disabled=true; status.textContent='復元中'; msg.textContent='Firebaseを確認しています…';
  try{
@@ -1189,7 +1204,7 @@ async function restoreAll(){
 async function uploadAll(){const list=patients();if(!list.length){msg.innerHTML='<span class="v100err">端末に顧客が0件のためコピーしていません。</span>';return} $('v100Sync').disabled=true;status.textContent='同期中';try{for(const c of list){const id=String(c.id);await setDoc(doc(db,'patients',id),{...c,localId:id,updatedAt:serverTimestamp()},{merge:true});const hs=histories(c.id);for(let i=0;i<hs.length;i++){const h=hs[i],hid=String(h.date||('history_'+i)).replaceAll('/','-');await setDoc(doc(db,'patients',id,'histories',hid),{...h,patientId:id,updatedAt:serverTimestamp()},{merge:true})}}localStorage.setItem('wakaba_v100_last_cloud_copy',new Date().toISOString());status.textContent='同期済み';msg.innerHTML='<span class="v100ok">コピー成功：顧客 '+list.length+'件。端末データはそのまま残っています。写真は送信していません。</span>'}catch(e){console.error(e);status.textContent='同期失敗';msg.innerHTML='<span class="v100err">Firebaseへのコピーに失敗しました。端末データは変更していません。</span>'}finally{$('v100Sync').disabled=false}}
 $('v100SignIn').onclick=async()=>{msg.textContent='ログイン確認中…';try{await signInWithEmailAndPassword(auth,$('v100Email').value.trim(),$('v100Pass').value);$('v100Pass').value=''}catch(e){console.error(e);msg.innerHTML='<span class="v100err">ログインできません。メールアドレスとパスワードを確認してください。</span>'}};
 $('v100SignOut').onclick=()=>signOut(auth);$('v100Sync').onclick=uploadAll;$('v102Restore').onclick=restoreAll;
-onAuthStateChanged(auth,u=>{if(u){status.textContent='ログイン済み';$('v100Login').style.display='none';$('v100Actions').style.display='block';msg.innerHTML='<span class="v100ok">V103 自動同期ON：新規顧客と新しい分析履歴を自動保存します。写真はFirebaseへ送りません。</span>'}else{status.textContent='未接続';$('v100Login').style.display='block';$('v100Actions').style.display='none';msg.textContent='端末データが原本です。ログイン後も、コピーを押すまではFirebaseへ書き込みません。写真は送信しません。'}});
+onAuthStateChanged(auth,async u=>{if(u){status.textContent='ログイン済み';$('v100Login').style.display='none';$('v100Actions').style.display='block';msg.innerHTML='<span class="v100ok">V104 自動同期ON：未同期の端末顧客もログイン時に自動確認します。写真はFirebaseへ送りません。</span>';const n=await v104SyncAllPatients();if(n!=null){status.textContent='自動同期済み';msg.innerHTML='<span class="v100ok">✓ Firebase同期確認：端末の顧客 '+n+'件をクラウドへ保存しました。既存データは上書き削除していません。</span>'}}else{status.textContent='未接続';$('v100Login').style.display='block';$('v100Actions').style.display='none';msg.textContent='端末データが原本です。Firebaseへ自動同期するにはログインしてください。写真は送信しません。'}});
 </script>
 
 </body></html>
