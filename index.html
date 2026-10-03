@@ -326,7 +326,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V100</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V101</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1124,7 +1124,7 @@ document.addEventListener('DOMContentLoaded',function(){
 </script>
 
 <style id="v100-firebase-style">
-#v100Cloud{position:fixed;right:12px;bottom:12px;z-index:1200;width:min(330px,calc(100vw - 24px));background:#fff;border:1px solid #cbd5e1;border-radius:16px;box-shadow:0 10px 30px #0f172a22;padding:12px;font-family:inherit}
+#v100Cloud{display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1302;width:min(360px,calc(100vw - 24px));background:#fff;border:1px solid #cbd5e1;border-radius:16px;box-shadow:0 10px 30px #0f172a22;padding:12px;font-family:inherit}
 #v100Cloud .v100head{display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:900;color:#0f172a}.v100badge{font-size:10px;padding:4px 8px;border-radius:999px;background:#f1f5f9;color:#475569}.v100row{display:flex;gap:7px;margin-top:8px}.v100row input{min-width:0;flex:1;border:1px solid #cbd5e1;border-radius:9px;padding:9px;font-size:11px}.v100btn{border:0;border-radius:10px;padding:9px 11px;font-weight:900;background:#0f766e;color:#fff}.v100btn.secondary{background:#2563eb}.v100btn.gray{background:#64748b}.v100note{font-size:9px;line-height:1.5;color:#64748b;margin-top:7px}.v100ok{color:#047857}.v100err{color:#b91c1c}
 </style>
 <div id="v100Cloud">
@@ -1138,6 +1138,22 @@ document.addEventListener('DOMContentLoaded',function(){
  </div>
  <div id="v100Msg" class="v100note">端末データが原本です。同期しても端末の顧客・履歴は削除しません。写真はクラウドへ送りません。</div>
 </div>
+<div id="v101CloudBackdrop" style="display:none;position:fixed;inset:0;background:#0f172a88;z-index:1301"></div>
+<script id="v101-menu-wire">
+document.addEventListener('DOMContentLoaded',()=>{
+ const nav=document.querySelector('#v77Menu .v77nav');
+ if(nav && !document.getElementById('v101CloudMenu')){
+   const b=document.createElement('button'); b.id='v101CloudMenu'; b.type='button'; b.textContent='☁ Firebase同期'; nav.appendChild(b);
+ }
+ const cloud=document.getElementById('v100Cloud'), back=document.getElementById('v101CloudBackdrop');
+ function openCloud(){ if(cloud) cloud.style.display='block'; if(back) back.style.display='block'; document.getElementById('v77Menu')?.classList.remove('open'); }
+ function closeCloud(){ if(cloud) cloud.style.display='none'; if(back) back.style.display='none'; }
+ document.getElementById('v101CloudMenu')?.addEventListener('click',openCloud);
+ back?.addEventListener('click',closeCloud);
+ const head=cloud?.querySelector('.v100head');
+ if(head && !document.getElementById('v101CloudClose')){ const x=document.createElement('button'); x.id='v101CloudClose'; x.type='button'; x.textContent='×'; x.style.cssText='border:0;background:#e2e8f0;border-radius:8px;width:32px;height:32px;font-size:20px;font-weight:900;margin-left:6px'; x.onclick=closeCloud; head.appendChild(x); }
+});
+</script>
 <script type="module" id="v100-firebase-js">
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
 import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
