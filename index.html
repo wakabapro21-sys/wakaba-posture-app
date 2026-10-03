@@ -212,7 +212,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 }
 </style>
 <style>
-/* V89 patient detail polish */
+/* V90 patient detail polish */
 #v77Patient .v77pageHead{
   align-items:center!important;
   margin-bottom:14px!important;
@@ -260,7 +260,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 
 <style>
-/* V89: LINE patient handoff modal */
+/* V90: LINE patient handoff modal */
 #v88LineModal{position:fixed;inset:0;z-index:5000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.58)}
 #v88LineModal.v88open{display:flex}
 .v88lineBox{width:min(100%,430px);max-height:88vh;overflow:auto;background:#fff;border-radius:24px;padding:22px;box-shadow:0 24px 70px rgba(15,23,42,.28)}
@@ -277,14 +277,31 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 .v88copyBtn{width:100%;margin-top:10px;border:1px solid #cbd5e1;border-radius:15px;min-height:50px;background:#fff;color:#172033;font-size:14px;font-weight:800}
 .v88note{margin-top:12px;padding:11px 12px;border-radius:12px;background:#fff7ed;color:#9a3412;font-size:12px;line-height:1.55}
 </style>
+
+<style>
+#v90DeletePatient{
+ width:100%;margin-top:12px;min-height:50px;border:1.5px solid #ef4444;border-radius:14px;
+ background:#fff;color:#dc2626;font-size:14px;font-weight:900;
+}
+#v90DeleteModal{position:fixed;inset:0;z-index:5200;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.6)}
+#v90DeleteModal.open{display:flex}
+.v90DeleteBox{width:min(100%,400px);background:#fff;border-radius:22px;padding:22px;box-shadow:0 24px 70px rgba(15,23,42,.3)}
+.v90DeleteTitle{font-size:21px;font-weight:900;color:#172033}
+.v90DeleteText{margin-top:10px;font-size:14px;line-height:1.65;color:#64748b}
+.v90DeleteName{margin-top:14px;padding:13px;border-radius:13px;background:#fef2f2;color:#b91c1c;font-weight:900}
+.v90DeleteActions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.v90Cancel,.v90Confirm{min-height:50px;border-radius:13px;font-weight:900;font-size:14px}
+.v90Cancel{border:1px solid #cbd5e1;background:#fff;color:#172033}
+.v90Confirm{border:0;background:#dc2626;color:#fff}
+</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V89</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V90</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
 <div class="v77overlay" id="v77Menu"><aside class="v77drawer"><div class="v77drawerHead"><div><b>MENU</b><div class="v77muted">わかば姿勢分析</div></div><button class="v77x" id="v77MenuClose">×</button></div><div class="v77nav"><button class="primary" data-v77="home">👥 顧客一覧</button><button data-v77="reports">📋 分析レポート一覧</button><button data-v77="mypage">👤 マイページ</button><button data-v77="news">🔔 お知らせ</button><button data-v77="help">❓ ヘルプ・お問い合わせ</button><button data-v77="settings">⚙️ 設定</button></div></aside></div>
-<section class="v77page" id="v77Patient"><div class="v77pageHead"><button class="v77back" data-v77home>← 顧客一覧</button><h2>顧客詳細</h2><span></span></div><div class="v77card"><div class="v77patientTop"><div class="v77avatar" id="v77PatientAvatar">患</div><div><div class="v77patientName" id="v77PatientName"></div><div class="v77muted" id="v77PatientSub"></div></div></div><div class="v77grid"><button class="v77big v77orange" id="v77Start">姿勢分析を開始</button><button class="v77big v77green" id="v77History">分析履歴を見る</button><button class="v77big v77line" id="v77Line">LINEで結果を共有</button><button class="v77big v77soft" id="v77Edit">登録情報</button></div><div class="v87hint">分析結果は患者ごとに保存し、今後LINEから患者専用レポートを確認できるようにします。</div></div><div class="v77card"><b>最新の分析</b><div id="v77Latest" class="v77muted" style="margin-top:10px"></div></div></section>
+<section class="v77page" id="v77Patient"><div class="v77pageHead"><button class="v77back" data-v77home>← 顧客一覧</button><h2>顧客詳細</h2><span></span></div><div class="v77card"><div class="v77patientTop"><div class="v77avatar" id="v77PatientAvatar">患</div><div><div class="v77patientName" id="v77PatientName"></div><div class="v77muted" id="v77PatientSub"></div></div></div><div class="v77grid"><button class="v77big v77orange" id="v77Start">姿勢分析を開始</button><button class="v77big v77green" id="v77History">分析履歴を見る</button><button class="v77big v77line" id="v77Line">LINEで結果を共有</button><button class="v77big v77soft" id="v77Edit">登録情報</button></div><div class="v87hint">分析結果は患者ごとに保存し、今後LINEから患者専用レポートを確認できるようにします。</div><button id="v90DeletePatient" type="button">この患者を削除</button></div><div class="v77card"><b>最新の分析</b><div id="v77Latest" class="v77muted" style="margin-top:10px"></div></div></section>
 <section class="v77page" id="v77Reports"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>分析レポート一覧</h2><span></span></div><div id="v77ReportList"></div></section>
 <section class="v77page" id="v77Mypage"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>マイページ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>プロフィール</b><span>南 昇吾</span></div><div class="v77settingRow"><b>院名</b><span>わかば整体院・接骨院</span></div><div class="v77settingRow"><b>メールアドレス</b><span class="v77muted">クラウド版で設定</span></div><div class="v77settingRow"><b>パスワード</b><span class="v77muted">クラウド版で設定</span></div></div></section>
 <section class="v77page" id="v77News"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>お知らせ</h2><span></span></div><div class="v77card v77empty">現在、お知らせはありません。</div></section>
@@ -1031,6 +1048,66 @@ document.addEventListener('DOMContentLoaded',function(){
       alert('次の段階で、患者ごとに発行する専用レポートURLをここへ接続します。');
     });
   });
+})();
+</script>
+
+<div id="v90DeleteModal" aria-hidden="true">
+ <div class="v90DeleteBox">
+  <div class="v90DeleteTitle">患者を削除しますか？</div>
+  <div class="v90DeleteText">この患者の登録情報と、この端末に保存されている分析履歴を削除します。この操作は元に戻せません。</div>
+  <div class="v90DeleteName" id="v90DeleteName"></div>
+  <div class="v90DeleteActions">
+   <button class="v90Cancel" id="v90DeleteCancel" type="button">キャンセル</button>
+   <button class="v90Confirm" id="v90DeleteConfirm" type="button">削除する</button>
+  </div>
+ </div>
+</div>
+
+<script>
+(function(){
+ const $=id=>document.getElementById(id);
+ function patientName(){
+   const e=document.querySelector('#v77Patient .v77patientName');
+   return e ? e.textContent.trim() : '';
+ }
+ function openDel(){
+   const n=patientName(); $('v90DeleteName').textContent=n||'選択中の患者';
+   $('v90DeleteModal').classList.add('open'); $('v90DeleteModal').setAttribute('aria-hidden','false');
+ }
+ function closeDel(){
+   $('v90DeleteModal').classList.remove('open'); $('v90DeleteModal').setAttribute('aria-hidden','true');
+ }
+ function removePatientFromLocalStorage(name){
+   let removed=false;
+   for(let i=localStorage.length-1;i>=0;i--){
+     const key=localStorage.key(i);
+     try{
+       const raw=localStorage.getItem(key), data=JSON.parse(raw);
+       if(Array.isArray(data)){
+         const filtered=data.filter(x=>{
+           if(!x||typeof x!=='object') return true;
+           const nm=(x.name||x.patientName||x.customerName||'').trim();
+           return nm!==name;
+         });
+         if(filtered.length!==data.length){localStorage.setItem(key,JSON.stringify(filtered));removed=true;}
+       }
+     }catch(e){}
+   }
+   return removed;
+ }
+ document.addEventListener('DOMContentLoaded',()=>{
+   $('v90DeletePatient')?.addEventListener('click',openDel);
+   $('v90DeleteCancel')?.addEventListener('click',closeDel);
+   $('v90DeleteModal')?.addEventListener('click',e=>{if(e.target===e.currentTarget)closeDel()});
+   $('v90DeleteConfirm')?.addEventListener('click',()=>{
+      const n=patientName();
+      removePatientFromLocalStorage(n);
+      closeDel();
+      // Return to the customer list; its existing renderer reloads saved patients.
+      const back=document.querySelector('#v77Patient button, #v77Patient .v77back');
+      if(back) back.click(); else location.reload();
+   });
+ });
 })();
 </script>
 </body></html>
