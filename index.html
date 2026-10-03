@@ -326,7 +326,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V109</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V110</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1133,9 +1133,8 @@ document.addEventListener('DOMContentLoaded',function(){
   <div class="v100row"><input id="v100Email" type="email" autocomplete="username" placeholder="Firebase管理者メール"></div>
   <div class="v100row"><input id="v100Pass" type="password" autocomplete="current-password" placeholder="パスワード"><button id="v100SignIn" class="v100btn">ログイン</button></div>
  </div>
- <div id="v100Actions" style="display:none"><div class="v100row"><div style="flex:1;padding:8px 10px;border-radius:10px;background:#ecfdf5;color:#047857;font-size:10px;font-weight:900">✓ V109 安全同期 ON（読取専用診断：端末IDとFirebase実IDを表示）</div></div>
-  <div class="v100row"><button id="v100Sync" class="v100btn secondary" style="flex:1">端末→Firebaseへコピー</button></div><div class="v100row"><button id="v109Diag" class="v100btn" style="flex:1;background:#7c3aed">患者IDを診断（書き込みなし）</button></div>
-<div id="v109DiagOut" style="display:none;margin-top:9px;padding:10px;border:1px solid #ddd6fe;border-radius:10px;background:#faf5ff;color:#4c1d95;font-size:10px;line-height:1.6;white-space:pre-wrap;word-break:break-all"></div>
+ <div id="v100Actions" style="display:none"><div class="v100row"><div style="flex:1;padding:8px 10px;border-radius:10px;background:#ecfdf5;color:#047857;font-size:10px;font-weight:900">✓ V110 安全同期 ON（安定版：Firebase実在確認＋不足分だけ安全追加）</div></div>
+  <div class="v100row"><button id="v100Sync" class="v100btn secondary" style="flex:1">端末→Firebaseへコピー</button></div>
   <div class="v100row"><button id="v102Restore" class="v100btn" style="flex:1;background:#0f766e">Firebase→この端末へ安全復元</button><button id="v100SignOut" class="v100btn gray">ログアウト</button></div>
  </div>
  <div id="v100Msg" class="v100note">端末データが原本です。同期しても端末の顧客・履歴は削除しません。写真はクラウドへ送りません。</div>
@@ -1184,7 +1183,7 @@ async function v104SyncLatestHistory(id){if(!auth.currentUser||!id)return;try{co
 async function v104SyncAllPatients(){
  if(!auth.currentUser)return null;
 
- // V109: First guarantee that every local patient has a UNIQUE patient ID.
+ // V110: First guarantee that every local patient has a UNIQUE patient ID.
  // V107 counted duplicate local IDs twice, which could show "Firebase 2" while
  // Firestore actually contained only one document.
  let list=patients();
@@ -1229,7 +1228,7 @@ async function v104SyncAllPatients(){
  try{
   beforeSnap=await getDocsFromServer(collection(db,'patients'));
  }catch(e){
-  console.error('V109 initial server collection read',e);
+  console.error('V110 initial server collection read',e);
   return {local:localIds.length,cloud:null,missing:localIds,idFixed,verifyError:true};
  }
 
@@ -1248,7 +1247,7 @@ async function v104SyncAllPatients(){
    await setDoc(doc(db,'patients',id),{...safe,localId:id,updatedAt:serverTimestamp()});
    added++;
   }catch(e){
-   console.error('V109 missing-only create',id,e);
+   console.error('V110 missing-only create',id,e);
    failed.push(id);
   }
  }
@@ -1259,7 +1258,7 @@ async function v104SyncAllPatients(){
  try{
   afterSnap=await getDocsFromServer(collection(db,'patients'));
  }catch(e){
-  console.error('V109 final server collection read',e);
+  console.error('V110 final server collection read',e);
   return {local:localIds.length,cloud:null,missing:localIds,idFixed,added,failed,verifyError:true};
  }
 
@@ -1297,41 +1296,6 @@ async function restoreAll(){
  }catch(e){console.error(e);status.textContent='復元失敗';msg.innerHTML='<span class="v100err">復元に失敗しました。端末データは変更していません。</span>'}finally{if(btn)btn.disabled=false}
 }
 
-async function v109ReadOnlyDiagnostic(){
- const out=$('v109DiagOut'), btn=$('v109Diag');
- if(out){out.style.display='block';out.textContent='Firebaseサーバーを読み取り中…'}
- if(btn)btn.disabled=true;
- try{
-  const local=patients();
-  const localRows=local.map((c,i)=>({
-   no:i+1,
-   name:String((c&&c.name)||'(名前なし)'),
-   id:(c&&c.id!=null)?String(c.id):'(IDなし)'
-  }));
-  const snap=await getDocsFromServer(collection(db,'patients'));
-  const cloudRows=snap.docs.map((d,i)=>({
-   no:i+1,
-   docId:String(d.id),
-   name:String((d.data()&&d.data().name)||'(名前なし)'),
-   localId:(d.data()&&d.data().localId!=null)?String(d.data().localId):'(なし)'
-  }));
-  const cloudIds=new Set(cloudRows.map(x=>x.docId));
-  const lines=[];
-  lines.push('【端末】 '+localRows.length+'件');
-  for(const x of localRows) lines.push(x.no+'. '+x.name+' / ID='+x.id+' / Firebase文書ID一致='+(cloudIds.has(x.id)?'YES':'NO'));
-  lines.push('');
-  lines.push('【Firebaseサーバー /patients】 '+snap.size+'文書');
-  for(const x of cloudRows) lines.push(x.no+'. '+x.name+' / documentID='+x.docId+' / localId='+x.localId);
-  lines.push('');
-  lines.push('※ この診断は読み取り専用です。追加・上書き・削除は一切していません。');
-  if(out)out.textContent=lines.join('\n');
-  status.textContent='診断完了';
- }catch(e){
-  console.error('V109 diagnostic',e);
-  if(out)out.textContent='診断失敗：'+String(e&&e.message||e);
-  status.textContent='診断失敗';
- }finally{if(btn)btn.disabled=false}
-}
 async function uploadAll(){
  const list=patients();
  if(!list.length){msg.innerHTML='<span class="v100err">端末に顧客が0件のためコピーしていません。</span>';return}
@@ -1345,7 +1309,7 @@ async function uploadAll(){
   }else{
    localStorage.setItem('wakaba_v100_last_cloud_copy',new Date().toISOString());
    status.textContent='サーバー確認済み';
-   msg.innerHTML='<span class="v100ok">✓ V109同期完了：端末 '+r.local+'件 / Firebase実在 '+r.cloud+'件。新規追加 '+r.added+'件'+(r.idFixed?'、端末の重複患者IDを '+r.idFixed+'件安全に補正':'')+'。既存Firebase患者は上書き・削除していません。写真は送信していません。</span>';
+   msg.innerHTML='<span class="v100ok">✓ V110同期完了：端末 '+r.local+'件 / Firebase実在 '+r.cloud+'件。新規追加 '+r.added+'件'+(r.idFixed?'、端末の重複患者IDを '+r.idFixed+'件安全に補正':'')+'。既存Firebase患者は上書き・削除していません。写真は送信していません。</span>';
   }
  }catch(e){
   console.error(e); status.textContent='同期失敗';
@@ -1353,8 +1317,8 @@ async function uploadAll(){
  }finally{$('v100Sync').disabled=false}
 }
 $('v100SignIn').onclick=async()=>{msg.textContent='ログイン確認中…';try{await signInWithEmailAndPassword(auth,$('v100Email').value.trim(),$('v100Pass').value);$('v100Pass').value=''}catch(e){console.error(e);msg.innerHTML='<span class="v100err">ログインできません。メールアドレスとパスワードを確認してください。</span>'}};
-$('v109Diag').onclick=v109ReadOnlyDiagnostic;$('v100SignOut').onclick=()=>signOut(auth);$('v100Sync').onclick=uploadAll;$('v102Restore').onclick=restoreAll;
-onAuthStateChanged(auth,async u=>{if(u){status.textContent='ログイン済み';$('v100Login').style.display='none';$('v100Actions').style.display='block';msg.innerHTML='<span class="v100ok">V109：患者IDをFirebaseで1件ずつ実在確認し、存在しない患者だけ追加します。既存患者は上書き・削除しません。写真は送りません。</span>';const r=await v104SyncAllPatients();if(r){if(r.cloud!==null && r.missing.length===0){status.textContent='サーバー確認済み';msg.innerHTML='<span class="v100ok">✓ V109サーバー実在確認OK：端末 '+r.local+'件 / Firebase実在 '+r.cloud+'件。新規追加 '+(r.added||0)+'件'+(r.idFixed?'、重複患者IDを '+r.idFixed+'件安全に補正':'')+'。端末の患者IDはすべてFirebase上に存在します。</span>'}else if(r.cloud!==null){status.textContent='未同期あり';msg.innerHTML='<span class="v100err">⚠ サーバー確認：端末 '+r.local+'件 / Firebase '+r.cloud+'件。Firebaseに見つからない患者 '+r.missing.length+'件（ID: '+r.missing.join(', ')+'）。端末データは残っています。</span>'}else{status.textContent='確認失敗';msg.innerHTML='<span class="v100err">Firebaseへの書き込み後、サーバー実在確認に失敗しました。端末データは残っています。</span>'}}}else{status.textContent='未接続';$('v100Login').style.display='block';$('v100Actions').style.display='none';msg.textContent='端末データが原本です。Firebaseへ自動同期するにはログインしてください。写真は送信しません。'}});
+$('v100SignOut').onclick=()=>signOut(auth);$('v100Sync').onclick=uploadAll;$('v102Restore').onclick=restoreAll;
+onAuthStateChanged(auth,async u=>{if(u){status.textContent='ログイン済み';$('v100Login').style.display='none';$('v100Actions').style.display='block';msg.innerHTML='<span class="v100ok">V110：患者IDをFirebaseで1件ずつ実在確認し、存在しない患者だけ追加します。既存患者は上書き・削除しません。写真は送りません。</span>';const r=await v104SyncAllPatients();if(r){if(r.cloud!==null && r.missing.length===0){status.textContent='サーバー確認済み';msg.innerHTML='<span class="v100ok">✓ V110安定版：サーバー実在確認OK：端末 '+r.local+'件 / Firebase実在 '+r.cloud+'件。新規追加 '+(r.added||0)+'件'+(r.idFixed?'、重複患者IDを '+r.idFixed+'件安全に補正':'')+'。端末の患者IDはすべてFirebase上に存在します。</span>'}else if(r.cloud!==null){status.textContent='未同期あり';msg.innerHTML='<span class="v100err">⚠ サーバー確認：端末 '+r.local+'件 / Firebase '+r.cloud+'件。Firebaseに見つからない患者 '+r.missing.length+'件（ID: '+r.missing.join(', ')+'）。端末データは残っています。</span>'}else{status.textContent='確認失敗';msg.innerHTML='<span class="v100err">Firebaseへの書き込み後、サーバー実在確認に失敗しました。端末データは残っています。</span>'}}}else{status.textContent='未接続';$('v100Login').style.display='block';$('v100Actions').style.display='none';msg.textContent='端末データが原本です。Firebaseへ自動同期するにはログインしてください。写真は送信しません。'}});
 </script>
 
 </body></html>
