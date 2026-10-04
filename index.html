@@ -326,7 +326,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V117</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V118</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -336,7 +336,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 <section class="v77page" id="v77Mypage"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>マイページ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>プロフィール</b><span>南 昇吾</span></div><div class="v77settingRow"><b>院名</b><span>わかば整体院・接骨院</span></div><div class="v77settingRow"><b>メールアドレス</b><span class="v77muted">クラウド版で設定</span></div><div class="v77settingRow"><b>パスワード</b><span class="v77muted">クラウド版で設定</span></div></div></section>
 <section class="v77page" id="v77News"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>お知らせ</h2><span></span></div><div class="v77card v77empty">現在、お知らせはありません。</div></section>
 <section class="v77page" id="v77Help"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>ヘルプ・お問い合わせ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>撮影・カメラについて</b><span>›</span></div><div class="v77settingRow"><b>分析について</b><span>›</span></div><div class="v77settingRow"><b>顧客データについて</b><span>›</span></div><div class="v77settingRow"><b>お問い合わせ</b><span>›</span></div></div></section>
-<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V117 DataGuard確認</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
+<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V118 院別完全移行確認</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
 <section id="v61Home">
  <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
  <div id="v61List" class="v61list"></div>
@@ -1471,6 +1471,36 @@ document.addEventListener('DOMContentLoaded',()=>{
  function mount(){setTimeout(()=>{const anchor=document.getElementById('v116DataGuard');if(anchor&&!document.getElementById('v117DataGuardCheck')){const d=document.createElement('div');d.id='v117DataGuardCheck';d.innerHTML='🛡️ <b>V117 DataGuardバックアップ確認</b><br>確認中…';anchor.insertAdjacentElement('afterend',d);render()}},850)}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 })();
+</script>
+
+
+
+<style id="v118-style">
+#v118ClinicCheck{margin:8px 0;padding:10px 12px;border:1px solid #67e8f9;border-radius:12px;background:#ecfeff;color:#164e63;font-size:10px;line-height:1.6}
+#v118ClinicCheck b{font-size:11px}.v118grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.v118cell{background:#fff;border:1px solid #a5f3fc;border-radius:9px;padding:8px}.v118num{font-size:15px;font-weight:900;color:#0e7490}#v118Refresh{width:100%;margin-top:8px;border:0;border-radius:10px;padding:10px;background:#0891b2;color:#fff;font-weight:900}.v118ok{color:#047857;font-weight:800}.v118warn{color:#b45309;font-weight:800}
+</style>
+<script type="module" id="v118-clinic-check">
+import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
+import {getAuth,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
+import {getFirestore,collection,getDocsFromServer} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
+function localPatients(){try{const a=JSON.parse(localStorage.getItem('wakaba_v61_customers')||'[]');return Array.isArray(a)?a:[]}catch(e){return[]}}
+function localHistoryCount(list){let n=0;for(const p of list){try{const a=JSON.parse(localStorage.getItem('wakaba_v63_history_'+p.id)||'[]');if(Array.isArray(a))n+=a.length}catch(e){}}return n}
+async function check(){
+ const box=document.getElementById('v118ClinicCheck'); if(!box)return;
+ try{
+  if(!getApps().length)throw new Error('Firebase初期化待ち');
+  const app=getApp(),auth=getAuth(app),u=auth.currentUser;if(!u){box.innerHTML='🏥 <b>V118 院別完全移行確認</b><br>Firebaseへログインすると確認します。';return}
+  box.innerHTML='🏥 <b>V118 院別完全移行確認</b><br>院別Firebaseをサーバー確認中…';
+  const db=getFirestore(app),lp=localPatients();
+  const ps=await getDocsFromServer(collection(db,'clinics',u.uid,'patients'));
+  let ch=0; for(const d of ps.docs){const hs=await getDocsFromServer(collection(db,'clinics',u.uid,'patients',d.id,'histories'));ch+=hs.size}
+  const lh=localHistoryCount(lp), patientOK=lp.length===ps.size, historyOK=lh<=ch;
+  box.innerHTML='🏥 <b>V118 院別完全移行確認</b><div class="v118grid"><div class="v118cell">端末患者<br><span class="v118num">'+lp.length+'件</span></div><div class="v118cell">院別Firebase患者<br><span class="v118num">'+ps.size+'件</span></div><div class="v118cell">端末履歴<br><span class="v118num">'+lh+'件</span></div><div class="v118cell">院別Firebase履歴<br><span class="v118num">'+ch+'件</span></div></div><div style="margin-top:8px" class="'+(patientOK&&historyOK?'v118ok':'v118warn')+'">'+(patientOK&&historyOK?'✓ 通常の保存・復元先は院別領域だけで確認できました。Security Rules変更準備OKです。':'⚠ 件数を確認してください。まだSecurity Rulesは変更しません。')+'</div><div style="margin-top:4px">確認先：/clinics/{ログインUID}/patients<br>※旧 /patients は読み書きせず、削除もしません。</div><button id="v118Refresh">院別データを再確認</button>';
+  document.getElementById('v118Refresh').onclick=check;
+ }catch(e){console.error('V118 check',e);box.innerHTML='🏥 <b>V118 院別完全移行確認</b><br><span class="v118warn">⚠ 院別Firebaseの確認に失敗しました。データの削除・変更はしていません。</span><button id="v118Refresh">再確認</button>';document.getElementById('v118Refresh').onclick=check}
+}
+function mount(){setTimeout(()=>{const a=document.getElementById('v117DataGuardCheck')||document.getElementById('v116DataGuard');if(a&&!document.getElementById('v118ClinicCheck')){const d=document.createElement('div');d.id='v118ClinicCheck';d.innerHTML='🏥 <b>V118 院別完全移行確認</b><br>確認待ち…';a.insertAdjacentElement('afterend',d)};if(getApps().length){onAuthStateChanged(getAuth(getApp()),u=>{if(u)check()})}},1000)}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 </script>
 
 </body></html>
