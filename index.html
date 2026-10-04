@@ -326,7 +326,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V118</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V119</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -336,7 +336,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 <section class="v77page" id="v77Mypage"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>マイページ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>プロフィール</b><span>南 昇吾</span></div><div class="v77settingRow"><b>院名</b><span>わかば整体院・接骨院</span></div><div class="v77settingRow"><b>メールアドレス</b><span class="v77muted">クラウド版で設定</span></div><div class="v77settingRow"><b>パスワード</b><span class="v77muted">クラウド版で設定</span></div></div></section>
 <section class="v77page" id="v77News"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>お知らせ</h2><span></span></div><div class="v77card v77empty">現在、お知らせはありません。</div></section>
 <section class="v77page" id="v77Help"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>ヘルプ・お問い合わせ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>撮影・カメラについて</b><span>›</span></div><div class="v77settingRow"><b>分析について</b><span>›</span></div><div class="v77settingRow"><b>顧客データについて</b><span>›</span></div><div class="v77settingRow"><b>お問い合わせ</b><span>›</span></div></div></section>
-<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V118 院別完全移行確認</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
+<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V119 契約状態基盤</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
 <section id="v61Home">
  <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
  <div id="v61List" class="v61list"></div>
@@ -1500,6 +1500,36 @@ async function check(){
  }catch(e){console.error('V118 check',e);box.innerHTML='🏥 <b>V118 院別完全移行確認</b><br><span class="v118warn">⚠ 院別Firebaseの確認に失敗しました。データの削除・変更はしていません。</span><button id="v118Refresh">再確認</button>';document.getElementById('v118Refresh').onclick=check}
 }
 function mount(){setTimeout(()=>{const a=document.getElementById('v117DataGuardCheck')||document.getElementById('v116DataGuard');if(a&&!document.getElementById('v118ClinicCheck')){const d=document.createElement('div');d.id='v118ClinicCheck';d.innerHTML='🏥 <b>V118 院別完全移行確認</b><br>確認待ち…';a.insertAdjacentElement('afterend',d)};if(getApps().length){onAuthStateChanged(getAuth(getApp()),u=>{if(u)check()})}},1000)}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
+</script>
+
+
+<style id="v119-style">
+#v119Subscription{margin:8px 0;padding:12px;border:1px solid #c4b5fd;border-radius:12px;background:#f5f3ff;color:#4c1d95;font-size:10px;line-height:1.6}
+#v119Subscription b{font-size:11px}.v119grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.v119cell{background:#fff;border:1px solid #ddd6fe;border-radius:9px;padding:8px}.v119num{font-size:13px;font-weight:900;color:#5b21b6}.v119ok{color:#047857;font-weight:800}.v119warn{color:#b45309;font-weight:800}#v119Refresh{width:100%;margin-top:8px;border:0;border-radius:10px;padding:10px;background:#6d28d9;color:#fff;font-weight:900}
+</style>
+<script type="module" id="v119-subscription-base">
+import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
+import {getAuth,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
+import {getFirestore,doc,getDocFromServer} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
+function fmt(v){try{if(!v)return '未設定';const d=v.toDate?v.toDate():new Date(v);return isNaN(d)?'未設定':d.toLocaleDateString('ja-JP')}catch(e){return '未設定'}}
+async function render(){
+ const box=document.getElementById('v119Subscription');if(!box)return;
+ try{
+  if(!getApps().length)throw new Error('Firebase初期化待ち');
+  const app=getApp(),auth=getAuth(app),u=auth.currentUser;
+  if(!u){box.innerHTML='💳 <b>V119 契約状態基盤</b><br>ログイン後に契約状態を確認します。';return}
+  box.innerHTML='💳 <b>V119 契約状態基盤</b><br>院アカウントの契約情報を確認中…';
+  const db=getFirestore(app),ref=doc(db,'clinics',u.uid,'subscription','status'),snap=await getDocFromServer(ref);
+  const x=snap.exists()?snap.data():{};
+  const status=String(x.status||'setup'), plan=String(x.plan||'未設定');
+  const labels={trial:'無料体験中',active:'契約中',expired:'期限切れ',canceled:'解約済み',setup:'導入準備'};
+  const label=labels[status]||status;
+  box.innerHTML='💳 <b>V119 契約状態基盤</b><div class="v119grid"><div class="v119cell">契約状態<br><span class="v119num">'+label+'</span></div><div class="v119cell">プラン<br><span class="v119num">'+plan+'</span></div><div class="v119cell">無料体験終了<br><span class="v119num">'+fmt(x.trialEndsAt)+'</span></div><div class="v119cell">契約更新日<br><span class="v119num">'+fmt(x.currentPeriodEnd)+'</span></div></div><div style="margin-top:8px" class="'+(snap.exists()?'v119ok':'v119warn')+'">'+(snap.exists()?'✓ この院専用の契約情報を読み込めました。':'✓ V119基盤準備OK。まだ契約情報は登録していないため「導入準備」です。')+'</div><div style="margin-top:4px">確認先：/clinics/{ログインUID}/subscription/status<br>※V119では契約状態を表示するだけで、患者・履歴・写真保存や利用制限は変更しません。</div><button id="v119Refresh">契約状態を再確認</button>';
+  document.getElementById('v119Refresh').onclick=render;
+ }catch(e){console.error('V119 subscription',e);box.innerHTML='💳 <b>V119 契約状態基盤</b><br><span class="v119warn">⚠ 契約状態の確認に失敗しました。患者データには変更を加えていません。</span><button id="v119Refresh">再確認</button>';document.getElementById('v119Refresh').onclick=render}
+}
+function mount(){setTimeout(()=>{const a=document.getElementById('v118ClinicCheck')||document.getElementById('v117DataGuardCheck');if(a&&!document.getElementById('v119Subscription')){const d=document.createElement('div');d.id='v119Subscription';d.innerHTML='💳 <b>V119 契約状態基盤</b><br>確認待ち…';a.insertAdjacentElement('afterend',d)};if(getApps().length)onAuthStateChanged(getAuth(getApp()),u=>{if(u)render()})},1150)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 </script>
 
