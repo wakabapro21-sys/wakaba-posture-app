@@ -326,7 +326,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V123</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V124</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1571,14 +1571,14 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #v122AccessCheck b{font-size:11px}.v122state{margin-top:8px;padding:10px;border-radius:10px;background:#fff;border:1px solid #bbf7d0}.v122big{font-size:14px;font-weight:900}.v122ok{color:#047857;font-weight:900}.v122warn{color:#b45309;font-weight:900}.v122danger{color:#b91c1c;font-weight:900}.v122btn{width:100%;margin-top:8px;border:0;border-radius:10px;padding:10px;background:#15803d;color:#fff;font-weight:900}
 </style>
 <script type="module" id="v122-access-check">
-import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
-import {getAuth,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js';
-import {getFirestore,doc,getDocFromServer} from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
+import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
+import {getAuth,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
+import {getFirestore,doc,getDocFromServer} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
 const fmt=v=>{try{if(!v)return '未設定';const d=v.toDate?v.toDate():new Date(v);return d.toLocaleDateString('ja-JP')}catch{return '未設定'}};
 async function render122(){
  const box=document.getElementById('v122AccessCheck');if(!box)return;
  try{
-  const app=getApp(),u=getAuth(app).currentUser;if(!u){box.innerHTML='🚦 <b>V123 利用判定</b><br>ログイン確認中…';return}
+  const app=getApp(),u=getAuth(app).currentUser;if(!u){box.innerHTML='🚦 <b>V124 利用判定</b><br>ログイン確認中…';return}
   const snap=await getDocFromServer(doc(getFirestore(app),'clinics',u.uid,'subscription','status'));
   const x=snap.exists()?snap.data():{},st=x.status||'setup'; let effective=st, note='契約情報が未設定です。';
   if(st==='trial'&&x.trialEndsAt){const end=x.trialEndsAt.toDate?x.trialEndsAt.toDate():new Date(x.trialEndsAt);if(end.getTime()<Date.now())effective='expired'}
@@ -1587,14 +1587,14 @@ async function render122(){
   else if(effective==='active'){title='✓ 契約中：利用OK';cls='v122ok';note='契約更新日：'+fmt(x.currentPeriodEnd)}
   else if(effective==='expired'){title='⚠ 無料体験・契約期限切れ';cls='v122danger';note='V122では警告表示だけです。姿勢分析は停止しません。'}
   else if(effective==='canceled'){title='⚠ 解約済み';cls='v122danger';note='V122では警告表示だけです。姿勢分析は停止しません。'}
-  box.innerHTML='🚦 <b>V123 利用判定</b><div class="v122state"><div class="v122big '+cls+'">'+title+'</div><div>'+note+'</div></div><div style="margin-top:7px">✓ 契約状態を院専用Firebaseから読み取り、利用可否を判定できています。<br>※患者・履歴・写真・DataGuardには触れません。<br>※V122では期限切れでもロックしません。</div><button class="v122btn" id="v122Refresh">利用状態を再確認</button>';
+  box.innerHTML='🚦 <b>V124 利用判定</b><div class="v122state"><div class="v122big '+cls+'">'+title+'</div><div>'+note+'</div></div><div style="margin-top:7px">✓ 契約状態を院専用Firebaseから読み取り、利用可否を判定できています。<br>※患者・履歴・写真・DataGuardには触れません。<br>※V122では期限切れでもロックしません。</div><button class="v122btn" id="v122Refresh">利用状態を再確認</button>';
   document.getElementById('v122Refresh').onclick=render122;
- }catch(e){console.error('V122 access check',e);box.innerHTML='🚦 <b>V123 利用判定</b><br><span class="v122warn">⚠ 契約状態を確認できませんでした。アプリの利用は停止しません。</span><button class="v122btn" id="v122Refresh">再確認</button>';document.getElementById('v122Refresh').onclick=render122}
+ }catch(e){console.error('V122 access check',e);box.innerHTML='🚦 <b>V124 利用判定</b><br><span class="v122warn">⚠ 契約状態を確認できませんでした。アプリの利用は停止しません。</span><button class="v122btn" id="v122Refresh">再確認</button>';document.getElementById('v122Refresh').onclick=render122}
 }
 function mount122(){
  setTimeout(()=>{
   const a=document.getElementById('v121SubscriptionControl')||document.getElementById('v119Subscription');
-  if(a&&!document.getElementById('v122AccessCheck')){const d=document.createElement('div');d.id='v122AccessCheck';d.innerHTML='🚦 <b>V123 利用判定</b><br>契約状態を確認中…';a.insertAdjacentElement('afterend',d)}
+  if(a&&!document.getElementById('v122AccessCheck')){const d=document.createElement('div');d.id='v122AccessCheck';d.innerHTML='🚦 <b>V124 利用判定</b><br>契約状態を確認中…';a.insertAdjacentElement('afterend',d)}
   if(!getApps().length){setTimeout(mount122,700);return}
   const auth=getAuth(getApp());
   if(auth.currentUser){render122();return}
