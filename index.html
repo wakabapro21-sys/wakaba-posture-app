@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V104</title>
+<title>AI姿勢＆3次元歪み分析システム V128</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -336,7 +336,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 <section class="v77page" id="v77Mypage"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>マイページ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>プロフィール</b><span>南 昇吾</span></div><div class="v77settingRow"><b>院名</b><span>わかば整体院・接骨院</span></div><div class="v77settingRow"><b>メールアドレス</b><span class="v77muted">クラウド版で設定</span></div><div class="v77settingRow"><b>パスワード</b><span class="v77muted">クラウド版で設定</span></div></div></section>
 <section class="v77page" id="v77News"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>お知らせ</h2><span></span></div><div class="v77card v77empty">現在、お知らせはありません。</div></section>
 <section class="v77page" id="v77Help"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>ヘルプ・お問い合わせ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>撮影・カメラについて</b><span>›</span></div><div class="v77settingRow"><b>分析について</b><span>›</span></div><div class="v77settingRow"><b>顧客データについて</b><span>›</span></div><div class="v77settingRow"><b>お問い合わせ</b><span>›</span></div></div></section>
-<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V127 契約自動判定</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
+<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V128 契約利用制御</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
 <section id="v61Home">
  <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
  <div id="v61List" class="v61list"></div>
@@ -1560,7 +1560,7 @@ async function render121(){
   else if(effective==='active'){accessTitle='✓ 契約中：利用OK';accessClass='v121ok';accessNote='契約更新日：'+fmt(x.currentPeriodEnd)}
   else if(effective==='expired'){accessTitle='⚠ 無料体験・契約期限切れ';accessClass='v121warn';accessNote='現在は警告表示のみで、姿勢分析は停止しません。'}
   else if(effective==='canceled'){accessTitle='⚠ 解約済み';accessClass='v121warn';accessNote='現在は警告表示のみで、姿勢分析は停止しません。'}
-  box.innerHTML='🧾 <b>V127 契約状態・自動判定</b><div class="v121grid"><div class="v121cell">契約状態<br><span class="v121num">'+(labels[effective]||effective)+'</span></div><div class="v121cell">プラン<br><span class="v121num">'+plan+'</span></div><div class="v121cell">無料体験終了<br><span class="v121num">'+fmt(x.trialEndsAt)+'</span></div><div class="v121cell">契約更新日<br><span class="v121num">'+fmt(x.currentPeriodEnd)+'</span></div></div><div style="margin-top:10px;padding:10px;border-radius:10px;background:#fff;border:1px solid #f5d0fe"><div class="'+accessClass+'" style="font-size:14px">'+accessTitle+'</div><div>'+accessNote+'</div></div>'+(snap.exists()?'<div class="v121ok" style="margin-top:8px">✓ 院専用Firebaseの契約情報から利用判定しています。</div>':'<div class="v121warn" style="margin-top:8px">まだ契約状態がありません。下のボタンで14日無料体験のテスト情報を作成できます。</div>')+'<button class="v121btn" id="v121Trial">14日無料体験を開始（テスト）</button><button class="v121btn secondary" id="v121Refresh">契約状態・利用判定を再確認</button><div style="margin-top:6px">保存先：/clinics/{ログインUID}/subscription/status<br>※V127は無料体験終了日・契約更新日・解約状態を自動判定します。患者・履歴・写真・DataGuardには触れません。現在は期限切れ・解約済みでも警告表示のみで利用停止はしません。</div>';
+  box.innerHTML='🧾 <b>V128 契約状態・利用制御</b><div class="v121grid"><div class="v121cell">契約状態<br><span class="v121num">'+(labels[effective]||effective)+'</span></div><div class="v121cell">プラン<br><span class="v121num">'+plan+'</span></div><div class="v121cell">無料体験終了<br><span class="v121num">'+fmt(x.trialEndsAt)+'</span></div><div class="v121cell">契約更新日<br><span class="v121num">'+fmt(x.currentPeriodEnd)+'</span></div></div><div style="margin-top:10px;padding:10px;border-radius:10px;background:#fff;border:1px solid #f5d0fe"><div class="'+accessClass+'" style="font-size:14px">'+accessTitle+'</div><div>'+accessNote+'</div></div>'+(snap.exists()?'<div class="v121ok" style="margin-top:8px">✓ 院専用Firebaseの契約情報から利用判定しています。</div>':'<div class="v121warn" style="margin-top:8px">まだ契約状態がありません。下のボタンで14日無料体験のテスト情報を作成できます。</div>')+'<button class="v121btn" id="v121Trial">14日無料体験を開始（テスト）</button><button class="v121btn secondary" id="v121Refresh">契約状態・利用判定を再確認</button><div style="margin-top:6px">保存先：/clinics/{ログインUID}/subscription/status<br>※V128は無料体験終了日・契約更新日・解約状態を自動判定します。無料体験中・契約中は利用OK、期限切れ・解約済みは利用停止画面を表示します。患者・履歴・写真・DataGuardのデータ自体は削除・変更しません。</div>';
   document.getElementById('v121Refresh').onclick=render121;
   document.getElementById('v121Trial').onclick=async()=>{
    if(!confirm('この院アカウントに「14日無料体験」のテスト契約情報を作成しますか？\n患者・履歴・写真は変更しません。'))return;
@@ -1575,5 +1575,24 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 </script>
 
 
+
+<style id="v128-style">
+#v128Gate{display:none;position:fixed;inset:0;z-index:2147483000;background:rgba(15,23,42,.88);padding:20px;align-items:center;justify-content:center;font-family:system-ui,-apple-system,sans-serif}
+#v128Gate.on{display:flex}#v128GateCard{width:min(92vw,520px);background:#fff;border-radius:20px;padding:24px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);color:#0f172a}
+#v128GateCard h2{margin:0 0 12px;font-size:24px}#v128GateCard p{font-size:15px;line-height:1.7;margin:8px 0}#v128GateCard button{width:100%;border:0;border-radius:12px;padding:14px;margin-top:12px;font-size:16px;font-weight:900;background:#475569;color:#fff}
+</style>
+<div id="v128Gate"><div id="v128GateCard"><h2>契約状態を確認しています</h2><p>院専用Firebaseの契約情報を確認中です。</p></div></div>
+<script type="module" id="v128-access-gate">
+import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
+import {getAuth,onAuthStateChanged,signOut} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
+import {getFirestore,doc,getDocFromServer} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
+const gate=document.getElementById('v128Gate'),card=document.getElementById('v128GateCard');
+function dateOf(v){try{return v?(v.toDate?v.toDate():new Date(v)):null}catch(e){return null}}
+function hideGate(){gate.classList.remove('on');window.__wakabaSubscriptionAccess=true}
+function showBlocked(kind,date){window.__wakabaSubscriptionAccess=false;gate.classList.add('on');const title=kind==='canceled'?'契約は解約済みです':'無料体験・契約期間が終了しました';const ds=date&&!isNaN(date)?date.toLocaleDateString('ja-JP'):'';card.innerHTML='<h2>🔒 '+title+'</h2><p>'+ (ds?'終了日：'+ds+'<br>':'') +'患者・履歴・写真データは削除されていません。契約を再開すると、そのまま利用を再開できます。</p><p style="font-size:12px;color:#64748b">V128では期限切れ・解約済みの場合のみ利用画面を停止します。</p><button id="v128Logout">ログアウト</button>';document.getElementById('v128Logout').onclick=()=>signOut(getAuth(getApp()));}
+async function check128(u){if(!u){hideGate();return}try{const db=getFirestore(getApp()),snap=await getDocFromServer(doc(db,'clinics',u.uid,'subscription','status'));if(!snap.exists()){hideGate();return}const x=snap.data(),st=String(x.status||'setup'),now=Date.now();if(st==='canceled'){showBlocked('canceled',dateOf(x.currentPeriodEnd));return}if(st==='trial'){const d=dateOf(x.trialEndsAt);if(d&&!isNaN(d)&&d.getTime()<now){showBlocked('expired',d);return}}if(st==='active'){const d=dateOf(x.currentPeriodEnd);if(d&&!isNaN(d)&&d.getTime()<now){showBlocked('expired',d);return}}hideGate()}catch(e){console.error('V128 gate',e);hideGate()}}
+function mount128(){const wait=()=>{if(!getApps().length){setTimeout(wait,300);return}onAuthStateChanged(getAuth(getApp()),check128)};wait()}
+mount128();
+</script>
 
 </body></html>
