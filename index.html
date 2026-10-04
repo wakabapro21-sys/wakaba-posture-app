@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V128</title>
+<title>AI姿勢＆3次元歪み分析システム V129</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -1580,6 +1580,24 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 </script>
 
 
+
+<style id="v129-style">
+#v129SalesPlan{margin:8px 0;padding:12px;border:1px solid #93c5fd;border-radius:12px;background:#eff6ff;color:#1e3a8a;font-size:10px;line-height:1.6}
+#v129SalesPlan b{font-size:11px}.v129grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.v129cell{background:#fff;border:1px solid #bfdbfe;border-radius:9px;padding:8px}.v129num{font-size:13px;font-weight:900;color:#1d4ed8}.v129ok{color:#047857;font-weight:800}
+</style>
+<script id="v129-sales-plan">
+(function(){
+ function mount129(){
+  const anchor=document.getElementById('v121SubscriptionControl');
+  if(!anchor||document.getElementById('v129SalesPlan'))return;
+  const d=document.createElement('div');d.id='v129SalesPlan';
+  d.innerHTML='💳 <b>V129 販売プラン基盤</b><div class="v129grid"><div class="v129cell">販売プラン<br><span class="v129num">スタンダード</span></div><div class="v129cell">無料体験<br><span class="v129num">14日間</span></div><div class="v129cell">決済<br><span class="v129num">Stripe準備</span></div><div class="v129cell">現在の課金<br><span class="v129num">なし</span></div></div><div class="v129ok" style="margin-top:8px">✓ V129販売プラン基盤を確認できます。</div><div style="margin-top:4px">※現在は販売画面の土台のみです。実際の決済・請求は発生しません。患者・履歴・写真・DataGuard・Firebase保存先は変更しません。</div>';
+  anchor.insertAdjacentElement('afterend',d);
+ }
+ function start(){let n=0;const t=setInterval(()=>{mount129();if(document.getElementById('v129SalesPlan')||++n>30)clearInterval(t)},200)}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
+</script>
 
 <style id="v128-style">
 #v128Gate{display:none;position:fixed;inset:0;z-index:2147483000;background:rgba(15,23,42,.88);padding:20px;align-items:center;justify-content:center;font-family:system-ui,-apple-system,sans-serif}
