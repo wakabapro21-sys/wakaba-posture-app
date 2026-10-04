@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V138</title>
+<title>AI姿勢＆3次元歪み分析システム V139</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -331,7 +331,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V138</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V139</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -341,7 +341,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 <section class="v77page" id="v77Mypage"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>マイページ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>プロフィール</b><span>南 昇吾</span></div><div class="v77settingRow"><b>院名</b><span>わかば整体院・接骨院</span></div><div class="v77settingRow"><b>メールアドレス</b><span class="v77muted">クラウド版で設定</span></div><div class="v77settingRow"><b>パスワード</b><span class="v77muted">クラウド版で設定</span></div></div></section>
 <section class="v77page" id="v77News"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>お知らせ</h2><span></span></div><div class="v77card v77empty">現在、お知らせはありません。</div></section>
 <section class="v77page" id="v77Help"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>ヘルプ・お問い合わせ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>撮影・カメラについて</b><span>›</span></div><div class="v77settingRow"><b>分析について</b><span>›</span></div><div class="v77settingRow"><b>顧客データについて</b><span>›</span></div><div class="v77settingRow"><b>お問い合わせ</b><span>›</span></div></div></section>
-<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V138 ログイン保護</span></div><div class="v77settingRow"><b>ログイン試行制限</b><span class="v77pill">5回失敗→15分制限</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
+<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V139 ログイン保護</span></div><div class="v77settingRow"><b>ログイン試行制限</b><span class="v77pill">5回失敗→15分制限</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
 <section id="v61Home">
  <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
  <div id="v61List" class="v61list"></div>
@@ -1138,7 +1138,7 @@ document.addEventListener('DOMContentLoaded',function(){
   <div class="v100row"><input id="v100Email" type="email" autocomplete="username" placeholder="Firebase管理者メール"></div>
   <div class="v100row"><input id="v100Pass" type="password" autocomplete="current-password" placeholder="パスワード"><button id="v100SignIn" class="v100btn">ログイン</button></div>
  </div>
- <div id="v138AutoRestore" style="margin:8px 0;padding:9px 10px;border:1px solid #86efac;border-radius:10px;background:#f0fdf4;color:#166534;font-size:10px;font-weight:800;line-height:1.55">🛡 V138 自動復元保護 ON<br>ログイン時に端末患者が0件で、院別Firebaseに患者が存在する場合のみ自動復元します。既存データは削除・上書きしません。</div>
+ <div id="v139AutoRestore" style="margin:8px 0;padding:9px 10px;border:1px solid #86efac;border-radius:10px;background:#f0fdf4;color:#166534;font-size:10px;font-weight:800;line-height:1.55">🛡 V139 自動復元保護 ON<br>ログイン時に端末患者が0件で、院別Firebaseに患者が存在する場合のみ自動復元します。既存データは削除・上書きしません。</div>
 <div id="v100Actions" style="display:none"><div class="v100row"><div style="flex:1;padding:8px 10px;border-radius:10px;background:#ecfdf5;color:#047857;font-size:10px;font-weight:900">✓ V114 院別保存 ON（旧 /patients はバックアップとして保持）</div></div><div id="v112ClinicAccount" style="margin:8px 0 10px;padding:11px 12px;border:1px solid #bfdbfe;border-radius:12px;background:#eff6ff;font-size:10px;line-height:1.65;color:#1e3a8a"><b style="font-size:12px">🏥 院アカウント</b><div id="v112ClinicEmail">ログイン確認中…</div><div id="v112ClinicId" style="word-break:break-all;color:#64748b"></div><div style="margin-top:5px;color:#475569">V114ではUIDを院IDとして、患者・履歴の保存先と復元元を院別領域に切り替えます。旧 /patients は削除・変更しません。</div></div>
   <div class="v100row"><button id="v100Sync" class="v100btn secondary" style="flex:1">端末→Firebaseへコピー</button></div>
   <div class="v100row"><button id="v102Restore" class="v100btn" style="flex:1;background:#0f766e">Firebase→この端末へ安全復元</button><button id="v100SignOut" class="v100btn gray">ログアウト</button></div>
@@ -1322,35 +1322,35 @@ async function uploadAll(){
   msg.innerHTML='<span class="v100err">Firebase同期に失敗しました。既存データは削除していません。</span>';
  }finally{$('v100Sync').disabled=false}
 }
-const V138_LOGIN_GUARD_KEY='wakaba_v138_login_guard';
-function v138ReadGuard(){try{return JSON.parse(localStorage.getItem(V138_LOGIN_GUARD_KEY)||'{}')}catch(e){return {}}}
-function v138WriteGuard(v){try{localStorage.setItem(V138_LOGIN_GUARD_KEY,JSON.stringify(v))}catch(e){}}
-function v138GuardState(){const g=v138ReadGuard(),now=Date.now();if(g.lockUntil&&now>=g.lockUntil){v138WriteGuard({fails:0,lockUntil:0});return {fails:0,lockUntil:0}}return g}
-function v138RemainingText(ms){const sec=Math.max(1,Math.ceil(ms/1000));return sec>=60?Math.ceil(sec/60)+'分':sec+'秒'}
+const V139_LOGIN_GUARD_KEY='wakaba_v139_login_guard';
+function v139ReadGuard(){try{return JSON.parse(localStorage.getItem(V139_LOGIN_GUARD_KEY)||'{}')}catch(e){return {}}}
+function v139WriteGuard(v){try{localStorage.setItem(V139_LOGIN_GUARD_KEY,JSON.stringify(v))}catch(e){}}
+function v139GuardState(){const g=v139ReadGuard(),now=Date.now();if(g.lockUntil&&now>=g.lockUntil){v139WriteGuard({fails:0,lockUntil:0});return {fails:0,lockUntil:0}}return g}
+function v139RemainingText(ms){const sec=Math.max(1,Math.ceil(ms/1000));return sec>=60?Math.ceil(sec/60)+'分':sec+'秒'}
 $('v100SignIn').onclick=async()=>{
- const btn=$('v100SignIn'),g=v138GuardState(),now=Date.now();
- if(g.lockUntil&&now<g.lockUntil){msg.innerHTML='<span class="v100err">ログイン試行が続いたため一時制限中です。あと '+v138RemainingText(g.lockUntil-now)+' 後に再試行してください。</span>';return}
+ const btn=$('v100SignIn'),g=v139GuardState(),now=Date.now();
+ if(g.lockUntil&&now<g.lockUntil){msg.innerHTML='<span class="v100err">ログイン試行が続いたため一時制限中です。あと '+v139RemainingText(g.lockUntil-now)+' 後に再試行してください。</span>';return}
  msg.textContent='ログイン確認中…';btn.disabled=true;
- try{await signInWithEmailAndPassword(auth,$('v100Email').value.trim(),$('v100Pass').value);$('v100Pass').value='';v138WriteGuard({fails:0,lockUntil:0})}
- catch(e){console.error(e);const prev=v138GuardState(),fails=(prev.fails||0)+1;let lockUntil=0;if(fails>=5)lockUntil=Date.now()+15*60*1000;v138WriteGuard({fails:lockUntil?0:fails,lockUntil});if(lockUntil){msg.innerHTML='<span class="v100err">ログインに5回失敗したため、15分間ログインを制限します。</span>'}else{msg.innerHTML='<span class="v100err">ログインできません。メールアドレスとパスワードを確認してください。あと '+(5-fails)+' 回失敗すると15分間制限します。</span>'}}
+ try{await signInWithEmailAndPassword(auth,$('v100Email').value.trim(),$('v100Pass').value);$('v100Pass').value='';v139WriteGuard({fails:0,lockUntil:0})}
+ catch(e){console.error(e);const prev=v139GuardState(),fails=(prev.fails||0)+1;let lockUntil=0;if(fails>=5)lockUntil=Date.now()+15*60*1000;v139WriteGuard({fails:lockUntil?0:fails,lockUntil});if(lockUntil){msg.innerHTML='<span class="v100err">ログインに5回失敗したため、15分間ログインを制限します。</span>'}else{msg.innerHTML='<span class="v100err">ログインできません。メールアドレスとパスワードを確認してください。あと '+(5-fails)+' 回失敗すると15分間制限します。</span>'}}
  finally{btn.disabled=false}
 };
 $('v100SignOut').onclick=()=>signOut(auth);$('v100Sync').onclick=uploadAll;$('v102Restore').onclick=restoreAll;
-onAuthStateChanged(auth,async u=>{if(u){localStorage.setItem('wakaba_clinic_uid',u.uid);localStorage.setItem('wakaba_clinic_email',u.email||'');const ce=$('v112ClinicEmail'),ci=$('v112ClinicId');if(ce)ce.textContent='ログイン：'+(u.email||'メール未設定');if(ci)ci.textContent='院ID：'+u.uid;status.textContent='ログイン済み';$('v100Login').style.display='none';$('v100Actions').style.display='block';msg.innerHTML='<span class="v100ok">V138：端末データを安全確認中です。端末の患者が0件でFirebaseに患者が存在する場合だけ、自動で安全復元します。</span>';
+onAuthStateChanged(auth,async u=>{if(u){localStorage.setItem('wakaba_clinic_uid',u.uid);localStorage.setItem('wakaba_clinic_email',u.email||'');const ce=$('v112ClinicEmail'),ci=$('v112ClinicId');if(ce)ce.textContent='ログイン：'+(u.email||'メール未設定');if(ci)ci.textContent='院ID：'+u.uid;status.textContent='ログイン済み';$('v100Login').style.display='none';$('v100Actions').style.display='block';msg.innerHTML='<span class="v100ok">V139：端末データを安全確認中です。端末の患者が0件でFirebaseに患者が存在する場合だけ、自動で安全復元します。</span>';
 try{
  if(patients().length===0){
   status.textContent='クラウド確認中';
   const cloudCheck=await getDocsFromServer(collection(db,'clinics',u.uid,'patients'));
   if(cloudCheck.size>0){
    status.textContent='自動復元中';
-   msg.innerHTML='<span class="v100ok">V138自動保護：端末の患者が0件ですが、Firebaseに '+cloudCheck.size+'件あります。既存Firebaseデータを変更せず、この端末へ安全復元します…</span>';
+   msg.innerHTML='<span class="v100ok">V139自動保護：端末の患者が0件ですが、Firebaseに '+cloudCheck.size+'件あります。既存Firebaseデータを変更せず、この端末へ安全復元します…</span>';
    await restoreAll();
    return;
   }
  }
 }catch(e){
- console.error('V138 startup safe restore check',e);
- msg.innerHTML='<span class="v100err">V138自動復元の確認に失敗しました。Firebase・端末の既存データは変更していません。手動の「Firebase→この端末へ安全復元」は利用できます。</span>';
+ console.error('V139 startup safe restore check',e);
+ msg.innerHTML='<span class="v100err">V139自動復元の確認に失敗しました。Firebase・端末の既存データは変更していません。手動の「Firebase→この端末へ安全復元」は利用できます。</span>';
 }
 const r=await v104SyncAllPatients();if(r){if(r.cloud!==null && r.missing.length===0){status.textContent='サーバー確認済み';msg.innerHTML='<span class="v100ok">✓ V110安定版：サーバー実在確認OK：端末 '+r.local+'件 / 院別Firebase実在 '+r.cloud+'件。新規追加 '+(r.added||0)+'件'+(r.idFixed?'、重複患者IDを '+r.idFixed+'件安全に補正':'')+'。端末の患者IDはすべて院別Firebase上に存在します。</span>'}else if(r.cloud!==null){status.textContent='未同期あり';msg.innerHTML='<span class="v100err">⚠ サーバー確認：端末 '+r.local+'件 / Firebase '+r.cloud+'件。Firebaseに見つからない患者 '+r.missing.length+'件（ID: '+r.missing.join(', ')+'）。端末データは残っています。</span>'}else{status.textContent='確認失敗';msg.innerHTML='<span class="v100err">Firebaseへの書き込み後、サーバー実在確認に失敗しました。端末データは残っています。</span>'}}}else{status.textContent='未接続';$('v100Login').style.display='block';$('v100Actions').style.display='none';msg.textContent='端末データが原本です。Firebaseへ自動同期するにはログインしてください。写真は送信しません。'}});
 </script>
@@ -1735,4 +1735,98 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
  #v131Modal,#v132Modal{padding-top:max(10px,env(safe-area-inset-top));padding-bottom:max(10px,env(safe-area-inset-bottom));padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right))}
 }
 </style>
+
+<script>
+/* V139: 契約状態の自動判定（起動時＋利用中）
+   データは削除・上書きしない。利用可否の表示だけを制御する。 */
+(function(){
+  const V139_CHECK_MS = 60 * 1000;
+
+  function v139ToDate(v){
+    if(!v) return null;
+    if(typeof v.toDate === 'function') return v.toDate();
+    if(v.seconds) return new Date(v.seconds * 1000);
+    const d = new Date(v);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  function v139SetBanner(text, ok){
+    let el=document.getElementById('v139SubscriptionBanner');
+    if(!el){
+      el=document.createElement('div');
+      el.id='v139SubscriptionBanner';
+      el.style.cssText='position:fixed;left:10px;right:10px;bottom:10px;z-index:9998;padding:10px 12px;border-radius:12px;font-weight:800;font-size:12px;text-align:center;box-shadow:0 4px 18px #0002';
+      document.body.appendChild(el);
+    }
+    el.style.background=ok?'#ecfdf5':'#fff7ed';
+    el.style.color=ok?'#166534':'#9a3412';
+    el.style.border='1px solid '+(ok?'#86efac':'#fdba74');
+    el.textContent=text;
+    clearTimeout(window.__v139BannerTimer);
+    window.__v139BannerTimer=setTimeout(()=>{ if(el) el.remove(); },4500);
+  }
+
+  async function v139CheckSubscription(){
+    try{
+      if(typeof auth==='undefined' || typeof db==='undefined') return;
+      const u=auth.currentUser;
+      if(!u) return;
+
+      /* Existing app schema is read first. No writes are made here. */
+      const ref=doc(db,'clinics',u.uid,'subscription','status');
+      const snap=await getDoc(ref);
+      if(!snap.exists()){
+        v139SetBanner('V139：契約情報未設定。患者データは変更しません。',true);
+        return;
+      }
+
+      const d=snap.data()||{};
+      const status=String(d.status || d.plan || '').toLowerCase();
+      const trialEnd=v139ToDate(d.trialEndAt || d.trialEndsAt || d.trialEnd || d.trial_end);
+      const periodEnd=v139ToDate(d.currentPeriodEnd || d.renewalAt || d.renewalDate);
+
+      let allowed=true, reason='契約状態を確認しました';
+      const now=new Date();
+
+      if(status==='trial'){
+        if(trialEnd && now.getTime()>trialEnd.getTime()){
+          allowed=false;
+          reason='無料体験期間が終了しています';
+        }else{
+          reason='無料体験中：利用OK';
+        }
+      }else if(['active','paid','standard'].includes(status)){
+        if(periodEnd && now.getTime()>periodEnd.getTime()){
+          allowed=false;
+          reason='契約更新の確認が必要です';
+        }else{
+          reason='契約中：利用OK';
+        }
+      }else if(['canceled','cancelled','expired','past_due','unpaid','suspended'].includes(status)){
+        allowed=false;
+        reason='契約状態の確認が必要です';
+      }
+
+      window.__wakabaSubscriptionAllowed=allowed;
+      window.__wakabaSubscriptionReason=reason;
+
+      /* Do not delete/hide patient data in V139. We only warn/mark state.
+         Final hard lock will be tied to authoritative Stripe/backend status. */
+      if(!allowed){
+        v139SetBanner('V139 自動確認：'+reason+'（データは保持されています）',false);
+      }
+    }catch(e){
+      console.error('V139 subscription auto check',e);
+      /* Fail-open for now so a network problem never makes patient data inaccessible. */
+    }
+  }
+
+  window.v139CheckSubscription=v139CheckSubscription;
+  window.addEventListener('load',()=>{
+    setTimeout(v139CheckSubscription,1800);
+    setInterval(v139CheckSubscription,V139_CHECK_MS);
+  });
+})();
+</script>
+
 </body></html>
