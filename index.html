@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V133</title>
+<title>AI姿勢＆3次元歪み分析システム V134</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -331,7 +331,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V133</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V134</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -341,7 +341,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 <section class="v77page" id="v77Mypage"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>マイページ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>プロフィール</b><span>南 昇吾</span></div><div class="v77settingRow"><b>院名</b><span>わかば整体院・接骨院</span></div><div class="v77settingRow"><b>メールアドレス</b><span class="v77muted">クラウド版で設定</span></div><div class="v77settingRow"><b>パスワード</b><span class="v77muted">クラウド版で設定</span></div></div></section>
 <section class="v77page" id="v77News"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>お知らせ</h2><span></span></div><div class="v77card v77empty">現在、お知らせはありません。</div></section>
 <section class="v77page" id="v77Help"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>ヘルプ・お問い合わせ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>撮影・カメラについて</b><span>›</span></div><div class="v77settingRow"><b>分析について</b><span>›</span></div><div class="v77settingRow"><b>顧客データについて</b><span>›</span></div><div class="v77settingRow"><b>お問い合わせ</b><span>›</span></div></div></section>
-<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V133 終了日時自動判定</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
+<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V134 Checkout準備</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
 <section id="v61Home">
  <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
  <div id="v61List" class="v61list"></div>
@@ -1664,16 +1664,19 @@ document.getElementById('v131Cancel').onclick=close131;document.getElementById('
 .v132row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #e2e8f0;font-size:14px}.v132row b{text-align:right}.v132ok{margin-top:12px;padding:11px;border-radius:10px;background:#ecfdf5;color:#047857;font-size:12px;line-height:1.65;font-weight:700}.v132note{margin-top:10px;padding:11px;border-radius:10px;background:#f8fafc;color:#475569;font-size:12px;line-height:1.65}
 .v132actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}.v132actions button{border:0;border-radius:11px;padding:13px;font-size:14px;font-weight:900}#v132Back{background:#e2e8f0;color:#334155}#v132Test{background:#635bff;color:#fff}
 </style>
-<div id="v132Modal" aria-hidden="true"><div id="v132Card"><span class="v132badge">TRIAL EXPIRY AUTO CHECK</span><h2>💳 V133 終了日時の自動判定</h2>
-<div class="v132row"><span>プラン</span><b>スタンダード</b></div><div class="v132row"><span>無料体験</span><b>14日間</b></div><div class="v132row"><span>月額料金</span><b>設定前</b></div><div class="v132row"><span>院アカウント</span><b id="v132Email">確認中…</b></div><div class="v132row"><span>終了判定</span><b>終了日時に自動確認</b></div>
+<div id="v132Modal" aria-hidden="true"><div id="v132Card"><span class="v132badge">STRIPE CHECKOUT PREP</span><h2>💳 V134 Stripe Checkout接続準備</h2>
+<div class="v132row"><span>プラン</span><b>スタンダード</b></div><div class="v132row"><span>無料体験</span><b>14日間</b></div><div class="v132row"><span>月額料金</span><b>設定前</b></div><div class="v132row"><span>院アカウント</span><b id="v132Email">確認中…</b></div><div class="v132row"><span>終了判定</span><b>終了日時に自動確認</b></div><div class="v132row"><span>決済成功後</span><b>?checkout=success で復帰</b></div><div class="v132row"><span>キャンセル後</span><b>?checkout=cancel で復帰</b></div>
 <div class="v132ok">✓ 無料体験の終了日時をFirebaseから読み取り、アプリ起動時と利用中に自動確認します。患者・履歴・写真・DataGuard・Firebase保存先には触れません。</div>
-<div class="v132note">V133では無料体験の終了日時に達したかを自動判定します。終了後は契約状態を確認して利用停止画面を表示します。まだStripeへの送信・決済・請求は発生しません。</div>
-<div class="v132actions"><button id="v132Back">戻る</button><button id="v132Test">接続準備を確認</button></div></div></div>
+<div class="v132note">V134ではStripe Checkoutから戻った時の成功・キャンセル判定と、無料体験終了日時の自動判定を両立する準備をします。月額料金はまだ未設定のため、Stripeへの送信・決済・請求は発生しません。</div>
+<div class="v132actions"><button id="v132Back">戻る</button><button id="v132Test">Checkout準備を確認</button></div></div></div>
 <script type="module" id="v132-stripe-test-prep">
 import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';import {getAuth} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
 (function(){const m=document.getElementById('v132Modal');function close132(){m.classList.remove('on');m.setAttribute('aria-hidden','true')}function open132(){let email='ログイン確認中';try{if(getApps().length){const u=getAuth(getApp()).currentUser;if(u)email=u.email||'ログイン済み'}}catch(e){}document.getElementById('v132Email').textContent=email;m.classList.add('on');m.setAttribute('aria-hidden','false')}
 function bind(){const b=document.getElementById('v131Continue');if(!b){setTimeout(bind,200);return}b.onclick=open132}
-document.getElementById('v132Back').onclick=close132;document.getElementById('v132Test').onclick=()=>alert('V133の終了日時自動判定は有効です。\nアプリ起動時と利用中に契約状態を自動確認します。\n患者・履歴・写真データは変更しません。');m.addEventListener('click',e=>{if(e.target===m)close132()});bind()})();
+const checkoutResult=new URLSearchParams(location.search).get('checkout');
+if(checkoutResult==='success'){setTimeout(()=>alert('Stripe Checkoutからの成功復帰を確認しました（V134テスト）。契約状態はFirebaseで再確認します。'),500);}
+else if(checkoutResult==='cancel'){setTimeout(()=>alert('Stripe Checkoutはキャンセルされました（V134テスト）。契約状態・患者データは変更しません。'),500);}
+document.getElementById('v132Back').onclick=close132;document.getElementById('v132Test').onclick=()=>alert('V134のCheckout接続準備は正常です。\n成功・キャンセルの戻り先を判定できる土台を追加しました。\n月額料金は未設定なので、まだ決済・請求は発生しません。');m.addEventListener('click',e=>{if(e.target===m)close132()});bind()})();
 </script>
 
 </body></html>
