@@ -326,7 +326,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V121</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V122</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -336,7 +336,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 <section class="v77page" id="v77Mypage"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>マイページ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>プロフィール</b><span>南 昇吾</span></div><div class="v77settingRow"><b>院名</b><span>わかば整体院・接骨院</span></div><div class="v77settingRow"><b>メールアドレス</b><span class="v77muted">クラウド版で設定</span></div><div class="v77settingRow"><b>パスワード</b><span class="v77muted">クラウド版で設定</span></div></div></section>
 <section class="v77page" id="v77News"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>お知らせ</h2><span></span></div><div class="v77card v77empty">現在、お知らせはありません。</div></section>
 <section class="v77page" id="v77Help"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>ヘルプ・お問い合わせ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>撮影・カメラについて</b><span>›</span></div><div class="v77settingRow"><b>分析について</b><span>›</span></div><div class="v77settingRow"><b>顧客データについて</b><span>›</span></div><div class="v77settingRow"><b>お問い合わせ</b><span>›</span></div></div></section>
-<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V121 契約状態管理</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
+<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V122 利用判定準備</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
 <section id="v61Home">
  <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
  <div id="v61List" class="v61list"></div>
@@ -1563,6 +1563,36 @@ async function render121(){
 }
 function mount121(){setTimeout(()=>{const a=document.getElementById('v119Subscription')||document.getElementById('v118ClinicCheck');if(a&&!document.getElementById('v121SubscriptionControl')){const d=document.createElement('div');d.id='v121SubscriptionControl';d.innerHTML='🧾 <b>V121 契約状態管理</b><br>確認待ち…';a.insertAdjacentElement('afterend',d)};if(getApps().length)onAuthStateChanged(getAuth(getApp()),u=>{if(u)render121()})},1300)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount121);else mount121();
+</script>
+
+
+<style id="v122-style">
+#v122AccessCheck{margin:8px 0;padding:12px;border:1px solid #86efac;border-radius:12px;background:#f0fdf4;color:#14532d;font-size:10px;line-height:1.6}
+#v122AccessCheck b{font-size:11px}.v122state{margin-top:8px;padding:10px;border-radius:10px;background:#fff;border:1px solid #bbf7d0}.v122big{font-size:14px;font-weight:900}.v122ok{color:#047857;font-weight:900}.v122warn{color:#b45309;font-weight:900}.v122danger{color:#b91c1c;font-weight:900}.v122btn{width:100%;margin-top:8px;border:0;border-radius:10px;padding:10px;background:#15803d;color:#fff;font-weight:900}
+</style>
+<script type="module" id="v122-access-check">
+import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
+import {getAuth,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js';
+import {getFirestore,doc,getDocFromServer} from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
+const fmt=v=>{try{if(!v)return '未設定';const d=v.toDate?v.toDate():new Date(v);return d.toLocaleDateString('ja-JP')}catch{return '未設定'}};
+async function render122(){
+ const box=document.getElementById('v122AccessCheck');if(!box)return;
+ try{
+  const app=getApp(),u=getAuth(app).currentUser;if(!u){box.innerHTML='🚦 <b>V122 利用判定準備</b><br>ログイン後に確認します。';return}
+  const snap=await getDocFromServer(doc(getFirestore(app),'clinics',u.uid,'subscription','status'));
+  const x=snap.exists()?snap.data():{},st=x.status||'setup'; let effective=st, note='契約情報が未設定です。';
+  if(st==='trial'&&x.trialEndsAt){const end=x.trialEndsAt.toDate?x.trialEndsAt.toDate():new Date(x.trialEndsAt);if(end.getTime()<Date.now())effective='expired'}
+  let title='⚠ 導入準備', cls='v122warn';
+  if(effective==='trial'){title='✓ 無料体験中：利用OK';cls='v122ok';note='無料体験終了：'+fmt(x.trialEndsAt)}
+  else if(effective==='active'){title='✓ 契約中：利用OK';cls='v122ok';note='契約更新日：'+fmt(x.currentPeriodEnd)}
+  else if(effective==='expired'){title='⚠ 無料体験・契約期限切れ';cls='v122danger';note='V122では警告表示だけです。姿勢分析は停止しません。'}
+  else if(effective==='canceled'){title='⚠ 解約済み';cls='v122danger';note='V122では警告表示だけです。姿勢分析は停止しません。'}
+  box.innerHTML='🚦 <b>V122 利用判定準備</b><div class="v122state"><div class="v122big '+cls+'">'+title+'</div><div>'+note+'</div></div><div style="margin-top:7px">✓ 契約状態を院専用Firebaseから読み取り、利用可否を判定できています。<br>※患者・履歴・写真・DataGuardには触れません。<br>※V122では期限切れでもロックしません。</div><button class="v122btn" id="v122Refresh">利用状態を再確認</button>';
+  document.getElementById('v122Refresh').onclick=render122;
+ }catch(e){console.error('V122 access check',e);box.innerHTML='🚦 <b>V122 利用判定準備</b><br><span class="v122warn">⚠ 契約状態を確認できませんでした。アプリの利用は停止しません。</span><button class="v122btn" id="v122Refresh">再確認</button>';document.getElementById('v122Refresh').onclick=render122}
+}
+function mount122(){setTimeout(()=>{const a=document.getElementById('v121SubscriptionControl')||document.getElementById('v119Subscription');if(a&&!document.getElementById('v122AccessCheck')){const d=document.createElement('div');d.id='v122AccessCheck';d.innerHTML='🚦 <b>V122 利用判定準備</b><br>確認待ち…';a.insertAdjacentElement('afterend',d)};if(getApps().length)onAuthStateChanged(getAuth(getApp()),u=>{if(u)render122()})},1450)}
+window.addEventListener('load',mount122);
 </script>
 
 </body></html>
