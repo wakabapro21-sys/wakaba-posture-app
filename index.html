@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V139</title>
+<title>AI姿勢＆3次元歪み分析システム V140</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -1827,6 +1827,45 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
     setInterval(v139CheckSubscription,V139_CHECK_MS);
   });
 })();
+</script>
+
+
+<script type="module" id="v140-stripe-checkout-live">
+/* V140: Firebase Function createCheckoutSession -> Stripe Checkout test connection.
+   Patient/history/photo/DataGuard storage code is untouched. */
+import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
+import {getAuth} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
+import {getFunctions,httpsCallable} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-functions.js';
+
+function v140BindCheckout(){
+  const btn=document.getElementById('v132Test');
+  if(!btn){setTimeout(v140BindCheckout,250);return;}
+  btn.textContent='Stripeテスト決済へ進む';
+  btn.onclick=async()=>{
+    const old=btn.textContent;
+    try{
+      if(!getApps().length) throw new Error('Firebaseの初期化を確認できません');
+      const app=getApp();
+      const user=getAuth(app).currentUser;
+      if(!user) throw new Error('先に院アカウントへログインしてください');
+      btn.disabled=true;
+      btn.textContent='Stripeに接続中…';
+      const fn=httpsCallable(getFunctions(app,'asia-northeast1'),'createCheckoutSession');
+      const result=await fn({});
+      const url=result?.data?.url;
+      if(!url || !/^https:\/\/checkout\.stripe\.com\//.test(url)){
+        throw new Error('Checkout URLを取得できませんでした');
+      }
+      location.href=url;
+    }catch(e){
+      console.error('V140 checkout',e);
+      alert('Stripeテスト決済を開始できませんでした。\n'+(e?.message||e));
+      btn.disabled=false;
+      btn.textContent=old;
+    }
+  };
+}
+window.addEventListener('load',()=>setTimeout(v140BindCheckout,400));
 </script>
 
 </body></html>
