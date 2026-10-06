@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V161</title>
+<title>AI姿勢＆3次元歪み分析システム V162</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -22,6 +22,22 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 #v77MenuBtn{position:absolute;right:14px;top:16px;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.15);color:#fff;border-radius:10px;padding:8px 11px;font-weight:900;z-index:40}header{position:relative}
 .v77overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:1200}.v77overlay.on{display:block}.v77drawer{position:absolute;right:0;top:0;height:100%;width:min(86vw,360px);background:#fff;padding:22px 18px;overflow:auto;box-shadow:-10px 0 30px #0002}.v77drawerHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.v77drawerHead b{font-size:20px}.v77x{border:0;background:#f1f5f9;border-radius:9px;width:38px;height:38px;font-size:20px}.v77nav{display:grid;gap:8px}.v77nav button{border:1px solid #e2e8f0;background:#fff;border-radius:12px;padding:14px;text-align:left;font-weight:850;color:#172033}.v77nav button.primary{background:#0f766e;color:#fff;border-color:#0f766e}
 .v77page{display:none;max-width:920px;margin:auto;padding:20px 16px 80px}.v77page.on{display:block}.v77pageHead{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:15px}.v77pageHead h2{margin:0;font-size:22px}.v77back,.v77action{border:0;border-radius:11px;padding:11px 13px;font-weight:900}.v77back{background:#eef2f7;color:#172033}.v77action{background:#0f766e;color:#fff}.v77card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:15px;margin-bottom:12px}.v77patientTop{display:flex;align-items:center;gap:12px}.v77avatar{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:#ccfbf1;color:#0f766e;font-size:24px;font-weight:900}.v77patientName{font-size:22px;font-weight:900}.v77muted{color:#64748b;font-size:12px;line-height:1.6}.v77grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}.v77big{border:0;border-radius:12px;padding:14px 8px;font-weight:900}.v77green{background:#0f766e;color:#fff}.v77orange{background:#f97316;color:#fff}.v77line{background:#06c755;color:#fff}.v77soft{background:#f1f5f9;color:#172033}.v77report{display:grid;grid-template-columns:54px 1fr auto;gap:11px;align-items:center}.v77reportScore{width:48px;height:48px;border-radius:12px;background:#ecfdf5;display:grid;place-items:center;color:#0f766e;font-weight:900;font-size:19px}.v77empty{text-align:center;padding:34px 12px;color:#64748b}.v77settingRow{display:flex;justify-content:space-between;gap:15px;padding:12px 0;border-bottom:1px solid #edf2f7}.v77settingRow:last-child{border-bottom:0}.v77pill{font-size:10px;background:#ecfdf5;color:#0f766e;padding:5px 8px;border-radius:999px;font-weight:900}#v61Home.v77hidden{display:none!important}
+
+/* V162: front guide = same simple crosshair style as side guides */
+#guideCam.v162-front-simple .front-guide,
+#guideCam.v162-front-simple .frontGuide,
+#guideCam.v162-front-simple [data-guide="front"],
+#guideCam.v162-front-simple .body-guide,
+#guideCam.v162-front-simple .bodyGuide,
+#guideCam.v162-front-simple .human-guide,
+#guideCam.v162-front-simple .humanGuide,
+#guideCam.v162-front-simple .guide-body,
+#guideCam.v162-front-simple .guideBody,
+#guideCam.v162-front-simple .guide-width-control,
+#guideCam.v162-front-simple .guideWidthControl {
+  display:none!important;
+}
+
 </style>
 
 <style id="v61-customer-css">
@@ -331,7 +347,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 
 <style>
-/* V161: level meter fixed to lower-right */
+/* V162: level meter fixed to lower-right */
 #guideCam #chipLevel{
  position:fixed!important; right:18px!important; bottom:177px!important; left:auto!important;
  z-index:9999!important; margin:0!important; white-space:nowrap!important;
@@ -347,7 +363,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 
 <style>
-/* V161: front guide simplified to match side guide style */
+/* V162: front guide simplified to match side guide style */
 #guideCam.v160-front-simple #guideScalePanel{display:none!important}
 #guideCam.v160-front-simple .front-body-guide,
 #guideCam.v160-front-simple .frontGuide,
@@ -355,7 +371,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V161</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V162</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -365,7 +381,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 <section class="v77page" id="v77Mypage"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>マイページ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>プロフィール</b><span>南 昇吾</span></div><div class="v77settingRow"><b>院名</b><span>わかば整体院・接骨院</span></div><div class="v77settingRow"><b>メールアドレス</b><span class="v77muted">クラウド版で設定</span></div><div class="v77settingRow"><b>パスワード</b><span class="v77muted">クラウド版で設定</span></div></div></section>
 <section class="v77page" id="v77News"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>お知らせ</h2><span></span></div><div class="v77card v77empty">現在、お知らせはありません。</div></section>
 <section class="v77page" id="v77Help"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>ヘルプ・お問い合わせ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>撮影・カメラについて</b><span>›</span></div><div class="v77settingRow"><b>分析について</b><span>›</span></div><div class="v77settingRow"><b>顧客データについて</b><span>›</span></div><div class="v77settingRow"><b>お問い合わせ</b><span>›</span></div></div></section>
-<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V161 ログイン保護</span></div><div class="v77settingRow"><b>ログイン試行制限</b><span class="v77pill">5回失敗→15分制限</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
+<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V162 ログイン保護</span></div><div class="v77settingRow"><b>ログイン試行制限</b><span class="v77pill">5回失敗→15分制限</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
 <section id="v61Home">
  <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
  <div id="v61List" class="v61list"></div>
@@ -630,10 +646,10 @@ window.wakabaResetAnalysisSession=function(){
 addEventListener("resize",()=>photoTypes.forEach(draw));setTimeout(loadAI,0);
 
 var guideStream=null,guideType=null,guideScale=1,guideRoll=null,guideSensorTimer=null,GV=document.getElementById("guideVideo"),GO=document.getElementById("guideOverlay");
-function guideName(t){return t==="front"?"正面":t==="right"?"右側面":"左側面"}
+function guideName(t){
+var _v162gc=document.getElementById("guideCam");if(_v162gc)_v162gc.classList.toggle("v162-front-simple",t==="front");return t==="front"?"正面":t==="right"?"右側面":"左側面"}
 function guideInstruction(t){return t==="front"?"約2〜3m離れる｜正面を向く｜胸〜みぞおちの高さ":t==="right"?"約2〜3m離れる｜右側をカメラへ｜胸〜みぞおちの高さ":"約2〜3m離れる｜左側をカメラへ｜胸〜みぞおちの高さ"}
 function drawGuide(){
-var v161DisplayGuideType=(guideType==="front"?"right":guideType);
 if(document.getElementById("guideCam").style.display==="none")return;var r=GO.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);GO.width=Math.round(r.width*d);GO.height=Math.round(r.height*d);var x=GO.getContext("2d");x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,r.width,r.height);var w=r.width,h=r.height,cx=w/2,top=h*.16,floor=h*.84;
  if(guideType!=="front"){
   // V56 side view: simple horizontal/vertical axes only
