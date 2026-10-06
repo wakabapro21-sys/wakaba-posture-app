@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V150</title>
+<title>AI姿勢＆3次元歪み分析システム V151</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -331,7 +331,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V150</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V151</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -341,7 +341,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 <section class="v77page" id="v77Mypage"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>マイページ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>プロフィール</b><span>南 昇吾</span></div><div class="v77settingRow"><b>院名</b><span>わかば整体院・接骨院</span></div><div class="v77settingRow"><b>メールアドレス</b><span class="v77muted">クラウド版で設定</span></div><div class="v77settingRow"><b>パスワード</b><span class="v77muted">クラウド版で設定</span></div></div></section>
 <section class="v77page" id="v77News"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>お知らせ</h2><span></span></div><div class="v77card v77empty">現在、お知らせはありません。</div></section>
 <section class="v77page" id="v77Help"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>ヘルプ・お問い合わせ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>撮影・カメラについて</b><span>›</span></div><div class="v77settingRow"><b>分析について</b><span>›</span></div><div class="v77settingRow"><b>顧客データについて</b><span>›</span></div><div class="v77settingRow"><b>お問い合わせ</b><span>›</span></div></div></section>
-<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V150 ログイン保護</span></div><div class="v77settingRow"><b>ログイン試行制限</b><span class="v77pill">5回失敗→15分制限</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
+<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V151 ログイン保護</span></div><div class="v77settingRow"><b>ログイン試行制限</b><span class="v77pill">5回失敗→15分制限</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
 <section id="v61Home">
  <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
  <div id="v61List" class="v61list"></div>
@@ -1662,7 +1662,7 @@ import {getFirestore,doc,getDocFromServer} from 'https://www.gstatic.com/firebas
 const gate=document.getElementById('v128Gate'),card=document.getElementById('v128GateCard');
 function dateOf(v){try{if(!v)return null;if(v.toDate)return v.toDate();if(typeof v==='number')return new Date(v<1e12?v*1000:v);return new Date(v)}catch(e){return null}}
 function hideGate(){gate.classList.remove('on');window.__wakabaSubscriptionAccess=true}
-function blockGate(title,message){window.__wakabaSubscriptionAccess=false;gate.classList.add('on');card.innerHTML='<h2>🔒 '+title+'</h2><p>'+message+'</p><p style="font-size:12px;color:#64748b">患者・履歴・写真・DataGuardのデータは削除されません。</p><button id="v148Restart" style="background:#635bff">契約を再開する</button><button id="v141Retry" type="button" style="background:#fff;color:#334155;position:relative;z-index:2147483647;pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,0,0,.08)">契約状態を再確認</button><div id="v149CheckMsg" style="margin-top:9px;font-size:13px;font-weight:700;color:#475569"></div><button id="v128Logout">ログアウト</button><div id="v148RestartMsg" style="margin-top:8px;font-size:12px;color:#64748b"></div>';document.getElementById('v148Restart').onclick=()=>{const b=document.getElementById('v148Restart');if(typeof window.v147StartCheckout==='function')window.v147StartCheckout(b);else{const m=document.getElementById('v148RestartMsg');if(m)m.textContent='Stripe接続を準備中です。数秒後にもう一度押してください。'}};document.getElementById('v141Retry').onclick=async()=>{const b=document.getElementById('v141Retry'),m=document.getElementById('v149CheckMsg');if(b){b.disabled=true;b.textContent='確認中…'}if(m){m.style.color='#475569';m.textContent='最新の契約状態を確認しています…'}try{const u=getAuth(getApp()).currentUser;if(!u)throw new Error('ログイン情報を確認できません');const s=await getDocFromServer(doc(getFirestore(getApp()),'clinics',u.uid,'subscription','status'));if(!s.exists()){if(m){m.style.color='#b91c1c';m.textContent='契約情報がまだ登録されていません。'}return}const d=s.data()||{},st=String(d.stripeStatus||d.status||'未確認').toLowerCase();if(st==='active'||st==='trialing'){if(m){m.style.color='#047857';m.textContent='契約状態：'+st+'。利用を再開します。'}await check141(u);setTimeout(()=>location.reload(),500)}else{if(m){m.style.color='#b91c1c';m.textContent='現在の契約状態は「'+st+'」です。契約成立後にもう一度確認してください。'}}}catch(e){console.error('V149 recheck',e);if(m){m.style.color='#b91c1c';m.textContent='確認できませんでした。通信状態を確認してもう一度お試しください。'}}finally{if(b){b.disabled=false;b.textContent='契約状態を再確認'}}};document.getElementById('v128Logout').onclick=()=>signOut(getAuth(getApp()));}
+function blockGate(title,message){window.__wakabaSubscriptionAccess=false;gate.classList.add('on');card.innerHTML='<h2>🔒 '+title+'</h2><p>'+message+'</p><p style="font-size:12px;color:#64748b">患者・履歴・写真・DataGuardのデータは削除されません。</p><button id="v148Restart" style="background:#635bff">契約を再開する</button><button id="v141Retry" type="button" onclick="window.v151Recheck && window.v151Recheck(this); return false;" style="background:#fff;color:#334155;position:relative;z-index:2147483647;pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,0,0,.08)">契約状態を再確認</button><div id="v149CheckMsg" style="margin-top:9px;font-size:13px;font-weight:700;color:#475569"></div><button id="v128Logout">ログアウト</button><div id="v148RestartMsg" style="margin-top:8px;font-size:12px;color:#64748b"></div>';document.getElementById('v148Restart').onclick=()=>{const b=document.getElementById('v148Restart');if(typeof window.v147StartCheckout==='function')window.v147StartCheckout(b);else{const m=document.getElementById('v148RestartMsg');if(m)m.textContent='Stripe接続を準備中です。数秒後にもう一度押してください。'}};/* V151: old retry onclick disabled; stable handler is installed below. */ document.getElementById('v141Retry').dataset.v151='ready'; /*const b=document.getElementById('v141Retry'),m=document.getElementById('v149CheckMsg');if(b){b.disabled=true;b.textContent='確認中…'}if(m){m.style.color='#475569';m.textContent='最新の契約状態を確認しています…'}try{const u=getAuth(getApp()).currentUser;if(!u)throw new Error('ログイン情報を確認できません');const s=await getDocFromServer(doc(getFirestore(getApp()),'clinics',u.uid,'subscription','status'));if(!s.exists()){if(m){m.style.color='#b91c1c';m.textContent='契約情報がまだ登録されていません。'}return}const d=s.data()||{},st=String(d.stripeStatus||d.status||'未確認').toLowerCase();if(st==='active'||st==='trialing'){if(m){m.style.color='#047857';m.textContent='契約状態：'+st+'。利用を再開します。'}await check141(u);setTimeout(()=>location.reload(),500)}else{if(m){m.style.color='#b91c1c';m.textContent='現在の契約状態は「'+st+'」です。契約成立後にもう一度確認してください。'}}}catch(e){console.error('V149 recheck',e);if(m){m.style.color='#b91c1c';m.textContent='確認できませんでした。通信状態を確認してもう一度お試しください。'}}finally{if(b){b.disabled=false;b.textContent='契約状態を再確認'}}}*/;document.getElementById('v128Logout').onclick=()=>signOut(getAuth(getApp()));}
 async function check141(u){
  if(!u){hideGate();return}
  try{
@@ -1965,59 +1965,47 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&getApps()
 window.addEventListener('focus',()=>{if(getApps().length)check(getAuth(getApp()).currentUser)});
 </script>
 
-<script type="module" id="v150-mobile-recheck">
-import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
-import {getAuth} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
-import {getFirestore,doc,getDocFromServer} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
 
-let busy=false;
-async function v150Recheck(){
-  if(busy)return;
-  const b=document.getElementById('v141Retry');
-  const m=document.getElementById('v149CheckMsg');
-  busy=true;
-  if(b){b.disabled=true;b.textContent='確認中…';}
-  if(m){m.style.color='#475569';m.textContent='最新の契約状態を確認しています…';}
+
+<script id="v151-recheck-stable">
+window.v151Recheck = async function(btn){
+  if(window.__v151Checking) return false;
+  window.__v151Checking=true;
+  const msg=document.getElementById('v149CheckMsg');
+  const old=btn ? btn.textContent : '契約状態を再確認';
+  if(btn){btn.disabled=true;btn.textContent='確認中…';}
+  if(msg){msg.style.color='#475569';msg.textContent='最新の契約状態を確認しています…';}
   try{
-    if(!getApps().length) throw new Error('Firebase初期化待ち');
-    const u=getAuth(getApp()).currentUser;
-    if(!u) throw new Error('ログイン情報を確認できません');
-    const snap=await getDocFromServer(doc(getFirestore(getApp()),'clinics',u.uid,'subscription','status'));
+    const [{getApps,getApp},{getAuth},{getFirestore,doc,getDocFromServer}] = await Promise.all([
+      import('https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js'),
+      import('https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js'),
+      import('https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js')
+    ]);
+    if(!getApps().length) throw new Error('Firebaseの初期化を確認できません');
+    const app=getApp(), user=getAuth(app).currentUser;
+    if(!user) throw new Error('院アカウントへログインしてください');
+    const snap=await getDocFromServer(doc(getFirestore(app),'clinics',user.uid,'subscription','status'));
     if(!snap.exists()){
-      if(m){m.style.color='#b91c1c';m.textContent='契約情報がまだ登録されていません。';}
-      return;
+      if(msg){msg.style.color='#b91c1c';msg.textContent='契約情報がまだ登録されていません。';}
+      return false;
     }
     const d=snap.data()||{};
     const st=String(d.stripeStatus||d.status||'未確認').trim().toLowerCase();
     if(st==='active'||st==='trialing'){
-      if(m){m.style.color='#047857';m.textContent='契約状態：'+st+'。利用を再開します。';}
-      setTimeout(()=>location.reload(),500);
+      if(msg){msg.style.color='#047857';msg.textContent='契約状態：'+st+'。利用を再開します。';}
+      setTimeout(()=>location.reload(),650);
     }else{
-      if(m){m.style.color='#b91c1c';m.textContent='現在の契約状態は「'+st+'」です。契約成立後にもう一度確認してください。';}
+      if(msg){msg.style.color='#b91c1c';msg.textContent='現在の契約状態は「'+st+'」です。契約成立後にもう一度確認してください。';}
     }
   }catch(e){
-    console.error('V150 recheck',e);
-    if(m){m.style.color='#b91c1c';m.textContent='確認できませんでした。通信状態を確認してもう一度お試しください。';}
+    console.error('V151 subscription recheck',e);
+    if(msg){msg.style.color='#b91c1c';msg.textContent='契約状態を確認できませんでした：'+(e?.message||e);}
   }finally{
-    busy=false;
-    if(b){b.disabled=false;b.textContent='契約状態を再確認';}
+    window.__v151Checking=false;
+    if(btn){btn.disabled=false;btn.textContent=old;}
   }
-}
-window.v150Recheck=v150Recheck;
-
-// Capture phase prevents older handlers/layers from swallowing the tap.
-document.addEventListener('click',e=>{
-  const b=e.target && e.target.closest ? e.target.closest('#v141Retry') : null;
-  if(!b)return;
-  e.preventDefault(); e.stopImmediatePropagation();
-  v150Recheck();
-},true);
-document.addEventListener('touchend',e=>{
-  const b=e.target && e.target.closest ? e.target.closest('#v141Retry') : null;
-  if(!b)return;
-  e.preventDefault(); e.stopImmediatePropagation();
-  v150Recheck();
-},{capture:true,passive:false});
+  return false;
+};
 </script>
 
 </body></html>
