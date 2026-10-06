@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V145</title>
+<title>AI姿勢＆3次元歪み分析システム V146</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -331,7 +331,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V145</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V146</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -341,7 +341,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 <section class="v77page" id="v77Mypage"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>マイページ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>プロフィール</b><span>南 昇吾</span></div><div class="v77settingRow"><b>院名</b><span>わかば整体院・接骨院</span></div><div class="v77settingRow"><b>メールアドレス</b><span class="v77muted">クラウド版で設定</span></div><div class="v77settingRow"><b>パスワード</b><span class="v77muted">クラウド版で設定</span></div></div></section>
 <section class="v77page" id="v77News"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>お知らせ</h2><span></span></div><div class="v77card v77empty">現在、お知らせはありません。</div></section>
 <section class="v77page" id="v77Help"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>ヘルプ・お問い合わせ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>撮影・カメラについて</b><span>›</span></div><div class="v77settingRow"><b>分析について</b><span>›</span></div><div class="v77settingRow"><b>顧客データについて</b><span>›</span></div><div class="v77settingRow"><b>お問い合わせ</b><span>›</span></div></div></section>
-<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V145 ログイン保護</span></div><div class="v77settingRow"><b>ログイン試行制限</b><span class="v77pill">5回失敗→15分制限</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
+<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V146 ログイン保護</span></div><div class="v77settingRow"><b>ログイン試行制限</b><span class="v77pill">5回失敗→15分制限</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
 <section id="v61Home">
  <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
  <div id="v61List" class="v61list"></div>
@@ -1891,7 +1891,42 @@ import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase
 function fmt(v){try{if(!v)return '未設定';const d=v.toDate?v.toDate():new Date(typeof v==='number'&&v<1e12?v*1000:v);return isNaN(d)?'未設定':d.toLocaleString('ja-JP')}catch(e){return '未設定'}}
 function mount(){const s=document.getElementById('v77Settings');if(!s){setTimeout(mount,300);return}if(document.getElementById('v143SubscriptionCard'))return;const c=document.createElement('div');c.id='v143SubscriptionCard';c.innerHTML='<b>Stripe契約状態</b><div id="v143SubscriptionText">確認中…</div>';const t=s.querySelector('.v77card');if(t)t.insertAdjacentElement('afterend',c);else s.appendChild(c);const wait=()=>{if(!getApps().length){setTimeout(wait,300);return}onAuthStateChanged(getAuth(getApp()),async u=>{const o=document.getElementById('v143SubscriptionText');if(!u){o.textContent='院アカウントへログインすると確認できます。';return}try{const z=await getDocFromServer(doc(getFirestore(getApp()),'clinics',u.uid,'subscription','status'));if(!z.exists()){o.textContent='契約情報はまだ登録されていません。';return}const x=z.data()||{},st=String(x.stripeStatus||x.status||'未確認'),end=x.trialEndsAt||x.trialEndAt||x.trialEnd||x.currentPeriodEnd;o.innerHTML='状態：<b>'+st+'</b><br>無料体験/契約期限：'+fmt(end)+'<br>Stripe Webhook連携：'+(x.source?'反映済み':'確認中')}catch(e){o.textContent='契約状態を取得できませんでした。'}})};wait()}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 </script>
-<style id="v145-lock-style">#v145Lock{position:fixed;inset:0;z-index:999999;background:rgba(248,250,252,.98);display:none;align-items:center;justify-content:center;padding:24px}#v145Lock .b{max-width:460px;background:#fff;border:1px solid #fecaca;border-radius:20px;padding:24px;text-align:center}#v145Lock h2{color:#991b1b}#v145Lock .safe{margin-top:16px;padding:12px;background:#f0fdfa;border-radius:12px;color:#115e59}</style>
-<div id="v145Lock"><div class="b"><h2>契約状態をご確認ください</h2><p id="v145Reason">姿勢分析機能は一時停止されています。</p><div class="safe">患者情報・履歴・写真は削除されません。契約状態が有効になると再び利用できます。</div></div></div>
-<script id="v145-lock-script">(function(){const bad=new Set(["canceled","cancelled","expired","past_due","unpaid","suspended","inactive"]);function a(){const l=document.getElementById("v145Lock"),r=String(window.__wakabaSubscriptionReason||"");if(!l)return;if(window.__wakabaSubscriptionAllowed===false||bad.has(r.toLowerCase())){document.getElementById("v145Reason").textContent=r?"現在の契約状態："+r+"。姿勢分析機能は一時停止されています。":"姿勢分析機能は一時停止されています。";l.style.display="flex"}else l.style.display="none"}setInterval(a,500);addEventListener("focus",a)})();</script>
+<style id="v146-lock-style">
+#v146Lock{position:fixed;inset:0;z-index:2147483647;background:rgba(248,250,252,.985);display:none;align-items:center;justify-content:center;padding:24px}
+#v146Lock .b{width:min(460px,100%);background:#fff;border:1px solid #fecaca;border-radius:20px;padding:26px;text-align:center;box-shadow:0 18px 50px rgba(15,23,42,.12)}
+#v146Lock h2{margin:0 0 12px;color:#991b1b}.v146safe{margin-top:16px;padding:12px;background:#f0fdfa;border-radius:12px;color:#115e59;font-size:13px;line-height:1.6}
+</style>
+<div id="v146Lock"><div class="b"><h2>契約状態をご確認ください</h2><p id="v146Reason">姿勢分析機能は一時停止されています。</p><div class="v146safe">患者情報・履歴・写真は削除されません。契約状態が有効になると再び利用できます。</div></div></div>
+<script type="module" id="v146-lock-script">
+import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
+import {getAuth,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
+import {getFirestore,doc,getDocFromServer} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
+
+const BAD=new Set(['canceled','cancelled','expired','past_due','unpaid','suspended','inactive','incomplete_expired']);
+function show(status){
+  const l=document.getElementById('v146Lock');
+  const r=document.getElementById('v146Reason');
+  if(!l)return;
+  r.textContent='現在の契約状態：'+status+'。姿勢分析機能は一時停止されています。';
+  l.style.display='flex';
+}
+function hide(){const l=document.getElementById('v146Lock');if(l)l.style.display='none'}
+async function check(u){
+  if(!u){hide();return}
+  try{
+    const snap=await getDocFromServer(doc(getFirestore(getApp()),'clinics',u.uid,'subscription','status'));
+    if(!snap.exists()){hide();return}
+    const d=snap.data()||{};
+    const st=String(d.stripeStatus||d.status||d.plan||'').trim().toLowerCase();
+    if(BAD.has(st)) show(st); else hide();
+  }catch(e){console.error('V146 subscription lock',e)}
+}
+function boot(){
+  if(!getApps().length){setTimeout(boot,250);return}
+  onAuthStateChanged(getAuth(getApp()),u=>check(u));
+}
+boot();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&getApps().length)check(getAuth(getApp()).currentUser)});
+window.addEventListener('focus',()=>{if(getApps().length)check(getAuth(getApp()).currentUser)});
+</script>
 </body></html>
