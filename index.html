@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V176</title>
+<title>AI姿勢＆3次元歪み分析システム V177</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -480,9 +480,9 @@ html,body{
  </div>
  <div id="levelMsg" style="position:absolute;top:70px;left:50%;transform:translateX(-50%);background:rgba(15,23,42,.72);color:#fff;border-radius:999px;padding:7px 12px;font-size:11px;white-space:nowrap">約2〜3m離れる｜スマホは胸〜みぞおちの高さ</div>
  <div style="position:absolute;top:112px;left:12px;right:12px;display:flex;justify-content:center;gap:6px;flex-wrap:wrap">
-  <span id="chipLevel" style="background:#92400e;color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800">水平目安｜水平線に合わせる</span>
-  <span id="chipCenter" style="background:#0f766e;color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800">目安：中央線に合わせる</span>
-  <span id="chipBody" style="background:#0f766e;color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800">目安：頭頂→橙線・足→下線</span>
+  <span id="chipLevel" style="display:none!important;background:#92400e;color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800">水平目安｜水平線に合わせる</span>
+  <span id="chipCenter" style="display:none!important;background:#0f766e;color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800">目安：中央線に合わせる</span>
+  <span id="chipBody" style="display:none!important;background:#0f766e;color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800">目安：頭頂→橙線・足→下線</span>
  </div>
  <div id="guideScalePanel" style="position:fixed!important;right:8px!important;left:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;width:56px!important;height:260px!important;background:rgba(15,23,42,.76)!important;border-radius:16px!important;color:#fff!important;font-size:10px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:space-between!important;padding:10px 4px!important;box-sizing:border-box!important;z-index:10003!important">
   <div style="font-weight:900;text-align:center;line-height:1.2">人体<br>ガイド幅</div>
@@ -649,7 +649,7 @@ function drawGuide(){if(document.getElementById("guideCam").style.display==="non
   x.fillText("垂直基準",cx+9,top+4);x.fillText("水平基準",w*.11,cy-9);
   x.beginPath();x.arc(cx,cy,5,0,Math.PI*2);x.fillStyle="rgba(249,115,22,.98)";x.fill();
   x.strokeStyle="rgba(255,255,255,.95)";x.lineWidth=1.5;x.stroke();
-  // V176: ePose-style fixed head/toe framing lines for consistent subject size
+  // V177: ePose-style fixed head/toe framing lines for consistent subject size
   var headLineY=h*.205,toeLineY=h*.815,lineHalf=Math.min(w*.22,150);
   x.strokeStyle="rgba(255,255,255,.96)";x.lineWidth=4;x.lineCap="butt";
   x.beginPath();x.moveTo(cx-lineHalf,headLineY);x.lineTo(cx+lineHalf,headLineY);x.stroke();
