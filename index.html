@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V161</title>
+<title>AI姿勢＆3次元歪み分析システム V162</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -1021,7 +1021,10 @@ function hide(){pageIds.forEach(id=>$(id)?.classList.remove('on'));$('v61Home')?
 function home(){hide();document.body.classList.remove('v61-analysis');window.scrollTo(0,0)}
 function page(id){hide();$('v61Home')?.classList.add('v77hidden');$(id)?.classList.add('on');window.scrollTo(0,0)}
 function patient(c){selected=c;page('v77Patient');$('v77PatientAvatar').textContent=(c.name||'患').slice(0,1);$('v77PatientName').textContent=c.name||'';$('v77PatientSub').textContent=[c.kana,c.sex,c.birth,c.tel].filter(Boolean).join(' ｜ ');const x=hs(c.id)[0];$('v77Latest').innerHTML=x?'<b>'+new Date(x.date).toLocaleString('ja-JP')+'</b><br>総合 '+x.total+' / 正面 '+x.front+' / 側面 '+x.side+' / 回旋 '+x.twist:'まだ分析履歴がありません。'}
-function reports(){let r=[];cs().forEach(c=>hs(c.id).forEach(x=>r.push({c,x})));r.sort((a,b)=>new Date(b.x.date)-new Date(a.x.date));$('v77ReportList').innerHTML=r.length?r.map(o=>'<div class="v77card v77report"><div class="v77reportScore">'+o.x.total+'</div><div><b>'+o.c.name+'</b><div class="v77muted">'+new Date(o.x.date).toLocaleString('ja-JP')+'<br>'+(o.x.type||'姿勢分析')+'</div></div><button class="v77action" data-pid="'+o.c.id+'">詳細</button></div>').join(''):'<div class="v77card v77empty">まだ分析レポートがありません。</div>';$('v77ReportList').querySelectorAll('[data-pid]').forEach(b=>b.onclick=()=>{const c=cs().find(x=>String(x.id)===b.dataset.pid);if(c)patient(c)})}
+let v162ReportRow='すべて';
+function v162Norm(v){return String(v||'').trim().replace(/\s+/g,'').normalize('NFKC').replace(/[\u30a1-\u30f6]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60)).normalize('NFD').replace(/[\u3099\u309a]/g,'')}
+function v162Row(v){let c=v162Norm(v)[0]||'';for(let z of [['あ','ぁあぃいうぅうぇえぉおゔ'],['か','かきくけこ'],['さ','さしすせそ'],['た','たちつてとっ'],['な','なにぬねの'],['は','はひふへほ'],['ま','まみむめも'],['や','ゃやゅゆょよ'],['ら','らりるれろ'],['わ','ゎわをん']])if(z[1].includes(c))return z[0];return'他'}
+function reports(){let r=[];cs().forEach(c=>hs(c.id).forEach(x=>r.push({c,x})));r.sort((a,b)=>new Date(b.x.date)-new Date(a.x.date));let f=v162ReportRow==='すべて'?r:r.filter(o=>v162Row(o.c.kana||o.c.name)===v162ReportRow);let nav='<div style="display:flex;flex-wrap:wrap;gap:7px;padding:6px 0 14px">'+['すべて','あ','か','さ','た','な','は','ま','や','ら','わ'].map(q=>'<button type="button" data-rrow="'+q+'" style="width:'+(q==='すべて'?'58':'42')+'px;height:38px;border-radius:19px;border:1px solid '+(v162ReportRow===q?'#0f766e':'#cbd5e1')+';background:'+(v162ReportRow===q?'#0f766e':'#fff')+';color:'+(v162ReportRow===q?'#fff':'#334155')+';font-weight:800">'+q+'</button>').join('')+'</div>';$('v77ReportList').innerHTML=nav+(f.length?f.map(o=>'<div class="v77card v77report"><div class="v77reportScore">'+o.x.total+'</div><div><b>'+o.c.name+'</b><div class="v77muted">'+new Date(o.x.date).toLocaleString('ja-JP')+'<br>'+(o.x.type||'姿勢分析')+'</div></div><button class="v77action" data-pid="'+o.c.id+'">詳細</button></div>').join(''):'<div class="v77card v77empty">この行の分析レポートはありません。</div>');$('v77ReportList').querySelectorAll('[data-rrow]').forEach(b=>b.onclick=()=>{v162ReportRow=b.dataset.rrow;reports()});$('v77ReportList').querySelectorAll('[data-pid]').forEach(b=>b.onclick=()=>{const c=cs().find(x=>String(x.id)===b.dataset.pid);if(c)patient(c)})}
 $('v77MenuBtn').onclick=()=>$('v77Menu').classList.add('on');$('v77MenuClose').onclick=()=>$('v77Menu').classList.remove('on');$('v77Menu').onclick=e=>{if(e.target===$('v77Menu'))$('v77Menu').classList.remove('on')};document.querySelectorAll('[data-v77home]').forEach(b=>b.onclick=home);
 document.querySelectorAll('[data-v77]').forEach(b=>b.onclick=()=>{$('v77Menu').classList.remove('on');const p=b.dataset.v77;if(p==='home')return home();if(p==='reports'){reports();return page('v77Reports')}page({mypage:'v77Mypage',news:'v77News',help:'v77Help',settings:'v77Settings'}[p])});
 $('v77Start').onclick=()=>{if(!selected)return;const raw=JSON.stringify(selected);sessionStorage.setItem('wakaba_v61_current',raw);localStorage.setItem('wakaba_v66_current',raw);if(typeof window.wakabaResetAnalysisSession==='function')window.wakabaResetAnalysisSession();$('v61CurrentName').textContent=selected.name||'ゲスト';pageIds.forEach(id=>$(id)?.classList.remove('on'));document.body.classList.add('v61-analysis');window.scrollTo(0,0)};
@@ -2097,52 +2100,4 @@ async function boot(){
 boot();
 </script>
 
-<script>
-(function(){
- let rr='すべて', mounted=false, original=[];
- const rows=['すべて','あ','か','さ','た','な','は','ま','や','ら','わ'];
- function norm(v){return String(v||'').trim().replace(/\s+/g,'').normalize('NFKC').replace(/[\u30a1-\u30f6]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60)).normalize('NFD').replace(/[\u3099\u309a]/g,'')}
- function kanaRow(v){let c=norm(v)[0]||'';for(let z of [['あ','ぁあぃいうぅうぇえぉおゔ'],['か','かきくけこ'],['さ','さしすせそ'],['た','たちつてとっ'],['な','なにぬねの'],['は','はひふへほ'],['ま','まみむめも'],['や','ゃやゅゆょよ'],['ら','らりるれろ'],['わ','ゎわをん']])if(z[1].includes(c))return z[0];return'他'}
- function patientKana(name){
-   try{let p=(typeof customers==='function'?customers():[]).find(x=>String(x.name||'').trim()===String(name||'').trim());return p?(p.kana||p.name):name}catch(e){return name}
- }
- function reportCards(){
-   return [...document.querySelectorAll('button')].filter(b=>b.textContent.trim()==='詳細').map(b=>b.parentElement).filter(Boolean);
- }
- function cardName(card){
-   let a=(card.innerText||'').split('\n').map(x=>x.trim()).filter(Boolean);
-   return a.find(x=>x!=='詳細'&&!/^\d+$/.test(x)&&!/^20\d\d[\/-]/.test(x)&&!x.includes('バランス型'))||'';
- }
- function paint(){
-   original.forEach(card=>{
-     let k=patientKana(cardName(card));
-     card.hidden=(rr!=='すべて'&&kanaRow(k)!==rr);
-   });
-   document.querySelectorAll('#v161Kana button').forEach(b=>{
-     let on=b.dataset.r===rr;
-     b.style.background=on?'#0f766e':'#fff';b.style.color=on?'#fff':'#334155';b.style.borderColor=on?'#0f766e':'#cbd5e1';
-   });
- }
- function mount(){
-   let title=[...document.querySelectorAll('h1,h2,h3,div')].find(e=>e.childElementCount===0&&e.textContent.trim()==='分析レポート一覧');
-   if(!title)return;
-   if(document.getElementById('v161Kana'))return;
-   original=reportCards();
-   let bar=document.createElement('div');bar.id='v161Kana';
-   bar.style.cssText='display:flex;flex-wrap:wrap;gap:7px;width:100%;padding:6px 0 14px;box-sizing:border-box';
-   rows.forEach(r=>{
-     let b=document.createElement('button');b.type='button';b.dataset.r=r;b.textContent=r;
-     b.style.cssText='width:'+(r==='すべて'?'58':'42')+'px;height:38px;border-radius:19px;border:1px solid #cbd5e1;background:#fff;color:#334155;font-weight:800;font-size:14px;padding:0';
-     b.addEventListener('click',function(ev){ev.preventDefault();ev.stopPropagation();rr=r;paint()});
-     bar.appendChild(b);
-   });
-   title.insertAdjacentElement('afterend',bar);mounted=true;paint();
- }
- document.addEventListener('click',function(e){
-   if(e.target.closest&&e.target.closest('#v161Kana'))return;
-   setTimeout(function(){if(!document.getElementById('v161Kana')){mounted=false;original=[];rr='すべて';mount()}},150);
- },true);
- setTimeout(mount,350);
-})();
-</script>
 </body></html>
