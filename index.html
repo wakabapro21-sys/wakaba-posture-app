@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V175</title>
+<title>AI姿勢＆3次元歪み分析システム V176</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -649,6 +649,14 @@ function drawGuide(){if(document.getElementById("guideCam").style.display==="non
   x.fillText("垂直基準",cx+9,top+4);x.fillText("水平基準",w*.11,cy-9);
   x.beginPath();x.arc(cx,cy,5,0,Math.PI*2);x.fillStyle="rgba(249,115,22,.98)";x.fill();
   x.strokeStyle="rgba(255,255,255,.95)";x.lineWidth=1.5;x.stroke();
+  // V176: ePose-style fixed head/toe framing lines for consistent subject size
+  var headLineY=h*.205,toeLineY=h*.815,lineHalf=Math.min(w*.22,150);
+  x.strokeStyle="rgba(255,255,255,.96)";x.lineWidth=4;x.lineCap="butt";
+  x.beginPath();x.moveTo(cx-lineHalf,headLineY);x.lineTo(cx+lineHalf,headLineY);x.stroke();
+  x.beginPath();x.moveTo(cx-lineHalf,toeLineY);x.lineTo(cx+lineHalf,toeLineY);x.stroke();
+  x.fillStyle="rgba(255,255,255,.96)";x.font="bold 13px -apple-system,sans-serif";
+  x.fillText("あたま",Math.max(14,cx-lineHalf-58),headLineY+5);
+  x.fillText("つまさき",Math.max(14,cx-lineHalf-70),toeLineY+5);
   return;
  }
  x.lineWidth=2;x.strokeStyle="rgba(255,255,255,.72)";x.setLineDash([8,8]);x.beginPath();x.moveTo(cx,top-30);x.lineTo(cx,floor+18);x.stroke();x.setLineDash([]);x.strokeStyle="rgba(45,212,191,.95)";x.lineWidth=3;x.beginPath();x.moveTo(w*.10,floor);x.lineTo(w*.90,floor);x.stroke();x.strokeStyle="rgba(251,146,60,.9)";x.lineWidth=2;x.beginPath();x.moveTo(w*.24,top);x.lineTo(w*.76,top);x.stroke();
