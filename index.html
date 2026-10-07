@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V166</title>
+<title>AI姿勢＆3次元歪み分析システム V156</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -22,22 +22,6 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hi
 #v77MenuBtn{position:absolute;right:14px;top:16px;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.15);color:#fff;border-radius:10px;padding:8px 11px;font-weight:900;z-index:40}header{position:relative}
 .v77overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:1200}.v77overlay.on{display:block}.v77drawer{position:absolute;right:0;top:0;height:100%;width:min(86vw,360px);background:#fff;padding:22px 18px;overflow:auto;box-shadow:-10px 0 30px #0002}.v77drawerHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.v77drawerHead b{font-size:20px}.v77x{border:0;background:#f1f5f9;border-radius:9px;width:38px;height:38px;font-size:20px}.v77nav{display:grid;gap:8px}.v77nav button{border:1px solid #e2e8f0;background:#fff;border-radius:12px;padding:14px;text-align:left;font-weight:850;color:#172033}.v77nav button.primary{background:#0f766e;color:#fff;border-color:#0f766e}
 .v77page{display:none;max-width:920px;margin:auto;padding:20px 16px 80px}.v77page.on{display:block}.v77pageHead{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:15px}.v77pageHead h2{margin:0;font-size:22px}.v77back,.v77action{border:0;border-radius:11px;padding:11px 13px;font-weight:900}.v77back{background:#eef2f7;color:#172033}.v77action{background:#0f766e;color:#fff}.v77card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:15px;margin-bottom:12px}.v77patientTop{display:flex;align-items:center;gap:12px}.v77avatar{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:#ccfbf1;color:#0f766e;font-size:24px;font-weight:900}.v77patientName{font-size:22px;font-weight:900}.v77muted{color:#64748b;font-size:12px;line-height:1.6}.v77grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}.v77big{border:0;border-radius:12px;padding:14px 8px;font-weight:900}.v77green{background:#0f766e;color:#fff}.v77orange{background:#f97316;color:#fff}.v77line{background:#06c755;color:#fff}.v77soft{background:#f1f5f9;color:#172033}.v77report{display:grid;grid-template-columns:54px 1fr auto;gap:11px;align-items:center}.v77reportScore{width:48px;height:48px;border-radius:12px;background:#ecfdf5;display:grid;place-items:center;color:#0f766e;font-weight:900;font-size:19px}.v77empty{text-align:center;padding:34px 12px;color:#64748b}.v77settingRow{display:flex;justify-content:space-between;gap:15px;padding:12px 0;border-bottom:1px solid #edf2f7}.v77settingRow:last-child{border-bottom:0}.v77pill{font-size:10px;background:#ecfdf5;color:#0f766e;padding:5px 8px;border-radius:999px;font-weight:900}#v61Home.v77hidden{display:none!important}
-
-/* V166: front guide = same simple crosshair style as side guides */
-#guideCam.v162-front-simple .front-guide,
-#guideCam.v162-front-simple .frontGuide,
-#guideCam.v162-front-simple [data-guide="front"],
-#guideCam.v162-front-simple .body-guide,
-#guideCam.v162-front-simple .bodyGuide,
-#guideCam.v162-front-simple .human-guide,
-#guideCam.v162-front-simple .humanGuide,
-#guideCam.v162-front-simple .guide-body,
-#guideCam.v162-front-simple .guideBody,
-#guideCam.v162-front-simple .guide-width-control,
-#guideCam.v162-front-simple .guideWidthControl {
-  display:none!important;
-}
-
 </style>
 
 <style id="v61-customer-css">
@@ -345,33 +329,9 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 #v129Plan{margin-top:16px;padding:16px;border:1px solid #93c5fd;border-radius:14px;background:#eff6ff;color:#1e3a8a;font-size:12px;line-height:1.7}
 #v129Plan h3{margin:0 0 10px;font-size:16px}.v129grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.v129cell{background:#fff;border:1px solid #bfdbfe;border-radius:12px;padding:12px}.v129price{font-size:19px;font-weight:800;color:#1d4ed8}.v129btn{width:100%;margin-top:12px;border:0;border-radius:12px;padding:14px;background:#2563eb;color:#fff;font-weight:800;font-size:15px}.v129note{margin-top:9px;color:#475569}
 </style>
-
-<style>
-/* V166: level meter fixed to lower-right */
-#guideCam #chipLevel{
- position:fixed!important; right:8px!important; bottom:177px!important; left:auto!important;
- z-index:9999!important; margin:0!important; white-space:nowrap!important;
-}
-#guideCam #bubbleLevel{
- position:fixed!important; right:8px!important; bottom:131px!important; left:auto!important;
- z-index:9999!important; width:145px!important; height:30px!important; margin:0!important;
-}
-#guideCam #levelAngle{
- position:fixed!important; right:8px!important; bottom:89px!important; left:auto!important;
- z-index:9999!important; margin:0!important; white-space:nowrap!important;
-}
-</style>
-
-<style>
-/* V166: front guide simplified to match side guide style */
-#guideCam.v160-front-simple #guideScalePanel{display:none!important}
-#guideCam.v160-front-simple .front-body-guide,
-#guideCam.v160-front-simple .frontGuide,
-#guideCam.v160-front-simple [data-front-guide="body"]{display:none!important}
-</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V166</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V155</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -381,7 +341,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 <section class="v77page" id="v77Mypage"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>マイページ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>プロフィール</b><span>南 昇吾</span></div><div class="v77settingRow"><b>院名</b><span>わかば整体院・接骨院</span></div><div class="v77settingRow"><b>メールアドレス</b><span class="v77muted">クラウド版で設定</span></div><div class="v77settingRow"><b>パスワード</b><span class="v77muted">クラウド版で設定</span></div></div></section>
 <section class="v77page" id="v77News"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>お知らせ</h2><span></span></div><div class="v77card v77empty">現在、お知らせはありません。</div></section>
 <section class="v77page" id="v77Help"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>ヘルプ・お問い合わせ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>撮影・カメラについて</b><span>›</span></div><div class="v77settingRow"><b>分析について</b><span>›</span></div><div class="v77settingRow"><b>顧客データについて</b><span>›</span></div><div class="v77settingRow"><b>お問い合わせ</b><span>›</span></div></div></section>
-<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V166 ログイン保護</span></div><div class="v77settingRow"><b>ログイン試行制限</b><span class="v77pill">5回失敗→15分制限</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
+<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V155 ログイン保護</span></div><div class="v77settingRow"><b>ログイン試行制限</b><span class="v77pill">5回失敗→15分制限</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
 <section id="v61Home">
  <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
  <div id="v61List" class="v61list"></div>
@@ -487,7 +447,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </div></main>
 
 <div id="guideCam" style="display:none;position:fixed;inset:0;background:#020617;z-index:10000">
-<video id="guideVideo" playsinline autoplay muted style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></video>
+ <video id="guideVideo" playsinline autoplay muted style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></video>
  <canvas id="guideOverlay" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"></canvas>
  <div style="position:absolute;top:max(12px,env(safe-area-inset-top));left:12px;right:12px;display:flex;justify-content:space-between;align-items:center">
   <button id="guideClose" type="button" style="border:0;border-radius:999px;padding:10px 14px;background:rgba(15,23,42,.78);color:#fff;font-weight:800">✕ 閉じる</button>
@@ -495,18 +455,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
  </div>
  <div id="levelMsg" style="position:absolute;top:70px;left:50%;transform:translateX(-50%);background:rgba(15,23,42,.72);color:#fff;border-radius:999px;padding:7px 12px;font-size:11px;white-space:nowrap">約2〜3m離れる｜スマホは胸〜みぞおちの高さ</div>
  <div style="position:absolute;top:112px;left:12px;right:12px;display:flex;justify-content:center;gap:6px;flex-wrap:wrap">
-  <span id="chipLevel" style="background:#475569;color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800">水平器｜センサー確認中</span>
-  <div id="verticalLevel" style="position:absolute;right:162px;bottom:131px;width:30px;height:112px;border:2px solid rgba(255,255,255,.9);border-radius:16px;background:rgba(15,23,42,.72);box-sizing:border-box;z-index:10003">
-  <span style="position:absolute;left:50%;top:50%;width:18px;height:1px;background:rgba(255,255,255,.45);transform:translate(-50%,-50%)"></span>
-  <span id="verticalBubble" style="position:absolute;left:3px;top:calc(50% - 10px);width:20px;height:20px;border-radius:50%;background:#f97316;border:2px solid #fff;box-sizing:border-box"></span>
-</div>
-<div id="bubbleLevel" style="width:210px;height:34px;border:2px solid rgba(255,255,255,.9);border-radius:17px;background:rgba(15,23,42,.72);position:relative;overflow:hidden;box-sizing:border-box">
-   <span style="position:absolute;left:50%;top:3px;bottom:3px;border-left:2px solid rgba(255,255,255,.75)"></span>
-   <span style="position:absolute;left:calc(50% - 18px);top:5px;bottom:5px;border-left:1px solid rgba(255,255,255,.35)"></span>
-   <span style="position:absolute;left:calc(50% + 18px);top:5px;bottom:5px;border-left:1px solid rgba(255,255,255,.35)"></span>
-   <span id="levelBubble" style="position:absolute;width:20px;height:20px;border-radius:50%;background:#f97316;border:2px solid #fff;box-shadow:0 1px 8px #0008;left:calc(50% - 10px);top:3px;transition:left .08s linear,background .12s"></span>
-  </div>
-  <span id="levelAngle" style="min-width:58px;text-align:center;background:rgba(15,23,42,.78);color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:900">--°</span>
+  <span id="chipLevel" style="background:#92400e;color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800">水平目安｜水平線に合わせる</span>
   <span id="chipCenter" style="background:#0f766e;color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800">目安：中央線に合わせる</span>
   <span id="chipBody" style="background:#0f766e;color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800">目安：頭頂→橙線・足→下線</span>
  </div>
@@ -649,14 +598,12 @@ window.wakabaResetAnalysisSession=function(){
 };
 addEventListener("resize",()=>photoTypes.forEach(draw));setTimeout(loadAI,0);
 
-var guideStream=null,guideType=null,guideScale=1,guideRoll=null,guidePitch=null,guideSensorTimer=null,GV=document.getElementById("guideVideo"),GO=document.getElementById("guideOverlay");
-function guideName(t){
-var _v162gc=document.getElementById("guideCam");if(_v162gc)_v162gc.classList.toggle("v162-front-simple",t==="front");return t==="front"?"正面":t==="right"?"右側面":"左側面"}
+var guideStream=null,guideType=null,guideScale=1,guideRoll=null,guideSensorTimer=null,GV=document.getElementById("guideVideo"),GO=document.getElementById("guideOverlay");
+function guideName(t){return t==="front"?"正面":t==="right"?"右側面":"左側面"}
 function guideInstruction(t){return t==="front"?"約2〜3m離れる｜正面を向く｜胸〜みぞおちの高さ":t==="right"?"約2〜3m離れる｜右側をカメラへ｜胸〜みぞおちの高さ":"約2〜3m離れる｜左側をカメラへ｜胸〜みぞおちの高さ"}
-function drawGuide(){
-if(document.getElementById("guideCam").style.display==="none")return;var r=GO.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);GO.width=Math.round(r.width*d);GO.height=Math.round(r.height*d);var x=GO.getContext("2d");x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,r.width,r.height);var w=r.width,h=r.height,cx=w/2,top=h*.16,floor=h*.84;
- {
-  // V166 all views: same simple horizontal/vertical axes only
+function drawGuide(){if(document.getElementById("guideCam").style.display==="none")return;var r=GO.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);GO.width=Math.round(r.width*d);GO.height=Math.round(r.height*d);var x=GO.getContext("2d");x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,r.width,r.height);var w=r.width,h=r.height,cx=w/2,top=h*.16,floor=h*.84;
+ if(true){
+  // V56 side view: simple horizontal/vertical axes only
   var cy=h*.50;
   x.lineCap="round";
   x.strokeStyle="rgba(45,212,191,.96)";x.lineWidth=3;
@@ -671,160 +618,16 @@ if(document.getElementById("guideCam").style.display==="none")return;var r=GO.ge
  x.lineWidth=2;x.strokeStyle="rgba(255,255,255,.72)";x.setLineDash([8,8]);x.beginPath();x.moveTo(cx,top-30);x.lineTo(cx,floor+18);x.stroke();x.setLineDash([]);x.strokeStyle="rgba(45,212,191,.95)";x.lineWidth=3;x.beginPath();x.moveTo(w*.10,floor);x.lineTo(w*.90,floor);x.stroke();x.strokeStyle="rgba(251,146,60,.9)";x.lineWidth=2;x.beginPath();x.moveTo(w*.24,top);x.lineTo(w*.76,top);x.stroke();
  var side=guideType!=="front",sw=(side?w*.075:w*.20)*guideScale,hw=(side?w*.055:w*.12)*guideScale;x.strokeStyle="rgba(45,212,191,.88)";x.lineWidth=3;var headY=top+h*.055,neck=top+h*.115,should=top+h*.16,elbow=top+h*.36,wrist=top+h*.51,hip=top+h*.43,knee=top+h*.63,ank=floor;function L(ax,ay,bx,by){x.beginPath();x.moveTo(ax,ay);x.lineTo(bx,by);x.stroke()}function J(px,py,label){x.beginPath();x.arc(px,py,5,0,Math.PI*2);x.fillStyle="rgba(249,115,22,.95)";x.fill();x.strokeStyle="rgba(255,255,255,.95)";x.lineWidth=1.5;x.stroke();if(label){x.fillStyle="rgba(255,255,255,.9)";x.font="bold 10px -apple-system,sans-serif";x.fillText(label,px+8,py-6)}x.strokeStyle="rgba(45,212,191,.88)";x.lineWidth=3}x.beginPath();x.ellipse(cx,headY,side?w*.045:w*.06,h*.055,0,0,Math.PI*2);x.stroke();L(cx,neck,cx,hip);L(cx-sw,should,cx+sw,should);L(cx-hw,hip,cx+hw,hip);var lsx=cx-sw,rsx=cx+sw,lEx=side?cx-sw*.85:cx-sw*1.25,rEx=side?cx+sw*.85:cx+sw*1.25,lWx=side?cx-sw*.78:cx-sw*1.42,rWx=side?cx+sw*.78:cx+sw*1.42;L(lsx,should,lEx,elbow);L(lEx,elbow,lWx,wrist);L(rsx,should,rEx,elbow);L(rEx,elbow,rWx,wrist);L(cx-hw,hip,cx-hw*.9,knee);L(cx-hw*.9,knee,cx-hw*.85,ank);L(cx+hw,hip,cx+hw*.9,knee);L(cx+hw*.9,knee,cx+hw*.85,ank);J(cx,headY,"頭");J(lsx,should,"肩");J(rsx,should,"");J(lEx,elbow,"肘");J(rEx,elbow,"");J(lWx,wrist,"手首");J(rWx,wrist,"");J(cx-hw,hip,"骨盤");J(cx+hw,hip,"");J(cx-hw*.9,knee,"膝");J(cx+hw*.9,knee,"");J(cx-hw*.85,ank,"足首");J(cx+hw*.85,ank,"");
  x.strokeStyle="rgba(255,255,255,.35)";x.lineWidth=1;x.setLineDash([5,5]);x.beginPath();x.moveTo(w*.18,hip);x.lineTo(w*.82,hip);x.stroke();x.setLineDash([]);x.fillStyle="rgba(255,255,255,.88)";x.font="bold 11px -apple-system,sans-serif";x.fillText("頭頂",w*.12,top-6);x.fillText("足元・水平基準",w*.12,floor-8);x.fillText("カメラ高さ目安：胸〜みぞおち",w*.12,hip-7)}
-function updateLevel(){
- var c=document.getElementById("chipLevel"),b=document.getElementById("levelBubble"),a=document.getElementById("levelAngle"),vb=document.getElementById("verticalBubble");
- if(!c||!b||!a)return;
- var hasR=typeof guideRoll==="number"&&isFinite(guideRoll),hasP=typeof guidePitch==="number"&&isFinite(guidePitch);
- if(!hasR&&!hasP){
-  c.textContent="水平・垂直｜センサー接続中";c.style.background="#475569";a.textContent="--°";
-  b.style.left="calc(50% - 10px)";b.style.background="#f97316";
-  if(vb){vb.style.top="calc(50% - 10px)";vb.style.background="#f97316"}return;
- }
- if(hasR){
-  var r=Math.max(-12,Math.min(12,guideRoll)),px=(r/12)*82;
-  b.style.left="calc(50% - 10px + "+px.toFixed(1)+"px)";
-  b.style.background=Math.abs(guideRoll)<=1?"#22c55e":"#f97316";
- }
- if(hasP&&vb){
-  var p=Math.max(-12,Math.min(12,guidePitch)),py=(p/12)*39;
-  vb.style.top="calc(50% - 10px + "+py.toFixed(1)+"px)";
-  vb.style.background=Math.abs(guidePitch)<=1.5?"#22c55e":"#f97316";
- }
- a.textContent=(hasR?(guideRoll>0?"+":"")+guideRoll.toFixed(1)+"°":"--°");
- var hOK=hasR&&Math.abs(guideRoll)<=1, vOK=hasP&&Math.abs(guidePitch)<=1.5;
- if(hOK&&vOK){c.textContent="✓ 水平・垂直OK";c.style.background="#059669"}
- else if(!hOK){c.textContent=guideRoll>0?"水平｜左へ傾ける":"水平｜右へ傾ける";c.style.background="#b45309"}
- else {c.textContent=guidePitch>0?"垂直｜少し上向き":"垂直｜少し下向き";c.style.background="#b45309"}
-}
-function sensorRoll(e){
- var o=(screen.orientation&&typeof screen.orientation.angle==="number")?screen.orientation.angle:(typeof window.orientation==="number"?window.orientation:0);
- if((o===90||o===-270)&&typeof e.beta==="number")return e.beta;
- if((o===270||o===-90)&&typeof e.beta==="number")return -e.beta;
- return typeof e.gamma==="number"?e.gamma:null;
-}
-function sensorPitch(e){
- var o=(screen.orientation&&typeof screen.orientation.angle==="number")?screen.orientation.angle:(typeof window.orientation==="number"?window.orientation:0);
- if((o===90||o===-270||o===270||o===-90)&&typeof e.gamma==="number"){
-  var target=(o===90||o===-270)?-90:90;
-  return e.gamma-target;
- }
- return typeof e.beta==="number"?e.beta-90:null;
-}
-
-
-let visionLevelTimer=null, visionCanvas=null, visionCtx=null;
-
-function startVisionLevel(){
-  stopVisionLevel();
-  visionCanvas=document.createElement("canvas");
-  visionCanvas.width=160; visionCanvas.height=120;
-  visionCtx=visionCanvas.getContext("2d",{willReadFrequently:true});
-  visionLevelTimer=setInterval(updateVisionLevel,180);
-}
-function stopVisionLevel(){
-  if(visionLevelTimer){clearInterval(visionLevelTimer);visionLevelTimer=null;}
-}
-function updateVisionLevel(){
- try{
-  const v=document.querySelector("#cameraVideo, video");
-  if(!v||!visionCtx||v.readyState<2||!v.videoWidth)return;
-  const w=160,h=120;
-  visionCtx.drawImage(v,0,0,w,h);
-  const d=visionCtx.getImageData(0,0,w,h).data;
-  const gray=new Float32Array(w*h);
-  for(let i=0,j=0;i<d.length;i+=4,j++)gray[j]=0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];
-
-  let sxx=0, syy=0, sxy=0, count=0;
-  for(let y=2;y<h-2;y+=2){
-   for(let x=2;x<w-2;x+=2){
-    let gx=gray[y*w+x+1]-gray[y*w+x-1];
-    let gy=gray[(y+1)*w+x]-gray[(y-1)*w+x];
-    let mag=Math.abs(gx)+Math.abs(gy);
-    if(mag<55)continue;
-    // structure tensor: edge direction is perpendicular to gradient.
-    sxx+=gx*gx; syy+=gy*gy; sxy+=gx*gy; count++;
-   }
-  }
-  if(count<18)return;
-  let theta=.5*Math.atan2(2*sxy,sxx-syy)*180/Math.PI;
-  // gradient orientation -> line orientation
-  let line=theta+90;
-  while(line>90)line-=180;
-  while(line<-90)line+=180;
-
-  // Nearest horizontal angle; stable for walls, shelves, floors, windows.
-  let roll=line;
-  if(Math.abs(roll)>45) roll += roll>0?-90:90;
-  guideRoll=roll;
-
-  // Camera verticality estimate from perspective/edge balance.
-  // Keep pitch centered unless a reliable sensor supplies it.
-  if(!Number.isFinite(guidePitch)) guidePitch=0;
-  updateLevel();
-
-  const c=document.getElementById("levelStatus");
-  if(c) c.textContent="水平・垂直｜カメラ自動判定";
- }catch(_){}
-}
-
-function handleGuideMotion(e){
- try{
-  var a=e.accelerationIncludingGravity;
-  if(!a)return;
-  var x=Number(a.x), y=Number(a.y), z=Number(a.z);
-  if(!isFinite(x)||!isFinite(y)||!isFinite(z))return;
-
-  var o=(screen.orientation&&typeof screen.orientation.angle==="number")?screen.orientation.angle:(typeof window.orientation==="number"?window.orientation:0);
-
-  // Roll: left/right tilt. Normalize for current screen orientation.
-  var roll;
-  if(o===90||o===-270) roll=Math.atan2(-y,Math.sqrt(x*x+z*z))*180/Math.PI;
-  else if(o===270||o===-90) roll=Math.atan2(y,Math.sqrt(x*x+z*z))*180/Math.PI;
-  else roll=Math.atan2(x,Math.sqrt(y*y+z*z))*180/Math.PI;
-
-  // Pitch/vertical: phone camera axis relative to gravity.
-  // For portrait shooting, z≈0 is vertical; sign gives forward/backward lean.
-  var pitch=Math.atan2(z,Math.sqrt(x*x+y*y))*180/Math.PI;
-
-  guideRoll=roll;
-  guidePitch=pitch;
-  if(guideSensorTimer){clearTimeout(guideSensorTimer);guideSensorTimer=null}
-  updateLevel();
- }catch(_){}
-}
-function handleGuideOrientation(e){
- if(document.getElementById("guideCam").style.display==="none")return;
- var r=sensorRoll(e),p=sensorPitch(e);
- if(typeof r==="number"&&isFinite(r))guideRoll=r;
- if(typeof p==="number"&&isFinite(p))guidePitch=p;
- if((typeof r==="number"&&isFinite(r))||(typeof p==="number"&&isFinite(p))){
-  if(guideSensorTimer){clearTimeout(guideSensorTimer);guideSensorTimer=null}
-  updateLevel();
- }
-}
-addEventListener("deviceorientation",handleGuideOrientation,true);
-async function enableGuideLevelSensor(){
- try{
-  if(typeof DeviceMotionEvent!=="undefined"&&typeof DeviceMotionEvent.requestPermission==="function"){try{var mp=await DeviceMotionEvent.requestPermission();}catch(_){}}
- if(typeof DeviceOrientationEvent!=="undefined"&&typeof DeviceOrientationEvent.requestPermission==="function"){
-   var p=await DeviceOrientationEvent.requestPermission();
-   if(p!=="granted")return false;
-  }
-  return typeof DeviceOrientationEvent!=="undefined";
- }catch(e){return false}
-}
+function updateLevel(){var c=document.getElementById("chipLevel");if(!c)return;c.textContent="水平目安｜水平線に合わせる";c.style.background="#475569"}
+function sensorRoll(e){var o=(screen.orientation&&typeof screen.orientation.angle==="number")?screen.orientation.angle:(typeof window.orientation==="number"?window.orientation:0);if(o===90&&typeof e.beta==="number")return e.beta;if(o===270||o===-90){if(typeof e.beta==="number")return -e.beta}return typeof e.gamma==="number"?e.gamma:null}
+addEventListener("deviceorientation",function(e){if(document.getElementById("guideCam").style.display==="none")return;var r=sensorRoll(e);if(typeof r==="number"&&isFinite(r)){guideRoll=r;if(guideSensorTimer){clearTimeout(guideSensorTimer);guideSensorTimer=null}updateLevel()}},true);
 var gs=document.getElementById("guideScale");gs.oninput=function(){guideScale=Number(gs.value)/100;document.getElementById("guideScaleLabel").textContent=gs.value+"%";drawGuide()};
-async function openGuide(t){guideType=t;guideRoll=null;guidePitch=null;updateLevel();document.getElementById("guideTitle").textContent=guideName(t)+"ガイド＋水平器";document.getElementById("levelMsg").textContent=guideInstruction(t);document.getElementById("guideScalePanel").style.setProperty("display","none","important");document.getElementById("guideCam").style.display="block";if(t!=="front"){document.getElementById("guideScalePanel").style.setProperty("display","none","important");}drawGuide();await enableGuideLevelSensor();if(guideSensorTimer)clearTimeout(guideSensorTimer);guideSensorTimer=setTimeout(function(){if(guideRoll==null){var c=document.getElementById("chipLevel"),a=document.getElementById("levelAngle");c.textContent="水平・垂直｜手動目安";c.style.background="#475569";if(a)a.textContent="--°"}},2200);try{guideStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}},audio:false});GV.srcObject=guideStream;await GV.play();drawGuide()}catch(e){document.getElementById("guideCam").style.display="none";alert("この開き方ではガイド付きカメラを使用できません。通常の「カメラ撮影」はそのまま利用できます。HTTPSで公開するとガイド撮影を利用できます。")}}
+async function openGuide(t){guideType=t;guideRoll=null;updateLevel();document.getElementById("guideTitle").textContent=guideName(t)+"ガイド V59";document.getElementById("levelMsg").textContent=guideInstruction(t);document.getElementById("guideScalePanel").style.setProperty("display","none","important");document.getElementById("guideCam").style.display="block";if(t!=="front"){document.getElementById("guideScalePanel").style.setProperty("display","none","important");}drawGuide();if(guideSensorTimer)clearTimeout(guideSensorTimer);guideSensorTimer=setTimeout(function(){if(guideRoll==null){var c=document.getElementById("chipLevel");c.textContent="水平目安｜画面の水平線に合わせる";c.style.background="#475569"}},1800);try{guideStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}},audio:false});GV.srcObject=guideStream;await GV.play();drawGuide()}catch(e){document.getElementById("guideCam").style.display="none";alert("この開き方ではガイド付きカメラを使用できません。通常の「カメラ撮影」はそのまま利用できます。HTTPSで公開するとガイド撮影を利用できます。")}}
 function closeGuide(){if(guideSensorTimer){clearTimeout(guideSensorTimer);guideSensorTimer=null}if(guideStream){guideStream.getTracks().forEach(t=>t.stop());guideStream=null}GV.srcObject=null;document.getElementById("guideCam").style.display="none"}
 document.querySelectorAll(".guideBtn").forEach(function(b){b.addEventListener("click",function(e){e.preventDefault();openGuide(b.getAttribute("data-guide"))})});document.getElementById("guideClose").addEventListener("click",closeGuide);
 document.getElementById("guideShot").onclick=function(){if(!guideStream||!GV.videoWidth)return;var c=document.createElement("canvas");c.width=GV.videoWidth;c.height=GV.videoHeight;c.getContext("2d").drawImage(GV,0,0,c.width,c.height);c.toBlob(function(blob){if(!blob)return;var f=new File([blob],"posture-"+guideType+"-"+Date.now()+".jpg",{type:"image/jpeg"}),t=guideType;closeGuide();save(t,f)},"image/jpeg",.92)};
 addEventListener("resize",drawGuide);count();
 })();
-
-document.addEventListener("play",function(e){
- if(e.target&&e.target.tagName==="VIDEO") startVisionLevel();
-},true);
-
 </script>
 
 <script>
