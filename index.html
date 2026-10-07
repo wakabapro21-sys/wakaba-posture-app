@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V177</title>
+<title>AI姿勢＆3次元歪み分析システム V178</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -331,7 +331,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 
 <style id="v165-stay-page">
-/* V175: ページ内の誤ナビゲーションは防ぎつつ、ブラウザ標準のPull-to-Refreshは許可 */
+/* V178: ページ内の誤ナビゲーションは防ぎつつ、ブラウザ標準のPull-to-Refreshは許可 */
 html,body{
   overscroll-behavior-y:auto!important;
   overscroll-behavior-x:none!important;
@@ -351,7 +351,7 @@ html,body{
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V175</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V178</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -366,7 +366,7 @@ html,body{
 <details><summary><b>顧客データについて</b><span>›</span></summary><div class="helpBody"><b>保存されるデータ</b><p>顧客情報と分析履歴を保存し、過去の分析結果を確認・比較できます。</p><p>分析時の写真は端末内に保存されるため、端末やブラウザのデータを削除した場合などは写真を復元できないことがあります。</p><p>不要な履歴や顧客データは、各画面の削除機能から削除できます。</p></div></details>
 <details><summary><b>お問い合わせ</b><span>›</span></summary><div class="helpBody"><b>不具合・操作について</b><p>カメラが開かない、分析結果が表示されない、契約状態が反映されないなどの問題がある場合は、発生した画面のスクリーンショットと状況を添えてお問い合わせください。</p><p>お問い合わせ窓口は、運用開始時にここへ連絡先を設定できます。</p></div></details>
 </div></section>
-<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V175 ログイン保護</span></div><div class="v77settingRow"><b>ログイン試行制限</b><span class="v77pill">5回失敗→15分制限</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
+<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V178 ログイン保護</span></div><div class="v77settingRow"><b>ログイン試行制限</b><span class="v77pill">5回失敗→15分制限</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
 <section id="v61Home">
  <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
  <div id="v61List" class="v61list"></div>
@@ -424,6 +424,27 @@ html,body{
   </div>
   <div style="font-size:9px;color:#94a3b8;line-height:1.5;margin-top:8px">※ 写真とランドマークから得た比較用の参考評価です。医学的診断ではありません。</div>
  </div>
+ <div id="detailPosturePanel" style="margin-top:10px;border:1px solid #99f6e4;border-radius:16px;padding:13px;background:#fff">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+   <b style="font-size:15px;color:#172033">姿勢分析ポイント詳細</b>
+   <span style="font-size:9px;background:#ccfbf1;color:#0f766e;padding:5px 8px;border-radius:999px;font-weight:800">V178</span>
+  </div>
+  <div style="font-size:9px;color:#64748b;line-height:1.55;margin-top:5px">正面・側面のランドマークを、基準線に対する傾き・位置ずれとして整理します。写真条件の影響を受けるため経時比較用の参考値です。</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+   <div style="background:#f8fafc;border-radius:12px;padding:10px">
+    <b style="font-size:12px;color:#0f766e">正面（前額面）</b>
+    <div id="frontPointDetails" style="font-size:10px;color:#475569;line-height:1.8;margin-top:6px">分析後に表示します。</div>
+   </div>
+   <div style="background:#f8fafc;border-radius:12px;padding:10px">
+    <b style="font-size:12px;color:#0f766e">側面（矢状面）</b>
+    <div id="sidePointDetails" style="font-size:10px;color:#475569;line-height:1.8;margin-top:6px">分析後に表示します。</div>
+   </div>
+  </div>
+  <div style="margin-top:8px;background:#f0fdfa;border-radius:10px;padding:9px">
+   <div style="font-size:10px;font-weight:900;color:#0f766e">脚軸分類</div>
+   <div id="legClassDetail" style="font-size:10px;color:#475569;line-height:1.65;margin-top:3px">分析後に表示します。</div>
+  </div>
+ </div>
  <div id="alignmentPanel" style="margin-top:10px;border:1px solid #bae6fd;border-radius:16px;padding:13px;background:linear-gradient(135deg,#f0fdfa,#f8fafc)">
   <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b style="font-size:15px;color:#172033">脚軸・推定重心・骨盤/脊柱マップ</b><span style="font-size:9px;background:#ccfbf1;color:#0f766e;padding:5px 8px;border-radius:999px;font-weight:800">V76</span></div>
   <div style="font-size:9px;color:#64748b;line-height:1.5;margin-top:5px">正面・側面写真のランドマークから算出する参考推定です。足圧計・X線・医学的診断の代用ではありません。</div>
@@ -480,7 +501,7 @@ html,body{
  </div>
  <div id="levelMsg" style="position:absolute;top:70px;left:50%;transform:translateX(-50%);background:rgba(15,23,42,.72);color:#fff;border-radius:999px;padding:7px 12px;font-size:11px;white-space:nowrap">約2〜3m離れる｜スマホは胸〜みぞおちの高さ</div>
  <div style="position:absolute;top:112px;left:12px;right:12px;display:flex;justify-content:center;gap:6px;flex-wrap:wrap">
-  <span id="chipLevel" style="display:none!important;background:#92400e;color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800">水平目安｜水平線に合わせる</span>
+  <span id="chipLevel" style="display:none!important;background:#92400e;color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800">水平線に合わせる</span>
   <span id="chipCenter" style="display:none!important;background:#0f766e;color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800">目安：中央線に合わせる</span>
   <span id="chipBody" style="display:none!important;background:#0f766e;color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800">目安：頭頂→橙線・足→下線</span>
  </div>
@@ -541,7 +562,7 @@ function save(type,file){
  var stage=document.getElementById("stage-"+type);stage.innerHTML="";var img=document.createElement("img");img.src=url;stage.appendChild(img);
  var cv=document.createElement("canvas");cv.className="landmarkCanvas";cv.id="canvas-"+type;stage.appendChild(cv);img.onload=function(){
   draw(type);setupDrag(type);
-  /* V175: 履歴用写真を撮影直後に確実に生成して保持する。
+  /* V178: 履歴用写真を撮影直後に確実に生成して保持する。
      分析保存時の画面状態に依存しない。写真は端末内のみ。 */
   try{
     var maxSide=960,sc=Math.min(1,maxSide/Math.max(img.naturalWidth,img.naturalHeight));
@@ -549,7 +570,7 @@ function save(type,file){
     var hc=document.createElement("canvas");hc.width=w;hc.height=h;
     hc.getContext("2d").drawImage(img,0,0,w,h);
     photos[type].historyThumb=hc.toDataURL("image/jpeg",.62);
-  }catch(e){console.warn("V175 history thumb preload",type,e)}
+  }catch(e){console.warn("V178 history thumb preload",type,e)}
 };
  var b=document.getElementById("badge-"+type);b.textContent="登録済み";b.className="badge ok";
  var ab=document.querySelector('.adjustBtn[data-adjust="'+type+'"]');if(ab)ab.style.display="block";
@@ -646,10 +667,10 @@ function drawGuide(){if(document.getElementById("guideCam").style.display==="non
   x.beginPath();x.moveTo(cx,top-18);x.lineTo(cx,floor+18);x.stroke();
   x.beginPath();x.moveTo(w*.10,cy);x.lineTo(w*.90,cy);x.stroke();
   x.fillStyle="rgba(255,255,255,.92)";x.font="bold 11px -apple-system,sans-serif";
-  x.fillText("垂直基準",cx+9,top+4);x.fillText("水平基準",w*.11,cy-9);
+  
   x.beginPath();x.arc(cx,cy,5,0,Math.PI*2);x.fillStyle="rgba(249,115,22,.98)";x.fill();
   x.strokeStyle="rgba(255,255,255,.95)";x.lineWidth=1.5;x.stroke();
-  // V177: ePose-style fixed head/toe framing lines for consistent subject size
+  // V178: ePose-style fixed head/toe framing lines for consistent subject size
   var headLineY=h*.205,toeLineY=h*.815,lineHalf=Math.min(w*.22,150);
   x.strokeStyle="rgba(255,255,255,.96)";x.lineWidth=4;x.lineCap="butt";
   x.beginPath();x.moveTo(cx-lineHalf,headLineY);x.lineTo(cx+lineHalf,headLineY);x.stroke();
@@ -662,11 +683,11 @@ function drawGuide(){if(document.getElementById("guideCam").style.display==="non
  x.lineWidth=2;x.strokeStyle="rgba(255,255,255,.72)";x.setLineDash([8,8]);x.beginPath();x.moveTo(cx,top-30);x.lineTo(cx,floor+18);x.stroke();x.setLineDash([]);x.strokeStyle="rgba(45,212,191,.95)";x.lineWidth=3;x.beginPath();x.moveTo(w*.10,floor);x.lineTo(w*.90,floor);x.stroke();x.strokeStyle="rgba(251,146,60,.9)";x.lineWidth=2;x.beginPath();x.moveTo(w*.24,top);x.lineTo(w*.76,top);x.stroke();
  var side=guideType!=="front",sw=(side?w*.075:w*.20)*guideScale,hw=(side?w*.055:w*.12)*guideScale;x.strokeStyle="rgba(45,212,191,.88)";x.lineWidth=3;var headY=top+h*.055,neck=top+h*.115,should=top+h*.16,elbow=top+h*.36,wrist=top+h*.51,hip=top+h*.43,knee=top+h*.63,ank=floor;function L(ax,ay,bx,by){x.beginPath();x.moveTo(ax,ay);x.lineTo(bx,by);x.stroke()}function J(px,py,label){x.beginPath();x.arc(px,py,5,0,Math.PI*2);x.fillStyle="rgba(249,115,22,.95)";x.fill();x.strokeStyle="rgba(255,255,255,.95)";x.lineWidth=1.5;x.stroke();if(label){x.fillStyle="rgba(255,255,255,.9)";x.font="bold 10px -apple-system,sans-serif";x.fillText(label,px+8,py-6)}x.strokeStyle="rgba(45,212,191,.88)";x.lineWidth=3}x.beginPath();x.ellipse(cx,headY,side?w*.045:w*.06,h*.055,0,0,Math.PI*2);x.stroke();L(cx,neck,cx,hip);L(cx-sw,should,cx+sw,should);L(cx-hw,hip,cx+hw,hip);var lsx=cx-sw,rsx=cx+sw,lEx=side?cx-sw*.85:cx-sw*1.25,rEx=side?cx+sw*.85:cx+sw*1.25,lWx=side?cx-sw*.78:cx-sw*1.42,rWx=side?cx+sw*.78:cx+sw*1.42;L(lsx,should,lEx,elbow);L(lEx,elbow,lWx,wrist);L(rsx,should,rEx,elbow);L(rEx,elbow,rWx,wrist);L(cx-hw,hip,cx-hw*.9,knee);L(cx-hw*.9,knee,cx-hw*.85,ank);L(cx+hw,hip,cx+hw*.9,knee);L(cx+hw*.9,knee,cx+hw*.85,ank);J(cx,headY,"頭");J(lsx,should,"肩");J(rsx,should,"");J(lEx,elbow,"肘");J(rEx,elbow,"");J(lWx,wrist,"手首");J(rWx,wrist,"");J(cx-hw,hip,"骨盤");J(cx+hw,hip,"");J(cx-hw*.9,knee,"膝");J(cx+hw*.9,knee,"");J(cx-hw*.85,ank,"足首");J(cx+hw*.85,ank,"");
  x.strokeStyle="rgba(255,255,255,.35)";x.lineWidth=1;x.setLineDash([5,5]);x.beginPath();x.moveTo(w*.18,hip);x.lineTo(w*.82,hip);x.stroke();x.setLineDash([]);x.fillStyle="rgba(255,255,255,.88)";x.font="bold 11px -apple-system,sans-serif";x.fillText("頭頂",w*.12,top-6);x.fillText("足元・水平基準",w*.12,floor-8);x.fillText("カメラ高さ目安：胸〜みぞおち",w*.12,hip-7)}
-function updateLevel(){var c=document.getElementById("chipLevel");if(!c)return;c.textContent="水平目安｜水平線に合わせる";c.style.background="#475569"}
+function updateLevel(){var c=document.getElementById("chipLevel");if(!c)return;c.textContent="水平線に合わせる";c.style.background="#475569"}
 function sensorRoll(e){var o=(screen.orientation&&typeof screen.orientation.angle==="number")?screen.orientation.angle:(typeof window.orientation==="number"?window.orientation:0);if(o===90&&typeof e.beta==="number")return e.beta;if(o===270||o===-90){if(typeof e.beta==="number")return -e.beta}return typeof e.gamma==="number"?e.gamma:null}
 addEventListener("deviceorientation",function(e){if(document.getElementById("guideCam").style.display==="none")return;var r=sensorRoll(e);if(typeof r==="number"&&isFinite(r)){guideRoll=r;if(guideSensorTimer){clearTimeout(guideSensorTimer);guideSensorTimer=null}updateLevel()}},true);
 var gs=document.getElementById("guideScale");gs.oninput=function(){guideScale=Number(gs.value)/100;document.getElementById("guideScaleLabel").textContent=gs.value+"%";drawGuide()};
-async function openGuide(t){guideType=t;guideRoll=null;updateLevel();document.getElementById("guideTitle").textContent=guideName(t)+"ガイド V59";document.getElementById("levelMsg").textContent=guideInstruction(t);document.getElementById("guideScalePanel").style.setProperty("display","none","important");document.getElementById("guideCam").style.display="block";if(t!=="front"){document.getElementById("guideScalePanel").style.setProperty("display","none","important");}drawGuide();if(guideSensorTimer)clearTimeout(guideSensorTimer);guideSensorTimer=setTimeout(function(){if(guideRoll==null){var c=document.getElementById("chipLevel");c.textContent="水平目安｜画面の水平線に合わせる";c.style.background="#475569"}},1800);try{guideStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}},audio:false});GV.srcObject=guideStream;await GV.play();drawGuide()}catch(e){document.getElementById("guideCam").style.display="none";alert("この開き方ではガイド付きカメラを使用できません。通常の「カメラ撮影」はそのまま利用できます。HTTPSで公開するとガイド撮影を利用できます。")}}
+async function openGuide(t){guideType=t;guideRoll=null;updateLevel();document.getElementById("guideTitle").textContent=guideName(t)+"ガイド V59";document.getElementById("levelMsg").textContent=guideInstruction(t);document.getElementById("guideScalePanel").style.setProperty("display","none","important");document.getElementById("guideCam").style.display="block";if(t!=="front"){document.getElementById("guideScalePanel").style.setProperty("display","none","important");}drawGuide();if(guideSensorTimer)clearTimeout(guideSensorTimer);guideSensorTimer=setTimeout(function(){if(guideRoll==null){var c=document.getElementById("chipLevel");c.textContent="画面の水平線に合わせる";c.style.background="#475569"}},1800);try{guideStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}},audio:false});GV.srcObject=guideStream;await GV.play();drawGuide()}catch(e){document.getElementById("guideCam").style.display="none";alert("この開き方ではガイド付きカメラを使用できません。通常の「カメラ撮影」はそのまま利用できます。HTTPSで公開するとガイド撮影を利用できます。")}}
 function closeGuide(){if(guideSensorTimer){clearTimeout(guideSensorTimer);guideSensorTimer=null}if(guideStream){guideStream.getTracks().forEach(t=>t.stop());guideStream=null}GV.srcObject=null;document.getElementById("guideCam").style.display="none"}
 document.querySelectorAll(".guideBtn").forEach(function(b){b.addEventListener("click",function(e){e.preventDefault();openGuide(b.getAttribute("data-guide"))})});document.getElementById("guideClose").addEventListener("click",closeGuide);
 document.getElementById("guideShot").onclick=function(){if(!guideStream||!GV.videoWidth)return;var c=document.createElement("canvas");c.width=GV.videoWidth;c.height=GV.videoHeight;c.getContext("2d").drawImage(GV,0,0,c.width,c.height);c.toBlob(function(blob){if(!blob)return;var f=new File([blob],"posture-"+guideType+"-"+Date.now()+".jpg",{type:"image/jpeg"}),t=guideType;closeGuide();save(t,f)},"image/jpeg",.92)};
@@ -715,6 +736,24 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  }
  var f=photos.front.points,sh=horizontalTilt(f.leftShoulder,f.rightShoulder),ph=horizontalTilt(f.leftHip,f.rightHip),midS=(f.leftShoulder.x+f.rightShoulder.x)/2,hs=(f.head.x-midS)*100;
  document.getElementById("shoulderTilt").textContent="肩傾斜 "+(sh>=0?"+":"")+sh.toFixed(1)+"°";document.getElementById("pelvisTilt").textContent="骨盤傾斜 "+(ph>=0?"+":"")+ph.toFixed(1)+"°";document.getElementById("headShift").textContent="頭部偏位 "+(hs>=0?"右 ":"左 ")+Math.abs(hs).toFixed(1)+"%";
+ function signedSide(v,pos,neg,dead){return Math.abs(v)<dead?"ほぼ中央":(v>0?pos:neg)}
+ function tiltLabel(v){return Math.abs(v)<.5?"ほぼ水平":(v>0?"右下がり":"左下がり")}
+ var ankleMidFront={x:(f.leftAnkle.x+f.rightAnkle.x)/2,y:(f.leftAnkle.y+f.rightAnkle.y)/2};
+ var hipMidFront={x:(f.leftHip.x+f.rightHip.x)/2,y:(f.leftHip.y+f.rightHip.y)/2};
+ var shoulderMidFront={x:midS,y:(f.leftShoulder.y+f.rightShoulder.y)/2};
+ function leanFromVertical(a,b){var dx=b.x-a.x,dy=a.y-b.y;return Math.atan2(dx,Math.max(.0001,dy))*180/Math.PI}
+ var wholeLean=leanFromVertical(ankleMidFront,f.head);
+ var upperLean=leanFromVertical(hipMidFront,shoulderMidFront);
+ var lowerLean=leanFromVertical(ankleMidFront,hipMidFront);
+ var frontEl=document.getElementById("frontPointDetails");
+ if(frontEl)frontEl.innerHTML=
+   "全身の左右傾き：<b>"+Math.abs(wholeLean).toFixed(1)+"° "+signedSide(wholeLean,"右傾き","左傾き",.5)+"</b><br>"+
+   "上半身の左右傾き：<b>"+Math.abs(upperLean).toFixed(1)+"° "+signedSide(upperLean,"右傾き","左傾き",.5)+"</b><br>"+
+   "下半身の左右傾き：<b>"+Math.abs(lowerLean).toFixed(1)+"° "+signedSide(lowerLean,"右傾き","左傾き",.5)+"</b><br>"+
+   "頭の左右位置：<b>"+Math.abs(hs).toFixed(1)+"% "+signedSide(hs,"右偏位","左偏位",.15)+"</b><br>"+
+   "肩の左右傾き：<b>"+Math.abs(sh).toFixed(1)+"° "+tiltLabel(sh)+"</b><br>"+
+   "骨盤の左右傾き：<b>"+Math.abs(ph).toFixed(1)+"° "+tiltLabel(ph)+"</b>";
+
  function clampScore(v){return Math.max(0,Math.min(100,Math.round(v)))}
  function sideDeviation(rec){
    var p=rec.points,smx=(p.leftShoulder.x+p.rightShoulder.x)/2,hmx=(p.leftHip.x+p.rightHip.x)/2;
@@ -744,10 +783,10 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  function lineOffset(h,k,a){var dx=a.x-h.x,dy=a.y-h.y,L=Math.hypot(dx,dy)||1;return ((k.x-h.x)*dy-(k.y-h.y)*dx)/L}
  var lkAng=angle3(f.leftHip,f.leftKnee,f.leftAnkle),rkAng=angle3(f.rightHip,f.rightKnee,f.rightAnkle);
  var lOff=lineOffset(f.leftHip,f.leftKnee,f.leftAnkle),rOff=lineOffset(f.rightHip,f.rightKnee,f.rightAnkle),axis=(Math.abs(lOff)+Math.abs(rOff))*50;
- /* V175: X/O脚は膝角度だけでなく、股関節→足首ラインに対する左右膝の位置を主判定。
+ /* V178: X/O脚は膝角度だけでなく、股関節→足首ラインに対する左右膝の位置を主判定。
     左膝は内側=右方向、右膝は内側=左方向。左右が同じ傾向の時だけX/O脚とする。
     軽微な偏位や左右不一致は「ほぼ中間位」として過剰判定を防ぐ。 */
- /* V175: 正面ランドマークの左右間隔で脚軸を判定。
+ /* V178: 正面ランドマークの左右間隔で脚軸を判定。
     X脚 = 両膝の間隔が、股関節・足首から予測される間隔より明確に狭い。
     O脚 = 両膝の間隔が明確に広い。
     小さな差は正常範囲として「ほぼ中間位」にする。 */
@@ -756,7 +795,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  var ankleGap=Math.abs(f.rightAnkle.x-f.leftAnkle.x);
  var expectedKneeGap=(hipGap+ankleGap)/2||1;
  var gapRatio=(kneeGap-expectedKneeGap)/expectedKneeGap;
- /* V175: 5段階表示。小さな偏位も方向は残しつつ、強いX/O脚と過剰表示しない。 */
+ /* V178: 5段階表示。小さな偏位も方向は残しつつ、強いX/O脚と過剰表示しない。 */
  var axisType="ほぼ中間位",axisDirection="中間";
  var mildThreshold=.01,strongThreshold=.20;
  if(gapRatio<=-strongThreshold){axisType="X脚傾向";axisDirection="X脚方向";}
@@ -765,6 +804,9 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  else if(gapRatio>=mildThreshold){axisType="軽度O脚傾向";axisDirection="O脚方向";}
  document.getElementById("legAxisType").textContent=axisType;
  document.getElementById("legAxisDetail").textContent="膝角度 左 "+lkAng.toFixed(1)+"° / 右 "+rkAng.toFixed(1)+"°　脚軸偏位 "+axisDirection+" "+axis.toFixed(1);
+ var lcd=document.getElementById("legClassDetail");
+ if(lcd)lcd.innerHTML="<b>"+axisType+"</b>　股関節・膝・足首の位置関係から算出。膝間隔が基準より狭い方向をX脚、広い方向をO脚として参考分類しています。XO脚は足部の接触状態まで安定して取得できる場合に追加判定します。";
+
  var kneeShift=Math.max(0,Math.min(30,axis*7.0)),isX=axisType.indexOf("X脚")>=0,isO=axisType.indexOf("O脚")>=0;
  var lkx=isX?60+kneeShift:(isO?60-kneeShift:60),rkx=isX?140-kneeShift:(isO?140+kneeShift:140);
  var ll=document.getElementById("legLineL"),rl=document.getElementById("legLineR"),lkn=document.getElementById("legKneeL"),rkn=document.getElementById("legKneeR");
@@ -776,6 +818,26 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  var cd=document.getElementById("cogDot");if(cd){cd.style.left=Math.max(15,Math.min(85,50+cogShift*2.2))+"%";cd.style.top="50%"}
  function sideAP(rec){var p=rec.points,ank=(p.leftAnkle.x+p.rightAnkle.x)/2,hip=(p.leftHip.x+p.rightHip.x)/2,sho=(p.leftShoulder.x+p.rightShoulder.x)/2;return {pelvis:(hip-ank)*100,trunk:(sho-hip)*100}}
  var sr=sideAP(photos.right),sl=sideAP(photos.left),pelAP=(sr.pelvis-sl.pelvis)/2,trAP=(sr.trunk-sl.trunk)/2;
+ function profileMeasures(rec,mirror){
+   var p=rec.points,ank=(p.leftAnkle.x+p.rightAnkle.x)/2,hip=(p.leftHip.x+p.rightHip.x)/2,sho=(p.leftShoulder.x+p.rightShoulder.x)/2;
+   var sx=mirror?-1:1;
+   var head=(p.head.x-sho)*100*sx, pelvis=(hip-ank)*100*sx, trunk=(sho-hip)*100*sx;
+   var body=(p.head.x-ank)*100*sx;
+   return {head:head,pelvis:pelvis,trunk:trunk,body:body};
+ }
+ var pmR=profileMeasures(photos.right,false),pmL=profileMeasures(photos.left,true);
+ function av(a,b){return (a+b)/2}
+ var headAP=av(pmR.head,pmL.head),bodyAP=av(pmR.body,pmL.body),pelvisAP2=av(pmR.pelvis,pmL.pelvis),trunkAP2=av(pmR.trunk,pmL.trunk);
+ function apLabel(v){return Math.abs(v)<1?"ほぼ中間":(v>0?"前方傾向":"後方傾向")}
+ var sideEl=document.getElementById("sidePointDetails");
+ if(sideEl)sideEl.innerHTML=
+   "全身の前後バランス：<b>"+Math.abs(bodyAP).toFixed(1)+"% "+apLabel(bodyAP)+"</b><br>"+
+   "頭の前後位置：<b>"+Math.abs(headAP).toFixed(1)+"% "+apLabel(headAP)+"</b><br>"+
+   "体幹の前後位置：<b>"+Math.abs(trunkAP2).toFixed(1)+"% "+apLabel(trunkAP2)+"</b><br>"+
+   "骨盤の前後位置：<b>"+Math.abs(pelvisAP2).toFixed(1)+"% "+apLabel(pelvisAP2)+"</b><br>"+
+   "胸郭回旋：<b>"+Math.abs(thoraxYaw).toFixed(1)+"°</b><br>"+
+   "骨盤回旋：<b>"+Math.abs(pelvisYaw).toFixed(1)+"°</b>";
+
  var bx=Math.max(8,Math.min(92,50+pelAP*2.0)),by=Math.max(8,Math.min(92,50-trAP*2.0)),star=document.getElementById("balanceStar");if(star){star.style.left=bx+"%";star.style.top=by+"%"}
  document.getElementById("balanceMapText").textContent="骨盤の前後位置参考 "+(pelAP>=0?"+":"")+pelAP.toFixed(1)+" / 体幹の前後偏位参考 "+(trAP>=0?"+":"")+trAP.toFixed(1)+"。撮影条件の影響を受けるため経時比較用の参考値です。";
  window.WAKABA_ALIGNMENT={leftKneeAngle:lkAng,rightKneeAngle:rkAng,legAxisType:axisType,cogShift:cogShift,pelvisAP:pelAP,trunkAP:trAP};
@@ -1063,7 +1125,7 @@ host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel'
  const types='<div class="v93typeRow"><div class="v93typeBox">'+esc(before.type||'--')+'</div><div class="v70arrow">→</div><div class="v93typeBox">'+esc(after.type||'--')+'</div></div>';
  $('v64CompareBody').innerHTML=dates+'<div class="v70hero"><div class="v70scoreline"><div class="v70scorebox"><small>Before・総合</small><strong>'+before.total+'</strong></div><div class="v70arrow">→</div><div class="v70scorebox"><small>After・総合</small><strong>'+after.total+'</strong></div></div><div class="v70change">総合スコア変化　'+sign+scoreDelta+'点</div></div>'+types+'<div class="v93compareLead">選択した2回の保存データを同じ画面で比較しています。写真・スコア・姿勢数値を順番に確認できます。</div>'+view('front','正面写真の比較')+view('right','右側面写真の比較')+view('left','左側面写真の比較')+'<div class="v67section">スコア詳細</div><div class="v70metricRow" style="font-weight:900;color:#64748b"><span>項目</span><b>Before</b><b>After</b><span>差</span></div>'+scoreRow('総合',before.total,after.total)+scoreRow('正面',before.front,after.front)+scoreRow('側面',before.side,after.side)+scoreRow('回旋',before.twist,after.twist)+'<div class="v67section">姿勢数値の変化</div><div class="v70metricRow" style="font-weight:900;color:#64748b"><span>項目</span><b>Before</b><b>After</b><span>変化</span></div>'+rows+'<div class="v64note">※「改善」は写真上の左右差・偏位・回旋の絶対値が小さくなった場合の比較表示です。医学的な診断や治療効果の判定ではありません。同じ位置・距離・姿勢条件で撮影してください。</div>';
  $('v63HistoryModal').classList.remove('on');$('v64CompareModal').classList.add('on')}
- function makeThumb(type){try{const rec=window.WAKABA_PHOTOS&&window.WAKABA_PHOTOS[type];if(!rec)return null;if(rec.historyThumb)return rec.historyThumb;const img=document.querySelector('#stage-'+type+' img');if(!img||!img.naturalWidth)return null;const maxSide=960,scale=Math.min(1,maxSide/Math.max(img.naturalWidth,img.naturalHeight)),w=Math.max(1,Math.round(img.naturalWidth*scale)),h=Math.max(1,Math.round(img.naturalHeight*scale)),cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);rec.historyThumb=cv.toDataURL('image/jpeg',.62);return rec.historyThumb}catch(e){console.error('V175 history photo error',type,e);return null}}
+ function makeThumb(type){try{const rec=window.WAKABA_PHOTOS&&window.WAKABA_PHOTOS[type];if(!rec)return null;if(rec.historyThumb)return rec.historyThumb;const img=document.querySelector('#stage-'+type+' img');if(!img||!img.naturalWidth)return null;const maxSide=960,scale=Math.min(1,maxSide/Math.max(img.naturalWidth,img.naturalHeight)),w=Math.max(1,Math.round(img.naturalWidth*scale)),h=Math.max(1,Math.round(img.naturalHeight*scale)),cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);rec.historyThumb=cv.toDataURL('image/jpeg',.62);return rec.historyThumb}catch(e){console.error('V178 history photo error',type,e);return null}}
  function saveAnalysisHistory(total,front,side,twist,type){try{const raw=sessionStorage.getItem('wakaba_v61_current')||localStorage.getItem('wakaba_v66_current');const c=JSON.parse(raw||'null');if(!c||!c.id){console.warn('V67 history: current customer missing');return false}const d=window.WAKABA_3D_DATA||{};const metrics={shoulderTilt:Number(d.shoulderTilt),pelvisTilt:Number(d.pelvisTilt),headShift:Number(d.headShift),thoraxYaw:Number(d.thoraxYaw),pelvisYaw:Number(d.pelvisYaw),relativeTwist:Number(d.relativeTwist),sideDeviation:Number(d.sideDeviation)};const photos={front:makeThumb('front'),right:makeThumb('right'),left:makeThumb('left')};const h=getHistory(c.id);h.unshift({version:70,date:new Date().toISOString(),total:Number(total),front:Number(front),side:Number(side),twist:Number(twist),type:String(type||''),metrics,photos});let keep=h.slice(0,30);while(keep.length){try{localStorage.setItem(historyKey(c.id),JSON.stringify(keep));break}catch(q){keep.pop()}}if(keep.length>0){try{window.dispatchEvent(new CustomEvent('wakaba:v103-history-saved',{detail:{id:c.id}}))}catch(e){}}return keep.length>0}catch(e){console.error('V67 history save error',e);return false}}
  window.saveAnalysisHistory=saveAnalysisHistory;
  window.addEventListener('wakaba-analysis',function(){
@@ -1108,7 +1170,7 @@ $('v77Start').onclick=()=>{if(!selected)return;const raw=JSON.stringify(selected
 $('v77History').onclick=()=>{if(!selected)return;home();const i=cs().findIndex(x=>String(x.id)===String(selected.id));setTimeout(()=>document.querySelectorAll('#v61List .v63hist')[i]?.click(),0)};
 $('v77Line').onclick=()=>alert('LINE共有は次の段階で接続します。');$('v77Edit').onclick=()=>alert('登録情報の編集は次の管理機能で追加します。');
 document.addEventListener('click',e=>{const row=e.target.closest?.('.v61row');if(!row||e.target.closest('button'))return;const rows=[...document.querySelectorAll('#v61List .v61row')],i=rows.indexOf(row),a=cs();if(i>=0&&a[i])patient(a[i])});
-// V175: reload on the current menu subpage instead of returning to MENU/home.
+// V178: reload on the current menu subpage instead of returning to MENU/home.
 setTimeout(()=>{try{const p=sessionStorage.getItem('wakaba_v165_page');if(p&&p!=='home'){if(p==='v77Reports')reports();page(p)}}catch(e){}},80);
 })();
 </script>
@@ -1545,7 +1607,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   for(const c of arr){if(!c||c.id==null)continue;const k=HP+String(c.id);if(!localStorage.getItem(k)){const h=await idbGet(k);if(h)localStorage.setItem(k,h)}}
   sessionStorage.setItem('wakaba_v116_recovered','1');return true;
  }
- // V175: history photos are stored locally at max 1280 px / JPEG 0.72. No photo is uploaded to Firebase.
+ // V178: history photos are stored locally at max 1280 px / JPEG 0.72. No photo is uploaded to Firebase.
  const origSet=Storage.prototype.setItem, origRemove=Storage.prototype.removeItem;
  Storage.prototype.setItem=function(k,v){const out=origSet.apply(this,arguments);if(this===localStorage&&relevant(String(k)))idbPut(String(k),String(v));return out};
  Storage.prototype.removeItem=function(k){if(this===localStorage&&relevant(String(k))){const old=this.getItem(k);if(old!=null)idbPut(String(k),old)}return origRemove.apply(this,arguments)};
