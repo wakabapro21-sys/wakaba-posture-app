@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V197</title>
+<title>AI姿勢＆3次元歪み分析システム V198</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -331,7 +331,7 @@ header{padding-right:16px!important;padding-bottom:54px!important}
 </style>
 
 <style id="v165-stay-page">
-/* V197: ページ内の誤ナビゲーションは防ぎつつ、ブラウザ標準のPull-to-Refreshは許可 */
+/* V198: ページ内の誤ナビゲーションは防ぎつつ、ブラウザ標準のPull-to-Refreshは許可 */
 html,body{
   overscroll-behavior-y:auto!important;
   overscroll-behavior-x:none!important;
@@ -351,7 +351,7 @@ html,body{
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V197</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V198</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -361,7 +361,142 @@ html,body{
 <section class="v77page" id="v77Mypage"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>マイページ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>プロフィール</b><span>南 昇吾</span></div><div class="v77settingRow"><b>院名</b><span>わかば整体院・接骨院</span></div><div class="v77settingRow"><b>メールアドレス</b><span class="v77muted">クラウド版で設定</span></div><div class="v77settingRow"><b>パスワード</b><span class="v77muted">クラウド版で設定</span></div></div></section>
 <section class="v77page" id="v77News"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>お知らせ</h2><span></span></div><div class="v77card v77empty">現在、お知らせはありません。</div></section>
 <section class="v77page" id="v77Help">
+<div id="v198InstallHelp" style="margin-top:14px;border:1px solid #dbe3ea;border-radius:16px;background:#fff;overflow:hidden;color:#0f172a">
+  <button id="v198HelpToggle" type="button" style="width:100%;display:flex;justify-content:space-between;align-items:center;border:0;background:#fff;padding:20px;font-size:16px;font-weight:900;color:#0f172a;text-align:left">
+    <span>📱 ホーム画面への追加・カメラ設定</span><span style="font-size:25px">›</span>
+  </button>
+  <div id="v198HelpBody" style="display:none;border-top:1px solid #e5e7eb;padding:16px">
+    <div style="font-weight:900;font-size:16px;margin-bottom:8px">ホーム画面に追加</div>
+    <div style="font-size:12px;line-height:1.7;color:#475569">ホーム画面に追加すると、次回からアプリのようにワンタップで開けます。</div>
 
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px">
+      <div style="border:1px solid #dbe3ea;border-radius:12px;padding:10px;background:#f8fafc">
+        <b style="font-size:12px">iPhone / Safari</b>
+        <div style="margin-top:8px;background:#fff;border-radius:9px;padding:9px;font-size:10px;line-height:1.7">
+          ① Safariで開く<br>
+          ② <span style="border:2px solid #ef4444;border-radius:5px;padding:2px 4px;color:#b91c1c;font-weight:900">共有 ↑</span> をタップ<br>
+          ③「ホーム画面に追加」<br>
+          ④「追加」をタップ
+        </div>
+      </div>
+      <div style="border:1px solid #dbe3ea;border-radius:12px;padding:10px;background:#f8fafc">
+        <b style="font-size:12px">Android / Chrome・Brave</b>
+        <div style="margin-top:8px;background:#fff;border-radius:9px;padding:9px;font-size:10px;line-height:1.7">
+          ① ブラウザで開く<br>
+          ② <span style="border:2px solid #ef4444;border-radius:5px;padding:2px 4px;color:#b91c1c;font-weight:900">︙ メニュー</span><br>
+          ③「ホーム画面に追加」<br>
+          ④「追加」をタップ
+        </div>
+      </div>
+    </div>
+
+    <div style="font-weight:900;font-size:16px;margin:18px 0 8px">カメラを許可</div>
+    <div style="font-size:12px;line-height:1.8;color:#475569">
+      姿勢撮影にはカメラの許可が必要です。端末またはブラウザのサイト設定からカメラを「許可」にしてください。
+    </div>
+    <div style="margin-top:10px;padding:10px;border-radius:10px;background:#eff6ff;color:#1e40af;font-size:11px;line-height:1.7">
+      それでも起動しない場合は、ブラウザの履歴・キャッシュを削除してから開き直してください。
+    </div>
+  </div>
+</div>
+<script id="v198-help-toggle">
+(function(){
+ const b=document.getElementById('v198HelpToggle'), p=document.getElementById('v198HelpBody');
+ if(b&&p)b.onclick=function(){p.style.display=p.style.display==='none'?'block':'none'};
+})();
+</script>
+<div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>ヘルプ・お問い合わせ</h2><span></span></div><div class="v77card wakaba-help">
+<details><summary><b>撮影・カメラについて</b><span>›</span></summary><div class="helpBody"><b>きれいに分析する撮影のコツ</b><p>正面・右側面・左側面の3方向を、頭から足先まで全身が入るように撮影してください。</p><p>約2〜3m離れ、スマホは胸〜みぞおち付近の高さを目安にします。ガイド撮影では中央線と水平・垂直の目安を合わせてください。</p><p>撮影後はランドマークの位置を確認し、必要な場合は「ランドマークを微調整」から修正できます。</p></div></details>
+<details><summary><b>分析について</b><span>›</span></summary><div class="helpBody"><b>分析結果の見方</b><p>3方向の写真とランドマークから、正面・側面・回旋のバランスを参考値として可視化します。</p><p>姿勢スコア、左右差、骨盤・脊柱バランス、脚軸、推定重心などを確認できます。</p><p>分析結果は姿勢評価の参考情報であり、医療上の診断を行うものではありません。</p></div></details>
+<details><summary><b>顧客データについて</b><span>›</span></summary><div class="helpBody"><b>保存されるデータ</b><p>顧客情報と分析履歴を保存し、過去の分析結果を確認・比較できます。</p><p>分析時の写真は端末内に保存されるため、端末やブラウザのデータを削除した場合などは写真を復元できないことがあります。</p><p>不要な履歴や顧客データは、各画面の削除機能から削除できます。</p></div></details>
+<details><summary><b>お問い合わせ</b><span>›</span></summary><div class="helpBody"><b>不具合・操作について</b><p>カメラが開かない、分析結果が表示されない、契約状態が反映されないなどの問題がある場合は、発生した画面のスクリーンショットと状況を添えてお問い合わせください。</p><p>お問い合わせ窓口は、運用開始時にここへ連絡先を設定できます。</p></div></details>
+</div></section>
+<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V198 ログイン保護</span></div><div class="v77settingRow"><b>ログイン試行制限</b><span class="v77pill">5回失敗→15分制限</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
+<section id="v61Home">
+ <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
+ <div id="v61List" class="v61list"></div>
+</section>
+
+
+
+<div class="v91detail" id="v91DetailModal"><div class="v91box"><div class="v91head"><div><b style="font-size:19px">分析履歴の詳細</b><div class="v91date" id="v91DetailDate"></div></div><button class="v91close" id="v91DetailClose">×</button></div><div id="v91DetailBody"></div></div></div>
+<div class="v63modal" id="v64CompareModal"><div class="v63sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:18px">施術前 / 施術後 比較</b><div id="v64CompareName" style="font-size:11px;color:#64748b;margin-top:2px"></div></div></div><div id="v64CompareBody"></div><button class="v63close" id="v64CompareClose">閉じる</button></div></div>
+<div class="v63modal" id="v63HistoryModal"><div class="v63sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:18px">分析履歴</b><div id="v63HistoryName" style="font-size:11px;color:#64748b;margin-top:2px"></div></div></div><div id="v63HistoryList"></div><button class="v63close" id="v63HistoryClose">閉じる</button></div></div>
+<div id="v61AnalysisTop"><div class="v61current"><span>分析中：<b id="v61CurrentName">ゲスト</b></span><button class="v61btn v61ghost" id="v61Back" style="padding:8px 10px">顧客一覧へ</button></div></div>
+<div class="v61modal" id="v61Modal"><div class="v61sheet"><h2>新規顧客登録</h2><div class="v61field"><label>氏名 *</label><input id="v61Name" autocomplete="name"></div><div class="v61field"><label>フリガナ</label><input id="v61Kana"></div><div class="v61field"><label>性別</label><select id="v61Sex"><option value="">未設定</option><option>男性</option><option>女性</option><option>その他</option></select></div><div class="v61field"><label>生年月日</label><input id="v61Birth" type="date"></div><div class="v61field"><label>電話番号</label><input id="v61Tel" inputmode="tel"></div><div class="v61actions"><button class="v61btn v61ghost" id="v61Cancel">キャンセル</button><button class="v61btn" id="v61Save">登録</button></div></div></div>
+<main>
+<div class="card intro"><b>撮影条件をそろえて分析精度を高めます。</b><br>ガイド撮影では中央・水平・全身位置をそろえます。撮影後はAIランドマークを検出し、3方向を統合して姿勢を可視化します。</div>
+<div class="views">
+<div class="card"><div class="head"><b>① 正面</b><span class="badge" id="badge-front">未登録</span></div><div class="stage" id="stage-front"><span>正面写真を登録</span></div><div class="actions" style="grid-template-columns:1fr 1fr 1fr"><label class="btn gallery">📁 写真を選択<input id="gallery-front" type="file" accept="image/*"></label><label class="btn camera">📷 カメラ撮影<input id="camera-front" type="file" accept="image/*" capture="environment"></label><button type="button" class="btn guideBtn" data-guide="front" style="border:0;background:#172033;color:#fff;min-height:48px;border-radius:11px;font-size:11px;font-weight:900">📐 ガイド撮影</button></div><button type="button" class="adjustBtn" data-adjust="front" style="display:none;width:100%;margin-top:8px;border:1px solid #fdba74;background:#fff7ed;color:#9a3412;border-radius:11px;padding:11px;font-size:12px;font-weight:900">✋ ランドマークを微調整</button><div class="note">約2〜3m離れ、スマホは胸〜みぞおちの高さ。頭から足先まで入るように撮影</div></div>
+<div class="card"><div class="head"><b>② 右側面</b><span class="badge" id="badge-right">未登録</span></div><div class="stage" id="stage-right"><span>右側面写真を登録</span></div><div class="actions" style="grid-template-columns:1fr 1fr 1fr"><label class="btn gallery">📁 写真を選択<input id="gallery-right" type="file" accept="image/*"></label><label class="btn camera">📷 カメラ撮影<input id="camera-right" type="file" accept="image/*" capture="environment"></label><button type="button" class="btn guideBtn" data-guide="right" style="border:0;background:#172033;color:#fff;min-height:48px;border-radius:11px;font-size:11px;font-weight:900">📐 ガイド撮影</button></div><button type="button" class="adjustBtn" data-adjust="right" style="display:none;width:100%;margin-top:8px;border:1px solid #fdba74;background:#fff7ed;color:#9a3412;border-radius:11px;padding:11px;font-size:12px;font-weight:900">✋ ランドマークを微調整</button><div class="note">約2〜3m離れ、右側をカメラへ。スマホは胸〜みぞおちの高さ</div></div>
+<div class="card"><div class="head"><b>③ 左側面</b><span class="badge" id="badge-left">未登録</span></div><div class="stage" id="stage-left"><span>左側面写真を登録</span></div><div class="actions" style="grid-template-columns:1fr 1fr 1fr"><label class="btn gallery">📁 写真を選択<input id="gallery-left" type="file" accept="image/*"></label><label class="btn camera">📷 カメラ撮影<input id="camera-left" type="file" accept="image/*" capture="environment"></label><button type="button" class="btn guideBtn" data-guide="left" style="border:0;background:#172033;color:#fff;min-height:48px;border-radius:11px;font-size:11px;font-weight:900">📐 ガイド撮影</button></div><button type="button" class="adjustBtn" data-adjust="left" style="display:none;width:100%;margin-top:8px;border:1px solid #fdba74;background:#fff7ed;color:#9a3412;border-radius:11px;padding:11px;font-size:12px;font-weight:900">✋ ランドマークを微調整</button><div class="note">約2〜3m離れ、左側をカメラへ。スマホは胸〜みぞおちの高さ</div></div>
+</div>
+<div class="card">
+ <div class="okbox" id="status">0 / 3 枚登録済み</div><div style="font-size:9px;color:#94a3b8;margin-top:4px;text-align:right">解析エンジン V46</div>
+ <div style="margin-top:8px;padding:10px;border-radius:11px;background:#fff7ed;border:1px solid #fed7aa;font-size:11px;line-height:1.6;color:#9a3412">
+  <b>✋ 手動微調整</b>　AI検出後、写真上のオレンジ色のポイントを指でドラッグして位置を修正できます。修正した位置が3D分析とスコアに反映されます。
+ </div>
+</div>
+<div class="card" id="modelCard">
+ <div class="head"><b>④ 3方向統合・姿勢可視化モデル <span style="font-size:10px;color:#0f766e;background:#ccfbf1;border-radius:999px;padding:4px 7px;margin-left:4px">V56</span></b><span class="badge" id="modelBadge">待機中</span></div>
+ <button id="make3d" type="button" style="width:100%;border:0;border-radius:11px;padding:14px;background:#f97316;color:#fff;font-weight:900;font-size:14px">3方向のランドマークから3D分析を作成</button>
+ <div id="scorePanel" style="margin-top:10px;border:2px solid #0f766e;border-radius:14px;padding:12px;background:linear-gradient(135deg,#f0fdfa,#ecfeff);box-shadow:0 4px 14px rgba(15,118,110,.12)">
+  <div style="font-size:12px;font-weight:900;color:#172033;margin-bottom:8px">姿勢バランススコア <span style="font-size:9px;color:#64748b;font-weight:500">独自基準・参考評価</span></div>
+  <div style="display:grid;grid-template-columns:1.25fr repeat(3,1fr);gap:6px;text-align:center">
+   <div style="background:#0f766e;color:#fff;border-radius:12px;padding:10px 4px"><div style="font-size:9px">総合</div><b id="scoreTotal" style="font-size:27px">--</b><span style="font-size:10px"> /100</span></div>
+   <div style="background:#fff;border-radius:12px;padding:10px 3px"><div style="font-size:9px;color:#64748b">正面</div><b id="scoreFront" style="font-size:21px">--</b><div style="font-size:8px;color:#94a3b8">左右バランス</div></div>
+   <div style="background:#fff;border-radius:12px;padding:10px 3px"><div style="font-size:9px;color:#64748b">側面</div><b id="scoreSide" style="font-size:21px">--</b><div style="font-size:8px;color:#94a3b8">前後バランス</div></div>
+   <div style="background:#fff;border-radius:12px;padding:10px 3px"><div style="font-size:9px;color:#64748b">回旋</div><b id="scoreTwist" style="font-size:21px">--</b><div style="font-size:8px;color:#94a3b8">相対ねじれ</div></div>
+  </div>
+  <div style="font-size:9px;color:#64748b;line-height:1.5;margin-top:7px">※ 写真条件とランドマーク位置から算出する比較用の参考スコアです。医学的な診断値ではありません。目安：90〜100 良好／70〜89 軽度差／50〜69 中等度差／0〜49 大きな差。</div>
+ </div>
+ <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px">
+  <button class="view3d" data-a="0">正面</button><button class="view3d" data-a="90">右</button><button class="view3d" data-a="-90">左</button><button class="view3d" data-a="35">斜め</button>
+ </div>
+ <div id="patientReport" style="margin-top:10px;border:1px solid #99f6e4;border-radius:16px;padding:13px;background:linear-gradient(135deg,#f0fdfa,#ffffff)">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px"><b style="font-size:15px;color:#134e4a">あなたの姿勢タイプ</b><span style="font-size:9px;background:#ccfbf1;color:#0f766e;padding:5px 8px;border-radius:999px;font-weight:800">独自姿勢分析</span></div>
+  <div id="postureType" style="font-size:22px;font-weight:900;color:#0f766e;line-height:1.25">3方向分析後に表示</div>
+  <div id="postureSummary" style="font-size:11px;color:#475569;line-height:1.7;margin-top:7px">正面・左右側面の3枚を分析すると、今回の特徴をわかりやすく表示します。</div>
+  <div style="margin-top:11px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:10px">
+   <div style="font-size:10px;color:#64748b;font-weight:800">今回もっとも目立つポイント</div>
+   <div id="mainFinding" style="font-size:16px;font-weight:900;color:#172033;margin-top:4px">--</div>
+   <div id="mainFindingDetail" style="font-size:10px;color:#64748b;line-height:1.6;margin-top:4px">分析後に表示します。</div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px">
+   <div style="background:#ecfeff;border-radius:10px;padding:8px;text-align:center"><div style="font-size:9px;color:#64748b">正面</div><b id="reportFront">--</b></div>
+   <div style="background:#fff7ed;border-radius:10px;padding:8px;text-align:center"><div style="font-size:9px;color:#64748b">側面</div><b id="reportSide">--</b></div>
+   <div style="background:#fef2f2;border-radius:10px;padding:8px;text-align:center"><div style="font-size:9px;color:#64748b">回旋</div><b id="reportTwist">--</b></div>
+  </div>
+  <div style="font-size:9px;color:#94a3b8;line-height:1.5;margin-top:8px">※ 写真とランドマークから得た比較用の参考評価です。医学的診断ではありません。</div>
+ </div>
+ <div id="detailPosturePanel" style="margin-top:10px;border:1px solid #99f6e4;border-radius:16px;padding:13px;background:#fff">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+   <b style="font-size:15px;color:#172033">姿勢分析ポイント詳細</b>
+   <span style="font-size:9px;background:#ccfbf1;color:#0f766e;padding:5px 8px;border-radius:999px;font-weight:800">V198</span>
+  </div>
+  <div style="font-size:9px;color:#64748b;line-height:1.55;margin-top:5px">正面・側面のランドマークを、基準線に対する傾き・位置ずれとして整理します。写真条件の影響を受けるため経時比較用の参考値です。</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+   <div style="background:#f8fafc;border-radius:12px;padding:10px">
+    <b style="font-size:12px;color:#0f766e">正面（前額面）</b>
+    <div id="frontPointDetails" style="font-size:10px;color:#475569;line-height:1.8;margin-top:6px">分析後に表示します。</div>
+   </div>
+   <div style="background:#f8fafc;border-radius:12px;padding:10px">
+    <b style="font-size:12px;color:#0f766e">側面（矢状面）</b>
+    <div id="sidePointDetails" style="font-size:10px;color:#475569;line-height:1.8;margin-top:6px">分析後に表示します。</div>
+   </div>
+  </div>
+  <div style="margin-top:8px;background:#f0fdfa;border-radius:10px;padding:9px">
+   <div style="font-size:10px;font-weight:900;color:#0f766e">脚軸分類</div>
+   <div id="legClassDetail" style="font-size:10px;color:#475569;line-height:1.65;margin-top:3px">分析後に表示します。</div>
+  </div>
+ </div>
+ <div id="alignmentPanel" style="margin-top:10px;border:1px solid #bae6fd;border-radius:16px;padding:13px;background:linear-gradient(135deg,#f0fdfa,#f8fafc)">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b style="font-size:15px;color:#172033">脚軸・推定重心・骨盤/脊柱マップ</b><span style="font-size:9px;background:#ccfbf1;color:#0f766e;padding:5px 8px;border-radius:999px;font-weight:800">V76</span></div>
+  <div style="font-size:9px;color:#64748b;line-height:1.5;margin-top:5px">正面・側面写真のランドマークから算出する参考推定です。足圧計・X線・医学的診断の代用ではありません。</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+   <div style="background:#fff;border-radius:12px;padding:10px"><div style="font-size:10px;color:#64748b">X脚・O脚の参考傾向</div><b id="legAxisType" style="display:block;font-size:18px;color:#0f766e;margin-top:4px">分析後に表示</b><div id="legAxisDiagram" style="height:180px;margin-top:8px;border-radius:12px;background:#f8fafc;overflow:hidden"><svg viewBox="0 0 200 180" width="100%" height="100%" aria-label="脚軸模式図"><text x="100" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="#475569">股関節 → 膝 → 足首</text><line x1="100" y1="28" x2="100" y2="160" stroke="#cbd5e1" stroke-dasharray="5 5"/><polyline id="legLineL" points="55,38 60,95 58,155" fill="none" stroke="#14b8a6" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><polyline id="legLineR" points="145,38 140,95 142,155" fill="none" stroke="#14b8a6" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="55" cy="38" r="7" fill="#0f766e"/><circle cx="145" cy="38" r="7" fill="#0f766e"/><circle id="legKneeL" cx="60" cy="95" r="9" fill="#f59e0b"/><circle id="legKneeR" cx="140" cy="95" r="9" fill="#f59e0b"/><circle cx="58" cy="155" r="7" fill="#0f766e"/><circle cx="142" cy="155" r="7" fill="#0f766e"/><text x="55" y="174" text-anchor="middle" font-size="10" fill="#64748b">左脚</text><text x="145" y="174" text-anchor="middle" font-size="10" fill="#64748b">右脚</text></svg></div><div id="legAxisDetail" style="font-size:10px;color:#475569;line-height:1.55;margin-top:4px">--</div></div>
+   <div style="background:#fff;border-radius:12px;padding:10px"><div style="font-size:10px;color:#64748b">画像からの推定重心</div><b id="cogText" style="display:block;font-size:18px;color:#0f766e;margin-top:4px">分析後に表示</b><div id="cogBox" style="position:relative;height:115px;margin-top:6px;border-radius:10px;background:#f8fafc;overflow:hidden"><div style="position:absolute;left:50%;top:8px;bottom:8px;border-left:1px solid #94a3b8"></div><div style="position:absolute;left:8px;right:8px;top:50%;border-top:1px solid #94a3b8"></div><div style="position:absolute;left:20%;top:18%;width:23%;height:70%;border-radius:45%;background:#e2e8f0"></div><div style="position:absolute;right:20%;top:18%;width:23%;height:70%;border-radius:45%;background:#e2e8f0"></div><div id="cogDot" style="position:absolute;left:50%;top:50%;width:18px;height:18px;border-radius:50%;background:#14b8a6;border:5px solid rgba(45,212,191,.35);transform:translate(-50%,-50%);box-sizing:content-box"></div></div></div>
+  </div>
   <div style="background:#fff;border-radius:12px;padding:10px;margin-top:8px"><div style="font-size:10px;color:#64748b">骨盤・脊柱バランスマップ（写真推定）</div><div id="balanceMap" style="position:relative;height:260px;margin:38px 24px 44px 46px;border:2px solid #475569;background:#f8fafc"><div style="position:absolute;left:50%;top:0;bottom:0;border-left:3px solid #64748b"></div><div style="position:absolute;left:0;right:0;top:50%;border-top:3px solid #64748b"></div><span style="position:absolute;left:7px;top:7px;font-size:10px;font-weight:700">平背傾向</span><span style="position:absolute;right:7px;top:7px;font-size:10px;font-weight:700">猫背×反り腰傾向</span><span style="position:absolute;left:7px;bottom:7px;font-size:10px;font-weight:700">後方バランス</span><span style="position:absolute;right:7px;bottom:7px;font-size:10px;font-weight:700">前方バランス</span><span style="position:absolute;left:0;bottom:-31px;font-size:10px;font-weight:900;color:#334155">← 骨盤 後傾</span><span style="position:absolute;right:0;bottom:-31px;font-size:10px;font-weight:900;color:#334155">骨盤 前傾 →</span><span style="position:absolute;left:-39px;top:4px;font-size:10px;font-weight:900;color:#334155;writing-mode:vertical-rl;transform:rotate(180deg)">↑ 脊柱 伸展</span><span style="position:absolute;left:-39px;bottom:4px;font-size:10px;font-weight:900;color:#334155;writing-mode:vertical-rl;transform:rotate(180deg)">脊柱 屈曲 ↓</span><div id="balanceStar" style="position:absolute;left:50%;top:50%;font-size:34px;color:#14b8a6;transform:translate(-50%,-50%)">★</div></div><div id="balanceMapText" style="font-size:10px;color:#475569;line-height:1.55;margin-top:7px">分析後に表示します。</div></div>
  </div>
  <div id="muscleBalancePanel" style="margin-top:10px;border:1px solid #e2e8f0;border-radius:16px;padding:13px;background:#fff">
@@ -472,7 +607,7 @@ function save(type,file){
  var stage=document.getElementById("stage-"+type);stage.innerHTML="";var img=document.createElement("img");img.src=url;stage.appendChild(img);
  var cv=document.createElement("canvas");cv.className="landmarkCanvas";cv.id="canvas-"+type;stage.appendChild(cv);img.onload=function(){
   draw(type);setupDrag(type);
-  /* V197: 履歴用写真を撮影直後に確実に生成して保持する。
+  /* V198: 履歴用写真を撮影直後に確実に生成して保持する。
      分析保存時の画面状態に依存しない。写真は端末内のみ。 */
   try{
     var maxSide=960,sc=Math.min(1,maxSide/Math.max(img.naturalWidth,img.naturalHeight));
@@ -480,7 +615,7 @@ function save(type,file){
     var hc=document.createElement("canvas");hc.width=w;hc.height=h;
     hc.getContext("2d").drawImage(img,0,0,w,h);
     photos[type].historyThumb=hc.toDataURL("image/jpeg",.62);
-  }catch(e){console.warn("V197 history thumb preload",type,e)}
+  }catch(e){console.warn("V198 history thumb preload",type,e)}
 };
  var b=document.getElementById("badge-"+type);b.textContent="登録済み";b.className="badge ok";
  var ab=document.querySelector('.adjustBtn[data-adjust="'+type+'"]');if(ab)ab.style.display="block";
@@ -512,7 +647,7 @@ async function runQueue(){if(busy||!poseReady||!queue.length)return;busy=true;va
 function blobImage(blob){return new Promise(function(resolve,reject){var u=URL.createObjectURL(blob),i=new Image();i.onload=function(){URL.revokeObjectURL(u);resolve(i)};i.onerror=reject;i.src=u})}
 function resetPoseEngine(){try{if(pose&&typeof pose.close==="function")pose.close()}catch(e){}pose=null;poseReady=false;busy=false;window.__wakabaCurrent=null}
 window.wakabaResetPoseEngine=resetPoseEngine;
-/* V197: landmark precision helpers.
+/* V198: landmark precision helpers.
    - visibility-aware selection
    - anatomical head center
    - front-view left/right sanity correction
@@ -552,7 +687,7 @@ function stabilizeFront(p){
  return p;
 }
 
-/* V197: 姿勢分析向けランドマーク補正
+/* V198: 姿勢分析向けランドマーク補正
    AI検出点を大きく作り替えず、側面の肩・股関節・膝などの明らかな外れ値だけを
    人体の連続性に沿って小さく補正する。手動微調整は従来どおり最終優先。 */
 function v180Clamp(v){return Math.max(0,Math.min(1,v))}
@@ -594,7 +729,7 @@ function attachPose(){if(!window.Pose||poseReady)return;try{pose=new Pose({locat
       This fixes shoulder/hip/knee/ankle jumps caused by hard-coding right-view/right landmarks. */
    var pre=chooseSidePrefix(lm);
 
-   /* V197: 側面だけ頭部ポイントを「顔の平均点」ではなく耳珠付近のAI耳点へ。
+   /* V198: 側面だけ頭部ポイントを「顔の平均点」ではなく耳珠付近のAI耳点へ。
       他の肩・肘・手首・股関節・膝・足首には一切影響させない。 */
    var earIdx=(pre==="left"?7:8), earLm=lm[earIdx];
    if(lmOk(earLm)){
@@ -603,7 +738,7 @@ function attachPose(){if(!window.Pose||poseReady)return;try{pose=new Pose({locat
      var sideShoulder=lm[pre==="left"?11:12];
      if(earPt.x>=0&&earPt.x<=1&&earPt.y>=0&&earPt.y<=1 &&
         (!lmOk(sideShoulder) || earPt.y < sideShoulder.y)){
-       /* V197: 左側面だけ耳ランドマークを少し後方へ。
+       /* V198: 左側面だけ耳ランドマークを少し後方へ。
           左側面写真では被写体が画面左向きなので、後方=画像右方向。 */
        var earX=earPt.x;
        if(type==="left") earX=v180Clamp(earX+0.012);
@@ -618,12 +753,12 @@ function attachPose(){if(!window.Pose||poseReady)return;try{pose=new Pose({locat
      p["left"+part]={x:pt.x,y:pt.y};p["right"+part]={x:pt.x,y:pt.y};
    });
 
-   /* V197: 股関節は選択された側のMediaPipe実測点を基本値として保持。
+   /* V198: 股関節は選択された側のMediaPipe実測点を基本値として保持。
       身体軸へ常時寄せる補正は行わず、後段で明らかな飛びだけを制限する。 */
  }
  
 p=v180Refine(type,p);
-/* V197: 側面股関節の描画直前補正。
+/* V198: 側面股関節の描画直前補正。
    MediaPipeの実測点を主体(70%)にしつつ、同じ写真の肩→膝ライン上の股関節高さ位置を30%だけ参照。
    変化量は最大2.5%画面幅に制限し、前後偏位そのものは消さない。 */
 if(type!=="front" && v186SideHipRaw && p.leftShoulder && p.leftKnee){
@@ -636,7 +771,7 @@ if(type!=="front" && v186SideHipRaw && p.leftShoulder && p.leftKnee){
     var shift=Math.max(-.025,Math.min(.025,targetX-rh.x));
     finalHip={x:v180Clamp(rh.x+shift),y:rh.y};
   }
-  /* V197: 右側面だけ股関節をわずかに前方へ。左側面と他ランドマークは変更しない。 */
+  /* V198: 右側面だけ股関節をわずかに前方へ。左側面と他ランドマークは変更しない。 */
   if(type==="right") finalHip.x=v180Clamp(finalHip.x+0.012);
   p.leftHip={x:finalHip.x,y:finalHip.y};p.rightHip={x:finalHip.x,y:finalHip.y};
 }
@@ -698,7 +833,7 @@ function drawGuide(){if(document.getElementById("guideCam").style.display==="non
   
   x.beginPath();x.arc(cx,cy,5,0,Math.PI*2);x.fillStyle="rgba(249,115,22,.98)";x.fill();
   x.strokeStyle="rgba(255,255,255,.95)";x.lineWidth=1.5;x.stroke();
-  // V197: ePose-style fixed head/toe framing lines for consistent subject size
+  // V198: ePose-style fixed head/toe framing lines for consistent subject size
   var headLineY=h*.205,toeLineY=h*.815,lineHalf=Math.min(w*.22,150);
   x.strokeStyle="rgba(255,255,255,.96)";x.lineWidth=4;x.lineCap="butt";
   x.beginPath();x.moveTo(cx-lineHalf,headLineY);x.lineTo(cx+lineHalf,headLineY);x.stroke();
@@ -799,8 +934,8 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  var sideScore=clampScore(100-sidePenalty);
  /* V76: 回旋スコアは胸郭と骨盤の絶対向きではなく、相対捻れを主評価にする。
     両者が同方向を向く撮影角度の影響で0点化しないよう補正。 */
- /* V197: 2D写真由来の回旋は絶対角の誤差を受けやすいため、胸郭-骨盤の相対差を主評価。減点勾配と総合点への寄与を緩和。 */
- /* V197: 相対捻れ8〜9°で約60点になるよう、回旋の減点勾配だけを微調整。
+ /* V198: 2D写真由来の回旋は絶対角の誤差を受けやすいため、胸郭-骨盤の相対差を主評価。減点勾配と総合点への寄与を緩和。 */
+ /* V198: 相対捻れ8〜9°で約60点になるよう、回旋の減点勾配だけを微調整。
     ランドマーク・正面・側面・脚軸ロジックは変更しない。 */
  var twistPenalty=10 + dz(tw,1.0)*3.9;
  var twistScore=Math.min(94,clampScore(100-twistPenalty));
@@ -814,10 +949,10 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  function lineOffset(h,k,a){var dx=a.x-h.x,dy=a.y-h.y,L=Math.hypot(dx,dy)||1;return ((k.x-h.x)*dy-(k.y-h.y)*dx)/L}
  var lkAng=angle3(f.leftHip,f.leftKnee,f.leftAnkle),rkAng=angle3(f.rightHip,f.rightKnee,f.rightAnkle);
  var lOff=lineOffset(f.leftHip,f.leftKnee,f.leftAnkle),rOff=lineOffset(f.rightHip,f.rightKnee,f.rightAnkle),axis=(Math.abs(lOff)+Math.abs(rOff))*50;
- /* V197: X/O脚は膝角度だけでなく、股関節→足首ラインに対する左右膝の位置を主判定。
+ /* V198: X/O脚は膝角度だけでなく、股関節→足首ラインに対する左右膝の位置を主判定。
     左膝は内側=右方向、右膝は内側=左方向。左右が同じ傾向の時だけX/O脚とする。
     軽微な偏位や左右不一致は「ほぼ中間位」として過剰判定を防ぐ。 */
- /* V197: 正面ランドマークの左右間隔で脚軸を判定。
+ /* V198: 正面ランドマークの左右間隔で脚軸を判定。
     X脚 = 両膝の間隔が、股関節・足首から予測される間隔より明確に狭い。
     O脚 = 両膝の間隔が明確に広い。
     小さな差は正常範囲として「ほぼ中間位」にする。 */
@@ -826,7 +961,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  var ankleGap=Math.abs(f.rightAnkle.x-f.leftAnkle.x);
  var expectedKneeGap=(hipGap+ankleGap)/2||1;
  var gapRatio=(kneeGap-expectedKneeGap)/expectedKneeGap;
- /* V197: 5段階表示。小さな偏位も方向は残しつつ、強いX/O脚と過剰表示しない。 */
+ /* V198: 5段階表示。小さな偏位も方向は残しつつ、強いX/O脚と過剰表示しない。 */
  var axisType="ほぼ中間位",axisDirection="中間";
  var mildThreshold=.01,strongThreshold=.20;
  if(gapRatio<=-strongThreshold){axisType="X脚傾向";axisDirection="X脚方向";}
@@ -1156,7 +1291,7 @@ host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel'
  const types='<div class="v93typeRow"><div class="v93typeBox">'+esc(before.type||'--')+'</div><div class="v70arrow">→</div><div class="v93typeBox">'+esc(after.type||'--')+'</div></div>';
  $('v64CompareBody').innerHTML=dates+'<div class="v70hero"><div class="v70scoreline"><div class="v70scorebox"><small>Before・総合</small><strong>'+before.total+'</strong></div><div class="v70arrow">→</div><div class="v70scorebox"><small>After・総合</small><strong>'+after.total+'</strong></div></div><div class="v70change">総合スコア変化　'+sign+scoreDelta+'点</div></div>'+types+'<div class="v93compareLead">選択した2回の保存データを同じ画面で比較しています。写真・スコア・姿勢数値を順番に確認できます。</div>'+view('front','正面写真の比較')+view('right','右側面写真の比較')+view('left','左側面写真の比較')+'<div class="v67section">スコア詳細</div><div class="v70metricRow" style="font-weight:900;color:#64748b"><span>項目</span><b>Before</b><b>After</b><span>差</span></div>'+scoreRow('総合',before.total,after.total)+scoreRow('正面',before.front,after.front)+scoreRow('側面',before.side,after.side)+scoreRow('回旋',before.twist,after.twist)+'<div class="v67section">姿勢数値の変化</div><div class="v70metricRow" style="font-weight:900;color:#64748b"><span>項目</span><b>Before</b><b>After</b><span>変化</span></div>'+rows+'<div class="v64note">※「改善」は写真上の左右差・偏位・回旋の絶対値が小さくなった場合の比較表示です。医学的な診断や治療効果の判定ではありません。同じ位置・距離・姿勢条件で撮影してください。</div>';
  $('v63HistoryModal').classList.remove('on');$('v64CompareModal').classList.add('on')}
- function makeThumb(type){try{const rec=window.WAKABA_PHOTOS&&window.WAKABA_PHOTOS[type];if(!rec)return null;if(rec.historyThumb)return rec.historyThumb;const img=document.querySelector('#stage-'+type+' img');if(!img||!img.naturalWidth)return null;const maxSide=960,scale=Math.min(1,maxSide/Math.max(img.naturalWidth,img.naturalHeight)),w=Math.max(1,Math.round(img.naturalWidth*scale)),h=Math.max(1,Math.round(img.naturalHeight*scale)),cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);rec.historyThumb=cv.toDataURL('image/jpeg',.62);return rec.historyThumb}catch(e){console.error('V197 history photo error',type,e);return null}}
+ function makeThumb(type){try{const rec=window.WAKABA_PHOTOS&&window.WAKABA_PHOTOS[type];if(!rec)return null;if(rec.historyThumb)return rec.historyThumb;const img=document.querySelector('#stage-'+type+' img');if(!img||!img.naturalWidth)return null;const maxSide=960,scale=Math.min(1,maxSide/Math.max(img.naturalWidth,img.naturalHeight)),w=Math.max(1,Math.round(img.naturalWidth*scale)),h=Math.max(1,Math.round(img.naturalHeight*scale)),cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);rec.historyThumb=cv.toDataURL('image/jpeg',.62);return rec.historyThumb}catch(e){console.error('V198 history photo error',type,e);return null}}
  function saveAnalysisHistory(total,front,side,twist,type){try{const raw=sessionStorage.getItem('wakaba_v61_current')||localStorage.getItem('wakaba_v66_current');const c=JSON.parse(raw||'null');if(!c||!c.id){console.warn('V67 history: current customer missing');return false}const d=window.WAKABA_3D_DATA||{};const metrics={shoulderTilt:Number(d.shoulderTilt),pelvisTilt:Number(d.pelvisTilt),headShift:Number(d.headShift),thoraxYaw:Number(d.thoraxYaw),pelvisYaw:Number(d.pelvisYaw),relativeTwist:Number(d.relativeTwist),sideDeviation:Number(d.sideDeviation)};const photos={front:makeThumb('front'),right:makeThumb('right'),left:makeThumb('left')};const h=getHistory(c.id);h.unshift({version:70,date:new Date().toISOString(),total:Number(total),front:Number(front),side:Number(side),twist:Number(twist),type:String(type||''),metrics,photos});let keep=h.slice(0,30);while(keep.length){try{localStorage.setItem(historyKey(c.id),JSON.stringify(keep));break}catch(q){keep.pop()}}if(keep.length>0){try{window.dispatchEvent(new CustomEvent('wakaba:v103-history-saved',{detail:{id:c.id}}))}catch(e){}}return keep.length>0}catch(e){console.error('V67 history save error',e);return false}}
  window.saveAnalysisHistory=saveAnalysisHistory;
  window.addEventListener('wakaba-analysis',function(){
@@ -1201,7 +1336,7 @@ $('v77Start').onclick=()=>{if(!selected)return;const raw=JSON.stringify(selected
 $('v77History').onclick=()=>{if(!selected)return;home();const i=cs().findIndex(x=>String(x.id)===String(selected.id));setTimeout(()=>document.querySelectorAll('#v61List .v63hist')[i]?.click(),0)};
 $('v77Line').onclick=()=>alert('LINE共有は次の段階で接続します。');$('v77Edit').onclick=()=>alert('登録情報の編集は次の管理機能で追加します。');
 document.addEventListener('click',e=>{const row=e.target.closest?.('.v61row');if(!row||e.target.closest('button'))return;const rows=[...document.querySelectorAll('#v61List .v61row')],i=rows.indexOf(row),a=cs();if(i>=0&&a[i])patient(a[i])});
-// V197: reload on the current menu subpage instead of returning to MENU/home.
+// V198: reload on the current menu subpage instead of returning to MENU/home.
 setTimeout(()=>{try{const p=sessionStorage.getItem('wakaba_v165_page');if(p&&p!=='home'){if(p==='v77Reports')reports();page(p)}}catch(e){}},80);
 })();
 </script>
@@ -1638,7 +1773,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   for(const c of arr){if(!c||c.id==null)continue;const k=HP+String(c.id);if(!localStorage.getItem(k)){const h=await idbGet(k);if(h)localStorage.setItem(k,h)}}
   sessionStorage.setItem('wakaba_v116_recovered','1');return true;
  }
- // V197: history photos are stored locally at max 1280 px / JPEG 0.72. No photo is uploaded to Firebase.
+ // V198: history photos are stored locally at max 1280 px / JPEG 0.72. No photo is uploaded to Firebase.
  const origSet=Storage.prototype.setItem, origRemove=Storage.prototype.removeItem;
  Storage.prototype.setItem=function(k,v){const out=origSet.apply(this,arguments);if(this===localStorage&&relevant(String(k)))idbPut(String(k),String(v));return out};
  Storage.prototype.removeItem=function(k){if(this===localStorage&&relevant(String(k))){const old=this.getItem(k);if(old!=null)idbPut(String(k),old)}return origRemove.apply(this,arguments)};
@@ -2284,7 +2419,7 @@ boot();
 
 
 <script id="v194-persistent-refresh">
-/* V197: Firebase安全同期の再確認結果を、1秒後に元へ戻さず保持する。
+/* V198: Firebase安全同期の再確認結果を、1秒後に元へ戻さず保持する。
    読み取り確認のみ。患者・履歴・写真・契約データは削除・変更しない。 */
 (function(){
   if(window.__v194PersistentRefreshInstalled) return;
@@ -2340,7 +2475,7 @@ boot();
       // 各確認処理はカードを再描画するため、再生成されたボタンに完了状態を付ける。
       requestAnimationFrame(function(){ finish(id, c.label); });
     }catch(e){
-      console.error('V197 refresh', id, e);
+      console.error('V198 refresh', id, e);
       b = document.getElementById(id);
       if(b){
         b.disabled = false;
@@ -2361,62 +2496,6 @@ boot();
     if(e.stopImmediatePropagation) e.stopImmediatePropagation();
     run(t.id);
   }, true);
-})();
-</script>
-
-
-<style id="v197-help-style">
-#v197QuickHelp{margin-top:0}
-#v197QuickHelp .v197item{width:100%;display:flex;align-items:center;justify-content:space-between;padding:22px 20px;border:0;border-top:1px solid #e5e7eb;background:#fff;color:#0f172a;font-size:16px;font-weight:900;text-align:left}
-#v197QuickHelp .v197item:first-child{border-top:0}
-#v197QuickHelp .v197arrow{font-size:26px;font-weight:400}
-#v197Guide{display:none;margin-top:14px;padding:18px;border:1px solid #dbe3ea;border-radius:16px;background:#fff;color:#1f2937}
-#v197Guide.on{display:block}
-#v197Guide h3{margin:0 0 16px;font-size:20px;color:#0f172a}
-#v197Guide h4{margin:18px 0 8px;font-size:15px;color:#0f172a}
-#v197Guide p{margin:0;font-size:13px;line-height:1.8}
-.v197steps{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-.v197phone{border:1px solid #dbe3ea;border-radius:14px;padding:10px;background:#f8fafc;min-height:180px}
-.v197phone b{display:block;margin-bottom:8px;font-size:12px}
-.v197screen{border:1px solid #cbd5e1;border-radius:10px;background:#fff;padding:10px;font-size:11px;line-height:1.6;min-height:125px}
-.v197tap{display:inline-block;margin:7px 0;padding:6px 8px;border:2px solid #ef4444;border-radius:7px;color:#b91c1c;font-weight:900}
-.v197blue{color:#2563eb;font-weight:900}
-.v197note{margin-top:12px;padding:11px;border-radius:10px;background:#eff6ff;color:#1e3a8a;font-size:12px;line-height:1.7}
-@media(max-width:430px){.v197steps{grid-template-columns:1fr 1fr}.v197phone{padding:8px}.v197screen{font-size:10px}}
-</style>
-<script id="v197-help-ui">
-(function(){
- function mount(){
-   const help=document.getElementById('v77Help');
-   if(!help||document.getElementById('v197QuickHelp'))return;
-   const cards=help.querySelectorAll('.v77card');
-   const host=cards.length?cards[cards.length-1]:help;
-   const wrap=document.createElement('div');
-   wrap.id='v197QuickHelp';
-   wrap.innerHTML='<button class="v197item" id="v197OpenGuide" type="button"><span>📱 ホーム画面への追加・カメラ設定</span><span class="v197arrow">›</span></button>'+
-   '<div id="v197Guide">'+
-   '<h3>ホーム画面への追加・カメラ設定</h3>'+
-   '<p>ホーム画面に追加すると、次回からアプリのようにワンタップで姿勢分析を開けます。</p>'+
-   '<h4>① ホーム画面に追加</h4>'+
-   '<div class="v197steps">'+
-    '<div class="v197phone"><b>iPhone / Safari</b><div class="v197screen">姿勢分析をSafariで開く<br><span class="v197tap">共有 ↑ をタップ</span><br>メニューを下へ<br><span class="v197tap">ホーム画面に追加</span><br>→「追加」をタップ</div></div>'+
-    '<div class="v197phone"><b>Android / Chrome・Brave</b><div class="v197screen">姿勢分析をブラウザで開く<br><span class="v197tap">︙ メニューをタップ</span><br><span class="v197tap">ホーム画面に追加</span><br>または<br><span class="v197tap">アプリをインストール</span></div></div>'+
-   '</div>'+
-   '<div class="v197note">✓ 追加後はホーム画面のアイコンから直接開けます。</div>'+
-   '<h4>② カメラを許可</h4>'+
-   '<div class="v197steps">'+
-    '<div class="v197phone"><b>iPhone</b><div class="v197screen">設定 → アプリ → Safari<br>→ カメラ<br><span class="v197blue">「許可」</span>に設定</div></div>'+
-    '<div class="v197phone"><b>Android</b><div class="v197screen">ブラウザのサイト設定<br>→ カメラ<br><span class="v197blue">「許可」</span>に設定</div></div>'+
-   '</div>'+
-   '<h4>③ それでもカメラが動かない場合</h4>'+
-   '<p>ブラウザの履歴・キャッシュを削除してから、姿勢分析を開き直してください。</p>'+
-   '<button type="button" id="v197CloseGuide" style="width:100%;margin-top:16px;border:0;border-radius:11px;padding:12px;background:#e2e8f0;color:#334155;font-weight:900">閉じる</button>'+
-   '</div>';
-   host.appendChild(wrap);
-   document.getElementById('v197OpenGuide').onclick=function(){document.getElementById('v197Guide').classList.toggle('on')};
-   document.getElementById('v197CloseGuide').onclick=function(){document.getElementById('v197Guide').classList.remove('on')};
- }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(mount,400));else setTimeout(mount,400);
 })();
 </script>
 
