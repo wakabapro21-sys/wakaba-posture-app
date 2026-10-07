@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V156</title>
+<title>AI姿勢＆3次元歪み分析システム V157</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -998,7 +998,11 @@ host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel'
    if([total,front,side,twist].every(v=>v!=null && v!=='' && v!=='--')) saveAnalysisHistory(total,front,side,twist,type);
  });
  function esc(v){return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
- function render(){const a=customers(),host=$('v61List'); if(!a.length){host.innerHTML='<div class="v61empty"><b>まだ顧客が登録されていません</b><br><br>「＋ 新規登録」から最初の顧客を登録してください。</div>';return} host.innerHTML=a.map((c,i)=>'<div class="v61row"><div class="v61avatar">'+esc((c.name||'?').slice(0,1))+'</div><div class="v61meta"><div class="v61name">'+esc(c.name)+'</div><div class="v61sub">'+esc([c.kana,c.sex,c.birth].filter(Boolean).join(' ｜ ')||'登録情報あり')+'</div></div><button class="v63hist" data-h="'+i+'">履歴</button><button class="v61start" data-i="'+i+'">姿勢分析</button></div>').join(''); host.querySelectorAll('.v61start').forEach(b=>b.onclick=()=>start(a[+b.dataset.i])); host.querySelectorAll('.v63hist').forEach(b=>b.onclick=()=>showHistory(a[+b.dataset.h]))}
+ var v157KanaRow='すべて';
+ function v157Norm(v){return String(v||'').trim().replace(/\s+/g,'').normalize('NFKC').replace(/[\u30a1-\u30f6]/g,ch=>String.fromCharCode(ch.charCodeAt(0)-0x60)).normalize('NFD').replace(/[\u3099\u309a]/g,'').normalize('NFC')}
+ function v157Row(v){const c=v157Norm(v)[0]||'';for(const [r,x] of [['あ','ぁあぃいうぅうぇえぉおゔ'],['か','かきくけこ'],['さ','さしすせそ'],['た','たちつてとっ'],['な','なにぬねの'],['は','はひふへほ'],['ま','まみむめも'],['や','ゃやゅゆょよ'],['ら','らりるれろ'],['わ','ゎわをん']])if(x.includes(c))return r;return'他'}
+ function v157Nav(){return '<div style="display:flex;gap:6px;overflow-x:auto;padding:2px 0 12px">'+['すべて','あ','か','さ','た','な','は','ま','や','ら','わ'].map(r=>'<button type="button" data-v157row="'+r+'" style="flex:0 0 auto;min-width:'+(r==='すべて'?'58':'38')+'px;height:38px;border-radius:19px;border:1px solid '+(v157KanaRow===r?'#2563eb':'#cbd5e1')+';background:'+(v157KanaRow===r?'#2563eb':'#fff')+';color:'+(v157KanaRow===r?'#fff':'#334155')+';font-weight:800">'+r+'</button>').join('')+'</div>'}
+ function render(){let a=customers().slice().sort((x,y)=>v157Norm(x.kana||x.name).localeCompare(v157Norm(y.kana||y.name),'ja'));const host=$('v61List');if(!a.length){host.innerHTML='<div class="v61empty"><b>まだ顧客が登録されていません</b><br><br>「＋ 新規登録」から最初の顧客を登録してください。</div>';return}if(v157KanaRow!=='すべて')a=a.filter(c=>v157Row(c.kana||c.name)===v157KanaRow);host.innerHTML=v157Nav()+(a.length?a.map((c,i)=>'<div class="v61row"><div class="v61avatar">'+esc((c.name||'?').slice(0,1))+'</div><div class="v61meta"><div class="v61name">'+esc(c.name)+'</div><div class="v61sub">'+esc([c.kana,c.sex,c.birth].filter(Boolean).join(' ｜ ')||'登録情報あり')+'</div></div><button class="v63hist" data-h="'+i+'">履歴</button><button class="v61start" data-i="'+i+'">姿勢分析</button></div>').join(''):'<div class="v61empty">この行の顧客はまだ登録されていません。</div>');host.querySelectorAll('[data-v157row]').forEach(b=>b.onclick=()=>{v157KanaRow=b.dataset.v157row;render()});host.querySelectorAll('.v61start').forEach(b=>b.onclick=()=>start(a[+b.dataset.i]));host.querySelectorAll('.v63hist').forEach(b=>b.onclick=()=>showHistory(a[+b.dataset.h]))}
  function start(c){const raw=JSON.stringify(c);sessionStorage.setItem('wakaba_v61_current',raw);localStorage.setItem('wakaba_v66_current',raw); if(typeof window.wakabaResetAnalysisSession==='function')window.wakabaResetAnalysisSession(); $('v61CurrentName').textContent=c.name||'ゲスト'; document.body.classList.add('v61-analysis'); window.scrollTo(0,0)}
  function home(){document.body.classList.remove('v61-analysis');window.scrollTo(0,0);render()}
  $('v61Add').onclick=()=>{$('v61Modal').classList.add('on');$('v61Name').focus()}; $('v61Cancel').onclick=()=>$('v61Modal').classList.remove('on'); $('v61Back').onclick=home;
