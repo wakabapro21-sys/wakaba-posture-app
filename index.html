@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V157</title>
+<title>AI姿勢＆3次元歪み分析システム V158</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -2095,6 +2095,41 @@ async function boot(){
   });
 }
 boot();
+</script>
+
+
+<script>
+(function(){
+ let reportRow='すべて';
+ function norm(v){return String(v||'').trim().replace(/\s+/g,'').normalize('NFKC').replace(/[\u30a1-\u30f6]/g,ch=>String.fromCharCode(ch.charCodeAt(0)-0x60)).normalize('NFD').replace(/[\u3099\u309a]/g,'').normalize('NFC')}
+ function row(v){const c=norm(v)[0]||'';for(const [r,x] of [['あ','ぁあぃいうぅうぇえぉおゔ'],['か','かきくけこ'],['さ','さしすせそ'],['た','たちつてとっ'],['な','なにぬねの'],['は','はひふへほ'],['ま','まみむめも'],['や','ゃやゅゆょよ'],['ら','らりるれろ'],['わ','ゎわをん']])if(x.includes(c))return r;return'他'}
+ function nav(){
+   return '<div id="v158ReportKana" style="display:flex;gap:6px;overflow-x:auto;padding:4px 0 14px;-webkit-overflow-scrolling:touch">'+
+   ['すべて','あ','か','さ','た','な','は','ま','や','ら','わ'].map(r=>'<button type="button" data-v158row="'+r+'" style="flex:0 0 auto;min-width:'+(r==='すべて'?'58':'38')+'px;height:38px;border-radius:19px;border:1px solid '+(reportRow===r?'#0f766e':'#cbd5e1')+';background:'+(reportRow===r?'#0f766e':'#fff')+';color:'+(reportRow===r?'#fff':'#334155')+';font-weight:800">'+r+'</button>').join('')+'</div>';
+ }
+ function apply(){
+   const title=[...document.querySelectorAll('h1,h2,h3,div')].find(e=>e.textContent.trim()==='分析レポート一覧');
+   if(!title)return;
+   let bar=document.getElementById('v158ReportKana');
+   if(!bar){title.insertAdjacentHTML('afterend',nav());bar=document.getElementById('v158ReportKana');}
+   bar.querySelectorAll('[data-v158row]').forEach(b=>b.onclick=()=>{reportRow=b.dataset.v158row;bar.outerHTML=nav();setTimeout(apply,0)});
+   // Cards have a "詳細" button. Filter their nearest card container.
+   document.querySelectorAll('button').forEach(btn=>{
+     if(btn.textContent.trim()!=='詳細')return;
+     let card=btn.parentElement;
+     if(!card)return;
+     const txt=card.innerText||'';
+     // first meaningful line excluding score/date/type/detail
+     const lines=txt.split('\n').map(x=>x.trim()).filter(Boolean);
+     let name=lines.find(x=>x!=='詳細'&&!/^\d+$/.test(x)&&!/^20\d\d[\/-]/.test(x)&&!x.includes('バランス型'))||'';
+     card.style.display=(reportRow==='すべて'||row(name)===reportRow)?'':'none';
+   });
+ }
+ const mo=new MutationObserver(()=>{clearTimeout(window.__v158t);window.__v158t=setTimeout(apply,80)});
+ mo.observe(document.documentElement,{childList:true,subtree:true});
+ document.addEventListener('click',()=>setTimeout(apply,120));
+ setTimeout(apply,300);
+})();
 </script>
 
 </body></html>
