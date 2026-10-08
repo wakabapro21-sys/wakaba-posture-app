@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V213</title>
+<title>AI姿勢＆3次元歪み分析システム V214</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -2647,5 +2647,25 @@ btn.addEventListener('click',refresh);if(getApps().length)onAuthStateChanged(get
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 new MutationObserver(mount).observe(document.documentElement,{childList:true,subtree:true});
+</script>
+
+<!-- V214: display-only simplification. All prior functionality and data stores retained. -->
+<style id="v214-display-style">
+body.v214-simple #v139AutoRestore,body.v214-simple #v114Mode,body.v214-simple #v115SecurityPrep,body.v214-simple #v116DataGuard,body.v214-simple #v117DataGuardCheck,body.v214-simple #v118ClinicCheck,body.v214-simple #v119Subscription,body.v214-simple #v128Subscription,body.v214-simple #v129Plan{display:none!important}
+#v214Summary{padding:14px;margin:10px 0;border:1px solid #99f6e4;border-radius:14px;background:#f0fdfa;color:#115e59;font-size:13px;line-height:1.7}
+#v214Summary strong{font-size:16px}#v214Toggle{display:block;width:100%;padding:12px;margin-top:10px;background:white;border:1px solid #0f766e;border-radius:10px;color:#115e59;font-weight:800;font-size:13px}
+</style>
+<script id="v214-display-ui">
+(function(){
+const hiddenIds=['v139AutoRestore','v114Mode','v115SecurityPrep','v116DataGuard','v117DataGuardCheck','v118ClinicCheck','v119Subscription','v128Subscription','v129Plan'];
+function mount(){const anchor=document.getElementById('v139AutoRestore');if(!anchor||document.getElementById('v214Summary'))return;
+const box=document.createElement('section');box.id='v214Summary';box.innerHTML='<strong>☁ Firebase同期・データ保護</strong><div>患者・履歴の保存と契約確認の機能はそのまま維持しています。詳細なバックアップ状況や開発用の確認画面は下のボタンから表示できます。</div><button type="button" id="v214Toggle" aria-expanded="false">管理用の詳細を表示</button>';
+anchor.insertAdjacentElement('beforebegin',box);
+const btn=box.querySelector('#v214Toggle');document.body.classList.add('v214-simple');
+btn.addEventListener('click',()=>{const isSimple=document.body.classList.toggle('v214-simple');btn.textContent=isSimple?'管理用の詳細を表示':'管理用の詳細を閉じる';btn.setAttribute('aria-expanded',String(!isSimple))});
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
+let tries=0;const timer=setInterval(()=>{mount();if(document.getElementById('v214Summary')||++tries>60)clearInterval(timer)},300);
+})();
 </script>
 </body></html>
