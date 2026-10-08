@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V212</title>
+<title>AI姿勢＆3次元歪み分析システム V213</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -2617,5 +2617,35 @@ boot();
  else mount();
  new MutationObserver(mount).observe(document.documentElement,{childList:true,subtree:true});
 })();
+</script>
+
+<style id="v213-contract-style">
+#v213ContractOverview{margin:12px 0;padding:16px;border:1px solid #fdba74;border-radius:14px;background:#fff7ed;color:#7c2d12;font-size:13px;line-height:1.7}
+#v213ContractOverview h3{margin:0 0 12px;font-size:17px}
+#v213ContractOverview .v213grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+#v213ContractOverview .v213cell{background:#fff;border:1px solid #fed7aa;border-radius:10px;padding:10px;min-width:0}
+#v213ContractOverview .v213cell strong{display:block;color:#9a3412;font-size:15px;overflow-wrap:anywhere}
+#v213ContractOverview .v213actions{display:grid;gap:9px;margin-top:12px}
+#v213ContractOverview button,#v213ContractOverview a{display:block;text-align:center;border:0;border-radius:10px;padding:12px;font-weight:800;font-size:13px;text-decoration:none;background:#9a3412;color:#fff}
+#v213ContractOverview button{background:#0f766e}
+#v213ContractOverview .v213fine{margin-top:9px;font-size:11px;line-height:1.6}
+</style>
+<script type="module" id="v213-contract-overview">
+import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
+import {getAuth,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
+import {getFirestore,doc,getDocFromServer} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
+const portal='https://billing.stripe.com/p/login/test_00wcN7fuv4Ld9fm7u07Vm00';
+const labels={trial:'無料体験中',trialing:'無料体験中',active:'契約中',canceled:'解約済み',cancelled:'解約済み',expired:'期限切れ',past_due:'お支払いの確認が必要',unpaid:'未払い',incomplete:'手続き未完了',setup:'準備中'};
+function date(v){if(!v)return '未確認';try{const d=v.toDate?v.toDate():new Date(typeof v==='number'&&v<1e12?v*1000:v);return Number.isNaN(d.getTime())?'未確認':d.toLocaleDateString('ja-JP')}catch{return '未確認'}}
+function mount(){const sales=document.getElementById('v130Sales');if(!sales||document.getElementById('v213ContractOverview'))return;
+const el=document.createElement('section');el.id='v213ContractOverview';
+el.innerHTML='<h3>💳 ご契約状況</h3><div class="v213grid"><div class="v213cell">契約状態<strong id="v213State">確認中…</strong></div><div class="v213cell">プラン<strong>スタンダード</strong></div><div class="v213cell">無料体験<strong>14日間</strong></div><div class="v213cell">月額料金<strong>3,980円（税込）</strong></div><div class="v213cell">無料体験終了日<strong id="v213Trial">未確認</strong></div><div class="v213cell">次回更新・契約期限<strong id="v213Renew">未確認</strong></div></div><div class="v213actions"><button type="button" id="v213Refresh">契約状態を再確認</button><a href="'+portal+'" target="_blank" rel="noopener noreferrer">契約内容の確認・解約（Stripeテスト）</a></div><div class="v213fine" id="v213Message">契約状態はFirebaseの院アカウントから読み取ります。</div><div class="v213fine">※現在はテスト環境です。本番の契約・請求には使用できません。</div>';
+sales.insertAdjacentElement('beforebegin',el);
+const state=el.querySelector('#v213State'),trial=el.querySelector('#v213Trial'),renew=el.querySelector('#v213Renew'),msg=el.querySelector('#v213Message'),btn=el.querySelector('#v213Refresh');
+async function refresh(){state.textContent='確認中…';trial.textContent='未確認';renew.textContent='未確認';msg.textContent='サーバーに確認しています…';btn.disabled=true;try{if(!getApps().length)throw Error('Firebase接続待ち');const u=getAuth(getApp()).currentUser;if(!u){state.textContent='ログインが必要';msg.textContent='Firebase同期からログインしてください。';return}const snap=await getDocFromServer(doc(getFirestore(getApp()),'clinics',u.uid,'subscription','status'));if(!snap.exists()){state.textContent='契約情報なし';msg.textContent='Firebaseに契約情報がありません。Stripeとの同期状態を確認してください。';return}const d=snap.data()||{},st=String(d.stripeStatus||d.status||'').toLowerCase();state.textContent=labels[st]||'確認が必要';trial.textContent=date(d.trialEnd??d.trial_end??d.trialEndAt??d.trialEndsAt);renew.textContent=date(d.currentPeriodEnd??d.current_period_end);msg.textContent=d.source?'Firebaseに保存された契約情報を表示しています。':'Firebaseの契約情報を表示しています。Stripeとの連携状況は未確認です。';}catch(e){state.textContent='取得できません';msg.textContent='契約情報を取得できませんでした。通信・ログイン状態をご確認ください。';}finally{btn.disabled=false}}
+btn.addEventListener('click',refresh);if(getApps().length)onAuthStateChanged(getAuth(getApp()),refresh);else{let n=0;const t=setInterval(()=>{if(getApps().length){clearInterval(t);onAuthStateChanged(getAuth(getApp()),refresh)}else if(++n>30){clearInterval(t);state.textContent='接続待ち'}},400)}
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
+new MutationObserver(mount).observe(document.documentElement,{childList:true,subtree:true});
 </script>
 </body></html>
