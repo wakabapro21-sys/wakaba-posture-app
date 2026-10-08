@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V211</title>
+<title>AI姿勢＆3次元歪み分析システム V212</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -351,7 +351,7 @@ html,body{
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V211</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V212</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -2593,25 +2593,29 @@ boot();
 })();
 </script>
 
-<!-- V211: test customer portal access, no changes to payment/Firebase data -->
-<style id="v211-portal-style">
-#v211PortalBox{margin-top:14px;padding:14px;border:1px solid #fdba74;border-radius:12px;background:#fff7ed;color:#7c2d12;font-size:13px;line-height:1.7}
-#v211PortalLink{display:block;text-align:center;padding:12px;border-radius:10px;background:#9a3412;color:white;font-weight:700;text-decoration:none;margin:9px 0}
+
+<!-- V212: Place portal link directly under the subscription application button -->
+<style id="v212-portal-style">
+#v212PortalLink{display:block;box-sizing:border-box;width:100%;margin-top:12px;padding:15px 9px;border-radius:11px;background:#9a3412;color:white;text-align:center;text-decoration:none;font-size:15px;font-weight:800;line-height:1.5}
+#v212PortalNote{font-size:12px;line-height:1.6;margin:7px 0 12px;color:#9a3412}
 </style>
-<script id="v211-portal-link">
+<script id="v212-portal-link">
 (function(){
- const TEST_PORTAL='https://billing.stripe.com/p/login/test_00wcN7fuv4Ld9fm7u07Vm00';
+ const url='https://billing.stripe.com/p/login/test_00wcN7fuv4Ld9fm7u07Vm00';
  function mount(){
-  const sales=document.getElementById('v130Sales')||document.getElementById('v129SalesPlan');
-  if(!sales||document.getElementById('v211PortalBox'))return;
-  const box=document.createElement('div');box.id='v211PortalBox';
-  const heading=document.createElement('strong');heading.textContent='契約内容の確認・解約（Stripeテスト環境）';
-  const a=document.createElement('a');a.id='v211PortalLink';a.href=TEST_PORTAL;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Stripeで契約を管理・解約する（テスト）';
-  const note=document.createElement('div');note.textContent='Stripeに登録したメールアドレスで認証してください。これはテスト環境専用の入口です。本番決済・本番解約には利用できません。';
-  box.append(heading,a,note);sales.appendChild(box);
+  const apply=document.getElementById('v130Apply');
+  if(!apply||document.getElementById('v212PortalLink'))return;
+  const a=document.createElement('a');
+  a.id='v212PortalLink';a.href=url;a.target='_blank';a.rel='noopener noreferrer';
+  a.textContent='契約内容の確認・解約（Stripeテスト）';
+  const note=document.createElement('div');note.id='v212PortalNote';
+  note.textContent='Stripeに登録したメールアドレスで認証します。テスト環境専用です。本番契約には使用できません。';
+  apply.insertAdjacentElement('afterend',a);
+  a.insertAdjacentElement('afterend',note);
  }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{mount();new MutationObserver(mount).observe(document.body,{childList:true,subtree:true})});
- else {mount();new MutationObserver(mount).observe(document.body,{childList:true,subtree:true})}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);
+ else mount();
+ new MutationObserver(mount).observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
 </body></html>
