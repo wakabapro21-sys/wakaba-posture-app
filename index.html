@@ -2562,4 +2562,34 @@ boot();
 })();
 </script>
 
+
+<!-- V210: menu-only subscription entry; existing billing and Firebase logic unchanged -->
+<style id="v210-menu-style">
+#v210ContractMenu{border-left:5px solid #f97316!important;background:#fff7ed!important;color:#9a3412!important}
+</style>
+<script id="v210-contract-menu">
+(function(){
+ function init(){
+  const nav=document.querySelector('#v77Menu .v77nav');
+  if(!nav||document.getElementById('v210ContractMenu'))return;
+  const b=document.createElement('button');
+  b.type='button';b.id='v210ContractMenu';b.textContent='💳 契約プラン';
+  const settings=nav.querySelector('[data-v77="settings"]');
+  if(settings)settings.insertAdjacentElement('afterend',b);else nav.appendChild(b);
+  b.addEventListener('click',function(){
+   const existing=document.getElementById('v101CloudMenu');
+   if(existing)existing.click();
+   else { alert('契約画面を開けませんでした。Firebase同期からご確認ください。');return; }
+   let attempts=0;
+   const jump=()=>{
+    const target=document.getElementById('v130Sales')||document.getElementById('v129SalesPlan');
+    if(target){target.scrollIntoView({behavior:'smooth',block:'start'});return;}
+    if(++attempts<15)setTimeout(jump,150);
+   };
+   setTimeout(jump,80);
+  });
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
 </body></html>
