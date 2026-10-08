@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V208</title>
+<title>AI姿勢＆3次元歪み分析システム V209</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -351,7 +351,7 @@ html,body{
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V208</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V209</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -2508,7 +2508,7 @@ boot();
 
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 <script id="v208-contact-cloudrun">
-/* V208: Only contact submission transport changed; all patient and payment code unchanged. */
+/* V209: Only contact submission transport changed; all patient and payment code unchanged. */
 (function(){
  const endpoint='https://sendcontactmail-992802796991.asia-northeast1.run.app';
  const siteKey='0x4AAAAAAFQ1SC6Ue0X2Hsuc';
@@ -2543,15 +2543,18 @@ boot();
     let r;
     try{r=await fetch(endpoint,{method:'POST',mode:'cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,email:em,message:m,turnstileToken:token,website:""}),signal:controller.signal});}
     finally{clearTimeout(timeout)}
-    if(!r.ok)throw new Error('HTTP '+r.status);
+    if(!r.ok){
+     let detail='';try{const body=await r.json();detail=body.error||''}catch(_){}
+     const err=new Error(detail||('HTTP '+r.status));err.status=r.status;throw err;
+    }
     const data=await r.json();
     if(data.success!==true && data.ok!==true)throw new Error('Server did not confirm success');
     out.style.color='#047857';out.textContent='お問い合わせを送信しました。ありがとうございます。';
     f.reset();
-    if(widgetId!==null&&window.turnstile)window.turnstile.reset(widgetId);
    }catch(err){
-    console.error('V208 contact',err);
-    out.style.color='#b91c1c';out.textContent='送信できませんでした。管理者にお問い合わせください。';
+    console.error('V209 contact',err);
+    out.style.color='#b91c1c';
+    out.textContent=err.name==='AbortError'?'通信がタイムアウトしました。再度お試しください。':err.status===401||err.status===403?'送信先のアクセス設定を確認してください（HTTP '+err.status+'）。':err.status===429?'送信回数の制限中です。少し待ってからお試しください。':err.message&&err.message.startsWith('HTTP ')?'送信に失敗しました（'+err.message+'）。':err.message&&err.message!=='Failed to fetch'?err.message:'送信できませんでした。通信環境をご確認ください。';
    }finally{if(widgetId!==null&&window.turnstile)window.turnstile.reset(widgetId);btn.disabled=false;btn.textContent='送信する'}
   });
  }
