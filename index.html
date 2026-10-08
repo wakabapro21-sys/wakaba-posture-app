@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V207</title>
+<title>AI姿勢＆3次元歪み分析システム V208</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -351,7 +351,7 @@ html,body{
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V207</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V208</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -376,6 +376,7 @@ html,body{
     <input id="v204Email" type="email" maxlength="160" required placeholder="例：example@email.com" style="box-sizing:border-box;width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px">
     <label style="display:block;font-size:13px;font-weight:700;margin:12px 0 5px">お問い合わせ内容</label>
     <textarea id="v204Message" maxlength="3000" required placeholder="お問い合わせ内容をご記入ください" style="box-sizing:border-box;width:100%;min-height:140px;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px;resize:vertical"></textarea>
+    <div id="v208Turnstile" style="margin-top:14px;min-height:65px"></div>
     <button type="submit" id="v204Send" style="width:100%;margin-top:14px;padding:14px;border:0;border-radius:11px;background:#0f9f91;color:#fff;font-size:15px;font-weight:800">送信する</button>
     <div id="v204Msg" style="margin-top:9px;font-size:12px;font-weight:700;line-height:1.6"></div>
   </form>
@@ -2505,10 +2506,19 @@ boot();
 
 
 
-<script id="v206-contact-cloudrun">
-/* V207: Only contact submission transport changed; all patient and payment code unchanged. */
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+<script id="v208-contact-cloudrun">
+/* V208: Only contact submission transport changed; all patient and payment code unchanged. */
 (function(){
  const endpoint='https://sendcontactmail-992802796991.asia-northeast1.run.app';
+ const siteKey='0x4AAAAAAFQ1SC6Ue0X2Hsuc';
+ let widgetId=null;
+ function mountWidget(){
+  if(widgetId!==null||!document.getElementById('v208Turnstile')||!window.turnstile)return;
+  widgetId=window.turnstile.render('#v208Turnstile',{sitekey:siteKey,theme:'auto'});
+ }
+ const widgetTimer=setInterval(()=>{mountWidget();if(widgetId!==null)clearInterval(widgetTimer)},400);
+ setTimeout(()=>clearInterval(widgetTimer),30000);
  function bind(){
   const f=document.getElementById('v204Form');
   if(!f||f.dataset.bound)return;
@@ -2522,23 +2532,27 @@ boot();
    const btn=document.getElementById('v204Send');
    if(!n||!em||!m){out.style.color='#b91c1c';out.textContent='未入力の項目があります。';return}
    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){out.style.color='#b91c1c';out.textContent='返信用メールアドレスをご確認ください。';return}
+   mountWidget();
+   const token=widgetId!==null&&window.turnstile?window.turnstile.getResponse(widgetId):'';
+   if(!token){out.style.color='#b91c1c';out.textContent='セキュリティ認証を完了してください。';return}
    try{
     btn.disabled=true;btn.textContent='送信中…';
     out.style.color='#475569';out.textContent='お問い合わせを送信しています…';
     const controller=new AbortController();
     const timeout=setTimeout(()=>controller.abort(),15000);
     let r;
-    try{r=await fetch(endpoint,{method:'POST',mode:'cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,email:em,message:m}),signal:controller.signal});}
+    try{r=await fetch(endpoint,{method:'POST',mode:'cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,email:em,message:m,turnstileToken:token,website:""}),signal:controller.signal});}
     finally{clearTimeout(timeout)}
     if(!r.ok)throw new Error('HTTP '+r.status);
     const data=await r.json();
     if(data.success!==true && data.ok!==true)throw new Error('Server did not confirm success');
     out.style.color='#047857';out.textContent='お問い合わせを送信しました。ありがとうございます。';
     f.reset();
+    if(widgetId!==null&&window.turnstile)window.turnstile.reset(widgetId);
    }catch(err){
-    console.error('V207 contact',err);
+    console.error('V208 contact',err);
     out.style.color='#b91c1c';out.textContent='送信できませんでした。管理者にお問い合わせください。';
-   }finally{btn.disabled=false;btn.textContent='送信する'}
+   }finally{if(widgetId!==null&&window.turnstile)window.turnstile.reset(widgetId);btn.disabled=false;btn.textContent='送信する'}
   });
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
