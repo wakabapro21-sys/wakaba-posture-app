@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V215</title>
+<title>AI姿勢＆3次元歪み分析システム V216</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -351,7 +351,7 @@ html,body{
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V215</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V216</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1289,6 +1289,7 @@ host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel'
  render();
 })();
 </script>
+<div id="v216EditModal" style="display:none;position:fixed;inset:0;z-index:99999;background:#0009;align-items:center;justify-content:center;padding:16px;box-sizing:border-box"><div style="background:white;border-radius:20px;padding:22px;width:min(100%,480px);max-height:90vh;overflow:auto;box-sizing:border-box;color:#1e293b"><h2 style="margin:0 0 16px">登録情報の編集</h2><div id="v216EditFields" style="display:grid;gap:12px"><label style="display:grid;gap:5px;font-weight:700">氏名<input id="v216_name" type="text" style="width:100%;box-sizing:border-box;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:16px"></label><label style="display:grid;gap:5px;font-weight:700">フリガナ<input id="v216_kana" type="text" style="width:100%;box-sizing:border-box;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:16px"></label><label style="display:grid;gap:5px;font-weight:700">生年月日<input id="v216_birth" type="date" style="width:100%;box-sizing:border-box;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:16px"></label><label style="display:grid;gap:5px;font-weight:700">電話番号<input id="v216_tel" type="tel" style="width:100%;box-sizing:border-box;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:16px"></label><label style="display:grid;gap:5px;font-weight:700">性別<select id="v216_sex" style="padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:16px"><option value="">未選択</option><option value="男性">男性</option><option value="女性">女性</option><option value="その他">その他</option></select></label></div><div style="display:flex;gap:10px;margin-top:20px"><button id="v216EditCancel" type="button" style="flex:1;padding:14px;border:0;border-radius:10px;background:#e2e8f0;font-weight:700">キャンセル</button><button id="v216EditSave" type="button" style="flex:1;padding:14px;border:0;border-radius:10px;background:#0f766e;color:white;font-weight:700">保存</button></div><p style="font-size:12px;color:#64748b">患者ID・分析履歴・写真は変更しません。</p></div></div>
 <script>
 (function(){
 const $=id=>document.getElementById(id), pageIds=['v77Patient','v77Reports','v77Mypage','v77News','v77Help','v77Settings'];let selected=null;
@@ -1306,7 +1307,34 @@ $('v77MenuBtn').onclick=()=>{$('v77Menu').classList.add('on');sessionStorage.set
 document.querySelectorAll('[data-v77]').forEach(b=>b.onclick=()=>{$('v77Menu').classList.remove('on');const p=b.dataset.v77;if(p==='home')return home();if(p==='reports'){reports();return page('v77Reports')}page({mypage:'v77Mypage',news:'v77News',help:'v77Help',settings:'v77Settings'}[p])});
 $('v77Start').onclick=()=>{if(!selected)return;const raw=JSON.stringify(selected);sessionStorage.setItem('wakaba_v61_current',raw);localStorage.setItem('wakaba_v66_current',raw);if(typeof window.wakabaResetAnalysisSession==='function')window.wakabaResetAnalysisSession();$('v61CurrentName').textContent=selected.name||'ゲスト';pageIds.forEach(id=>$(id)?.classList.remove('on'));document.body.classList.add('v61-analysis');window.scrollTo(0,0)};
 $('v77History').onclick=()=>{if(!selected)return;home();const i=cs().findIndex(x=>String(x.id)===String(selected.id));setTimeout(()=>document.querySelectorAll('#v61List .v63hist')[i]?.click(),0)};
-$('v77Line').onclick=()=>alert('LINE共有は次の段階で接続します。');$('v77Edit').onclick=()=>alert('登録情報の編集は次の管理機能で追加します。');
+$('v77Line').onclick=()=>alert('LINE共有は次の段階で接続します。');
+$('v77Edit').onclick=()=>{
+ if(!selected)return;
+ const modal=$('v216EditModal');
+ const latest=cs().find(c=>String(c.id)===String(selected.id))||selected;
+ for(const field of ['name','kana','sex','birth','tel'])$('v216_'+field).value=latest[field]||'';
+ modal.style.display='flex';
+};
+$('v216EditCancel').onclick=()=>{$('v216EditModal').style.display='none'};
+$('v216EditModal').addEventListener('click',e=>{if(e.target===$('v216EditModal'))$('v216EditModal').style.display='none'});
+$('v216EditSave').onclick=()=>{
+ if(!selected)return;
+ const name=$('v216_name').value.trim();if(!name){alert('氏名を入力してください');return}
+ const arr=cs(),idx=arr.findIndex(c=>String(c.id)===String(selected.id));
+ if(idx<0){alert('患者情報が見つかりません。再読み込みしてください。');return}
+ const updated={...arr[idx],name,kana:$('v216_kana').value.trim(),sex:$('v216_sex').value,birth:$('v216_birth').value,tel:$('v216_tel').value.trim()};
+ try{
+  arr[idx]=updated;
+  localStorage.setItem('wakaba_v61_customers',JSON.stringify(arr));
+  for(const store of [localStorage,sessionStorage])for(const key of ['wakaba_v66_current','wakaba_v61_current']){
+   try{const old=JSON.parse(store.getItem(key)||'null');if(old&&String(old.id)===String(updated.id))store.setItem(key,JSON.stringify(updated))}catch(e){}
+  }
+  selected=updated;patient(updated);
+  $('v216EditModal').style.display='none';
+  window.dispatchEvent(new CustomEvent('wakaba:v216-patient-edited',{detail:updated}));
+  alert('登録情報を保存しました。');
+ }catch(e){console.error(e);alert('保存できませんでした。端末の空き容量などを確認してください。')}
+};
 document.addEventListener('click',e=>{const row=e.target.closest?.('.v61row');if(!row||e.target.closest('button'))return;const rows=[...document.querySelectorAll('#v61List .v61row')],i=rows.indexOf(row),a=cs();if(i>=0&&a[i])patient(a[i])});
 // V204: reload on the current menu subpage instead of returning to MENU/home.
 setTimeout(()=>{try{const p=sessionStorage.getItem('wakaba_v165_page');if(p&&p!=='home'){if(p==='v77Reports')reports();page(p)}}catch(e){}},80);
@@ -1567,6 +1595,7 @@ async function v104SyncAllPatients(){
   failed
  };
 }
+window.addEventListener('wakaba:v216-patient-edited',e=>{if(e.detail)v104SyncPatient(e.detail)});
 window.addEventListener('wakaba:v103-patient-saved',()=>v104SyncAllPatients());
 window.addEventListener('wakaba:v103-history-saved',e=>v104SyncLatestHistory(e.detail&&e.detail.id));
 document.getElementById('v61Save')?.addEventListener('click',()=>setTimeout(()=>v104SyncAllPatients(),180),true);
@@ -2649,7 +2678,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 new MutationObserver(mount).observe(document.documentElement,{childList:true,subtree:true});
 </script>
 
-<!-- V215: visible version label corrected; V214 display-only simplification. All prior functionality and data stores retained. -->
+<!-- V216: visible version label corrected; V214 display-only simplification. All prior functionality and data stores retained. -->
 <style id="v214-display-style">
 body.v214-simple #v139AutoRestore,body.v214-simple #v114Mode,body.v214-simple #v115SecurityPrep,body.v214-simple #v116DataGuard,body.v214-simple #v117DataGuardCheck,body.v214-simple #v118ClinicCheck,body.v214-simple #v119Subscription,body.v214-simple #v128Subscription,body.v214-simple #v129Plan{display:none!important}
 #v214Summary{padding:14px;margin:10px 0;border:1px solid #99f6e4;border-radius:14px;background:#f0fdfa;color:#115e59;font-size:13px;line-height:1.7}
