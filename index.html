@@ -2697,4 +2697,11 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 let tries=0;const timer=setInterval(()=>{mount();if(document.getElementById('v214Summary')||++tries>60)clearInterval(timer)},300);
 })();
 </script>
+
+<!-- V217: contract display consolidation only; no Firebase/Stripe handlers modified. -->
+<style id="v217-contract-display">
+body.v214-simple #v130Sales{display:none!important}
+body.v214-simple #v213ContractOverview{margin-top:12px}
+body.v214-simple #v213ContractOverview .v213fine{font-size:11px}
+</style>
 </body></html>
