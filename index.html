@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V220</title>
+<title>AI姿勢＆3次元歪み分析システム V221</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -351,7 +351,7 @@ html,body{
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V220</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V221</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -2730,4 +2730,48 @@ body.v214-simple #v130Sales{display:none!important}
 body.v214-simple #v213ContractOverview{margin-top:12px}
 body.v214-simple #v213ContractOverview .v213fine{font-size:11px}
 </style>
+
+<!-- V221: presentation-only consolidation; preserve all subscription and Stripe modules -->
+<style id="v221-contract-unify-style">
+#v121SubscriptionControl{display:none!important}
+#v221AccessSummary{margin-top:12px;padding:11px 12px;background:#fff;border:1px solid #fed7aa;border-radius:10px;color:#065f46;font-weight:800;font-size:14px}
+#v221AccessSummary[data-access="warning"]{color:#9a3412}
+</style>
+<script id="v221-contract-unify-script">
+(function(){
+ function mount(){
+  const panel=document.getElementById('v213ContractOverview');
+  if(!panel)return;
+  let access=document.getElementById('v221AccessSummary');
+  if(!access){
+   access=document.createElement('div');access.id='v221AccessSummary';access.setAttribute('role','status');
+   const grid=panel.querySelector('.v213grid');if(!grid)return;
+   grid.insertAdjacentElement('afterend',access);
+  }
+  const state=panel.querySelector('#v213State'), trial=panel.querySelector('#v213Trial'),renew=panel.querySelector('#v213Renew');
+  if(!state||!trial||!renew)return;
+  function update(){
+   const status=state.textContent.trim(),end=trial.textContent.trim();
+   const parsed=end.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
+   const expired=parsed&&new Date(+parsed[1],+parsed[2]-1,+parsed[3],23,59,59,999).getTime()<Date.now();
+   let msg='契約状態を確認してください',warning=true;
+   if(status==='無料体験中'&&!expired){msg='✓ 無料体験中：利用OK';warning=false}
+   else if(status==='契約中'){msg='✓ 契約中：利用OK';warning=false}
+   else if(status==='無料体験中'&&expired)msg='⚠ 無料体験の期限を確認してください';
+   else if(status==='確認中…')msg='契約情報を確認中…';
+   else if(status==='取得できません'||status==='接続待ち')msg='⚠ 契約情報の取得を確認してください';
+   else if(status==='期限切れ'||status==='解約済み'||status==='未払い')msg='⚠ '+status+'：利用条件を確認してください';
+   access.textContent=msg;
+   access.dataset.access=warning?'warning':'ok';
+  }
+  update();
+  const observer=new MutationObserver(update);
+  observer.observe(state,{childList:true,characterData:true,subtree:true});
+  observer.observe(trial,{childList:true,characterData:true,subtree:true});
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
+ const poll=setInterval(()=>{if(document.getElementById('v221AccessSummary'))clearInterval(poll);else mount()},350);
+ setTimeout(()=>clearInterval(poll),15000);
+})();
+</script>
 </body></html>
