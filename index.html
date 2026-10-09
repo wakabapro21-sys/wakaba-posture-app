@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V218</title>
+<title>AI姿勢＆3次元歪み分析システム V219</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -351,7 +351,7 @@ html,body{
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V218</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V219</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -2671,7 +2671,33 @@ const el=document.createElement('section');el.id='v213ContractOverview';
 el.innerHTML='<h3>💳 ご契約状況</h3><div class="v213grid"><div class="v213cell">契約状態<strong id="v213State">確認中…</strong></div><div class="v213cell">プラン<strong>スタンダード</strong></div><div class="v213cell">無料体験<strong>14日間</strong></div><div class="v213cell">月額料金<strong>3,980円（税込）</strong></div><div class="v213cell">無料体験終了日<strong id="v213Trial">未確認</strong></div><div class="v213cell">次回更新・契約期限<strong id="v213Renew">未確認</strong></div></div><div class="v213actions"><button type="button" id="v213Refresh">契約状態を再確認</button><a href="'+portal+'" target="_blank" rel="noopener noreferrer">契約内容の確認・解約（Stripeテスト）</a></div><div class="v213fine" id="v213Message">契約状態はFirebaseの院アカウントから読み取ります。</div><div class="v213fine">※現在はテスト環境です。本番の契約・請求には使用できません。</div>';
 sales.insertAdjacentElement('beforebegin',el);
 const state=el.querySelector('#v213State'),trial=el.querySelector('#v213Trial'),renew=el.querySelector('#v213Renew'),msg=el.querySelector('#v213Message'),btn=el.querySelector('#v213Refresh');
-async function refresh(){state.textContent='確認中…';trial.textContent='未確認';renew.textContent='未確認';msg.textContent='サーバーに確認しています…';btn.disabled=true;try{if(!getApps().length)throw Error('Firebase接続待ち');const u=getAuth(getApp()).currentUser;if(!u){state.textContent='ログインが必要';msg.textContent='Firebase同期からログインしてください。';return}const snap=await getDocFromServer(doc(getFirestore(getApp()),'clinics',u.uid,'subscription','status'));if(!snap.exists()){state.textContent='契約情報なし';msg.textContent='Firebaseに契約情報がありません。Stripeとの同期状態を確認してください。';return}const d=snap.data()||{},st=String(d.stripeStatus||d.status||'').toLowerCase();state.textContent=labels[st]||'確認が必要';trial.textContent=date(d.trialEnd??d.trial_end??d.trialEndAt??d.trialEndsAt);renew.textContent=date(d.currentPeriodEnd??d.current_period_end);msg.textContent=d.source?'Firebaseに保存された契約情報を表示しています。':'Firebaseの契約情報を表示しています。Stripeとの連携状況は未確認です。';}catch(e){state.textContent='取得できません';msg.textContent='契約情報を取得できませんでした。通信・ログイン状態をご確認ください。';}finally{btn.disabled=false}}
+let refreshing=false;
+async function refresh(){
+ if(refreshing)return;
+ refreshing=true;
+ state.textContent='確認中…';
+ msg.textContent='ボタンを受け付けました。Firebaseに確認しています…';
+ btn.disabled=true;
+ const started=Date.now();
+ try{
+  if(!getApps().length)throw Error('Firebase接続待ち');
+  const u=getAuth(getApp()).currentUser;
+  if(!u){state.textContent='ログインが必要';msg.textContent='Firebase同期からログインしてください。';return;}
+  const snap=await Promise.race([
+   getDocFromServer(doc(getFirestore(getApp()),'clinics',u.uid,'subscription','status')),
+   new Promise((_,reject)=>setTimeout(()=>reject(Error('通信がタイムアウトしました')),12000))
+  ]);
+  if(!snap.exists()){state.textContent='契約情報なし';msg.textContent='Firebaseに契約情報がありません。Stripeとの同期状態を確認してください。';return;}
+  const d=snap.data()||{},st=String(d.stripeStatus||d.status||'').toLowerCase();
+  const remaining=Math.max(0,1200-(Date.now()-started));
+  if(remaining)await new Promise(resolve=>setTimeout(resolve,remaining));
+  state.textContent=labels[st]||'確認が必要';
+  trial.textContent=date(d.trialEnd??d.trial_end??d.trialEndAt??d.trialEndsAt);
+  renew.textContent=date(d.currentPeriodEnd??d.current_period_end);
+  msg.textContent='再確認完了：'+new Date().toLocaleTimeString('ja-JP')+'。Firebaseの契約情報を取得しました。Stripe側の最新状態とは限りません。';
+ }catch(e){state.textContent='取得できません';msg.textContent='再確認に失敗しました：'+(e?.message||'通信・ログイン状態をご確認ください。');}
+ finally{btn.disabled=false;refreshing=false;}
+}
 btn.addEventListener('click',refresh);if(getApps().length)onAuthStateChanged(getAuth(getApp()),refresh);else{let n=0;const t=setInterval(()=>{if(getApps().length){clearInterval(t);onAuthStateChanged(getAuth(getApp()),refresh)}else if(++n>30){clearInterval(t);state.textContent='接続待ち'}},400)}
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
