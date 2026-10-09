@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V219</title>
+<title>AI姿勢＆3次元歪み分析システム V220</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -351,7 +351,7 @@ html,body{
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V219</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V220</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1279,7 +1279,7 @@ host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel'
  function v157Norm(v){return String(v||'').trim().replace(/\s+/g,'').normalize('NFKC').replace(/[\u30a1-\u30f6]/g,ch=>String.fromCharCode(ch.charCodeAt(0)-0x60)).normalize('NFD').replace(/[\u3099\u309a]/g,'').normalize('NFC')}
  function v157Row(v){const c=v157Norm(v)[0]||'';for(const [r,x] of [['あ','ぁあぃいうぅうぇえぉおゔ'],['か','かきくけこ'],['さ','さしすせそ'],['た','たちつてとっ'],['な','なにぬねの'],['は','はひふへほ'],['ま','まみむめも'],['や','ゃやゅゆょよ'],['ら','らりるれろ'],['わ','ゎわをん']])if(x.includes(c))return r;return'他'}
  function v157Nav(){return '<div style="display:flex;flex-wrap:wrap;gap:7px;width:100%;padding:2px 0 12px;box-sizing:border-box">'+['すべて','あ','か','さ','た','な','は','ま','や','ら','わ'].map(r=>'<button type="button" data-v157row="'+r+'" style="width:'+(r==='すべて'?'70':'50')+'px;min-width:0;height:46px;line-height:1;border-radius:23px;white-space:nowrap;border:1px solid '+(v157KanaRow===r?'#2563eb':'#cbd5e1')+';background:'+(v157KanaRow===r?'#2563eb':'#fff')+';color:'+(v157KanaRow===r?'#fff':'#334155')+';font-weight:800">'+r+'</button>').join('')+'</div>'}
- function render(){let a=customers().slice().sort((x,y)=>v157Norm(x.kana||x.name).localeCompare(v157Norm(y.kana||y.name),'ja'));const host=$('v61List');if(!a.length){host.innerHTML='<div class="v61empty"><b>まだ顧客が登録されていません</b><br><br>「＋ 新規登録」から最初の顧客を登録してください。</div>';return}if(v157KanaRow!=='すべて')a=a.filter(c=>v157Row(c.kana||c.name)===v157KanaRow);host.innerHTML=v157Nav()+(a.length?a.map((c,i)=>'<div class="v61row"><div class="v61avatar">'+esc((c.name||'?').slice(0,1))+'</div><div class="v61meta"><div class="v61name">'+esc(c.name)+'</div><div class="v61sub">'+esc([c.kana,c.sex,c.birth].filter(Boolean).join(' ｜ ')||'登録情報あり')+'</div></div><button class="v63hist" data-h="'+i+'">履歴</button><button class="v61start" data-i="'+i+'">姿勢分析</button></div>').join(''):'<div class="v61empty">この行の顧客はまだ登録されていません。</div>');host.querySelectorAll('[data-v157row]').forEach(b=>b.onclick=()=>{v157KanaRow=b.dataset.v157row;render()});host.querySelectorAll('.v61start').forEach(b=>b.onclick=()=>start(a[+b.dataset.i]));host.querySelectorAll('.v63hist').forEach(b=>b.onclick=()=>showHistory(a[+b.dataset.h]))}
+ function render(){let a=customers().slice().sort((x,y)=>v157Norm(x.kana||x.name).localeCompare(v157Norm(y.kana||y.name),'ja'));const host=$('v61List');if(!a.length){host.innerHTML='<div class="v61empty"><b>まだ顧客が登録されていません</b><br><br>「＋ 新規登録」から最初の顧客を登録してください。</div>';return}if(v157KanaRow!=='すべて')a=a.filter(c=>v157Row(c.kana||c.name)===v157KanaRow);host.innerHTML=v157Nav()+(a.length?a.map((c,i)=>'<div class="v61row" data-patient-id="'+esc(c.id)+'"><div class="v61avatar">'+esc((c.name||'?').slice(0,1))+'</div><div class="v61meta"><div class="v61name">'+esc(c.name)+'</div><div class="v61sub">'+esc([c.kana,c.sex,c.birth].filter(Boolean).join(' ｜ ')||'登録情報あり')+'</div></div><button class="v63hist" data-h="'+i+'">履歴</button><button class="v61start" data-i="'+i+'">姿勢分析</button></div>').join(''):'<div class="v61empty">この行の顧客はまだ登録されていません。</div>');host.querySelectorAll('[data-v157row]').forEach(b=>b.onclick=()=>{v157KanaRow=b.dataset.v157row;render()});host.querySelectorAll('.v61start').forEach(b=>b.onclick=()=>start(a[+b.dataset.i]));host.querySelectorAll('.v63hist').forEach(b=>b.onclick=()=>showHistory(a[+b.dataset.h]))}
  function start(c){const raw=JSON.stringify(c);sessionStorage.setItem('wakaba_v61_current',raw);localStorage.setItem('wakaba_v66_current',raw); if(typeof window.wakabaResetAnalysisSession==='function')window.wakabaResetAnalysisSession(); $('v61CurrentName').textContent=c.name||'ゲスト'; document.body.classList.add('v61-analysis'); window.scrollTo(0,0)}
  function home(){document.body.classList.remove('v61-analysis');window.scrollTo(0,0);render()}
  $('v61Add').onclick=()=>{$('v61Modal').classList.add('on');$('v61Name').focus()}; $('v61Cancel').onclick=()=>$('v61Modal').classList.remove('on'); $('v61Back').onclick=home;
@@ -1306,7 +1306,7 @@ function reports(){let r=[];cs().forEach(c=>hs(c.id).forEach(x=>r.push({c,x})));
 $('v77MenuBtn').onclick=()=>{$('v77Menu').classList.add('on');sessionStorage.setItem('wakaba_v165_menu','1')};$('v77MenuClose').onclick=()=>{$('v77Menu').classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu')};$('v77Menu').onclick=e=>{if(e.target===$('v77Menu'))$('v77Menu').classList.remove('on')};document.querySelectorAll('[data-v77home]').forEach(b=>b.onclick=home);
 document.querySelectorAll('[data-v77]').forEach(b=>b.onclick=()=>{$('v77Menu').classList.remove('on');const p=b.dataset.v77;if(p==='home')return home();if(p==='reports'){reports();return page('v77Reports')}page({mypage:'v77Mypage',news:'v77News',help:'v77Help',settings:'v77Settings'}[p])});
 $('v77Start').onclick=()=>{if(!selected)return;const raw=JSON.stringify(selected);sessionStorage.setItem('wakaba_v61_current',raw);localStorage.setItem('wakaba_v66_current',raw);if(typeof window.wakabaResetAnalysisSession==='function')window.wakabaResetAnalysisSession();$('v61CurrentName').textContent=selected.name||'ゲスト';pageIds.forEach(id=>$(id)?.classList.remove('on'));document.body.classList.add('v61-analysis');window.scrollTo(0,0)};
-$('v77History').onclick=()=>{if(!selected)return;home();const i=cs().findIndex(x=>String(x.id)===String(selected.id));setTimeout(()=>document.querySelectorAll('#v61List .v63hist')[i]?.click(),0)};
+$('v77History').onclick=()=>{if(!selected)return;home();const id=String(selected.id);setTimeout(()=>{const row=[...document.querySelectorAll('#v61List .v61row')].find(r=>r.dataset.patientId===id);if(row)row.querySelector('.v63hist')?.click();else alert('対象の患者が現在の一覧に表示されていません。「すべて」を選んでからお試しください。')},0)};
 $('v77Line').onclick=()=>alert('LINE共有は次の段階で接続します。');
 $('v77Edit').onclick=()=>{
  if(!selected)return;
@@ -1335,7 +1335,7 @@ $('v216EditSave').onclick=()=>{
   alert('登録情報を保存しました。');
  }catch(e){console.error(e);alert('保存できませんでした。端末の空き容量などを確認してください。')}
 };
-document.addEventListener('click',e=>{const row=e.target.closest?.('.v61row');if(!row||e.target.closest('button'))return;const rows=[...document.querySelectorAll('#v61List .v61row')],i=rows.indexOf(row),a=cs();if(i>=0&&a[i])patient(a[i])});
+document.addEventListener('click',e=>{const row=e.target.closest?.('.v61row');if(!row||e.target.closest('button'))return;const id=row.dataset.patientId,c=cs().find(x=>String(x.id)===id);if(c)patient(c)});
 // V204: reload on the current menu subpage instead of returning to MENU/home.
 setTimeout(()=>{try{const p=sessionStorage.getItem('wakaba_v165_page');if(p&&p!=='home'){if(p==='v77Reports')reports();page(p)}}catch(e){}},80);
 })();
