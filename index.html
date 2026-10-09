@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V222</title>
+<title>AI姿勢＆3次元歪み分析システム V223</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -352,7 +352,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V222</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V223</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1764,7 +1764,40 @@ document.addEventListener('DOMContentLoaded',()=>{
  function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(STORE))r.result.createObjectStore(STORE)};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
  async function idbPut(k,v){try{const db=await openDB();await new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put(v,k);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)});db.close()}catch(e){console.warn('V116 IDB backup',e)}}
  async function idbGet(k){try{const db=await openDB();const v=await new Promise((res,rej)=>{const r=db.transaction(STORE,'readonly').objectStore(STORE).get(k);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});db.close();return v}catch(e){return undefined}}
- async function mirrorAll(){for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(relevant(k)){const v=localStorage.getItem(k);if(v!=null)await idbPut(k,v)}}}
+ // V223: Preserve existing photo-rich snapshots for matching history entries.
+ function parseHistory(v){try{const a=JSON.parse(v||'[]');return Array.isArray(a)?a:[]}catch(e){return []}}
+ function mergePhotos(current,backup){
+  const byDate=new Map(backup.filter(h=>h&&h.date).map(h=>[String(h.date),h]));
+  let changed=false;
+  const merged=current.map(h=>{
+   if(!h||!h.date)return h;
+   const old=byDate.get(String(h.date));if(!old)return h;
+   const photos={...(h.photos||{})};let itemChanged=false;
+   for(const k of ['front','right','left']){
+    if(!photos[k]&&old.photos&&typeof old.photos[k]==='string'&&old.photos[k].startsWith('data:image/')){photos[k]=old.photos[k];itemChanged=true;changed=true}
+   }
+   return itemChanged?{...h,photos}:h;
+  });
+  return {merged,changed};
+ }
+ async function keepPhotoBackup(k,v){
+  if(!k.startsWith(HP)){await idbPut(k,v);return}
+  const old=parseHistory(await idbGet(k)),incoming=parseHistory(v);
+  if(!old.length){await idbPut(k,v);return}
+  const {merged}=mergePhotos(incoming,old);
+  // Do not restore records deliberately deleted by the user.
+  await idbPut(k,JSON.stringify(merged));
+ }
+ async function recoverMissingPhotos(){
+  const keys=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(HP))keys.push(k)}
+  for(const k of keys){
+   const raw=localStorage.getItem(k);if(!raw)continue;
+   const cur=parseHistory(raw),bak=parseHistory(await idbGet(k));if(!cur.length||!bak.length)continue;
+   const {merged,changed}=mergePhotos(cur,bak);
+   if(changed){try{origSet.call(localStorage,k,JSON.stringify(merged))}catch(e){console.warn('V223 photo recovery storage full',e)}}
+  }
+ }
+ async function mirrorAll(){for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(relevant(k)){const v=localStorage.getItem(k);if(v!=null)await keepPhotoBackup(k,v)}}}
  async function recoverIfNeeded(){
   let cur=[];try{cur=JSON.parse(localStorage.getItem(CUSTOMER)||'[]')}catch(e){}
   if(Array.isArray(cur)&&cur.length)return false;
@@ -1777,11 +1810,12 @@ document.addEventListener('DOMContentLoaded',()=>{
  }
  // V204: history photos are stored locally at max 1280 px / JPEG 0.72. No photo is uploaded to Firebase.
  const origSet=Storage.prototype.setItem, origRemove=Storage.prototype.removeItem;
- Storage.prototype.setItem=function(k,v){const out=origSet.apply(this,arguments);if(this===localStorage&&relevant(String(k)))idbPut(String(k),String(v));return out};
+ Storage.prototype.setItem=function(k,v){const out=origSet.apply(this,arguments);if(this===localStorage&&relevant(String(k)))keepPhotoBackup(String(k),String(v));return out};
  Storage.prototype.removeItem=function(k){if(this===localStorage&&relevant(String(k))){const old=this.getItem(k);if(old!=null)idbPut(String(k),old)}return origRemove.apply(this,arguments)};
  async function boot(){
   const recovered=await recoverIfNeeded();
   if(recovered){setTimeout(()=>location.reload(),150);return}
+  await recoverMissingPhotos();
   await mirrorAll();
   setTimeout(()=>{
    const anchor=document.getElementById('v115SecurityPrep')||document.getElementById('v114Mode');
@@ -2732,7 +2766,7 @@ body.v214-simple #v213ContractOverview{margin-top:12px}
 body.v214-simple #v213ContractOverview .v213fine{font-size:11px}
 </style>
 
-<!-- V222: presentation-only consolidation; preserve all subscription and Stripe modules -->
+<!-- V223: presentation-only consolidation; preserve all subscription and Stripe modules -->
 <style id="v221-contract-unify-style">
 #v121SubscriptionControl{display:none!important}
 #v221AccessSummary{margin-top:12px;padding:11px 12px;background:#fff;border:1px solid #fed7aa;border-radius:10px;color:#065f46;font-weight:800;font-size:14px}
