@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V228</title>
+<title>AI姿勢＆3次元歪み分析システム V229</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -352,7 +352,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V228</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V229</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1492,12 +1492,34 @@ import {getFirestore,doc,setDoc,getDoc,getDocFromServer,serverTimestamp,collecti
 const firebaseConfig={apiKey:'AIzaSyCC4vKry9DQnQxwPWOMEy-xbiAzFJ3n6ic',authDomain:'wakaba-posture.firebaseapp.com',projectId:'wakaba-posture',storageBucket:'wakaba-posture.firebasestorage.app',messagingSenderId:'992802796991',appId:'1:992802796991:web:461ab115f39be2795b5d0a',measurementId:'G-1C96FJQPF6'};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const $=id=>document.getElementById(id), status=$('v100Status'),msg=$('v100Msg');
+// V229: device owner lock. Never upload a prior clinic's local patients to a new login.
+const V229_OWNER='wakaba_v229_device_owner';
+function v229OwnerAllowed(u){
+ if(!u)return false;
+ const uid=String(u.uid), owner=localStorage.getItem(V229_OWNER), legacy=localStorage.getItem('wakaba_clinic_uid');
+ if(owner)return owner===uid;
+ // Preserve an existing clinic identity before allowing a different account to claim this device.
+ if(legacy && legacy!==uid)return false;
+ try{localStorage.setItem(V229_OWNER,uid);return true}catch(e){return false}
+}
+function v229Block(u){
+ const ok=v229OwnerAllowed(u);
+ let shield=document.getElementById('v229AccountShield');
+ if(!ok&&u){
+  if(!shield){shield=document.createElement('div');shield.id='v229AccountShield';shield.style.cssText='position:fixed;inset:0;z-index:2147483647;background:#fff;display:flex;align-items:center;justify-content:center;padding:24px;font-family:sans-serif;color:#7f1d1d';document.body.appendChild(shield)}
+  shield.innerHTML='<div style="max-width:430px;padding:24px;border:2px solid #fca5a5;border-radius:16px;background:#fff7f7"><h2>🔒 院アカウントの切り替えを停止しました</h2><p>この端末には別の院の患者データが残っています。誤同期・混在を防ぐため、操作を停止しています。患者データや写真は削除していません。</p><p>元の院アカウントでログインし直してください。別の院で使う場合は、別のブラウザまたは端末を使用してください。</p><button id="v229Logout" style="padding:12px;background:#991b1b;color:white;border:0;border-radius:8px">ログアウトする</button></div>';
+  shield.querySelector('#v229Logout').onclick=()=>signOut(auth);
+  status.textContent='院アカウント不一致・同期停止';
+ }else if(shield){shield.remove()}
+ return ok;
+}
+
 function patients(){try{return JSON.parse(localStorage.getItem('wakaba_v61_customers')||'[]')}catch(e){return[]}}
 function cleanHistory(x){if(!x||typeof x!=='object')return x;const y={...x};delete y.photos;return y}
 function histories(id){try{return JSON.parse(localStorage.getItem('wakaba_v63_history_'+id)||'[]').map(cleanHistory)}catch(e){return[]}}
 async function v104SyncPatient(c){
  if(!c||!c.id)return false;
- if(!auth.currentUser){status.textContent='同期待ち';return false}
+ if(!auth.currentUser || !v229OwnerAllowed(auth.currentUser)){status.textContent='院ID不一致・同期停止';return false}
  const id=String(c.id);
  try{
   status.textContent='自動同期中';
@@ -1509,9 +1531,9 @@ async function v104SyncPatient(c){
   return true;
  }catch(e){console.error('V104 patient auto sync',e);status.textContent='同期失敗';msg.innerHTML='<span class="v100err">端末保存は成功しましたが、Firebase自動保存に失敗しました。端末データは残っています。</span>';return false}
 }
-async function v104SyncLatestHistory(id){if(!auth.currentUser||!id)return;try{const hs=histories(id);if(!hs.length)return;const h=hs[0],hid=String(h.date||'history_latest').replaceAll('/','-');await setDoc(doc(db,'clinics',auth.currentUser.uid,'patients',String(id),'histories',hid),{...h,patientId:String(id),updatedAt:serverTimestamp()},{merge:true});status.textContent='自動同期済み'}catch(e){console.error('V104 history auto sync',e);status.textContent='履歴同期失敗'}}
+async function v104SyncLatestHistory(id){if(!auth.currentUser||!v229OwnerAllowed(auth.currentUser)||!id)return;try{const hs=histories(id);if(!hs.length)return;const h=hs[0],hid=String(h.date||'history_latest').replaceAll('/','-');await setDoc(doc(db,'clinics',auth.currentUser.uid,'patients',String(id),'histories',hid),{...h,patientId:String(id),updatedAt:serverTimestamp()},{merge:true});status.textContent='自動同期済み'}catch(e){console.error('V104 history auto sync',e);status.textContent='履歴同期失敗'}}
 async function v104SyncAllPatients(){
- if(!auth.currentUser)return null;
+ if(!auth.currentUser||!v229OwnerAllowed(auth.currentUser))return null;
 
  // V110: First guarantee that every local patient has a UNIQUE patient ID.
  // V107 counted duplicate local IDs twice, which could show "Firebase 2" while
@@ -1610,6 +1632,7 @@ window.addEventListener('wakaba:v103-patient-saved',()=>v104SyncAllPatients());
 window.addEventListener('wakaba:v103-history-saved',e=>v104SyncLatestHistory(e.detail&&e.detail.id));
 document.getElementById('v61Save')?.addEventListener('click',()=>setTimeout(()=>v104SyncAllPatients(),180),true);
 async function restoreAll(){
+ if(!v229OwnerAllowed(auth.currentUser)){v229Block(auth.currentUser);return}
  const btn=$('v102Restore'); if(btn)btn.disabled=true; status.textContent='復元中'; msg.textContent='Firebaseを確認しています…';
  try{
   const snap=await getDocs(collection(db,'clinics',auth.currentUser.uid,'patients')); const local=patients(); const byId=new Map(local.map(c=>[String(c.id),c])); let added=0,hAdded=0;
@@ -1628,6 +1651,7 @@ async function restoreAll(){
 }
 
 async function uploadAll(){
+ if(!v229OwnerAllowed(auth.currentUser)){v229Block(auth.currentUser);return}
  const list=patients();
  if(!list.length){msg.innerHTML='<span class="v100err">端末に顧客が0件のためコピーしていません。</span>';return}
  $('v100Sync').disabled=true; status.textContent='同期中';
@@ -1661,7 +1685,7 @@ $('v100SignIn').onclick=async()=>{
  finally{btn.disabled=false}
 };
 $('v100SignOut').onclick=()=>signOut(auth);$('v100Sync').onclick=uploadAll;$('v102Restore').onclick=restoreAll;
-onAuthStateChanged(auth,async u=>{if(u){localStorage.setItem('wakaba_clinic_uid',u.uid);localStorage.setItem('wakaba_clinic_email',u.email||'');const ce=$('v112ClinicEmail'),ci=$('v112ClinicId');if(ce)ce.textContent='ログイン：'+(u.email||'メール未設定');if(ci)ci.textContent='院ID：'+u.uid;status.textContent='ログイン済み';$('v100Login').style.display='none';$('v100Actions').style.display='block';msg.innerHTML='<span class="v100ok">V139：端末データを安全確認中です。端末の患者が0件でFirebaseに患者が存在する場合だけ、自動で安全復元します。</span>';
+onAuthStateChanged(auth,async u=>{if(u){if(!v229Block(u))return;localStorage.setItem('wakaba_clinic_uid',u.uid);localStorage.setItem('wakaba_clinic_email',u.email||'');const ce=$('v112ClinicEmail'),ci=$('v112ClinicId');if(ce)ce.textContent='ログイン：'+(u.email||'メール未設定');if(ci)ci.textContent='院ID：'+u.uid;status.textContent='ログイン済み';$('v100Login').style.display='none';$('v100Actions').style.display='block';msg.innerHTML='<span class="v100ok">V139：端末データを安全確認中です。端末の患者が0件でFirebaseに患者が存在する場合だけ、自動で安全復元します。</span>';
 try{
  if(patients().length===0){
   status.textContent='クラウド確認中';
@@ -1709,6 +1733,8 @@ async function migrateV113(){
   if(!getApps().length) throw new Error('Firebase初期化待ちです。数秒後に再試行してください。');
   const app=getApp(),auth=getAuth(app),db=getFirestore(app),u=auth.currentUser;
   if(!u) throw new Error('先にFirebaseへログインしてください。');
+  const owner=localStorage.getItem('wakaba_v229_device_owner')||localStorage.getItem('wakaba_clinic_uid');
+  if(owner && owner!==u.uid)throw new Error('別の院アカウントの端末データがあるため移行を停止しました。');
   btn.disabled=true; st.textContent='旧データを確認中…';
   const root=await getDocsFromServer(collection(db,'patients'));
   let created=0,existing=0,hCreated=0; const failed=[];
