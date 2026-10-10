@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V227</title>
+<title>AI姿勢＆3次元歪み分析システム V228</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -352,7 +352,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V227</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V228</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1782,6 +1782,46 @@ document.addEventListener('DOMContentLoaded',()=>{
  const status=box.querySelector('#v227Status');
  box.querySelector('#v227Save').onclick=async()=>{const q=current();if(!q)return;const pics=keys.filter(([k])=>validImage(q.x.photos&&q.x.photos[k]));if(!pics.length){alert('この履歴には保存できる写真がありません。');return}if(!confirm(pics.length+'枚の写真を端末にダウンロードします。患者さんの写真の取り扱いにご注意ください。'))return;for(const [k] of pics){try{download(blobFromDataUrl(q.x.photos[k]),filename(q,k))}catch(e){status.textContent='保存エラー: '+k;return}await new Promise(r=>setTimeout(r,350))}status.textContent=pics.length+'枚のダウンロードを開始しました。ブラウザのダウンロード許可をご確認ください。'};
  box.querySelector('#v227Restore').onclick=()=>{if(!current())return;box.querySelector('#v227Files').click()};
+ // V228: filename-based automatic restoration to the original patient and dated history.
+ // Never infer patient identity from image content. Unmatched/ambiguous files are skipped.
+ const auto=document.createElement('button');auto.type='button';auto.id='v228AutoRestore';auto.textContent='保存済み写真を本人の履歴へ自動復元';auto.style.cssText='padding:11px;border:0;border-radius:9px;background:#1d4ed8;color:#fff;font-weight:bold;width:100%;margin-top:8px';
+ const picker=document.createElement('input');picker.type='file';picker.accept='image/jpeg,image/png,image/webp';picker.multiple=true;picker.style.display='none';
+ box.querySelector('#v227Restore').insertAdjacentElement('afterend',auto);box.appendChild(picker);
+ auto.onclick=()=>picker.click();
+ picker.onchange=async ev=>{
+  const files=[...ev.target.files];ev.target.value='';if(!files.length)return;
+  let restored=0,skipped=0,failed=0;const tasks=[];
+  for(const file of files){
+   const match=/^wakaba_(.+)_(\d{14})_(front|right|left)\.(jpg|jpeg|png|webp)$/i.exec(file.name);
+   if(!match||!/^image\/(jpeg|png|webp)$/.test(file.type)||file.size>20*1024*1024){skipped++;continue}
+   const [,patientId,stamp,side]=match;
+   const key=histKey(patientId);let history;
+   try{history=JSON.parse(localStorage.getItem(key)||'[]')}catch(e){skipped++;continue}
+   if(!Array.isArray(history)){skipped++;continue}
+   const candidates=history.map((h,i)=>({h,i})).filter(({h})=>String(h.date||'').replace(/[^0-9]/g,'').slice(0,14)===stamp);
+   if(candidates.length!==1){skipped++;continue}
+   const {h,i}=candidates[0];if(validImage(h.photos&&h.photos[side])){skipped++;continue}
+   tasks.push({file,key,index:i,side,patientId,stamp});
+  }
+  if(!tasks.length){status.textContent='一致する未復元写真がありません。対象外 '+skipped+'枚。V227で保存したファイル名を変更せず選択してください。';return}
+  if(!confirm('患者IDと分析日時が一致した '+tasks.length+'枚を、各患者の元の履歴へ復元します。既存写真は上書きしません。よろしいですか？'))return;
+  for(const task of tasks){
+   try{
+    const url=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(task.file)});
+    const img=new Image();await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=url});
+    const canvas=document.createElement('canvas'),scale=Math.min(1,960/Math.max(img.naturalWidth,img.naturalHeight));
+    canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+    // Re-read immediately before writing, so newer histories and photos are preserved.
+    const h=JSON.parse(localStorage.getItem(task.key)||'[]');
+    const hits=h.filter(x=>String(x.date||'').replace(/[^0-9]/g,'').slice(0,14)===task.stamp);
+    if(hits.length!==1||validImage(hits[0].photos&&hits[0].photos[task.side])){skipped++;continue}
+    hits[0].photos=hits[0].photos||{};hits[0].photos[task.side]=canvas.toDataURL('image/jpeg',.62);
+    localStorage.setItem(task.key,JSON.stringify(h));restored++;
+   }catch(e){console.warn('V228 auto restore failed',e);failed++}
+  }
+  status.textContent='自動復元 '+restored+'枚／対象外 '+skipped+'枚／保存失敗 '+failed+'枚。詳細画面を開き直すと表示されます。';
+ };
+
  box.querySelector('#v227Files').onchange=async ev=>{const q=current(),files=[...ev.target.files];ev.target.value='';if(!q||!files.length)return;
  const slots=keys.filter(([k])=>!validImage(q.x.photos&&q.x.photos[k]));if(!slots.length){alert('この履歴には既に3枚の写真があります。既存写真の上書きは行いません。');return}
  if(files.length>slots.length){alert('空いている写真枠は'+slots.length+'つです。写真を選び直してください。');return}
