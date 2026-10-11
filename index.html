@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V275</title>
+<title>AI姿勢＆3次元歪み分析システム V276</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V275</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V276</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3069,36 +3069,40 @@ async function render(id,x){
  function wrap(str,maxWidth,fontSize=21){c.font=fontSize+'px sans-serif';const lines=[];let line='';for(const ch of String(str||'')){if(c.measureText(line+ch).width>maxWidth&&line){lines.push(line);line=ch}else line+=ch}if(line)lines.push(line);return lines}
  function section(y,title,lines,height){rr(c,62,y,955,height,16,'#f1f8f7');text(c,title,86,y+40,27,'#0f766e',true);let yy=y+80;for(const paragraph of lines){for(const line of wrap(paragraph,885,21)){text(c,line,88,yy,21,'#334155');yy+=32}yy+=12}return y+height+18}
  let y=1045;
- y=section(y,'① 姿勢バランスと全体評価',[
- '正面：'+grade(front)+'／側面：'+grade(side)+'／回旋：'+grade(twist)+'。',
- '総合 '+(x.total??'--')+'点。3方向の写真とランドマークから左右・前後・回旋のバランスを確認します。',
- '点数は院内独自の比較指標であり、痛みや疾患の程度を示すものではありません。'],290);
+ y=section(y,'① 今回の姿勢をひと言で',[
+ '今回の姿勢タイプは「'+(x.type||'姿勢バランス')+'」です。',
+ '正面・横・体のねじれを調べ、体のバランスを確認しました。',
+ '点数は姿勢を比べるための目安です。痛みや病気の強さを表すものではありません。'],290);
  const m=x.metrics||{};
- const metricLabels=[['shoulderTilt','肩の傾き','°'],['pelvisTilt','骨盤の傾き','°'],['headShift','頭部の左右偏位',''],['sideDeviation','前後方向の偏位',''],['thoraxYaw','胸郭の回旋','°'],['pelvisYaw','骨盤の回旋','°'],['relativeTwist','胸郭と骨盤の相対回旋','°']];
- const ml=metricLabels.filter(a=>num(m[a[0]])!==null).map(a=>a[1]+'：'+Number(m[a[0]]).toFixed(1)+a[2]);
- const strongest=[['正面',front,'肩の高さや骨盤の左右差'],['側面',side,'頭・胸・骨盤の前後位置'],['回旋',twist,'胸郭と骨盤のねじれ']].filter(v=>v[1]!==null).sort((a,b)=>a[1]-b[1]);
+ const strongest=[['正面',front,'肩や腰の左右の高さ'],['側面',side,'頭・肩・腰の前後の並び'],['回旋',twist,'胸や骨盤の向き']].filter(v=>v[1]!==null).sort((a,b)=>a[1]-b[1]);
  const focus=strongest[0];
- const focusText=focus?('今回もっとも注目したいのは「'+focus[0]+'」です（'+focus[1]+'点）。'+focus[2]+'に着目して、実際の立ち姿や動作と照らし合わせましょう。'):'今回の写真から、肩・骨盤・頭の位置関係を確認します。';
- y=section(y,'② あなたの姿勢で注目したいところ',[
- focusText,
- '「'+(x.type||'姿勢バランス')+'」は今回の写真の特徴を表す分類です。体の異常や病名を意味するものではありません。',
- '正面 '+(front??'--')+'点・側面 '+(side??'--')+'点・回旋 '+(twist??'--')+'点。低い項目ほど、今回の撮影条件では基準からの差が目立ちます。'],310);
- const tilt=num(m.shoulderTilt),pel=num(m.pelvisTilt),shift=num(m.headShift),dev=num(m.sideDeviation),rot=num(m.relativeTwist);
- const main=focus?.[0]==='側面'?'横から見た姿勢':focus?.[0]==='正面'?'正面から見た左右のバランス':'体の向きやねじれ';
- y=section(y,'③ 写真からわかること',[
- '今回は「'+main+'」にいちばん特徴が出ています。写真を見ながら、頭・肩・腰がどこにあるかを一緒に確かめてみましょう。',
- '肩や腰の高さが少し違って見えても、それだけで悪い姿勢とは限りません。いつも同じ立ち方になるか、動かしたときにも違いがあるかが大切です。',
- '体の向きやカメラの位置でも結果は変わります。数字の小さな違いだけで心配する必要はありません。'],340);
- y=section(y,'④ 筋肉について知っておきたいこと',[
- '姿勢を保つために、首・肩・背中・おなか・おしり・脚の筋肉が協力して働いています。',
- focus?.[0]==='側面'?'今回は体の前後のバランスに注目します。胸の前側や背中、おなか、おしりの筋肉がうまく使えているかを、実際の動きで確かめます。':focus?.[0]==='正面'?'今回は左右のバランスに注目します。首・肩・腰・おしりの筋肉が左右で同じように働くかを、実際の動きで確かめます。':'今回は体をひねる動きに注目します。背中・おなか・腰の筋肉が左右で動かしやすいかを確かめます。',
- '写真だけでは、どの筋肉が硬いか、弱いかは決められません。触ったり、動かしたりして確認します。'],350);
+ const focusName=focus?focus[0]:'姿勢全体';
+ const focusDetail=focus?focus[2]:'頭・肩・腰の位置';
+ y=section(y,'② 特に注目したいところ',[
+ '今回は「'+focusName+'」のバランスに注目します。'+focusDetail+'を確認しましょう。',
+ '立つときのくせや、動いたときの様子も合わせて確認すると、体の特徴がもっとわかります。',
+ '姿勢タイプだけで体の異常や痛みの原因が決まるわけではありません。'],310);
+ y=section(y,'③ 体への負担について',[
+ focusName==='側面'?'頭が前に出たり、腰が反ったりすると、首・肩・腰の筋肉が疲れやすくなることがあります。':focusName==='正面'?'左右どちらかに体重をかけるくせがあると、肩や腰の一部が疲れやすくなることがあります。':'体をひねる動きに左右差があると、背中や腰の一部に負担がかかることがあります。',
+ 'ただし、写真だけで負担の大きさや痛みの原因を決めることはできません。',
+ '普段の立ち方・座り方・動きやすさも一緒に確認しましょう。'],340);
+ const muscles=focusName==='側面'?[
+ '緊張しやすい可能性：胸の大胸筋、首の胸鎖乳突筋、腰の脊柱起立筋。',
+ '働きを確認したい筋肉：首の深層頸部屈筋、腹横筋、おしりの大殿筋。']:
+ focusName==='正面'?[
+ '緊張しやすい可能性：首・肩の僧帽筋上部、腰方形筋、おしりの中殿筋。',
+ '働きを確認したい筋肉：左右の中殿筋、腹斜筋、肩甲骨を支える前鋸筋。']:[
+ '緊張しやすい可能性：背中の脊柱起立筋、腰方形筋、おなかの腹斜筋。',
+ '働きを確認したい筋肉：左右の内腹斜筋・外腹斜筋、腹横筋、多裂筋。'];
+ y=section(y,'④ 関係する筋肉とチェックポイント',[
+ muscles[0],muscles[1],
+ 'これらは姿勢から考えられる確認候補です。硬い・弱いと断定せず、触診や動きの検査で確かめます。'],350);
  y=section(y,'⑤ 今日からできること',[
- '立つときは、どちらか片方の足だけに体重をかけ続けていないか確認してみましょう。',
- '座りっぱなしを避け、無理のない範囲でこまめに体を動かしましょう。痛い動きはがまんして続けないでください。'],250);
- y=section(y,'⑥ 次に比べたいこと',[
- '次回は、同じ場所・同じカメラの高さで写真を撮り、今回の写真と並べて見てみましょう。',
- '点数だけでなく、立ちやすさ・動きやすさ・気になる症状が変わったかも一緒に確認しましょう。'],245);
+ focusName==='側面'?'スマホを見るときは顔を近づけすぎず、ときどき目線を上げましょう。':focusName==='正面'?'立つときは片足だけに体重をかけ続けていないか確認しましょう。':'座ったまま、痛みのない範囲でゆっくり左右に体を向けてみましょう。',
+ '長く同じ姿勢を続けず、こまめに体を動かしましょう。痛い動きは無理に続けないでください。'],250);
+ y=section(y,'⑥ 次回の確認ポイント',[
+ '次回も同じ条件で姿勢を調べ、今回の点数や姿勢タイプと比べます。',
+ '立ちやすさ、動きやすさ、気になる症状の変化も一緒に確認しましょう。'],245);
  text(c,'※写真と姿勢分析による参考評価です。医学的診断ではありません。',65,3050,20,'#64748b');
  text(c,'写真は患者様の同意を得て共有してください。',65,3090,20,'#64748b');return canvas
 }
