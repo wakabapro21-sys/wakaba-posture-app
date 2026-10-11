@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V255</title>
+<title>AI姿勢＆3次元歪み分析システム V256</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -352,7 +352,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V255</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V256</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3062,8 +3062,35 @@ async function render(id,x){
  text(c,'写真は患者様の同意を得て共有してください。',65,1678,20,'#64748b');return canvas
 }
 function blob(canvas){return new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(Error('画像生成に失敗しました')),'image/png'))}
-async function share(from,button){const a=from==='history'?currentFromHistory():currentFromLine();if(!a){alert('分析履歴が見つかりません。患者と分析日時を確認してください。');return}button.disabled=true;const label=button.textContent;button.textContent='レポート画像を作成中…';try{const canvas=await render(a.id,a.x),b=await blob(canvas),filename='姿勢分析レポート_'+String(a.x.date).slice(0,10)+'.png';const url=URL.createObjectURL(b),link=document.createElement('a');link.href=url;link.download=filename;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);alert('レポート画像のダウンロードを開始しました。保存を確認してから、LINE公式アカウントの管理画面で患者さんに送信してください。個人LINEからは送信されません。');}catch(e){console.error('V255 report',e);alert('レポート作成に失敗しました。'+e.message)}finally{button.disabled=false;button.textContent=label}}
+async function share(from,button){const a=from==='history'?currentFromHistory():currentFromLine();if(!a){alert('分析履歴が見つかりません。患者と分析日時を確認してください。');return}button.disabled=true;const label=button.textContent;button.textContent='レポート画像を作成中…';try{const canvas=await render(a.id,a.x),b=await blob(canvas),filename='姿勢分析レポート_'+String(a.x.date).slice(0,10)+'.png';const url=URL.createObjectURL(b),link=document.createElement('a');link.href=url;link.download=filename;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);alert('レポート画像のダウンロードを開始しました。保存を確認してから、LINE公式アカウントの管理画面で患者さんに送信してください。個人LINEからは送信されません。');}catch(e){console.error('V256 report',e);alert('レポート作成に失敗しました。'+e.message)}finally{button.disabled=false;button.textContent=label}}
 function mount(){const body=$('v91DetailBody');if(body&&!$('v250FromHistory')){const b=document.createElement('button');b.id='v250FromHistory';b.type='button';b.textContent='写真付き分析レポート画像を保存';b.onclick=()=>share('history',b);body.appendChild(b)}const old=$('v95LineShare');if(old&&!$('v250FromLine')){const b=document.createElement('button');b.id='v250FromLine';b.type='button';b.textContent='写真付き分析レポート画像を保存';b.onclick=()=>share('line',b);old.before(b);const note=document.createElement('div');note.style.cssText='font-size:12px;color:#475569;margin:5px 0 12px';note.textContent='個人LINEには送信しません。画像を保存し、LINE公式アカウントの管理画面から患者さんに送信してください。';b.after(note)}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();const modal=$('v91DetailModal');if(modal)new MutationObserver(()=>{if(modal.classList.contains('on'))mount()}).observe(modal,{attributes:true,attributeFilter:['class']});
+})();
+</script>
+<style id="v256-photo-style">
+/* 写真の余白を黒くしない。画像自体は切り取らない */
+.stage,.v91photo,.v70photo,.reviewbox img{background:#fff!important}
+.stage img,.v91photo img,.v70photo img{object-fit:contain!important;background:#fff!important}
+#v256PdfHistory,#v256PdfLine{display:block;width:100%;border:0;border-radius:12px;background:#0f766e;color:#fff;font-weight:900;padding:14px;margin:10px 0;font-size:15px}
+</style>
+<script id="v256-pdf-report">
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const safe=v=>String(v??'--').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function records(id){try{const a=JSON.parse(localStorage.getItem('wakaba_v63_history_'+id)||'[]');return Array.isArray(a)?a:[]}catch(e){return[]}}
+function patient(id){try{return JSON.parse(localStorage.getItem('wakaba_v61_customers')||'[]').find(c=>String(c.id)===String(id))||{}}catch(e){return{}}}
+function chosen(source){let id,x;if(source==='history'){const c=window.wakabaV227Current;if(!c)return null;id=c.patientId;x=records(id).find(r=>String(r.date)===String(c.date))}else{id=$('v77Patient')?.dataset.patientId;const index=Number($('v98HistorySelect')?.value||0);x=records(id)[index]}return id&&x?{id,x}:null}
+async function photo(id,x,side){const direct=x.photos?.[side];if(typeof direct==='string'&&direct.startsWith('data:image/'))return direct;try{const root=await navigator.storage.getDirectory(),dir=await root.getDirectoryHandle('Wakaba_Posture_Photos'),name=encodeURIComponent(String(id))+'__'+encodeURIComponent(String(x.date))+'__'+side+'.txt',file=await dir.getFileHandle(name);const value=await(await file.getFile()).text();return value.startsWith('data:image/')?value:null}catch(e){return null}}
+function fields(x){return Object.entries(x).filter(([k,v])=>!['photos','date','id','patientId'].includes(k)&&v!==null&&v!==undefined&&['string','number','boolean'].includes(typeof v)&&String(v).length<450)}
+async function printReport(source,button){const a=chosen(source);if(!a){alert('選択した分析履歴が見つかりません。');return}const win=window.open('','_blank');if(!win){alert('PDF画面を開けません。ポップアップを許可してください。');return}button.disabled=true;const old=button.textContent;button.textContent='PDFを準備中…';try{
+const {id,x}=a,p=patient(id),imgs=await Promise.all(['front','right','left'].map(k=>photo(id,x,k)));
+const score=(label,value)=>`<div class="score"><small>${label}</small><strong>${safe(value)}</strong><small> /100</small></div>`;
+const photos=imgs.map((src,i)=>`<div class="photo"><b>${['正面','右側面','左側面'][i]}</b>${src?`<img src="${src}" alt="${['正面','右側面','左側面'][i]}">`:'<div class="missing">写真データなし（端末に保存されていません）</div>'}</div>`).join('');
+const detail=fields(x).map(([k,v])=>`<tr><th>${safe(k)}</th><td>${safe(v)}</td></tr>`).join('');
+win.document.open();win.document.write(`<!doctype html><html lang="ja"><head><meta charset="utf-8"><title>姿勢分析詳細レポート ${safe(x.date)}</title><style>
+@page{size:A4;margin:13mm}*{box-sizing:border-box}body{font-family:Arial,'Noto Sans JP',sans-serif;color:#172033;margin:0;font-size:11px}header{background:#0f766e;color:white;padding:18px;border-radius:10px}h1{margin:0;font-size:23px}h2{font-size:16px;color:#0f766e;border-bottom:2px solid #99f6e4;padding-bottom:6px;margin:22px 0 12px}.sub{margin-top:8px;color:#d1fae5}.patient{padding:12px;background:#f0fdfa;margin:14px 0;border-radius:9px;line-height:1.8}.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.photo{border:1px solid #cbd5e1;border-radius:9px;text-align:center;padding:7px;break-inside:avoid}.photo img{display:block;width:100%;height:235px;object-fit:contain;background:#fff;margin-top:8px}.missing{height:235px;display:grid;place-items:center;color:#64748b}.scores{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.score{background:#ecfdf5;padding:13px;text-align:center;border-radius:9px}.score strong{font-size:28px;color:#0f766e;display:block;margin:5px 0}.score small{color:#64748b}.type{padding:14px;border-radius:9px;background:#f0fdfa;font-size:16px;font-weight:bold}.notes{line-height:1.8;background:#f8fafc;padding:12px;border-radius:9px}table{width:100%;border-collapse:collapse;table-layout:fixed}th,td{border-bottom:1px solid #e2e8f0;padding:9px;text-align:left;overflow-wrap:anywhere}th{width:40%;background:#f8fafc}tr{break-inside:avoid}.footer{margin-top:20px;font-size:10px;color:#64748b;line-height:1.7}.toolbar{padding:12px;background:#eff6ff;margin-bottom:15px;text-align:center}.toolbar button{background:#0f766e;color:white;border:0;padding:12px 22px;border-radius:8px;font-weight:bold}@media print{.toolbar{display:none}header{-webkit-print-color-adjust:exact;print-color-adjust:exact}.scores,.type{print-color-adjust:exact}} </style></head><body><div class="toolbar"><button onclick="window.print()">PDFとして保存・印刷</button><div>印刷画面で「PDFとして保存」を選択してください</div></div><header><h1>姿勢分析 詳細レポート</h1><div class="sub">わかば整体院・接骨院 ｜ 3方向姿勢バランス分析</div></header><div class="patient"><b>${safe(p.kana||p.name||'患者様')} 様</b>　患者ID：${safe(id)}<div>分析日時：${safe(x.date)}　性別：${safe(p.sex||'未設定')}　生年月日：${safe(p.birth||'未設定')}</div></div><h2>1. 姿勢写真（3方向）</h2><div class="photos">${photos}</div><h2>2. 姿勢バランススコア</h2><div class="scores">${score('総合',x.total)}${score('正面',x.front)}${score('側面',x.side)}${score('回旋',x.twist)}</div><h2>3. 姿勢タイプ・総合所見</h2><div class="type">${safe(x.type||'姿勢タイプ未記録')}</div><div class="notes">正面：左右バランスと肩・骨盤の傾きを確認。<br>側面：頭部・体幹・骨盤の前後位置関係を確認。<br>回旋：胸郭・骨盤の相対的なねじれを確認。<br>スコアは撮影条件・ランドマーク位置に影響される独自基準の参考値です。</div><h2>4. 保存済み分析データ（詳細）</h2><table>${detail||'<tr><td>詳細数値はこの履歴に保存されていません。</td></tr>'}</table><h2>5. 継続評価と確認事項</h2><div class="notes">同一条件で撮影し、肩・骨盤の高さ、脊柱の位置、脚軸、重心の偏りを経時比較してください。筋肉の緊張・弱化や症状との関係は、問診・触診・動作評価を併用して判断してください。</div><div class="footer">本レポートは姿勢の参考評価であり、疾病の診断や治療効果の保証ではありません。写真はこの端末からレポート生成時に読み込まれ、Firebaseへ送信しません。共有前に患者様の同意を確認してください。</div></body></html>`);win.document.close();win.focus();
+}catch(e){console.error(e);win.close();alert('PDF作成に失敗しました：'+e.message)}finally{button.disabled=false;button.textContent=old}}
+function mount(){const body=$('v91DetailBody');if(body&&!$('v256PdfHistory')){const b=document.createElement('button');b.id='v256PdfHistory';b.textContent='写真付き詳細レポート（PDF）';b.onclick=()=>printReport('history',b);body.appendChild(b)}const line=$('v250FromLine');if(line&&!$('v256PdfLine')){const b=document.createElement('button');b.id='v256PdfLine';b.textContent='選択した分析の詳細レポート（PDF）';b.onclick=()=>printReport('line',b);line.after(b)}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();const modal=$('v91DetailModal');if(modal)new MutationObserver(()=>{if(modal.classList.contains('on'))mount()}).observe(modal,{attributes:true,attributeFilter:['class']});
 })();
 </script>
