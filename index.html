@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V288</title>
+<title>AI姿勢＆3次元歪み分析システム V289</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V288</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V289</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -872,17 +872,44 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  var frontHeight=Math.max(.35,Math.abs(photos.front.points.head.y-(photos.front.points.leftAnkle.y+photos.front.points.rightAnkle.y)/2));
  var depthScale=2.15/frontHeight;
  names.forEach(function(n){var f=photos.front.points[n];pts3[n]={x:(f.x-.5)*2,y:(.98-f.y)*3,z:profileDepth(n)*depthScale}});
- function yawFromProfiles(aName,bName){
-   var a=pts3[aName],b=pts3[bName],dz=b.z-a.z,dx=Math.max(.12,Math.abs(b.x-a.x));
-   var deg=Math.atan2(dz,dx)*180/Math.PI;return Math.max(-18,Math.min(18,deg));
+ /* V289: 左右側面の観測を別々に検証。正面の左右幅を用い、
+    右側面は画面右=前、左側面は画面左=前として同一前後軸へ変換。
+    両側面が食い違うときは撮影・遮蔽誤差とみなし回旋方向を確定しない。 */
+ function profilePairYaw(aName,bName,side){
+   var rec=photos[side],a=raw(rec,aName),b=raw(rec,bName);
+   if(!a||!b)return null;
+   var ha=raw(rec,"leftHip"),hb=raw(rec,"rightHip");
+   var center=ha&&hb?(ha.x+hb.x)/2:.5;
+   var orient=side==="right"?1:-1;
+   var dz=((b.x-center)-(a.x-center))*orient*depthScale;
+   var dx=Math.max(.12,Math.abs(pts3[bName].x-pts3[aName].x));
+   var angle=Math.atan2(dz,dx)*180/Math.PI;
+   return {angle:Math.max(-18,Math.min(18,angle)),weight:Math.min(a.visibility??.5,b.visibility??.5)};
  }
- thoraxYaw=yawFromProfiles("leftShoulder","rightShoulder");pelvisYaw=yawFromProfiles("leftHip","rightHip");
+ function yawFromProfiles(aName,bName){
+   var r=profilePairYaw(aName,bName,"right"),l=profilePairYaw(aName,bName,"left");
+   if(!r&&!l)return {yaw:0,reliable:false,reason:"ランドマーク不足"};
+   if(!r||!l)return {yaw:0,reliable:false,reason:"片側のランドマーク不足"};
+   /* 両側面の回旋方向が逆なら、どちらかの肩・股関節が隠れている可能性 */
+   var conflict=r.angle*l.angle<0&&Math.abs(r.angle)>2&&Math.abs(l.angle)>2;
+   var difference=Math.abs(r.angle-l.angle);
+   var reliable=!conflict&&difference<=10&&r.weight>=.35&&l.weight>=.35;
+   var wr=Math.max(.15,r.weight),wl=Math.max(.15,l.weight);
+   var yaw=(r.angle*wr+l.angle*wl)/(wr+wl);
+   return {yaw:reliable?yaw:0,reliable:reliable,reason:conflict?"左右側面で方向不一致":difference>10?"左右側面で差が大きい":"ランドマーク信頼度不足"};
+ }
+ var thoraxResult=yawFromProfiles("leftShoulder","rightShoulder");
+ var pelvisResult=yawFromProfiles("leftHip","rightHip");
+ thoraxYaw=thoraxResult.yaw;pelvisYaw=pelvisResult.y;
  /* 低信頼・ほぼ完全側面での微小ノイズを抑制 */
  if(Math.abs(thoraxYaw)<.35)thoraxYaw=0;if(Math.abs(pelvisYaw)<.35)pelvisYaw=0;
  var tw=thoraxYaw-pelvisYaw;
  function mag(v){var a=Math.abs(v);return a<1.5?"ほぼ中間位":a<5?"軽度の回旋傾向":"回旋傾向あり"}
- document.getElementById("thoraxDeg").textContent=mag(thoraxYaw);document.getElementById("pelvisDeg").textContent=mag(pelvisYaw);document.getElementById("twistDeg").textContent=Math.abs(tw)<1.5?"小さい":"相対捻れあり";
- document.getElementById("thoraxText").textContent="3方向参考推定 "+Math.abs(thoraxYaw).toFixed(1)+"°";document.getElementById("pelvisText").textContent="3方向参考推定 "+Math.abs(pelvisYaw).toFixed(1)+"°";document.getElementById("twistText").textContent="参考差 "+Math.abs(tw).toFixed(1)+"°";
+ function yawLabel(result){return !result.reliable?"判定困難":Math.abs(result.yaw)<1.5?"ほぼ中間位":result.yaw>0?"左回旋傾向":"右回旋傾向"}
+ document.getElementById("thoraxDeg").textContent=yawLabel(thoraxResult);document.getElementById("pelvisDeg").textContent=yawLabel(pelvisResult);document.getElementById("twistDeg").textContent=(!thoraxResult.reliable||!pelvisResult.reliable)?"判定困難":Math.abs(tw)<1.5?"小さい":"相対捻れあり";
+ document.getElementById("thoraxText").textContent=thoraxResult.reliable?"側面照合・参考 "+Math.abs(thoraxYaw).toFixed(1)+"°":"要再確認："+thoraxResult.reason;
+ document.getElementById("pelvisText").textContent=pelvisResult.reliable?"側面照合・参考 "+Math.abs(pelvisYaw).toFixed(1)+"°":"要再確認："+pelvisResult.reason;
+ document.getElementById("twistText").textContent=(thoraxResult.reliable&&pelvisResult.reliable)?"参考差 "+Math.abs(tw).toFixed(1)+"°":"左右側面のランドマークを再確認";
  function horizontalTilt(a,b){
    var dx=Math.abs(b.x-a.x),dy=b.y-a.y;
    if(dx<0.0001)return 0;
@@ -1046,7 +1073,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  document.getElementById("muscleWeak").innerHTML=weak.map(function(x){return "・"+x}).join("<br>");
  document.getElementById("careDirection").innerHTML=care.map(function(x){return "✓ "+x}).join("<br>");
  built=true;document.getElementById("threeHint").style.display="none";var b=document.getElementById("modelBadge");b.textContent="3方向反映済み";b.className="badge ok";
-window.WAKABA_3D_DATA={thoraxYaw:thoraxYaw,pelvisYaw:pelvisYaw,relativeTwist:tw,shoulderTilt:sh,pelvisTilt:ph,headShift:hs,sideDeviation:rawSide};
+window.WAKABA_3D_DATA={thoraxYaw:thoraxYaw,pelvisYaw:pelvisYaw,thoraxReliable:thoraxResult.reliable,pelvisReliable:pelvisResult.reliable,relativeTwist:tw,shoulderTilt:sh,pelvisTilt:ph,headShift:hs,sideDeviation:rawSide};
 window.dispatchEvent(new CustomEvent("wakaba-analysis",{detail:window.WAKABA_3D_DATA}));draw()}
 function rot(p){var a=angle*Math.PI/180,c=Math.cos(a),q=Math.sin(a);return{x:p.x*c-p.z*q,y:p.y,z:p.x*q+p.z*c}}
 function project(p){var r=rot(p),box=C.getBoundingClientRect(),sc=Math.min(box.width/2.20,box.height/3.05),pers=1/(1+r.z*.10);return{x:box.width/2+r.x*sc*pers,y:box.height-24-r.y*sc*pers,z:r.z}}
@@ -1728,10 +1755,7 @@ $('v100SignIn').onclick=async()=>{
 };
 $('v266Forgot').onclick=()=>{$('v266ResetPanel').hidden=!$('v266ResetPanel').hidden};
 $('v266SendReset').onclick=async()=>{const email=$('v100Email').value.trim(),out=$('v266ResetMsg'),btn=$('v266SendReset');if(!email||!/^\S+@\S+\.\S+$/.test(email)){out.textContent='登録したメールアドレスを入力してください。';return;}btn.disabled=true;out.textContent='送信中…';try{await sendPasswordResetEmail(auth,email);out.textContent='再設定メールの送信を受け付けました。メールが届かない場合は迷惑メールもご確認ください。';}catch(e){console.error('password reset',e);out.textContent='送信できませんでした。時間をおいて再度お試しください。';}finally{btn.disabled=false}};
-function v266ShowLegal(index){const help=document.getElementById('v77Help');if(!help){alert('メニューの「お問い合わせ・ヘルプ」から規約をご確認ください。');return;}const panel=document.getElementById('v235LegalPanel'+index);if(panel){const win=window.open('','_blank');if(win){win.document.write('<!doctype html><html lang=ja><meta name=viewport content=width=device-width,initial-scale=1><meta charset=utf-8><title>規約の確認</title><body style="font-family:sans-serif;line-height:1.8;padding:20px">'+panel.innerHTML+'
-
-
-</body></html>');win.document.close();}else alert('お問い合わせ・ヘルプから規約を確認してください。');}else alert('お問い合わせ・ヘルプから規約を確認してください。');}
+function v266ShowLegal(index){const help=document.getElementById('v77Help');if(!help){alert('メニューの「お問い合わせ・ヘルプ」から規約をご確認ください。');return;}const panel=document.getElementById('v235LegalPanel'+index);if(panel){const win=window.open('','_blank');if(win){win.document.write('<!doctype html><html lang=ja><meta name=viewport content=width=device-width,initial-scale=1><meta charset=utf-8><title>規約の確認</title><body style="font-family:sans-serif;line-height:1.8;padding:20px">'+panel.innerHTML+'</body></html>');win.document.close();}else alert('お問い合わせ・ヘルプから規約を確認してください。');}else alert('お問い合わせ・ヘルプから規約を確認してください。');}
 $('v266Terms').onclick=e=>{e.preventDefault();v266ShowLegal(1)}; $('v266Privacy').onclick=e=>{e.preventDefault();v266ShowLegal(0)};
 document.getElementById('v270MenuLogout')?.addEventListener('click',()=>{document.getElementById('v77Menu')?.classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu');document.getElementById('v100SignOut')?.click();});
 $('v100SignOut').onclick=async()=>{sessionStorage.setItem('wakaba_v269_login_return','1');sessionStorage.setItem('wakaba_v165_page','home');document.getElementById('v77Menu')?.classList.remove('on');await signOut(auth);v271AuthView(false);};$('v100Sync').onclick=uploadAll;$('v102Restore').onclick=restoreAll;
