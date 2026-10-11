@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V268</title>
+<title>AI姿勢＆3次元歪み分析システム V270</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,11 +353,11 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V268</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V270</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
-<div class="v77overlay" id="v77Menu"><aside class="v77drawer"><div class="v77drawerHead"><div><b>MENU</b><div class="v77muted">わかば姿勢分析</div></div><button class="v77x" id="v77MenuClose">×</button></div><div class="v77nav"><button class="primary" data-v77="home">👥 顧客一覧</button><button data-v77="reports">📋 分析レポート一覧</button><button data-v77="mypage">👤 マイページ</button><button data-v77="news">🔔 お知らせ</button><button data-v77="help">❓ ヘルプ・お問い合わせ</button><button data-v77="settings">⚙️ 設定</button></div></aside></div>
+<div class="v77overlay" id="v77Menu"><aside class="v77drawer"><div class="v77drawerHead"><div><b>MENU</b><div class="v77muted">わかば姿勢分析</div></div><button class="v77x" id="v77MenuClose">×</button></div><div class="v77nav"><button class="primary" data-v77="home">👥 顧客一覧</button><button data-v77="reports">📋 分析レポート一覧</button><button data-v77="mypage">👤 マイページ</button><button data-v77="news">🔔 お知らせ</button><button data-v77="help">❓ ヘルプ・お問い合わせ</button><button data-v77="settings">⚙️ 設定</button><button type="button" id="v270MenuLogout" style="margin-top:14px;border:1px solid #fca5a5;background:#fff7f7;color:#991b1b">🚪 ログアウト</button></div></aside></div>
 <section class="v77page" id="v77Patient"><div class="v77pageHead"><button class="v77back" data-v77home>← 顧客一覧</button><h2>顧客詳細</h2><span></span></div><div class="v77card"><div class="v77patientTop"><div class="v77avatar" id="v77PatientAvatar">患</div><div><div class="v77patientName" id="v77PatientName"></div><div class="v77muted" id="v77PatientSub"></div></div></div><div class="v77grid"><button class="v77big v77orange" id="v77Start">姿勢分析を開始</button><button class="v77big v77green" id="v77History">分析履歴を見る</button><button class="v77big v77line" id="v77Line">LINEで結果を共有</button><button class="v77big v77soft" id="v77Edit">登録情報</button></div><div class="v87hint">分析履歴は患者ごとに保存します。写真付きレポートは画像として渡せます。</div><button id="v90DeletePatient" type="button">この患者を削除</button></div></section>
 <section class="v77page" id="v77Reports"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>分析レポート一覧</h2><span></span></div><div id="v77ReportList"></div></section>
 <section class="v77page" id="v77Mypage"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>マイページ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>プロフィール</b><span>南 昇吾</span></div><div class="v77settingRow"><b>院名</b><span>わかば整体院・接骨院</span></div><div class="v77settingRow"><b>メールアドレス</b><span class="v77muted">クラウド版で設定</span></div><div class="v77settingRow"><b>パスワード</b><span class="v77muted">クラウド版で設定</span></div></div></section>
@@ -1367,7 +1367,7 @@ $('v216EditSave').onclick=()=>{
 };
 document.addEventListener('click',e=>{const row=e.target.closest?.('.v61row');if(!row||e.target.closest('button'))return;const id=row.dataset.patientId,c=cs().find(x=>String(x.id)===id);if(c)patient(c)});
 // V204: reload on the current menu subpage instead of returning to MENU/home.
-setTimeout(()=>{try{const p=sessionStorage.getItem('wakaba_v165_page');if(p&&p!=='home'){if(p==='v77Reports')reports();page(p)}}catch(e){}},80);
+setTimeout(()=>{try{const p=sessionStorage.getItem('wakaba_v165_page');if(p&&p!=='home'&&sessionStorage.getItem('wakaba_v269_login_return')!=='1'){if(p==='v77Reports')reports();page(p)}}catch(e){}},80);
 })();
 </script>
 <script>
@@ -1500,7 +1500,7 @@ document.addEventListener('DOMContentLoaded',()=>{
    const b=document.createElement('button'); b.id='v101CloudMenu'; b.type='button'; b.textContent='☁ Firebase同期'; nav.appendChild(b);
  }
  const cloud=document.getElementById('v100Cloud'), back=document.getElementById('v101CloudBackdrop');
- function openCloud(){ if(cloud) cloud.style.display='block'; if(back) back.style.display='block'; document.getElementById('v77Menu')?.classList.remove('open'); }
+ function openCloud(){ if(cloud) cloud.style.display='block'; if(back) back.style.display='block'; document.getElementById('v77Menu')?.classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu'); }
  function closeCloud(){ if(cloud) cloud.style.display='none'; if(back) back.style.display='none'; }
  document.getElementById('v101CloudMenu')?.addEventListener('click',openCloud);
  back?.addEventListener('click',closeCloud);
@@ -1713,8 +1713,9 @@ $('v266Forgot').onclick=()=>{$('v266ResetPanel').hidden=!$('v266ResetPanel').hid
 $('v266SendReset').onclick=async()=>{const email=$('v100Email').value.trim(),out=$('v266ResetMsg'),btn=$('v266SendReset');if(!email||!/^\S+@\S+\.\S+$/.test(email)){out.textContent='登録したメールアドレスを入力してください。';return;}btn.disabled=true;out.textContent='送信中…';try{await sendPasswordResetEmail(auth,email);out.textContent='再設定メールの送信を受け付けました。メールが届かない場合は迷惑メールもご確認ください。';}catch(e){console.error('password reset',e);out.textContent='送信できませんでした。時間をおいて再度お試しください。';}finally{btn.disabled=false}};
 function v266ShowLegal(index){const help=document.getElementById('v77Help');if(!help){alert('メニューの「お問い合わせ・ヘルプ」から規約をご確認ください。');return;}const panel=document.getElementById('v235LegalPanel'+index);if(panel){const win=window.open('','_blank');if(win){win.document.write('<!doctype html><html lang=ja><meta name=viewport content=width=device-width,initial-scale=1><meta charset=utf-8><title>規約の確認</title><body style="font-family:sans-serif;line-height:1.8;padding:20px">'+panel.innerHTML+'</body></html>');win.document.close();}else alert('お問い合わせ・ヘルプから規約を確認してください。');}else alert('お問い合わせ・ヘルプから規約を確認してください。');}
 $('v266Terms').onclick=e=>{e.preventDefault();v266ShowLegal(1)}; $('v266Privacy').onclick=e=>{e.preventDefault();v266ShowLegal(0)};
-$('v100SignOut').onclick=async()=>{await signOut(auth);$('v100Cloud').style.display='block';$('v101CloudBackdrop').style.display='block';};$('v100Sync').onclick=uploadAll;$('v102Restore').onclick=restoreAll;
-onAuthStateChanged(auth,async u=>{if(u){if(!v230Block(u))return;localStorage.setItem('wakaba_clinic_uid',u.uid);localStorage.setItem('wakaba_clinic_email',u.email||'');const ce=$('v112ClinicEmail'),ci=$('v112ClinicId');if(ce)ce.textContent='ログイン：'+(u.email||'メール未設定');if(ci)ci.textContent='院ID：'+u.uid;status.textContent='ログイン済み';$('v100Login').style.display='none';$('v100Actions').style.display='block';/* V268: successful authentication returns to the customer list; cloud controls remain accessible from MENU */$('v100Cloud').style.display='none';$('v101CloudBackdrop').style.display='none';document.getElementById('v77Menu')?.classList.remove('open');msg.innerHTML='<span class="v100ok">V139：端末データを安全確認中です。端末の患者が0件でFirebaseに患者が存在する場合だけ、自動で安全復元します。</span>';
+document.getElementById('v270MenuLogout')?.addEventListener('click',()=>{document.getElementById('v77Menu')?.classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu');document.getElementById('v100SignOut')?.click();});
+$('v100SignOut').onclick=async()=>{sessionStorage.setItem('wakaba_v269_login_return','1');sessionStorage.setItem('wakaba_v165_page','home');document.getElementById('v77Menu')?.classList.remove('on');await signOut(auth);$('v100Cloud').style.display='block';$('v101CloudBackdrop').style.display='block';};$('v100Sync').onclick=uploadAll;$('v102Restore').onclick=restoreAll;
+onAuthStateChanged(auth,async u=>{if(u){if(!v230Block(u))return;localStorage.setItem('wakaba_clinic_uid',u.uid);localStorage.setItem('wakaba_clinic_email',u.email||'');const ce=$('v112ClinicEmail'),ci=$('v112ClinicId');if(ce)ce.textContent='ログイン：'+(u.email||'メール未設定');if(ci)ci.textContent='院ID：'+u.uid;status.textContent='ログイン済み';$('v100Login').style.display='none';$('v100Actions').style.display='block';/* V270: successful authentication returns to the customer list; cloud controls remain accessible from MENU */$('v100Cloud').style.display='none';$('v101CloudBackdrop').style.display='none';document.getElementById('v77Menu')?.classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu');sessionStorage.setItem('wakaba_v165_page','home');sessionStorage.removeItem('wakaba_v269_login_return');document.querySelectorAll('#v77Patient,#v77Reports,#v77Mypage,#v77News,#v77Help,#v77Settings').forEach(e=>e.classList.remove('on'));document.getElementById('v61Home')?.classList.remove('v77hidden');document.body.classList.remove('v61-analysis');msg.innerHTML='<span class="v100ok">V139：端末データを安全確認中です。端末の患者が0件でFirebaseに患者が存在する場合だけ、自動で安全復元します。</span>';
 try{
  if(patients().length===0){
   status.textContent='クラウド確認中';
