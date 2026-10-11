@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V246</title>
+<title>AI姿勢＆3次元歪み分析システム V247</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -352,7 +352,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V246</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V247</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3028,7 +3028,7 @@ async function exportLatest(id){
  try{const customers=JSON.parse(localStorage.getItem('wakaba_v61_customers')||'[]');patientName=String((customers.find(c=>String(c.id)===String(rec.id))||{}).name||'');}catch(e){}
  // Avoid path separators/control characters; ID remains in the ZIP manifest for exact restoration.
  const cleanName=patientName.replace(/[\\/:*?"<>|\x00-\x1f]/g,'_').trim().slice(0,32)||('患者'+safe(rec.id));
- download(zip(files),(day||'分析日不明')+'_'+(clock||'時刻不明')+'_'+cleanName+'_姿勢分析.zip');return 3;
+ download(zip(files),'ID'+safe(rec.id)+'_'+(day||'分析日不明')+'_'+(clock||'時刻不明')+'_'+cleanName+'_姿勢分析.zip');return 3;
 }
 async function importZip(file){
  const contents=parseZip(await file.arrayBuffer()),manifest=contents.get('wakaba_manifest.json');
@@ -3037,6 +3037,7 @@ async function importZip(file){
  if(obj.format!=='wakaba-photo-backup-v233'||!Array.isArray(obj.photos))throw Error('対応していないバックアップ形式です。');
  let restored=0,already=0,missing=0,failed=0,protectedCount=0;
  const touched=new Set();
+ const targets=new Set();
  for(const item of obj.photos){
   if(!SIDES.includes(item.side)||!item.id||!item.date||item.file!==name(item.id,item.date,item.side)){missing++;continue}
   const raw=contents.get(item.file);if(!raw||!raw.length){missing++;continue}
@@ -3046,6 +3047,7 @@ async function importZip(file){
    if(!Array.isArray(current)){missing++;continue}
    const hits=current.filter(x=>x&&String(x.date)===String(item.date));
    if(hits.length!==1){missing++;continue}
+   targets.add('ID'+String(item.id)+' / '+String(item.date));
    const hit=hits[0];
    if(valid(hit.photos&&hit.photos[item.side])){already++;continue}
    const mime=/^image\/(jpeg|jpg|png|webp)$/.test(item.mime)?item.mime:'image/jpeg';
@@ -3059,7 +3061,7 @@ async function importZip(file){
    try{if(navigator.storage?.getDirectory){const root=await navigator.storage.getDirectory();const dir=await root.getDirectoryHandle('Wakaba_Posture_Photos',{create:true});const handle=await dir.getFileHandle(name(item.id,item.date,item.side),{create:true});const w=await handle.createWritable();await w.write(data);await w.close();protectedCount++}}catch(e){console.warn('V238 secondary copy unavailable',e)}
   }catch(e){failed++;console.warn('V238 photo import',e)}
  }
- return{restored,already,missing,failed,protectedCount,patients:touched.size};
+ return{restored,already,missing,failed,protectedCount,patients:touched.size,targets:[...targets]};
 }
 async function verifyZipWithoutChanges(file){
  const contents=parseZip(await file.arrayBuffer()),manifest=contents.get('wakaba_manifest.json');
@@ -3078,9 +3080,9 @@ async function verifyZipWithoutChanges(file){
  }
  return {present,recoverable,unmatched,invalid,total:obj.photos.length};
 }
-function mount(){if(document.getElementById('v234BackupPanel'))return;const old=document.getElementById('v232FolderPanel');if(old)old.remove();const anchor=document.getElementById('v116DataGuard')||document.getElementById('v91DetailModal');if(!anchor)return;const box=document.createElement('section');box.id='v234BackupPanel';box.style.cssText='padding:12px;margin:10px 0;border:1px solid #94a3b8;border-radius:12px;font-size:12px;line-height:1.7';box.innerHTML='<b>V246 写真の端末バックアップ・復元</b><p>分析ごとに3枚の写真をZIPで端末へ保存できます。ダウンロードはブラウザの許可が必要です。写真はFirebaseへ送信しません。</p><button id="v233Export" type="button" style="padding:10px;margin:4px;background:#0f766e;color:white;border:0;border-radius:8px">写真を一括バックアップ（ZIP）</button><button id="v233Import" type="button" style="padding:10px;margin:4px;background:#1d4ed8;color:white;border:0;border-radius:8px">バックアップZIPから復元</button><input id="v233Zip" type="file" accept=".zip,application/zip" style="display:none"><div id="v233Status" role="status"></div><small>※ ZIPの保存先は端末のダウンロード設定によります。完全自動の通常フォルダ保存ではありません。既存写真は上書きしません。ZIPには患者写真が含まれるため安全に保管してください。</small>';anchor.insertAdjacentElement('afterend',box);const status=box.querySelector('#v233Status'),input=box.querySelector('#v233Zip');const one=document.createElement('button');one.id='v237Latest';one.type='button';one.textContent='直近の分析写真3枚を端末へ保存（ZIP）';one.style.cssText='padding:10px;margin:4px;background:#b45309;color:white;border:0;border-radius:8px;font-weight:bold';box.querySelector('#v233Export').before(one);
+function mount(){if(document.getElementById('v234BackupPanel'))return;const old=document.getElementById('v232FolderPanel');if(old)old.remove();const anchor=document.getElementById('v116DataGuard')||document.getElementById('v91DetailModal');if(!anchor)return;const box=document.createElement('section');box.id='v234BackupPanel';box.style.cssText='padding:12px;margin:10px 0;border:1px solid #94a3b8;border-radius:12px;font-size:12px;line-height:1.7';box.innerHTML='<b>V247 写真の端末バックアップ・復元</b><p>分析ごとに3枚の写真をZIPで端末へ保存できます。ダウンロードはブラウザの許可が必要です。写真はFirebaseへ送信しません。</p><button id="v233Export" type="button" style="padding:10px;margin:4px;background:#0f766e;color:white;border:0;border-radius:8px">写真を一括バックアップ（ZIP）</button><button id="v233Import" type="button" style="padding:10px;margin:4px;background:#1d4ed8;color:white;border:0;border-radius:8px">バックアップZIPから復元</button><input id="v233Zip" type="file" accept=".zip,application/zip" style="display:none"><div id="v233Status" role="status"></div><small>※ ZIPの保存先は端末のダウンロード設定によります。完全自動の通常フォルダ保存ではありません。既存写真は上書きしません。ZIPには患者写真が含まれるため安全に保管してください。</small>';anchor.insertAdjacentElement('afterend',box);const status=box.querySelector('#v233Status'),input=box.querySelector('#v233Zip');const one=document.createElement('button');one.id='v237Latest';one.type='button';one.textContent='直近の分析写真3枚を端末へ保存（ZIP）';one.style.cssText='padding:10px;margin:4px;background:#b45309;color:white;border:0;border-radius:8px;font-weight:bold';box.querySelector('#v233Export').before(one);
  const hint=document.createElement('div');hint.id='v237Hint';hint.style.cssText='margin:7px 0;color:#92400e;font-weight:bold';hint.textContent='分析ごとに保存してください。端末のダウンロード一覧でZIPがあることを確認してください。';one.after(hint);
- // V246: The analysis-complete reminder is the single everyday ZIP-save entry point.
+ // V247: The analysis-complete reminder is the single everyday ZIP-save entry point.
  // Keep the original button and handler in the DOM so the reminder can trigger it.
  // It is hidden visually; the ZIP backup and restore tools remain unchanged.
  one.hidden=true;
@@ -3101,7 +3103,7 @@ const verifyButton=document.createElement('button');verifyButton.type='button';v
  for(const el of [box.querySelector('#v233Export'),box.querySelector('#v233Import'),verifyButton]){if(el)tools.appendChild(el)}
  // Preserve the file inputs and their event listeners in the original section.
  const fineprint=box.querySelector('small');if(fineprint)box.insertBefore(tools,fineprint);else box.appendChild(tools);
- box.querySelector('#v233Export').onclick=async()=>{status.textContent='バックアップを作成中…';try{const n=await exportZip();status.textContent=n+'枚をZIPにまとめました。端末のダウンロード一覧で保存を確認してください。'}catch(e){status.textContent=e.message||String(e)}};box.querySelector('#v233Import').onclick=()=>input.click();input.onchange=async()=>{if(!input.files?.[0])return;status.textContent='照合・復元中…';try{const r=await importZip(input.files[0]);status.textContent='復元完了：'+r.restored+'枚／既に保存済み：'+r.already+'枚／履歴不一致など：'+r.missing+'枚／失敗：'+r.failed+'枚。復元が0枚の場合も、既に保存済みなら正常です。履歴を開き直してください。'}catch(e){status.textContent=e.message||String(e)}input.value=''}}
+ box.querySelector('#v233Export').onclick=async()=>{status.textContent='バックアップを作成中…';try{const n=await exportZip();status.textContent=n+'枚をZIPにまとめました。端末のダウンロード一覧で保存を確認してください。'}catch(e){status.textContent=e.message||String(e)}};box.querySelector('#v233Import').onclick=()=>input.click();input.onchange=async()=>{if(!input.files?.[0])return;status.textContent='照合・復元中…';try{const r=await importZip(input.files[0]);status.textContent='照合した患者・分析日時：'+(r.targets.length?r.targets.join('、'):'一致する履歴なし')+'。復元完了：'+r.restored+'枚／既に保存済み：'+r.already+'枚／履歴不一致など：'+r.missing+'枚／失敗：'+r.failed+'枚。復元が0枚の場合も、既に保存済みなら正常です。履歴を開き直してください。'}catch(e){status.textContent=e.message||String(e)}input.value=''}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 })();
 </script>
