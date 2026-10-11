@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V237</title>
+<title>AI姿勢＆3次元歪み分析システム V239</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -352,7 +352,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V237</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V239</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -2943,7 +2943,7 @@ function folder(){if(!supported)return Promise.reject(Error('OPFS unsupported'))
 async function write(id,date,k,data){if(!isPhoto(data))return false;const dir=await folder(),f=await dir.getFileHandle(name(id,date,k),{create:true});const w=await f.createWritable();try{await w.write(data);await w.close();const check=await(await f.getFile()).text();if(check!==data)throw Error('写真の保存後照合に失敗');return true}catch(e){try{await w.abort()}catch(_){}throw e}}
 async function read(id,date,k){try{const dir=await folder(),f=await dir.getFileHandle(name(id,date,k)),data=await(await f.getFile()).text();return isPhoto(data)?data:null}catch(e){return null}}
 const pending=new Map();
-async function backupHistory(id,h){if(!Array.isArray(h))return;let count=0,failed=0;for(const x of h){if(!x||!x.date)continue;for(const k of keys){const photo=x.photos&&x.photos[k];if(isPhoto(photo)){try{if(await write(id,x.date,k,photo))count++}catch(e){failed++;console.warn('V237 OPFS verified save failed',e)}}}}if(count||failed)window.dispatchEvent(new CustomEvent('wakaba:v236-photo-backup',{detail:{count,failed}}));return count}
+async function backupHistory(id,h){if(!Array.isArray(h))return;let count=0,failed=0;for(const x of h){if(!x||!x.date)continue;for(const k of keys){const photo=x.photos&&x.photos[k];if(isPhoto(photo)){try{if(await write(id,x.date,k,photo))count++}catch(e){failed++;console.warn('V238 OPFS verified save failed',e)}}}}if(count||failed)window.dispatchEvent(new CustomEvent('wakaba:v236-photo-backup',{detail:{count,failed}}));return count}
 function queueBackup(id,value){if(!supported)return;let h;try{h=JSON.parse(value)}catch(e){return}const old=pending.get(id)||Promise.resolve();const task=old.catch(()=>{}).then(()=>backupHistory(id,h));pending.set(id,task);task.finally(()=>{if(pending.get(id)===task)pending.delete(id)}).catch(()=>{})}
 const original=Storage.prototype.setItem;
 Storage.prototype.setItem=function(k,v){const r=original.apply(this,arguments);if(this===localStorage&&String(k).startsWith(PREFIX))queueBackup(String(k).slice(PREFIX.length),String(v));return r};
@@ -3002,7 +3002,7 @@ function parseZip(buffer){
    const filename=dec.decode(a.subarray(pos+46,pos+46+nl));
    const ln=v.getUint16(local+26,true),le=v.getUint16(local+28,true),start=local+30+ln+le;
    if(start+compressed>a.length)throw Error('ZIP内の写真データが途中で切れています。');
-   if(method!==0)throw Error('このZIPは圧縮方式が異なります。V233のバックアップZIPを選んでください。');
+   if(method!==0)throw Error('このZIPは圧縮方式が異なります。わかばアプリで保存したZIPを選んでください。');
    const data=a.slice(start,start+compressed);
    if(data.length!==uncompressed||crc(data)!==checksum)throw Error('ZIPの写真データの整合性確認に失敗しました。');
    if(out.has(filename))throw Error('ZIPに重複したファイル名があります。');
@@ -3023,12 +3023,42 @@ async function exportLatest(id){
  files.push(['wakaba_manifest.json',enc.encode(JSON.stringify({format:'wakaba-photo-backup-v233',photos:manifest}))]);
  download(zip(files),'Wakaba_Analysis_'+safe(rec.id)+'_'+stamp(rec.x.date)+'.zip');return 3;
 }
-async function importZip(file){const contents=parseZip(await file.arrayBuffer()),manifest=contents.get('wakaba_manifest.json');if(!manifest)throw Error('わかば専用バックアップZIPではありません。');const obj=JSON.parse(dec.decode(manifest));if(obj.format!=='wakaba-photo-backup-v233'||!Array.isArray(obj.photos))throw Error('バックアップ形式が一致しません。');let restored=0,skipped=0,failed=0;for(const item of obj.photos){if(!SIDES.includes(item.side)||!item.id||!item.date||item.file!==name(item.id,item.date,item.side)){skipped++;continue}const raw=contents.get(item.file);if(!raw){skipped++;continue}const key=PREFIX+item.id;try{const current=JSON.parse(localStorage.getItem(key)||'[]');if(!Array.isArray(current)){skipped++;continue}const hits=current.filter(x=>x&&x.date===item.date);if(hits.length!==1||valid(hits[0].photos&&hits[0].photos[item.side])){skipped++;continue}const mime=/^image\/(jpeg|jpg|png|webp)$/.test(item.mime)?item.mime:'image/jpeg';let binary='';for(let i=0;i<raw.length;i+=8192)binary+=String.fromCharCode(...raw.subarray(i,i+8192));const data='data:'+mime+';base64,'+btoa(binary);hits[0].photos=hits[0].photos||{};hits[0].photos[item.side]=data;localStorage.setItem(key,JSON.stringify(current));restored++}catch(e){failed++;console.warn('V233 photo import',e)}}return{restored,skipped,failed}}
-function mount(){if(document.getElementById('v234BackupPanel'))return;const old=document.getElementById('v232FolderPanel');if(old)old.remove();const anchor=document.getElementById('v116DataGuard')||document.getElementById('v91DetailModal');if(!anchor)return;const box=document.createElement('section');box.id='v234BackupPanel';box.style.cssText='padding:12px;margin:10px 0;border:1px solid #94a3b8;border-radius:12px;font-size:12px;line-height:1.7';box.innerHTML='<b>V237 写真の端末バックアップ</b><p>分析ごとに3枚の写真をZIPで端末へ保存できます。ダウンロードはブラウザの許可が必要です。写真はFirebaseへ送信しません。</p><button id="v233Export" type="button" style="padding:10px;margin:4px;background:#0f766e;color:white;border:0;border-radius:8px">写真を一括バックアップ（ZIP）</button><button id="v233Import" type="button" style="padding:10px;margin:4px;background:#1d4ed8;color:white;border:0;border-radius:8px">バックアップZIPから復元</button><input id="v233Zip" type="file" accept=".zip,application/zip" style="display:none"><div id="v233Status" role="status"></div><small>※ ZIPの保存先は端末のダウンロード設定によります。完全自動の通常フォルダ保存ではありません。既存写真は上書きしません。ZIPには患者写真が含まれるため安全に保管してください。</small>';anchor.insertAdjacentElement('afterend',box);const status=box.querySelector('#v233Status'),input=box.querySelector('#v233Zip');const one=document.createElement('button');one.id='v237Latest';one.type='button';one.textContent='直近の分析写真3枚を端末へ保存（ZIP）';one.style.cssText='padding:10px;margin:4px;background:#b45309;color:white;border:0;border-radius:8px;font-weight:bold';box.querySelector('#v233Export').before(one);
+async function importZip(file){
+ const contents=parseZip(await file.arrayBuffer()),manifest=contents.get('wakaba_manifest.json');
+ if(!manifest)throw Error('管理ファイルがありません。わかばアプリで保存したZIPを選んでください。');
+ const obj=JSON.parse(dec.decode(manifest));
+ if(obj.format!=='wakaba-photo-backup-v233'||!Array.isArray(obj.photos))throw Error('対応していないバックアップ形式です。');
+ let restored=0,already=0,missing=0,failed=0,protectedCount=0;
+ const touched=new Set();
+ for(const item of obj.photos){
+  if(!SIDES.includes(item.side)||!item.id||!item.date||item.file!==name(item.id,item.date,item.side)){missing++;continue}
+  const raw=contents.get(item.file);if(!raw||!raw.length){missing++;continue}
+  const key=PREFIX+item.id;
+  try{
+   const current=JSON.parse(localStorage.getItem(key)||'[]');
+   if(!Array.isArray(current)){missing++;continue}
+   const hits=current.filter(x=>x&&String(x.date)===String(item.date));
+   if(hits.length!==1){missing++;continue}
+   const hit=hits[0];
+   if(valid(hit.photos&&hit.photos[item.side])){already++;continue}
+   const mime=/^image\/(jpeg|jpg|png|webp)$/.test(item.mime)?item.mime:'image/jpeg';
+   let binary='';for(let i=0;i<raw.length;i+=8192)binary+=String.fromCharCode(...raw.subarray(i,i+8192));
+   const data='data:'+mime+';base64,'+btoa(binary);
+   // Restore only a missing photo. Never replace a present one or change scores/metrics.
+   hit.photos=hit.photos||{};hit.photos[item.side]=data;
+   try{localStorage.setItem(key,JSON.stringify(current));restored++;touched.add(String(item.id));}
+   catch(e){delete hit.photos[item.side];failed++;console.warn('V238 photo restore storage failure',e);continue}
+   // Best-effort additional OPFS copy; ZIP and restored history remain independent.
+   try{if(navigator.storage?.getDirectory){const root=await navigator.storage.getDirectory();const dir=await root.getDirectoryHandle('Wakaba_Posture_Photos',{create:true});const handle=await dir.getFileHandle(name(item.id,item.date,item.side),{create:true});const w=await handle.createWritable();await w.write(data);await w.close();protectedCount++}}catch(e){console.warn('V238 secondary copy unavailable',e)}
+  }catch(e){failed++;console.warn('V238 photo import',e)}
+ }
+ return{restored,already,missing,failed,protectedCount,patients:touched.size};
+}
+function mount(){if(document.getElementById('v234BackupPanel'))return;const old=document.getElementById('v232FolderPanel');if(old)old.remove();const anchor=document.getElementById('v116DataGuard')||document.getElementById('v91DetailModal');if(!anchor)return;const box=document.createElement('section');box.id='v234BackupPanel';box.style.cssText='padding:12px;margin:10px 0;border:1px solid #94a3b8;border-radius:12px;font-size:12px;line-height:1.7';box.innerHTML='<b>V238 写真の端末バックアップ・復元</b><p>分析ごとに3枚の写真をZIPで端末へ保存できます。ダウンロードはブラウザの許可が必要です。写真はFirebaseへ送信しません。</p><button id="v233Export" type="button" style="padding:10px;margin:4px;background:#0f766e;color:white;border:0;border-radius:8px">写真を一括バックアップ（ZIP）</button><button id="v233Import" type="button" style="padding:10px;margin:4px;background:#1d4ed8;color:white;border:0;border-radius:8px">バックアップZIPから復元</button><input id="v233Zip" type="file" accept=".zip,application/zip" style="display:none"><div id="v233Status" role="status"></div><small>※ ZIPの保存先は端末のダウンロード設定によります。完全自動の通常フォルダ保存ではありません。既存写真は上書きしません。ZIPには患者写真が含まれるため安全に保管してください。</small>';anchor.insertAdjacentElement('afterend',box);const status=box.querySelector('#v233Status'),input=box.querySelector('#v233Zip');const one=document.createElement('button');one.id='v237Latest';one.type='button';one.textContent='直近の分析写真3枚を端末へ保存（ZIP）';one.style.cssText='padding:10px;margin:4px;background:#b45309;color:white;border:0;border-radius:8px;font-weight:bold';box.querySelector('#v233Export').before(one);
  const hint=document.createElement('div');hint.id='v237Hint';hint.style.cssText='margin:7px 0;color:#92400e;font-weight:bold';hint.textContent='分析ごとに保存してください。端末のダウンロード一覧でZIPがあることを確認してください。';one.after(hint);
  let lastId=null;one.onclick=async()=>{const id=lastId||(()=>{try{return JSON.parse(sessionStorage.getItem('wakaba_v61_current')||localStorage.getItem('wakaba_v66_current')||'null')?.id}catch(e){return null}})();if(!id){status.textContent='先に患者を選択してください。';return}try{const n=await exportLatest(id);status.textContent=n+'枚のZIPダウンロードを開始しました。ダウンロード一覧でファイルを確認してください。';hint.textContent='保存を開始しました。ダウンロード一覧にZIPがあることを必ず確認してください。'}catch(e){status.textContent=e.message||String(e)}};
  window.addEventListener('wakaba:v103-history-saved',e=>{lastId=e.detail&&e.detail.id;hint.textContent='新しい分析が保存されました。写真消失防止のため「直近の分析写真3枚を端末へ保存」を押してください。';box.style.border='2px solid #f59e0b';});
-box.querySelector('#v233Export').onclick=async()=>{status.textContent='バックアップを作成中…';try{const n=await exportZip();status.textContent=n+'枚をZIPにまとめました。端末のダウンロード一覧で保存を確認してください。'}catch(e){status.textContent=e.message||String(e)}};box.querySelector('#v233Import').onclick=()=>input.click();input.onchange=async()=>{if(!input.files?.[0])return;status.textContent='照合・復元中…';try{const r=await importZip(input.files[0]);status.textContent='復元 '+r.restored+'枚／対象外 '+r.skipped+'枚／失敗 '+r.failed+'枚。履歴を開き直してください。'}catch(e){status.textContent=e.message||String(e)}input.value=''}}
+box.querySelector('#v233Export').onclick=async()=>{status.textContent='バックアップを作成中…';try{const n=await exportZip();status.textContent=n+'枚をZIPにまとめました。端末のダウンロード一覧で保存を確認してください。'}catch(e){status.textContent=e.message||String(e)}};box.querySelector('#v233Import').onclick=()=>input.click();input.onchange=async()=>{if(!input.files?.[0])return;status.textContent='照合・復元中…';try{const r=await importZip(input.files[0]);status.textContent='復元完了：'+r.restored+'枚／既に保存済み：'+r.already+'枚／履歴不一致など：'+r.missing+'枚／失敗：'+r.failed+'枚。復元が0枚の場合も、既に保存済みなら正常です。履歴を開き直してください。'}catch(e){status.textContent=e.message||String(e)}input.value=''}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 })();
 </script>
@@ -3036,11 +3066,11 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 <script id="v235-privacy-menu">(function(){
 function mount(){const help=document.getElementById('v77Help');if(!help||document.getElementById('v235LegalBox'))return;
 const box=document.createElement('div');box.id='v235LegalBox';
-const warn='<div class="v235draft">【公開前の確認が必要なドラフト】事業者名・所在地・窓口・保存期間・Firebaseの設定等が未確定です。正式公開前に内容を確認してください。</div>';
+const warn='<div class="v235draft">【公開前の確認が必要なドラフト】所在地・電話番号・料金・課金・解約条件・データ取扱い等に未確定項目があります。正式販売前に確認してください。</div>';
 const entries=[
-['プライバシーポリシー',`<p>運営者：［正式な事業者名・住所・連絡先］（以下「当社」）は、本サービスの運営に際して個人情報を適切に取り扱います。</p><p>取得する情報：院の担当者のアカウント情報、契約・問い合わせ情報、各院が登録する患者の氏名・フリガナ・性別・生年月日・電話番号、姿勢分析結果・履歴、操作・障害対応に必要な記録。実際の取得項目に応じて更新します。</p><p>利用目的：本人認証、姿勢分析機能の提供、各院のデータ保存・復元、課金・契約管理、問い合わせ対応、障害対応、安全確保。目的外利用を行う場合は法令に従い対応します。</p><p>取扱いの役割：各院が患者情報の取得・利用目的の説明などを担い、当社は契約に基づきシステム上の保管・処理を担うことを基本とします。具体的な法的役割は契約内容と実態に基づき確定します。</p><p>保存先・外部サービス：Google Firebase（認証・データ保存）および決済サービス等を利用します。事業者名、国外での取扱いの有無、保存地域、再委託等は実設定を確認して明記します。</p><p>安全管理：アクセス制限、認証、権限管理、通信の保護、バックアップ、事故対応等を整備します。各措置の実施状況は公開前に確認します。</p><p>保存・削除：契約・法令上必要な期間を定め、退会・削除請求時の手順、バックアップからの消去時期を契約で明確化します。</p><p>問い合わせ：［担当窓口・メールアドレス・受付方法］。開示等の請求は当社が保有個人データの範囲に応じて法令に従い対応します。</p><p>改定：改定日を示し、重要な変更は適切な方法で通知します。</p>`],
-['利用規約',`<p>利用主体：契約院は適法に取得した患者情報のみ登録し、患者への必要な説明・同意取得等を行う。</p><p>運営者：契約院の指示と本契約に従い、サービス提供に必要な範囲で情報を処理し、安全管理措置を実施する。</p><p>アクセス：各院は自院データのみ利用可能とする。院間共有は禁止。管理者による例外的アクセスは必要最小限、記録を残す。</p><p>写真：現行仕様では端末保存を基本とする。クラウド保存に切り替える場合は、保存目的・条件・責任分担・料金を改めて定める。</p><p>事故：漏えい等の疑いを認識した当事者は速やかに相手方へ連絡し、調査・被害抑止・必要な通知報告に協力する。連絡期限［　］時間を契約で定める。</p><p>退会：データのエクスポート提供期間［　］日、削除予定日［　］、バックアップの保持期限［　］を定める。</p><p>責任：故意・重過失、第三者の行為、不可抗力、損害賠償の範囲等は専門家レビューを経て条文化する。</p>`],
-['個人情報の取り扱いについて',`<p>患者情報の管理：各院が患者情報の登録・利用目的の説明を担い、運営者は契約に基づきサービス提供に必要な範囲で保管・処理します。</p><p>写真の扱い：現行仕様では原則として各院の利用端末に保存します。ブラウザデータの削除や端末故障で消失する可能性があります。</p><p>安全管理と事故時の連絡：各院のデータを分離し、不正アクセスや漏えいが疑われる場合は調査・関係者への連絡・必要な報告を行います。</p><p>データ出力・退会：患者情報・分析履歴の出力方法、退会後の保存・削除期間は契約条件で定めます。</p>`]
+['プライバシーポリシー',`<p>第1条（取扱情報） 利用事業者のアカウント情報、患者の氏名・ふりがな・性別・生年月日・電話番号、姿勢分析結果・分析履歴等を取り扱います。入力されていない項目は取得しません。</p><p>第2条（利用目的） 認証、姿勢分析、患者・履歴管理、契約・決済管理、問い合わせ対応、不正利用防止、保守・改善のため利用します。</p><p>第3条（外部サービス） 認証・データ管理にはGoogle Firebase、決済にはStripeを利用します。実際の設定に応じて取扱情報が異なります。</p><p>第4条（姿勢写真） 現行仕様では写真を端末側で取り扱います。ZIPファイルとして保存した写真の保管・アクセス管理は利用事業者が行います。</p><p>第5条（安全管理） 不正アクセス防止、権限制御、保守、事故対応等の安全管理措置を整備します。実施状況は正式公開前に確認します。</p><p>第6条（第三者提供・委託） 法令に基づく場合、同意がある場合、運営に必要な業務委託等を除き、目的外で第三者に提供しません。</p><p>第7条（開示・訂正・削除） 法令に従って対応します。患者情報については原則として当該情報を登録した利用事業者が窓口となります。</p><p>第8条（お問い合わせ） Wakaba.pro21@gmail.com</p>`],
+['利用規約',`<p>第1条（サービス） 本サービスは、整体院・接骨院等の事業者向けに、姿勢写真による姿勢分析、結果表示、患者情報および分析履歴の管理等を提供します。</p><p>第2条（利用登録） 利用者は正確な登録情報を提供し、アカウントを適切に管理してください。第三者への貸与や不正利用を禁止します。</p><p>第3条（分析結果） 分析結果は姿勢状態を把握するための参考情報であり、疾病の診断、治療効果、症状の改善を保証するものではありません。</p><p>第4条（患者情報） 利用事業者は患者情報・姿勢写真の取得や利用に必要な説明・同意取得を行い、法令に従い管理します。</p><p>第5条（保存） 患者基本情報・分析履歴の一部はFirebaseで管理します。姿勢写真は現行仕様では原則端末側で扱い、Firebaseに保存しません。ブラウザデータ削除や端末故障による消失の可能性があるため、ZIP保存等によるバックアップを行ってください。</p><p>第6条（料金・契約） 料金、課金開始日、更新周期、解約条件は申込画面および特定商取引法に基づく表記によります。</p><p>第7条（禁止事項） 不正アクセス、権利侵害、患者情報の不正取得、サービス妨害、無断複製・再販売等を禁止します。</p><p>第8条（変更・中断） 保守、障害対応、安全確保等のため必要な範囲でサービスを変更・中断することがあります。</p><p>第9条（責任） 運営者は適用法令に従い合理的な対応に努めます。法令上免責できない責任は免責しません。</p><p>第10条（変更・問い合わせ） 規約変更時は変更内容と効力発生日を適切な方法で周知します。問い合わせはアプリ内の窓口で受け付けます。</p>`],
+['特定商取引法に基づく表記',`<p>販売事業者：わかば整体院・接骨院</p><p>運営責任者：南 昇吾</p><p>所在地：【正式な事業所住所を記載】</p><p>電話番号：【公開方法を確認して記載】</p><p>メールアドレス：Wakaba.pro21@gmail.com</p><p>サービス名：わかば姿勢分析アプリ</p><p>販売価格：【正式な税込月額料金を記載】</p><p>商品代金以外の費用：インターネット通信費・端末購入費等</p><p>決済方法：クレジットカード決済（Stripe）</p><p>支払時期：【実際の課金設定に合わせて記載】</p><p>サービス提供時期：【決済・利用開始設定に合わせて記載】</p><p>契約更新：【更新周期と自動更新条件を記載】</p><p>解約方法：【実際に利用できる解約手順を記載】</p><p>返品・返金：【適用法令を踏まえて正式な条件を記載】</p><p>動作環境：【検証済みのOS・ブラウザを記載】</p>`]
 ];
 entries.forEach((e,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='v199helpRow';btn.innerHTML='<span></span><span class="arr">›</span>';btn.querySelector('span').textContent=e[0];const panel=document.createElement('div');panel.className='v235legalpanel';panel.id='v235LegalPanel'+i;panel.innerHTML='<h3>'+e[0]+'</h3>'+warn+e[1];btn.addEventListener('click',()=>panel.classList.toggle('on'));box.append(btn,panel)});
 const existing=document.getElementById('v199ExtraHelp');if(existing&&existing.parentElement)existing.insertAdjacentElement('afterend',box);else help.appendChild(box);
