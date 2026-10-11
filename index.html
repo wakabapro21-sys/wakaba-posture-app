@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V280</title>
+<title>AI姿勢＆3次元歪み分析システム V281</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V280</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V281</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3158,5 +3158,34 @@ async function backupAll(){const raw=JSON.parse(localStorage.getItem('wakaba_v61
 function mount(){const body=document.getElementById('v91DetailBody');if(!body||document.getElementById('v264Backup'))return;const btn=document.createElement('button');btn.id='v264Backup';btn.textContent='写真以外の詳しい分析データをFirebaseに保存';const info=document.createElement('div');info.id='v264CloudStatus';info.textContent='過去の分析も追加保存できます。写真は送信しません。';btn.onclick=async()=>{btn.disabled=true;status('保存・確認中…');try{const n=await backupAll();status('Firebaseへの保存完了。新規追加 '+n+'件（既存データは上書きなし）。')}catch(e){status('保存できませんでした：'+e.message+'。端末データはそのままです。')}finally{btn.disabled=false}};body.append(btn,info)}
 window.addEventListener('wakaba:v103-history-saved',e=>{const id=e.detail?.id;if(id)setTimeout(()=>backup(id).catch(e=>console.warn('V266 automatic backup failed',e)),600)});
 const observer=new MutationObserver(mount);function init(){mount();const body=document.getElementById('v91DetailBody');if(body)observer.observe(body,{childList:true});}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+</script>
+
+<!-- V281: presentation-only compact management section; existing IDs and handlers remain intact -->
+<style id="v281-compact-style">
+#v281Management{margin:12px 0;border:1px solid #cbd5e1;border-radius:12px;background:#f8fafc;overflow:hidden}
+#v281Management>summary{cursor:pointer;list-style-position:inside;padding:14px 12px;font-weight:800;font-size:13px;color:#334155}
+#v281Management[open]>summary{border-bottom:1px solid #e2e8f0}
+#v281ManagementBody{padding:10px}
+#v281ManagementBody #v214Summary{margin:0 0 10px}
+#v281ManagementBody #v112ClinicAccount{margin:0}
+</style>
+<script id="v281-compact-ui">
+(function(){
+ function mount(){
+  const contract=document.getElementById('v213ContractOverview');
+  const summary=document.getElementById('v214Summary');
+  const account=document.getElementById('v112ClinicAccount');
+  if(!contract||!summary||!account||document.getElementById('v281Management'))return false;
+  const details=document.createElement('details');details.id='v281Management';
+  const title=document.createElement('summary');title.textContent='同期・院アカウント（管理用）';
+  const body=document.createElement('div');body.id='v281ManagementBody';
+  details.append(title,body);
+  contract.insertAdjacentElement('afterend',details);
+  body.append(summary,account);
+  return true;
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+ function start(){if(mount())return;let n=0;const timer=setInterval(()=>{if(mount()||++n>100)clearInterval(timer)},200)}
+})();
 </script>
 </body></html>
