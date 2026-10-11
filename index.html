@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V232</title>
+<title>AI姿勢＆3次元歪み分析システム V233</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -352,7 +352,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V232</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V233</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1492,15 +1492,15 @@ import {getFirestore,doc,setDoc,getDoc,getDocFromServer,serverTimestamp,collecti
 const firebaseConfig={apiKey:'AIzaSyCC4vKry9DQnQxwPWOMEy-xbiAzFJ3n6ic',authDomain:'wakaba-posture.firebaseapp.com',projectId:'wakaba-posture',storageBucket:'wakaba-posture.firebasestorage.app',messagingSenderId:'992802796991',appId:'1:992802796991:web:461ab115f39be2795b5d0a',measurementId:'G-1C96FJQPF6'};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const $=id=>document.getElementById(id), status=$('v100Status'),msg=$('v100Msg');
-// V232: device owner lock. Never upload a prior clinic's local patients to a new login.
-const V232_OWNER='wakaba_v230_device_owner';
+// V233: device owner lock. Never upload a prior clinic's local patients to a new login.
+const V233_OWNER='wakaba_v230_device_owner';
 function v230OwnerAllowed(u){
  if(!u)return false;
- const uid=String(u.uid), owner=localStorage.getItem(V232_OWNER), legacy=localStorage.getItem('wakaba_clinic_uid');
+ const uid=String(u.uid), owner=localStorage.getItem(V233_OWNER), legacy=localStorage.getItem('wakaba_clinic_uid');
  if(owner)return owner===uid;
  // Preserve an existing clinic identity before allowing a different account to claim this device.
  if(legacy && legacy!==uid)return false;
- try{localStorage.setItem(V232_OWNER,uid);return true}catch(e){return false}
+ try{localStorage.setItem(V233_OWNER,uid);return true}catch(e){return false}
 }
 function v230Block(u){
  const ok=v230OwnerAllowed(u);
@@ -1803,7 +1803,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  function filename(x,k){return 'wakaba_'+safeName(x.d.patientId)+'_'+String(x.d.date||'').replace(/[^0-9]/g,'').slice(0,14)+'_'+k+'.jpg'}
  function blobFromDataUrl(src){const [meta,data]=src.split(',');const binary=atob(data),u=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)u[i]=binary.charCodeAt(i);return new Blob([u],{type:meta.match(/^data:([^;]+)/)[1]})}
  function download(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000)}
- function controls(){const body=document.getElementById('v91DetailBody');if(!body||body.querySelector('#v227PhotoControls'))return;const box=document.createElement('div');box.id='v227PhotoControls';box.style.cssText='margin:12px 0;padding:12px;background:#f0fdfa;border-radius:12px';box.innerHTML='<b style="font-size:14px;color:#115e59">写真の端末保存・復元（V232）</b><div style="font-size:11px;color:#475569;margin:6px 0">端末のダウンロードへ写真を保存します。ギャラリーへの表示は端末の設定によります。写真はクラウドに送信しません。</div><button id="v227Save" type="button" style="padding:11px;border:0;border-radius:9px;background:#0f766e;color:white;font-weight:bold;width:100%">写真3枚を端末へ保存</button><button id="v227Restore" type="button" style="padding:11px;border:1px solid #0f766e;border-radius:9px;background:white;color:#0f766e;font-weight:bold;width:100%;margin-top:8px">写真を選んで復元</button><input id="v227Files" type="file" accept="image/jpeg,image/png,image/webp" multiple style="display:none"><div id="v227Status" role="status" style="font-size:11px;margin-top:6px"></div>';
+ function controls(){const body=document.getElementById('v91DetailBody');if(!body||body.querySelector('#v227PhotoControls'))return;const box=document.createElement('div');box.id='v227PhotoControls';box.style.cssText='margin:12px 0;padding:12px;background:#f0fdfa;border-radius:12px';box.innerHTML='<b style="font-size:14px;color:#115e59">写真の端末保存・復元（V233）</b><div style="font-size:11px;color:#475569;margin:6px 0">端末のダウンロードへ写真を保存します。ギャラリーへの表示は端末の設定によります。写真はクラウドに送信しません。</div><button id="v227Save" type="button" style="padding:11px;border:0;border-radius:9px;background:#0f766e;color:white;font-weight:bold;width:100%">写真3枚を端末へ保存</button><button id="v227Restore" type="button" style="padding:11px;border:1px solid #0f766e;border-radius:9px;background:white;color:#0f766e;font-weight:bold;width:100%;margin-top:8px">写真を選んで復元</button><input id="v227Files" type="file" accept="image/jpeg,image/png,image/webp" multiple style="display:none"><div id="v227Status" role="status" style="font-size:11px;margin-top:6px"></div>';
  body.appendChild(box);
  const status=box.querySelector('#v227Status');
  box.querySelector('#v227Save').onclick=async()=>{const q=current();if(!q)return;const pics=keys.filter(([k])=>validImage(q.x.photos&&q.x.photos[k]));if(!pics.length){alert('この履歴には保存できる写真がありません。');return}if(!confirm(pics.length+'枚の写真を端末にダウンロードします。患者さんの写真の取り扱いにご注意ください。'))return;for(const [k] of pics){try{download(blobFromDataUrl(q.x.photos[k]),filename(q,k))}catch(e){status.textContent='保存エラー: '+k;return}await new Promise(r=>setTimeout(r,350))}status.textContent=pics.length+'枚のダウンロードを開始しました。ブラウザのダウンロード許可をご確認ください。'};
@@ -1881,7 +1881,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     const latest=read();if(validImage(latest.x.photos&&latest.x.photos[side]))continue;
     latest.x.photos=latest.x.photos||{};latest.x.photos[side]=canvas.toDataURL('image/jpeg',.62);
     localStorage.setItem(histKey(initial.d.patientId),JSON.stringify(latest.h));changed++;
-   }catch(e){console.warn('V232 manual restore error',e);alert('写真の保存に失敗しました。既存写真は上書きしていません。');return}
+   }catch(e){console.warn('V233 manual restore error',e);alert('写真の保存に失敗しました。既存写真は上書きしていません。');return}
   }
   status.textContent=changed+'枚を復元しました。詳細を閉じて開き直して確認してください。';
  };
@@ -2931,7 +2931,7 @@ body.v214-simple #v213ContractOverview .v213fine{font-size:11px}
 })();
 </script>
 <script id="v231-private-photo-folder">
-/* V232: Dedicated origin-private OPFS folder; no Firebase photo uploads. */
+/* V233: Dedicated origin-private OPFS folder; no Firebase photo uploads. */
 (()=>{'use strict';
 const PREFIX='wakaba_v63_history_',FOLDER='Wakaba_Posture_Photos';
 const supported=!!(navigator.storage&&navigator.storage.getDirectory);
@@ -2943,7 +2943,7 @@ function folder(){if(!supported)return Promise.reject(Error('OPFS unsupported'))
 async function write(id,date,k,data){if(!isPhoto(data))return false;const dir=await folder(),f=await dir.getFileHandle(name(id,date,k),{create:true});const w=await f.createWritable();try{await w.write(data);await w.close();return true}catch(e){try{await w.abort()}catch(_){}throw e}}
 async function read(id,date,k){try{const dir=await folder(),f=await dir.getFileHandle(name(id,date,k)),data=await(await f.getFile()).text();return isPhoto(data)?data:null}catch(e){return null}}
 const pending=new Map();
-async function backupHistory(id,h){if(!Array.isArray(h))return;let count=0;for(const x of h){if(!x||!x.date)continue;for(const k of keys){const photo=x.photos&&x.photos[k];if(isPhoto(photo)){try{if(await write(id,x.date,k,photo))count++}catch(e){console.warn('V232 OPFS backup failed',e)}}}}return count}
+async function backupHistory(id,h){if(!Array.isArray(h))return;let count=0;for(const x of h){if(!x||!x.date)continue;for(const k of keys){const photo=x.photos&&x.photos[k];if(isPhoto(photo)){try{if(await write(id,x.date,k,photo))count++}catch(e){console.warn('V233 OPFS backup failed',e)}}}}return count}
 function queueBackup(id,value){if(!supported)return;let h;try{h=JSON.parse(value)}catch(e){return}const old=pending.get(id)||Promise.resolve();const task=old.catch(()=>{}).then(()=>backupHistory(id,h));pending.set(id,task);task.finally(()=>{if(pending.get(id)===task)pending.delete(id)}).catch(()=>{})}
 const original=Storage.prototype.setItem;
 Storage.prototype.setItem=function(k,v){const r=original.apply(this,arguments);if(this===localStorage&&String(k).startsWith(PREFIX))queueBackup(String(k).slice(PREFIX.length),String(v));return r};
@@ -2964,27 +2964,30 @@ if(supported){try{navigator.storage.persist?.().catch(()=>{})}catch(e){}
 setTimeout(()=>{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(PREFIX))queueBackup(k.slice(PREFIX.length),localStorage.getItem(k))}},1500)}
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
-window.wakabaV232PhotoFolder={supported,folder:FOLDER,read};
+window.wakabaV233PhotoFolder={supported,folder:FOLDER,read};
 })();
 </script>
-<script id="v232-shared-folder-test">
-/* V232: opt-in shared filesystem backup; never touches Firebase or deletes history. */
-(function(){
- 'use strict';
- const PREFIX='wakaba_v63_history_', SIDES=['front','right','left'];
- const stamp=x=>String(x||'').replace(/\D/g,'').slice(0,14);
- const safe=x=>String(x||'').replace(/[^a-zA-Z0-9_-]/g,'_').slice(0,90);
- const valid=x=>typeof x==='string'&&/^data:image\/(jpeg|jpg|png|webp);base64,/i.test(x);
- const filename=(id,date,side)=>'wakaba_'+safe(id)+'_'+stamp(date)+'_'+side+'.jpg';
- function decode(s){const [head,base]=s.split(',');const raw=atob(base),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);return new Blob([bytes],{type:head.match(/data:([^;]+)/)[1]})}
- function readData(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=()=>reject(r.error);r.readAsDataURL(file)})}
- let handle=null;
- async function choose(){if(typeof window.showDirectoryPicker!=='function')throw Error('このブラウザは通常フォルダの直接操作に対応していません。Braveで非対応の場合は、対応ブラウザまたは専用アプリが必要です。');const root=await window.showDirectoryPicker({mode:'readwrite'});handle=await root.getDirectoryHandle('Wakaba_Posture_Photos',{create:true});return handle}
- function entries(){const a=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!k||!k.startsWith(PREFIX))continue;try{const h=JSON.parse(localStorage.getItem(k)||'[]');if(Array.isArray(h))for(const x of h)if(x&&x.date)a.push({id:k.slice(PREFIX.length),x})}catch(e){}}return a}
- async function save(){const dir=await choose();let saved=0,failed=0;for(const {id,x} of entries())for(const side of SIDES){const src=x.photos&&x.photos[side];if(!valid(src))continue;try{const f=await dir.getFileHandle(filename(id,x.date,side),{create:true});const w=await f.createWritable();await w.write(decode(src));await w.close();saved++}catch(e){failed++;console.warn('V232 save failed',e)}}return {saved,failed}}
- async function restore(){const dir=await choose();let restored=0,skipped=0,failed=0;for(const {id,x} of entries()){const key=PREFIX+id;for(const side of SIDES){if(valid(x.photos&&x.photos[side]))continue;try{const f=await dir.getFileHandle(filename(id,x.date,side));const data=await readData(await f.getFile());if(!valid(data)){skipped++;continue}const fresh=JSON.parse(localStorage.getItem(key)||'[]');const found=fresh.filter(v=>v.date===x.date);if(found.length!==1||valid(found[0].photos&&found[0].photos[side])){skipped++;continue}found[0].photos=found[0].photos||{};found[0].photos[side]=data;localStorage.setItem(key,JSON.stringify(fresh));restored++}catch(e){if(e&&e.name==='NotFoundError')skipped++;else{failed++;console.warn('V232 restore failed',e)}}}}return {restored,skipped,failed}}
- function mount(){if(document.getElementById('v232FolderPanel'))return;const anchor=document.getElementById('v116DataGuard')||document.getElementById('v91DetailModal');if(!anchor)return;const box=document.createElement('div');box.id='v232FolderPanel';box.style.cssText='padding:12px;margin:10px 0;border:1px solid #94a3b8;border-radius:12px;font-size:12px;line-height:1.6';box.innerHTML='<b>V232 通常フォルダ保存の対応確認</b><p>写真はFirebaseへ送信しません。既存の写真・分析履歴を削除しません。最初にフォルダ選択が必要です。</p><button type="button" id="v232Save" style="padding:10px;margin:4px;background:#0f766e;color:white;border:0;border-radius:8px">通常フォルダに写真を保存</button> <button type="button" id="v232Restore" style="padding:10px;margin:4px;background:#1d4ed8;color:white;border:0;border-radius:8px">通常フォルダから復元</button><div id="v232Status" role="status"></div><small>※ Android版Braveではフォルダ選択機能が非対応の可能性があります。自動保存・自動復元の完成版ではなく、対応確認用です。</small>';anchor.insertAdjacentElement('afterend',box);const status=box.querySelector('#v232Status');box.querySelector('#v232Save').onclick=async()=>{status.textContent='フォルダを選択してください…';try{const r=await save();status.textContent='保存成功 '+r.saved+'枚／失敗 '+r.failed+'枚。保存先フォルダ内をご確認ください。'}catch(e){status.textContent=e.message||String(e)}};box.querySelector('#v232Restore').onclick=async()=>{status.textContent='フォルダを選択してください…';try{const r=await restore();status.textContent='復元 '+r.restored+'枚／対象外 '+r.skipped+'枚／失敗 '+r.failed+'枚。履歴画面を開き直してください。'}catch(e){status.textContent=e.message||String(e)}}}
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
+<script id="v233-device-photo-backup">
+/* V233: explicit local ZIP export/import fallback. No automatic directory access claimed. */
+(function(){'use strict';
+const PREFIX='wakaba_v63_history_',SIDES=['front','right','left'];
+const valid=s=>typeof s==='string'&&/^data:image\/(jpeg|jpg|png|webp);base64,/i.test(s);
+const safe=s=>String(s||'').replace(/[^a-zA-Z0-9_-]/g,'_').slice(0,90);
+const stamp=s=>String(s||'').replace(/\D/g,'').slice(0,14);
+const name=(id,date,side)=>'wakaba_'+safe(id)+'_'+stamp(date)+'_'+side+'.jpg';
+const enc=new TextEncoder(),dec=new TextDecoder();
+function entries(){const out=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!k||!k.startsWith(PREFIX))continue;try{const h=JSON.parse(localStorage.getItem(k)||'[]');if(Array.isArray(h))for(const x of h)if(x&&x.date)out.push({id:k.slice(PREFIX.length),x})}catch(e){}}return out}
+function bytes(data){const b=atob(data.slice(data.indexOf(',')+1)),a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a}
+const table=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xedb88320^(c>>>1):c>>>1;table[n]=c>>>0}
+function crc(a){let c=0xffffffff;for(const v of a)c=table[(c^v)&255]^(c>>>8);return(c^0xffffffff)>>>0}
+function u16(v){return[v&255,(v>>>8)&255]}function u32(v){return[v&255,(v>>>8)&255,(v>>>16)&255,(v>>>24)&255]}
+function zip(files){const parts=[],central=[];let offset=0;for(const [n,data] of files){const nb=enc.encode(n),sum=crc(data),head=new Uint8Array([80,75,3,4,20,0,0,0,0,0,0,0,0,0,...u32(sum),...u32(data.length),...u32(data.length),...u16(nb.length),0,0]);parts.push(head,nb,data);central.push(new Uint8Array([80,75,1,2,20,0,20,0,0,0,0,0,0,0,0,0,...u32(sum),...u32(data.length),...u32(data.length),...u16(nb.length),0,0,0,0,0,0,0,0,0,0,0,0,...u32(offset)]),nb);offset+=head.length+nb.length+data.length}const cs=central.reduce((a,x)=>a+x.length,0);return new Blob([...parts,...central,new Uint8Array([80,75,5,6,0,0,0,0,...u16(files.length),...u16(files.length),...u32(cs),...u32(offset),0,0])],{type:'application/zip'})}
+function parseZip(buffer){const a=new Uint8Array(buffer),v=new DataView(buffer),out=new Map();let pos=0;while(pos+30<=a.length&&v.getUint32(pos,true)===0x04034b50){const method=v.getUint16(pos+8,true),len=v.getUint32(pos+18,true),nl=v.getUint16(pos+26,true),ex=v.getUint16(pos+28,true),start=pos+30+nl+ex;if(method!==0||start+len>a.length)throw Error('このZIP形式は読み込めません。V233で書き出したZIPを選んでください。');const n=dec.decode(a.slice(pos+30,pos+30+nl));const data=a.slice(start,start+len);if(crc(data)!==v.getUint32(pos+14,true))throw Error('ZIPの整合性確認に失敗しました。');out.set(n,data);pos=start+len}return out}
+function download(blob,filename){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000)}
+async function exportZip(){const files=[],manifest=[];for(const {id,x} of entries())for(const side of SIDES){const src=x.photos&&x.photos[side];if(!valid(src))continue;const file=name(id,x.date,side);files.push([file,bytes(src)]);manifest.push({file,id,date:x.date,side,mime:src.slice(5,src.indexOf(';'))})}if(!files.length)throw Error('現在このブラウザに保存されている写真は0枚です。既に失われた写真は書き出せません。');files.push(['wakaba_manifest.json',enc.encode(JSON.stringify({format:'wakaba-photo-backup-v233',photos:manifest}))]);download(zip(files),'Wakaba_Posture_Photos_'+new Date().toISOString().slice(0,10)+'.zip');return files.length-1}
+async function importZip(file){const contents=parseZip(await file.arrayBuffer()),manifest=contents.get('wakaba_manifest.json');if(!manifest)throw Error('わかば専用バックアップZIPではありません。');const obj=JSON.parse(dec.decode(manifest));if(obj.format!=='wakaba-photo-backup-v233'||!Array.isArray(obj.photos))throw Error('バックアップ形式が一致しません。');let restored=0,skipped=0,failed=0;for(const item of obj.photos){if(!SIDES.includes(item.side)||!item.id||!item.date||item.file!==name(item.id,item.date,item.side)){skipped++;continue}const raw=contents.get(item.file);if(!raw){skipped++;continue}const key=PREFIX+item.id;try{const current=JSON.parse(localStorage.getItem(key)||'[]');if(!Array.isArray(current)){skipped++;continue}const hits=current.filter(x=>x&&x.date===item.date);if(hits.length!==1||valid(hits[0].photos&&hits[0].photos[item.side])){skipped++;continue}const mime=/^image\/(jpeg|jpg|png|webp)$/.test(item.mime)?item.mime:'image/jpeg';let binary='';for(let i=0;i<raw.length;i+=8192)binary+=String.fromCharCode(...raw.subarray(i,i+8192));const data='data:'+mime+';base64,'+btoa(binary);hits[0].photos=hits[0].photos||{};hits[0].photos[item.side]=data;localStorage.setItem(key,JSON.stringify(current));restored++}catch(e){failed++;console.warn('V233 photo import',e)}}return{restored,skipped,failed}}
+function mount(){if(document.getElementById('v233BackupPanel'))return;const old=document.getElementById('v232FolderPanel');if(old)old.remove();const anchor=document.getElementById('v116DataGuard')||document.getElementById('v91DetailModal');if(!anchor)return;const box=document.createElement('section');box.id='v233BackupPanel';box.style.cssText='padding:12px;margin:10px 0;border:1px solid #94a3b8;border-radius:12px;font-size:12px;line-height:1.7';box.innerHTML='<b>V233 写真の端末バックアップ</b><p>Androidのブラウザでは通常フォルダの自動操作ができない場合があります。代わりに、残っている写真を1つのZIPファイルにまとめて端末へ保存できます。Firebaseへ写真は送信しません。</p><button id="v233Export" type="button" style="padding:10px;margin:4px;background:#0f766e;color:white;border:0;border-radius:8px">写真を一括バックアップ（ZIP）</button><button id="v233Import" type="button" style="padding:10px;margin:4px;background:#1d4ed8;color:white;border:0;border-radius:8px">バックアップZIPから復元</button><input id="v233Zip" type="file" accept=".zip,application/zip" style="display:none"><div id="v233Status" role="status"></div><small>※ ZIPの保存先は端末のダウンロード設定によります。完全自動の通常フォルダ保存ではありません。既存写真は上書きしません。ZIPには患者写真が含まれるため安全に保管してください。</small>';anchor.insertAdjacentElement('afterend',box);const status=box.querySelector('#v233Status'),input=box.querySelector('#v233Zip');box.querySelector('#v233Export').onclick=async()=>{status.textContent='バックアップを作成中…';try{const n=await exportZip();status.textContent=n+'枚をZIPにまとめました。端末のダウンロード一覧で保存を確認してください。'}catch(e){status.textContent=e.message||String(e)}};box.querySelector('#v233Import').onclick=()=>input.click();input.onchange=async()=>{if(!input.files?.[0])return;status.textContent='照合・復元中…';try{const r=await importZip(input.files[0]);status.textContent='復元 '+r.restored+'枚／対象外 '+r.skipped+'枚／失敗 '+r.failed+'枚。履歴を開き直してください。'}catch(e){status.textContent=e.message||String(e)}input.value=''}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 })();
 </script>
 </body></html>
