@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V262</title>
+<title>AI姿勢＆3次元歪み分析システム V263</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -352,7 +352,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 <style id="v257-snapshot-style">.v257saved{margin-top:15px;border-top:2px solid #0f766e;padding-top:12px}.v257saved h3{font-size:16px;color:#0f766e}.v257saved [style*="grid-template-columns"]{max-width:100%}.v257legacy{padding:12px;color:#64748b}.v257printdetail{margin-top:18px;break-before:page}.v257printdetail [style*="grid-template-columns"]{max-width:100%}</style></head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V262</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V263</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3016,4 +3016,17 @@ function mount(){const host=document.getElementById('patientReport');if(!host||d
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 })();
 </script>
-</body></html>
+<style id="v263-style">#v263HistoryPhotos{margin:12px 0;padding:12px;border:1px solid #99f6e4;border-radius:12px;background:#f0fdfa}#v263HistoryPhotos .v263grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}#v263HistoryPhotos img{width:100%;height:180px;object-fit:contain;background:white;border-radius:8px}#v263HistoryPhotos small{display:block;text-align:center;font-size:10px;margin:4px}</style>
+<script id="v263-session-photos">
+(()=>{'use strict';
+// In-memory only: never write photographs to localStorage, IndexedDB or Firebase.
+const photos=new Map(), sides=['front','right','left'];
+function patient(){try{return JSON.parse(sessionStorage.getItem('wakaba_v61_current')||localStorage.getItem('wakaba_v66_current')||'null')}catch(e){return null}}
+function capture(){const p=patient();if(!p?.id)return;const existing=photos.get(String(p.id))||{};let changed=false;for(const side of sides){const img=document.querySelector('#stage-'+side+' img');if(img?.src&&(img.src.startsWith('data:image/')||img.src.startsWith('blob:'))&&existing[side]!==img.src){existing[side]=img.src;changed=true}}if(changed)photos.set(String(p.id),existing)}
+function showHistory(){capture();const modal=document.getElementById('v91DetailModal');if(!modal?.classList.contains('on'))return;const p=patient(),set=p&&photos.get(String(p.id)),body=document.getElementById('v91DetailBody');if(!body)return;document.getElementById('v263HistoryPhotos')?.remove();if(!set||!sides.some(k=>set[k]))return;const wrap=document.createElement('div');wrap.id='v263HistoryPhotos';const heading=document.createElement('b');heading.textContent='このブラウザで現在保持している写真（分析中のみ）';wrap.appendChild(heading);const grid=document.createElement('div');grid.className='v263grid';for(const [i,side] of sides.entries()){const cell=document.createElement('div');const label=document.createElement('small');label.textContent=['正面','右側面','左側面'][i];cell.appendChild(label);if(set[side]){const img=document.createElement('img');img.src=set[side];cell.appendChild(img)}grid.appendChild(cell)}wrap.appendChild(grid);const note=document.createElement('small');note.textContent='履歴への写真保存ではありません。ページ再読み込み後は表示できない場合があります。';wrap.appendChild(note);body.prepend(wrap)}
+window.wakabaV263Photos=photos;
+const observer=new MutationObserver(()=>{capture();if(document.getElementById('v91DetailModal')?.classList.contains('on'))showHistory()});
+function start(){for(const side of sides){const stage=document.getElementById('stage-'+side);if(stage)observer.observe(stage,{childList:true,subtree:true,attributes:true,attributeFilter:['src']})}const modal=document.getElementById('v91DetailModal');if(modal)new MutationObserver(showHistory).observe(modal,{attributes:true,attributeFilter:['class']});document.getElementById('v77History')?.addEventListener('click',()=>setTimeout(showHistory,80));window.addEventListener('wakaba-analysis',()=>setTimeout(capture,0));}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
+</script></body></html>
