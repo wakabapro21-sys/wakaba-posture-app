@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V256</title>
+<title>AI姿勢＆3次元歪み分析システム V258</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -350,9 +350,9 @@ html,body{
 .wakaba-help{padding:0!important;overflow:hidden}.wakaba-help details{border-bottom:1px solid #e7eaf0}.wakaba-help details:last-child{border-bottom:0}.wakaba-help summary{list-style:none;display:flex;align-items:center;justify-content:space-between;padding:22px 26px;cursor:pointer;font-size:18px}.wakaba-help summary::-webkit-details-marker{display:none}.wakaba-help summary span{font-size:28px;transition:transform .2s}.wakaba-help details[open] summary span{transform:rotate(90deg)}.helpBody{padding:0 26px 24px;color:#526071;line-height:1.75;font-size:15px}.helpBody b{display:block;color:#172033;font-size:16px;margin-bottom:8px}.helpBody p{margin:7px 0}@media(max-width:600px){.wakaba-help summary{padding:20px 22px;font-size:17px}.helpBody{padding:0 22px 22px;font-size:14px}}
 </style>
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
-</head>
+<style id="v257-snapshot-style">.v257saved{margin-top:15px;border-top:2px solid #0f766e;padding-top:12px}.v257saved h3{font-size:16px;color:#0f766e}.v257saved [style*="grid-template-columns"]{max-width:100%}.v257legacy{padding:12px;color:#64748b}.v257printdetail{margin-top:18px;break-before:page}.v257printdetail [style*="grid-template-columns"]{max-width:100%}</style></head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V256</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V258</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1262,7 +1262,7 @@ host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel'
  function getHistory(id){try{return JSON.parse(localStorage.getItem(historyKey(id))||'[]')}catch(e){return []}}
  function showHistory(c){$('v63HistoryName').textContent=c.name||'';const h=getHistory(c.id),host=$('v63HistoryList');const opts=h.map((x,i)=>'<option value="'+i+'">'+esc(new Date(x.date).toLocaleString('ja-JP'))+' ｜ 総合 '+x.total+'</option>').join('');const compare=h.length>=2?'<div class="v92compareBox"><div class="v92compareTitle">比較する2回を選択</div><div class="v92compareGrid"><div class="v92compareField"><label>Before（比較元）</label><select id="v92Before">'+opts+'</select></div><div class="v92compareField"><label>After（比較先）</label><select id="v92After">'+opts+'</select></div></div><button class="v92compareGo" id="v92CompareGo">選んだ2回を Before / After 比較</button><div class="v92compareNote">初回と今回、1か月前と今回など、保存済みの好きな2回を比較できます。</div></div>':'';const clear=h.length?'<button id="v74ClearAll" style="width:100%;margin:8px 0;padding:10px;border:1px solid #ef4444;border-radius:10px;background:#fff;color:#dc2626;font-weight:800">履歴をすべて削除</button>':'';host.innerHTML=compare+clear+(h.length?h.map((x,i)=>'<div class="v63item"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>'+esc(new Date(x.date).toLocaleString('ja-JP'))+'</b><button class="v74delete" data-i="'+i+'" style="border:0;border-radius:8px;padding:7px 10px;background:#fee2e2;color:#b91c1c;font-weight:800">削除</button></div><div class="v63scores"><div class="v63score">総合<br><b>'+x.total+'</b></div><div class="v63score">正面<br><b>'+x.front+'</b></div><div class="v63score">側面<br><b>'+x.side+'</b></div><div class="v63score">回旋<br><b>'+x.twist+'</b></div></div><div style="font-size:10px;color:#475569;margin-top:7px">'+esc(x.type||'')+'</div><button class="v91open" data-v91="'+i+'">この分析結果を詳しく見る</button></div>').join(''):'<div class="v61empty" style="margin-top:12px">まだ分析履歴がありません。</div>');const bs=$('v92Before'),as=$('v92After'),go=$('v92CompareGo');if(bs&&as&&go){bs.value=String(h.length-1);as.value='0';go.onclick=()=>{const bi=Number(bs.value),ai=Number(as.value);if(bi===ai){alert('異なる2回の分析履歴を選んでください。');return}const b=h[bi],a=h[ai];if(!b||!a)return;showCompare(c,b,a)}}host.querySelectorAll('.v91open').forEach(b=>b.onclick=()=>showHistoryDetail(c,h[Number(b.dataset.v91)]));host.querySelectorAll('.v74delete').forEach(b=>b.onclick=()=>{if(confirm('この分析履歴を削除しますか？')){const a=getHistory(c.id);a.splice(Number(b.dataset.i),1);localStorage.setItem(historyKey(c.id),JSON.stringify(a));showHistory(c)}});const ca=$('v74ClearAll');if(ca)ca.onclick=()=>{if(confirm('この顧客の分析履歴をすべて削除しますか？')){localStorage.removeItem(historyKey(c.id));showHistory(c)}};$('v63HistoryModal').classList.add('on')}
 
- function showHistoryDetail(c,x){if(!x)return;const m=x.metrics||{},p=x.photos||{};$('v91DetailDate').textContent=(c.name||'')+' ｜ '+new Date(x.date).toLocaleString('ja-JP');const metric=(label,key,unit)=>{const v=Number(m[key]);return '<div class="v91metric">'+label+'<b>'+(Number.isFinite(v)?Math.abs(v).toFixed(1)+unit:'--')+'</b></div>'};const photo=(key,label)=>'<div><div class="v91photo">'+(p[key]?'<img src="'+p[key]+'" alt="'+label+'">':'写真なし')+'</div><div style="text-align:center;font-size:9px;color:#64748b;margin-top:3px">'+label+'</div></div>';$('v91DetailBody').innerHTML='<div class="v91summary"><div class="v91sum">総合<b>'+x.total+'</b></div><div class="v91sum">正面<b>'+x.front+'</b></div><div class="v91sum">側面 / 回旋<b>'+x.side+' / '+x.twist+'</b></div></div><div class="v91type">'+esc(x.type||'姿勢タイプ未保存')+'</div><div class="v91photos">'+photo('front','正面')+photo('right','右側面')+photo('left','左側面')+'</div><div class="v67section">保存された姿勢数値</div><div class="v91metrics">'+metric('肩の傾き','shoulderTilt','°')+metric('骨盤の傾き','pelvisTilt','°')+metric('頭部偏位','headShift','%')+metric('胸郭回旋','thoraxYaw','°')+metric('骨盤回旋','pelvisYaw','°')+metric('相対的な捻れ','relativeTwist','°')+'</div><div class="v64note">※ この画面は分析時に保存されたデータを表示しています。過去の分析データそのものは変更しません。</div>';$('v91DetailModal').classList.add('on');window.wakabaV227Current={patientId:c.id,date:x.date}}
+ function showHistoryDetail(c,x){if(!x)return;const m=x.metrics||{},p={};$('v91DetailDate').textContent=(c.name||'')+' ｜ '+new Date(x.date).toLocaleString('ja-JP');const metric=(label,key,unit)=>{const v=Number(m[key]);return '<div class="v91metric">'+label+'<b>'+(Number.isFinite(v)?Math.abs(v).toFixed(1)+unit:'--')+'</b></div>'};const photo=(key,label)=>'<div><div class="v91photo">'+(p[key]?'<img src="'+p[key]+'" alt="'+label+'">':'写真なし')+'</div><div style="text-align:center;font-size:9px;color:#64748b;margin-top:3px">'+label+'</div></div>';$('v91DetailBody').innerHTML='<div class="v91summary"><div class="v91sum">総合<b>'+x.total+'</b></div><div class="v91sum">正面<b>'+x.front+'</b></div><div class="v91sum">側面 / 回旋<b>'+x.side+' / '+x.twist+'</b></div></div><div class="v91type">'+esc(x.type||'姿勢タイプ未保存')+'</div><div class="v91photos">'+photo('front','正面')+photo('right','右側面')+photo('left','左側面')+'</div><div class="v67section">保存された姿勢数値</div><div class="v91metrics">'+metric('肩の傾き','shoulderTilt','°')+metric('骨盤の傾き','pelvisTilt','°')+metric('頭部偏位','headShift','%')+metric('胸郭回旋','thoraxYaw','°')+metric('骨盤回旋','pelvisYaw','°')+metric('相対的な捻れ','relativeTwist','°')+'</div>'+(x.reportSnapshot?'<div class="v257saved"><h3>分析当時の詳細レポート（3Dモデルを除く）</h3>'+Object.values(x.reportSnapshot).join('')+'</div>':'<div class="v257legacy">この履歴は詳細保存機能の追加前に作成されたため、保存済みの数値・所見のみ表示しています。</div>')+'<div class="v64note">※ この画面は分析時に保存されたデータを表示しています。過去の分析データそのものは変更しません。</div>';$('v91DetailModal').classList.add('on');window.wakabaV227Current={patientId:c.id,date:x.date}}
  function photoStrip(x){const P=x.photos||{};return '<div class="v67photos">'+[['front','正面'],['right','右側面'],['left','左側面']].map(([k,l])=>'<div><div class="v67photo">'+(P[k]?'<img src="'+P[k]+'" alt="'+l+'">':'写真なし')+'</div><div style="text-align:center;font-size:8px;color:#64748b;margin-top:2px">'+l+'</div></div>').join('')+'</div>'}
  function metricValue(x,k){return x.metrics&&Number.isFinite(Number(x.metrics[k]))?Number(x.metrics[k]):null}
  function fmt(v,unit){return v==null?'--':Math.abs(v).toFixed(1)+unit}
@@ -1282,7 +1282,7 @@ host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel'
  $('v64CompareBody').innerHTML=dates+'<div class="v70hero"><div class="v70scoreline"><div class="v70scorebox"><small>Before・総合</small><strong>'+before.total+'</strong></div><div class="v70arrow">→</div><div class="v70scorebox"><small>After・総合</small><strong>'+after.total+'</strong></div></div><div class="v70change">総合スコア変化　'+sign+scoreDelta+'点</div></div>'+types+'<div class="v93compareLead">選択した2回の保存データを同じ画面で比較しています。写真・スコア・姿勢数値を順番に確認できます。</div>'+view('front','正面写真の比較')+view('right','右側面写真の比較')+view('left','左側面写真の比較')+'<div class="v67section">スコア詳細</div><div class="v70metricRow" style="font-weight:900;color:#64748b"><span>項目</span><b>Before</b><b>After</b><span>差</span></div>'+scoreRow('総合',before.total,after.total)+scoreRow('正面',before.front,after.front)+scoreRow('側面',before.side,after.side)+scoreRow('回旋',before.twist,after.twist)+'<div class="v67section">姿勢数値の変化</div><div class="v70metricRow" style="font-weight:900;color:#64748b"><span>項目</span><b>Before</b><b>After</b><span>変化</span></div>'+rows+'<div class="v64note">※「改善」は写真上の左右差・偏位・回旋の絶対値が小さくなった場合の比較表示です。医学的な診断や治療効果の判定ではありません。同じ位置・距離・姿勢条件で撮影してください。</div>';
  $('v63HistoryModal').classList.remove('on');$('v64CompareModal').classList.add('on')}
  function makeThumb(type){try{const rec=window.WAKABA_PHOTOS&&window.WAKABA_PHOTOS[type];if(!rec)return null;if(rec.historyThumb)return rec.historyThumb;const img=document.querySelector('#stage-'+type+' img');if(!img||!img.naturalWidth)return null;const maxSide=960,scale=Math.min(1,maxSide/Math.max(img.naturalWidth,img.naturalHeight)),w=Math.max(1,Math.round(img.naturalWidth*scale)),h=Math.max(1,Math.round(img.naturalHeight*scale)),cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);rec.historyThumb=cv.toDataURL('image/jpeg',.62);return rec.historyThumb}catch(e){console.error('V204 history photo error',type,e);return null}}
- function saveAnalysisHistory(total,front,side,twist,type){try{const raw=sessionStorage.getItem('wakaba_v61_current')||localStorage.getItem('wakaba_v66_current');const c=JSON.parse(raw||'null');if(!c||!c.id){console.warn('V67 history: current customer missing');return false}const d=window.WAKABA_3D_DATA||{};const metrics={shoulderTilt:Number(d.shoulderTilt),pelvisTilt:Number(d.pelvisTilt),headShift:Number(d.headShift),thoraxYaw:Number(d.thoraxYaw),pelvisYaw:Number(d.pelvisYaw),relativeTwist:Number(d.relativeTwist),sideDeviation:Number(d.sideDeviation)};const photos={front:makeThumb('front'),right:makeThumb('right'),left:makeThumb('left')};const h=getHistory(c.id);h.unshift({version:70,date:new Date().toISOString(),total:Number(total),front:Number(front),side:Number(side),twist:Number(twist),type:String(type||''),metrics,photos});let keep=h.slice(0,30);try{localStorage.setItem(historyKey(c.id),JSON.stringify(keep))}catch(q){console.error('V227: history storage quota, existing history preserved',q);alert('写真付き分析履歴を保存できませんでした。端末の保存容量が不足している可能性があります。既存の履歴は削除していません。');return false}try{window.dispatchEvent(new CustomEvent('wakaba:v103-history-saved',{detail:{id:c.id}}))}catch(e){}return true}catch(e){console.error('V67 history save error',e);return false}}
+ function saveAnalysisHistory(total,front,side,twist,type){try{const raw=sessionStorage.getItem('wakaba_v61_current')||localStorage.getItem('wakaba_v66_current');const c=JSON.parse(raw||'null');if(!c||!c.id){console.warn('V67 history: current customer missing');return false}const d=window.WAKABA_3D_DATA||{};const metrics={shoulderTilt:Number(d.shoulderTilt),pelvisTilt:Number(d.pelvisTilt),headShift:Number(d.headShift),thoraxYaw:Number(d.thoraxYaw),pelvisYaw:Number(d.pelvisYaw),relativeTwist:Number(d.relativeTwist),sideDeviation:Number(d.sideDeviation)};const photos=null; /* V258: photographs remain in live analysis only */const h=getHistory(c.id);const reportSnapshot={};['patientReport','detailPosturePanel'].forEach(id=>{const el=document.getElementById(id);if(el){const copy=el.cloneNode(true);copy.querySelectorAll('script,button,canvas,iframe').forEach(n=>n.remove());copy.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));reportSnapshot[id]=copy.innerHTML}});h.unshift({version:70,date:new Date().toISOString(),total:Number(total),front:Number(front),side:Number(side),twist:Number(twist),type:String(type||''),metrics,reportSnapshot});let keep=h.slice(0,30);try{localStorage.setItem(historyKey(c.id),JSON.stringify(keep))}catch(q){console.error('V227: history storage quota, existing history preserved',q);alert('写真付き分析履歴を保存できませんでした。端末の保存容量が不足している可能性があります。既存の履歴は削除していません。');return false}try{window.dispatchEvent(new CustomEvent('wakaba:v103-history-saved',{detail:{id:c.id}}))}catch(e){}return true}catch(e){console.error('V67 history save error',e);return false}}
  window.saveAnalysisHistory=saveAnalysisHistory;
  window.addEventListener('wakaba-analysis',function(){
    const total=document.getElementById('scoreTotal')?.textContent;
@@ -1811,104 +1811,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 <style id="v116-dataguard-style">
 #v116DataGuard{margin:8px 0;padding:10px 12px;border:1px solid #93c5fd;border-radius:12px;background:#eff6ff;color:#1e3a8a;font-size:10px;line-height:1.6}#v116DataGuard b{font-size:11px}
 </style>
-<script id="v227-photo-export-import">
-(function(){
- 'use strict';
- const histKey=id=>'wakaba_v63_history_'+id;
- const validImage=v=>typeof v==='string'&&/^data:image\/(jpeg|jpg|png|webp);base64,/i.test(v);
- const keys=[['front','正面'],['right','右側面'],['left','左側面']];
- const safeName=s=>String(s||'patient').replace(/[\\/:*?"<>|\x00-\x1f]/g,'_').slice(0,35);
- function current(){const d=window.wakabaV227Current;if(!d)return null;let h;try{h=JSON.parse(localStorage.getItem(histKey(d.patientId))||'[]')}catch(e){return null}if(!Array.isArray(h))return null;const i=h.findIndex(x=>x.date===d.date);return i<0?null:{d,h,i,x:h[i]}}
- function filename(x,k){return 'wakaba_'+safeName(x.d.patientId)+'_'+String(x.d.date||'').replace(/[^0-9]/g,'').slice(0,14)+'_'+k+'.jpg'}
- function blobFromDataUrl(src){const [meta,data]=src.split(',');const binary=atob(data),u=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)u[i]=binary.charCodeAt(i);return new Blob([u],{type:meta.match(/^data:([^;]+)/)[1]})}
- function download(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000)}
- function controls(){const body=document.getElementById('v91DetailBody');if(!body||body.querySelector('#v227PhotoControls'))return;const box=document.createElement('div');box.id='v227PhotoControls';box.style.cssText='margin:12px 0;padding:12px;background:#f0fdfa;border-radius:12px';box.innerHTML='<b style="font-size:14px;color:#115e59">写真の端末保存・復元（V233）</b><div style="font-size:11px;color:#475569;margin:6px 0">端末のダウンロードへ写真を保存します。ギャラリーへの表示は端末の設定によります。写真はクラウドに送信しません。</div><button id="v227Save" type="button" style="padding:11px;border:0;border-radius:9px;background:#0f766e;color:white;font-weight:bold;width:100%">写真3枚を端末へ保存</button><button id="v227Restore" type="button" style="padding:11px;border:1px solid #0f766e;border-radius:9px;background:white;color:#0f766e;font-weight:bold;width:100%;margin-top:8px">写真を選んで復元</button><input id="v227Files" type="file" accept="image/jpeg,image/png,image/webp" multiple style="display:none"><div id="v227Status" role="status" style="font-size:11px;margin-top:6px"></div>';
- body.appendChild(box);
- const status=box.querySelector('#v227Status');
- box.querySelector('#v227Save').onclick=async()=>{const q=current();if(!q)return;const pics=keys.filter(([k])=>validImage(q.x.photos&&q.x.photos[k]));if(!pics.length){alert('この履歴には保存できる写真がありません。');return}if(!confirm(pics.length+'枚の写真を端末にダウンロードします。患者さんの写真の取り扱いにご注意ください。'))return;for(const [k] of pics){try{download(blobFromDataUrl(q.x.photos[k]),filename(q,k))}catch(e){status.textContent='保存エラー: '+k;return}await new Promise(r=>setTimeout(r,350))}status.textContent=pics.length+'枚のダウンロードを開始しました。ブラウザのダウンロード許可をご確認ください。'};
- box.querySelector('#v227Restore').onclick=()=>{if(!current())return;box.querySelector('#v227Files').click()};
- // V228: filename-based automatic restoration to the original patient and dated history.
- // Never infer patient identity from image content. Unmatched/ambiguous files are skipped.
- const auto=document.createElement('button');auto.type='button';auto.id='v228AutoRestore';auto.textContent='保存済み写真を本人の履歴へ自動復元';auto.style.cssText='padding:11px;border:0;border-radius:9px;background:#1d4ed8;color:#fff;font-weight:bold;width:100%;margin-top:8px';
- const picker=document.createElement('input');picker.type='file';picker.accept='image/jpeg,image/png,image/webp';picker.multiple=true;picker.style.display='none';
- box.querySelector('#v227Restore').insertAdjacentElement('afterend',auto);box.appendChild(picker);
- auto.onclick=()=>picker.click();
- picker.onchange=async ev=>{
-  const files=[...ev.target.files];ev.target.value='';if(!files.length)return;
-  let restored=0,skipped=0,failed=0;const tasks=[];
-  for(const file of files){
-   const match=/^wakaba_(.+)_(\d{14})_(front|right|left)\.(jpg|jpeg|png|webp)$/i.exec(file.name);
-   if(!match||!/^image\/(jpeg|png|webp)$/.test(file.type)||file.size>20*1024*1024){skipped++;continue}
-   const [,patientId,stamp,side]=match;
-   const key=histKey(patientId);let history;
-   try{history=JSON.parse(localStorage.getItem(key)||'[]')}catch(e){skipped++;continue}
-   if(!Array.isArray(history)){skipped++;continue}
-   const candidates=history.map((h,i)=>({h,i})).filter(({h})=>String(h.date||'').replace(/[^0-9]/g,'').slice(0,14)===stamp);
-   if(candidates.length!==1){skipped++;continue}
-   const {h,i}=candidates[0];if(validImage(h.photos&&h.photos[side])){skipped++;continue}
-   tasks.push({file,key,index:i,side,patientId,stamp});
-  }
-  if(!tasks.length){status.textContent='自動復元 0枚／対象外 '+skipped+'枚／保存失敗 0枚。写真名と患者ID・分析日時が一致しないか、既に保存済みです。';alert(status.textContent);return}
-  if(!confirm('患者IDと分析日時が一致した '+tasks.length+'枚を、各患者の元の履歴へ復元します。既存写真は上書きしません。よろしいですか？'))return;
-  for(const task of tasks){
-   try{
-    const url=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(task.file)});
-    const img=new Image();await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=url});
-    const canvas=document.createElement('canvas'),scale=Math.min(1,960/Math.max(img.naturalWidth,img.naturalHeight));
-    canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
-    // Re-read immediately before writing, so newer histories and photos are preserved.
-    const h=JSON.parse(localStorage.getItem(task.key)||'[]');
-    const hits=h.filter(x=>String(x.date||'').replace(/[^0-9]/g,'').slice(0,14)===task.stamp);
-    if(hits.length!==1||validImage(hits[0].photos&&hits[0].photos[task.side])){skipped++;continue}
-    hits[0].photos=hits[0].photos||{};hits[0].photos[task.side]=canvas.toDataURL('image/jpeg',.62);
-    localStorage.setItem(task.key,JSON.stringify(h));restored++;
-   }catch(e){console.warn('V228 auto restore failed',e);failed++}
-  }
-  status.textContent='自動復元 '+restored+'枚／対象外 '+skipped+'枚／保存失敗 '+failed+'枚。詳細画面を開き直すと表示されます。';alert(status.textContent);
- };
-
- box.querySelector('#v227Files').onchange=async ev=>{
-  const files=[...ev.target.files];ev.target.value='';if(!files.length)return;
-  const initial=current();if(!initial){alert('対象の分析履歴を開き直してください。');return}
-  // Always use the latest stored history; never trust a stale modal snapshot.
-  const read=()=>{let h=JSON.parse(localStorage.getItem(histKey(initial.d.patientId))||'[]');if(!Array.isArray(h))throw Error('history');const hits=h.filter(x=>x.date===initial.d.date);if(hits.length!==1)throw Error('ambiguous');return {h,x:hits[0]}};
-  let fresh;try{fresh=read()}catch(e){alert('分析履歴を確認できません。画面を開き直してください。');return}
-  const missing=keys.filter(([k])=>!validImage(fresh.x.photos&&fresh.x.photos[k]));
-  if(!missing.length){alert('保存データ上は3枚とも写真があります。画面が「写真なし」の場合は、一度詳細を閉じて開き直してください。既存写真は上書きしません。');return}
-  if(files.length>missing.length){alert('未保存の写真枠は'+missing.length+'つです。選び直してください。');return}
-  const assignments=[];const used=new Set();
-  for(const f of files){
-   if(!/^image\/(jpeg|png|webp)$/.test(f.type)||f.size>20*1024*1024){alert('JPEG/PNG/WebPの20MB以下の写真を選んでください。');return}
-   const m=/_((?:front|right|left))\.(?:jpg|jpeg|png|webp)$/i.exec(f.name);
-   let side=m&&m[1].toLowerCase();
-   if(!side||!missing.some(([k])=>k===side)||used.has(side)){
-    const choices=missing.filter(([k])=>!used.has(k));
-    const answer=prompt('「'+f.name+'」の撮影方向を入力してください。\n正面=1、右側面=2、左側面=3\n（キャンセルで中止）',choices.length===1?String(keys.findIndex(([k])=>k===choices[0][0])+1):'');
-    if(answer===null)return;
-    side=({'1':'front','2':'right','3':'left'})[answer.trim()];
-   }
-   if(!side||!missing.some(([k])=>k===side)||used.has(side)){alert('撮影方向が重複しているか、未保存の枠ではありません。最初から選び直してください。');return}
-   used.add(side);assignments.push({file:f,side});
-  }
-  if(!confirm('復元先を確認してください。\n'+assignments.map(a=>a.file.name+' → '+keys.find(([k])=>k===a.side)[1]).join('\n')+'\n\nこの患者の選択中の分析履歴に保存します。よろしいですか？'))return;
-  let changed=0;
-  for(const {file,side} of assignments){
-   try{
-    const url=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(file)});
-    const img=new Image();await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=url});
-    const canvas=document.createElement('canvas'),scale=Math.min(1,960/Math.max(img.naturalWidth,img.naturalHeight));canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
-    const latest=read();if(validImage(latest.x.photos&&latest.x.photos[side]))continue;
-    latest.x.photos=latest.x.photos||{};latest.x.photos[side]=canvas.toDataURL('image/jpeg',.62);
-    localStorage.setItem(histKey(initial.d.patientId),JSON.stringify(latest.h));changed++;
-   }catch(e){console.warn('V233 manual restore error',e);alert('写真の保存に失敗しました。既存写真は上書きしていません。');return}
-  }
-  status.textContent=changed+'枚を復元しました。詳細を閉じて開き直して確認してください。';
- };
- }
- const observer=new MutationObserver(()=>{const modal=document.getElementById('v91DetailModal');if(modal&&modal.classList.contains('on'))controls()});
- document.addEventListener('DOMContentLoaded',()=>{const modal=document.getElementById('v91DetailModal');if(modal)observer.observe(modal,{attributes:true,attributeFilter:['class']})});
-})();
-</script>
+<script id="v227-photo-export-import">/* V258: disabled photo persistence; existing data untouched */</script>
 <script id="v116-dataguard-local">
 (function(){
  const DB='wakaba_local_dataguard_v116', STORE='kv', CUSTOMER='wakaba_v61_customers', HP='wakaba_v63_history_';
@@ -2949,43 +2852,7 @@ body.v214-simple #v213ContractOverview .v213fine{font-size:11px}
  setTimeout(()=>clearInterval(poll),15000);
 })();
 </script>
-<script id="v231-private-photo-folder">
-/* V233: Dedicated origin-private OPFS folder; no Firebase photo uploads. */
-(()=>{'use strict';
-const PREFIX='wakaba_v63_history_',FOLDER='Wakaba_Posture_Photos';
-const supported=!!(navigator.storage&&navigator.storage.getDirectory);
-const keys=['front','right','left'];
-const isPhoto=x=>typeof x==='string'&&/^data:image\/(?:jpeg|jpg|png|webp);base64,/i.test(x);
-const name=(id,date,k)=>encodeURIComponent(String(id))+'__'+encodeURIComponent(String(date))+'__'+k+'.txt';
-let folderPromise;
-function folder(){if(!supported)return Promise.reject(Error('OPFS unsupported'));return folderPromise||(folderPromise=navigator.storage.getDirectory().then(root=>root.getDirectoryHandle(FOLDER,{create:true})).catch(e=>{folderPromise=null;throw e}))}
-async function write(id,date,k,data){if(!isPhoto(data))return false;const dir=await folder(),f=await dir.getFileHandle(name(id,date,k),{create:true});const w=await f.createWritable();try{await w.write(data);await w.close();const check=await(await f.getFile()).text();if(check!==data)throw Error('写真の保存後照合に失敗');return true}catch(e){try{await w.abort()}catch(_){}throw e}}
-async function read(id,date,k){try{const dir=await folder(),f=await dir.getFileHandle(name(id,date,k)),data=await(await f.getFile()).text();return isPhoto(data)?data:null}catch(e){return null}}
-const pending=new Map();
-async function backupHistory(id,h){if(!Array.isArray(h))return;let count=0,failed=0;for(const x of h){if(!x||!x.date)continue;for(const k of keys){const photo=x.photos&&x.photos[k];if(isPhoto(photo)){try{if(await write(id,x.date,k,photo))count++}catch(e){failed++;console.warn('V238 OPFS verified save failed',e)}}}}if(count||failed)window.dispatchEvent(new CustomEvent('wakaba:v236-photo-backup',{detail:{count,failed}}));return count}
-function queueBackup(id,value){if(!supported)return;let h;try{h=JSON.parse(value)}catch(e){return}const old=pending.get(id)||Promise.resolve();const task=old.catch(()=>{}).then(()=>backupHistory(id,h));pending.set(id,task);task.finally(()=>{if(pending.get(id)===task)pending.delete(id)}).catch(()=>{})}
-const original=Storage.prototype.setItem;
-Storage.prototype.setItem=function(k,v){const r=original.apply(this,arguments);if(this===localStorage&&String(k).startsWith(PREFIX))queueBackup(String(k).slice(PREFIX.length),String(v));return r};
-async function restoreDisplay(){const ctx=window.wakabaV227Current,body=document.getElementById('v91DetailBody');if(!ctx||!body||!document.getElementById('v91DetailModal')?.classList.contains('on'))return;
-const signature=String(ctx.patientId)+'|'+String(ctx.date);if(body.dataset.v231Restoring===signature)return;body.dataset.v231Restoring=signature;
-const blocks=body.querySelectorAll('.v91photos .v91photo');if(blocks.length!==3)return;
-let recovered=0;
-for(let i=0;i<3;i++){const block=blocks[i],img=block.querySelector('img');if(img&&img.getAttribute('src')&&isPhoto(img.getAttribute('src')))continue;
-const data=await read(ctx.patientId,ctx.date,keys[i]);if(!data)continue;
-if(!document.getElementById('v91DetailModal')?.classList.contains('on')||window.wakabaV227Current?.date!==ctx.date||window.wakabaV227Current?.patientId!==ctx.patientId)return;
-block.replaceChildren();const el=document.createElement('img');el.src=data;el.alt=['正面','右側面','左側面'][i];block.appendChild(el);recovered++;
-}
-if(recovered){let note=body.querySelector('#v231AutoNote');if(!note){note=document.createElement('div');note.id='v231AutoNote';note.style.cssText='font-size:11px;color:#0f766e;margin:8px 0';body.appendChild(note)}note.textContent='端末内の専用保存領域から写真'+recovered+'枚を自動表示しました（Firebase送信なし）'}
-}
-let scheduled=false;function scan(){if(scheduled)return;scheduled=true;setTimeout(()=>{scheduled=false;restoreDisplay().catch(console.warn)},60)}
-function setup(){const modal=document.getElementById('v91DetailModal');if(modal){new MutationObserver(scan).observe(modal,{attributes:true,attributeFilter:['class']});const body=document.getElementById('v91DetailBody');if(body)new MutationObserver(scan).observe(body,{childList:true,subtree:false})}
-if(supported){try{navigator.storage.persist?.().catch(()=>{})}catch(e){}
-setTimeout(()=>{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(PREFIX))queueBackup(k.slice(PREFIX.length),localStorage.getItem(k))}},1500)}
-}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
-window.wakabaV233PhotoFolder={supported,folder:FOLDER,read};
-})();
-</script>
+<script id="v231-private-photo-folder">/* V258: disabled photo persistence; existing data untouched */</script>
 <style id="v235-privacy-style">#v235LegalBox{margin:12px 0;border-radius:12px;overflow:hidden;border:1px solid #e2e8f0;background:#fff}#v235LegalBox .v235legalpanel{display:none;padding:14px 18px;background:#f8fafc;border-bottom:1px solid #e2e8f0}#v235LegalBox .v235legalpanel.on{display:block}#v235LegalBox .v235legalpanel p{font-size:13px;line-height:1.85;margin:0 0 12px;white-space:normal}#v235LegalBox .v235draft{font-size:12px;color:#9a3412;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:10px;margin-bottom:14px}#v235LegalBox .v235legalpanel h3{font-size:16px;margin:0 0 12px}#v235LegalBox button{cursor:pointer}</style>
 <script id="v235-privacy-menu">(function(){
 function mount(){const help=document.getElementById('v77Help');if(!help||document.getElementById('v235LegalBox'))return;
@@ -3062,36 +2929,45 @@ async function render(id,x){
  text(c,'写真は患者様の同意を得て共有してください。',65,1678,20,'#64748b');return canvas
 }
 function blob(canvas){return new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(Error('画像生成に失敗しました')),'image/png'))}
-async function share(from,button){const a=from==='history'?currentFromHistory():currentFromLine();if(!a){alert('分析履歴が見つかりません。患者と分析日時を確認してください。');return}button.disabled=true;const label=button.textContent;button.textContent='レポート画像を作成中…';try{const canvas=await render(a.id,a.x),b=await blob(canvas),filename='姿勢分析レポート_'+String(a.x.date).slice(0,10)+'.png';const url=URL.createObjectURL(b),link=document.createElement('a');link.href=url;link.download=filename;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);alert('レポート画像のダウンロードを開始しました。保存を確認してから、LINE公式アカウントの管理画面で患者さんに送信してください。個人LINEからは送信されません。');}catch(e){console.error('V256 report',e);alert('レポート作成に失敗しました。'+e.message)}finally{button.disabled=false;button.textContent=label}}
+async function share(from,button){const a=from==='history'?currentFromHistory():currentFromLine();if(!a){alert('分析履歴が見つかりません。患者と分析日時を確認してください。');return}button.disabled=true;const label=button.textContent;button.textContent='レポート画像を作成中…';try{const canvas=await render(a.id,a.x),b=await blob(canvas),filename='姿勢分析レポート_'+String(a.x.date).slice(0,10)+'.png';const url=URL.createObjectURL(b),link=document.createElement('a');link.href=url;link.download=filename;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);alert('レポート画像のダウンロードを開始しました。保存を確認してから、LINE公式アカウントの管理画面で患者さんに送信してください。個人LINEからは送信されません。');}catch(e){console.error('V258 report',e);alert('レポート作成に失敗しました。'+e.message)}finally{button.disabled=false;button.textContent=label}}
 function mount(){const body=$('v91DetailBody');if(body&&!$('v250FromHistory')){const b=document.createElement('button');b.id='v250FromHistory';b.type='button';b.textContent='写真付き分析レポート画像を保存';b.onclick=()=>share('history',b);body.appendChild(b)}const old=$('v95LineShare');if(old&&!$('v250FromLine')){const b=document.createElement('button');b.id='v250FromLine';b.type='button';b.textContent='写真付き分析レポート画像を保存';b.onclick=()=>share('line',b);old.before(b);const note=document.createElement('div');note.style.cssText='font-size:12px;color:#475569;margin:5px 0 12px';note.textContent='個人LINEには送信しません。画像を保存し、LINE公式アカウントの管理画面から患者さんに送信してください。';b.after(note)}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();const modal=$('v91DetailModal');if(modal)new MutationObserver(()=>{if(modal.classList.contains('on'))mount()}).observe(modal,{attributes:true,attributeFilter:['class']});
 })();
 </script>
-<style id="v256-photo-style">
+<style id="v257-photo-style">
 /* 写真の余白を黒くしない。画像自体は切り取らない */
 .stage,.v91photo,.v70photo,.reviewbox img{background:#fff!important}
 .stage img,.v91photo img,.v70photo img{object-fit:contain!important;background:#fff!important}
-#v256PdfHistory,#v256PdfLine{display:block;width:100%;border:0;border-radius:12px;background:#0f766e;color:#fff;font-weight:900;padding:14px;margin:10px 0;font-size:15px}
+#v257PdfHistory,#v257PdfLine{display:block;width:100%;border:0;border-radius:12px;background:#0f766e;color:#fff;font-weight:900;padding:14px;margin:10px 0;font-size:15px}
 </style>
-<script id="v256-pdf-report">
+<style id="v258-privacy-style">#v250FromHistory,#v250FromLine,#v257PdfHistory{display:none!important}.v91photos{display:none!important}</style>
+<script id="v257-pdf-report">
 (()=>{'use strict';
 const $=id=>document.getElementById(id);
 const safe=v=>String(v??'--').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function records(id){try{const a=JSON.parse(localStorage.getItem('wakaba_v63_history_'+id)||'[]');return Array.isArray(a)?a:[]}catch(e){return[]}}
 function patient(id){try{return JSON.parse(localStorage.getItem('wakaba_v61_customers')||'[]').find(c=>String(c.id)===String(id))||{}}catch(e){return{}}}
 function chosen(source){let id,x;if(source==='history'){const c=window.wakabaV227Current;if(!c)return null;id=c.patientId;x=records(id).find(r=>String(r.date)===String(c.date))}else{id=$('v77Patient')?.dataset.patientId;const index=Number($('v98HistorySelect')?.value||0);x=records(id)[index]}return id&&x?{id,x}:null}
-async function photo(id,x,side){const direct=x.photos?.[side];if(typeof direct==='string'&&direct.startsWith('data:image/'))return direct;try{const root=await navigator.storage.getDirectory(),dir=await root.getDirectoryHandle('Wakaba_Posture_Photos'),name=encodeURIComponent(String(id))+'__'+encodeURIComponent(String(x.date))+'__'+side+'.txt',file=await dir.getFileHandle(name);const value=await(await file.getFile()).text();return value.startsWith('data:image/')?value:null}catch(e){return null}}
+async function photo(id,x,side){if(window.wakabaV258LiveId!==String(id)||window.wakabaV258LiveDate!==String(x.date))return null;const img=document.querySelector('#stage-'+side+' img');return img&&img.src&&img.src.startsWith('data:image/')?img.src:null}
 function fields(x){return Object.entries(x).filter(([k,v])=>!['photos','date','id','patientId'].includes(k)&&v!==null&&v!==undefined&&['string','number','boolean'].includes(typeof v)&&String(v).length<450)}
 async function printReport(source,button){const a=chosen(source);if(!a){alert('選択した分析履歴が見つかりません。');return}const win=window.open('','_blank');if(!win){alert('PDF画面を開けません。ポップアップを許可してください。');return}button.disabled=true;const old=button.textContent;button.textContent='PDFを準備中…';try{
 const {id,x}=a,p=patient(id),imgs=await Promise.all(['front','right','left'].map(k=>photo(id,x,k)));
 const score=(label,value)=>`<div class="score"><small>${label}</small><strong>${safe(value)}</strong><small> /100</small></div>`;
-const photos=imgs.map((src,i)=>`<div class="photo"><b>${['正面','右側面','左側面'][i]}</b>${src?`<img src="${src}" alt="${['正面','右側面','左側面'][i]}">`:'<div class="missing">写真データなし（端末に保存されていません）</div>'}</div>`).join('');
+const photos=imgs.map((src,i)=>`<div class="photo"><b>${['正面','右側面','左側面'][i]}</b>${src?`<img src="${src}" alt="${['正面','右側面','左側面'][i]}">`:'<div class="missing">写真なし（撮影時のみ利用）</div>'}</div>`).join('');
 const detail=fields(x).map(([k,v])=>`<tr><th>${safe(k)}</th><td>${safe(v)}</td></tr>`).join('');
+const savedReport=x.reportSnapshot?Object.values(x.reportSnapshot).join(''):'<p>詳細レポート保存開始前の履歴です。保存済みの数値を掲載します。</p>';
 win.document.open();win.document.write(`<!doctype html><html lang="ja"><head><meta charset="utf-8"><title>姿勢分析詳細レポート ${safe(x.date)}</title><style>
-@page{size:A4;margin:13mm}*{box-sizing:border-box}body{font-family:Arial,'Noto Sans JP',sans-serif;color:#172033;margin:0;font-size:11px}header{background:#0f766e;color:white;padding:18px;border-radius:10px}h1{margin:0;font-size:23px}h2{font-size:16px;color:#0f766e;border-bottom:2px solid #99f6e4;padding-bottom:6px;margin:22px 0 12px}.sub{margin-top:8px;color:#d1fae5}.patient{padding:12px;background:#f0fdfa;margin:14px 0;border-radius:9px;line-height:1.8}.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.photo{border:1px solid #cbd5e1;border-radius:9px;text-align:center;padding:7px;break-inside:avoid}.photo img{display:block;width:100%;height:235px;object-fit:contain;background:#fff;margin-top:8px}.missing{height:235px;display:grid;place-items:center;color:#64748b}.scores{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.score{background:#ecfdf5;padding:13px;text-align:center;border-radius:9px}.score strong{font-size:28px;color:#0f766e;display:block;margin:5px 0}.score small{color:#64748b}.type{padding:14px;border-radius:9px;background:#f0fdfa;font-size:16px;font-weight:bold}.notes{line-height:1.8;background:#f8fafc;padding:12px;border-radius:9px}table{width:100%;border-collapse:collapse;table-layout:fixed}th,td{border-bottom:1px solid #e2e8f0;padding:9px;text-align:left;overflow-wrap:anywhere}th{width:40%;background:#f8fafc}tr{break-inside:avoid}.footer{margin-top:20px;font-size:10px;color:#64748b;line-height:1.7}.toolbar{padding:12px;background:#eff6ff;margin-bottom:15px;text-align:center}.toolbar button{background:#0f766e;color:white;border:0;padding:12px 22px;border-radius:8px;font-weight:bold}@media print{.toolbar{display:none}header{-webkit-print-color-adjust:exact;print-color-adjust:exact}.scores,.type{print-color-adjust:exact}} </style></head><body><div class="toolbar"><button onclick="window.print()">PDFとして保存・印刷</button><div>印刷画面で「PDFとして保存」を選択してください</div></div><header><h1>姿勢分析 詳細レポート</h1><div class="sub">わかば整体院・接骨院 ｜ 3方向姿勢バランス分析</div></header><div class="patient"><b>${safe(p.kana||p.name||'患者様')} 様</b>　患者ID：${safe(id)}<div>分析日時：${safe(x.date)}　性別：${safe(p.sex||'未設定')}　生年月日：${safe(p.birth||'未設定')}</div></div><h2>1. 姿勢写真（3方向）</h2><div class="photos">${photos}</div><h2>2. 姿勢バランススコア</h2><div class="scores">${score('総合',x.total)}${score('正面',x.front)}${score('側面',x.side)}${score('回旋',x.twist)}</div><h2>3. 姿勢タイプ・総合所見</h2><div class="type">${safe(x.type||'姿勢タイプ未記録')}</div><div class="notes">正面：左右バランスと肩・骨盤の傾きを確認。<br>側面：頭部・体幹・骨盤の前後位置関係を確認。<br>回旋：胸郭・骨盤の相対的なねじれを確認。<br>スコアは撮影条件・ランドマーク位置に影響される独自基準の参考値です。</div><h2>4. 保存済み分析データ（詳細）</h2><table>${detail||'<tr><td>詳細数値はこの履歴に保存されていません。</td></tr>'}</table><h2>5. 継続評価と確認事項</h2><div class="notes">同一条件で撮影し、肩・骨盤の高さ、脊柱の位置、脚軸、重心の偏りを経時比較してください。筋肉の緊張・弱化や症状との関係は、問診・触診・動作評価を併用して判断してください。</div><div class="footer">本レポートは姿勢の参考評価であり、疾病の診断や治療効果の保証ではありません。写真はこの端末からレポート生成時に読み込まれ、Firebaseへ送信しません。共有前に患者様の同意を確認してください。</div></body></html>`);win.document.close();win.focus();
+@page{size:A4;margin:13mm}*{box-sizing:border-box}body{font-family:Arial,'Noto Sans JP',sans-serif;color:#172033;margin:0;font-size:11px}header{background:#0f766e;color:white;padding:18px;border-radius:10px}h1{margin:0;font-size:23px}h2{font-size:16px;color:#0f766e;border-bottom:2px solid #99f6e4;padding-bottom:6px;margin:22px 0 12px}.sub{margin-top:8px;color:#d1fae5}.patient{padding:12px;background:#f0fdfa;margin:14px 0;border-radius:9px;line-height:1.8}.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.photo{border:1px solid #cbd5e1;border-radius:9px;text-align:center;padding:7px;break-inside:avoid}.photo img{display:block;width:100%;height:235px;object-fit:contain;background:#fff;margin-top:8px}.missing{height:235px;display:grid;place-items:center;color:#64748b}.scores{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.score{background:#ecfdf5;padding:13px;text-align:center;border-radius:9px}.score strong{font-size:28px;color:#0f766e;display:block;margin:5px 0}.score small{color:#64748b}.type{padding:14px;border-radius:9px;background:#f0fdfa;font-size:16px;font-weight:bold}.notes{line-height:1.8;background:#f8fafc;padding:12px;border-radius:9px}table{width:100%;border-collapse:collapse;table-layout:fixed}th,td{border-bottom:1px solid #e2e8f0;padding:9px;text-align:left;overflow-wrap:anywhere}th{width:40%;background:#f8fafc}tr{break-inside:avoid}.footer{margin-top:20px;font-size:10px;color:#64748b;line-height:1.7}.toolbar{padding:12px;background:#eff6ff;margin-bottom:15px;text-align:center}.toolbar button{background:#0f766e;color:white;border:0;padding:12px 22px;border-radius:8px;font-weight:bold}@media print{.toolbar{display:none}header{-webkit-print-color-adjust:exact;print-color-adjust:exact}.scores,.type{print-color-adjust:exact}} </style></head><body><div class="toolbar"><button onclick="window.print()">PDFとして保存・印刷</button><div>印刷画面で「PDFとして保存」を選択してください</div></div><header><h1>姿勢分析 詳細レポート</h1><div class="sub">わかば整体院・接骨院 ｜ 3方向姿勢バランス分析</div></header><div class="patient"><b>${safe(p.kana||p.name||'患者様')} 様</b>　患者ID：${safe(id)}<div>分析日時：${safe(x.date)}　性別：${safe(p.sex||'未設定')}　生年月日：${safe(p.birth||'未設定')}</div></div><h2>1. 姿勢写真（3方向）</h2><div class="photos">${photos}</div><h2>2. 姿勢バランススコア</h2><div class="scores">${score('総合',x.total)}${score('正面',x.front)}${score('側面',x.side)}${score('回旋',x.twist)}</div><h2>3. 姿勢タイプ・総合所見</h2><div class="type">${safe(x.type||'姿勢タイプ未記録')}</div><div class="notes">正面：左右バランスと肩・骨盤の傾きを確認。<br>側面：頭部・体幹・骨盤の前後位置関係を確認。<br>回旋：胸郭・骨盤の相対的なねじれを確認。<br>スコアは撮影条件・ランドマーク位置に影響される独自基準の参考値です。</div><h2>4. 保存済み分析データ（詳細）</h2><table>${detail||'<tr><td>詳細数値はこの履歴に保存されていません。</td></tr>'}</table><h2>5. 継続評価と確認事項</h2><div class="notes">同一条件で撮影し、肩・骨盤の高さ、脊柱の位置、脚軸、重心の偏りを経時比較してください。筋肉の緊張・弱化や症状との関係は、問診・触診・動作評価を併用して判断してください。</div><div class="footer">本レポートは姿勢の参考評価であり、疾病の診断や治療効果の保証ではありません。写真はこの端末からレポート生成時に読み込まれ、Firebaseへ送信しません。共有前に患者様の同意を確認してください。</div><section class="v257printdetail"><h2>分析当時の詳細レポート（3Dモデルを除く）</h2>${savedReport}</section></body></html>`);win.document.close();win.focus();
 }catch(e){console.error(e);win.close();alert('PDF作成に失敗しました：'+e.message)}finally{button.disabled=false;button.textContent=old}}
-function mount(){const body=$('v91DetailBody');if(body&&!$('v256PdfHistory')){const b=document.createElement('button');b.id='v256PdfHistory';b.textContent='写真付き詳細レポート（PDF）';b.onclick=()=>printReport('history',b);body.appendChild(b)}const line=$('v250FromLine');if(line&&!$('v256PdfLine')){const b=document.createElement('button');b.id='v256PdfLine';b.textContent='選択した分析の詳細レポート（PDF）';b.onclick=()=>printReport('line',b);line.after(b)}}
+function mount(){const body=$('v91DetailBody');if(body&&!$('v257PdfHistory')){const b=document.createElement('button');b.id='v257PdfHistory';b.textContent='写真付き詳細レポート（PDF）';b.onclick=()=>printReport('history',b);body.appendChild(b)}const line=$('v250FromLine');if(line&&!$('v257PdfLine')){const b=document.createElement('button');b.id='v257PdfLine';b.textContent='選択した分析の詳細レポート（PDF）';b.onclick=()=>printReport('line',b);line.after(b)}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();const modal=$('v91DetailModal');if(modal)new MutationObserver(()=>{if(modal.classList.contains('on'))mount()}).observe(modal,{attributes:true,attributeFilter:['class']});
 })();
 </script>
-</body></html>
+<script id="v258-session-report">
+(()=>{'use strict';
+function current(){try{return JSON.parse(sessionStorage.getItem('wakaba_v61_current')||localStorage.getItem('wakaba_v66_current')||'null')}catch(e){return null}}
+window.addEventListener('wakaba-analysis',()=>{const c=current();if(!c)return;window.wakabaV258LiveId=String(c.id);try{const h=JSON.parse(localStorage.getItem('wakaba_v63_history_'+c.id)||'[]');window.wakabaV258LiveDate=String(h[0]?.date||'')}catch(e){} });
+function mount(){const host=document.getElementById('patientReport');if(!host||document.getElementById('v258LivePdf'))return;const b=document.createElement('button');b.id='v258LivePdf';b.type='button';b.textContent='📄 今回の写真付き詳細レポート（PDF）';b.style.cssText='width:100%;margin-top:14px;padding:15px;background:#0f766e;color:#fff;border:0;border-radius:12px;font-weight:900';b.onclick=()=>{const c=current();if(!c){alert('患者を選択してください');return}const h=JSON.parse(localStorage.getItem('wakaba_v63_history_'+c.id)||'[]');if(!h.length){alert('先に3D分析を作成してください');return}if(window.wakabaV258LiveId!==String(c.id)||window.wakabaV258LiveDate!==String(h[0].date)){alert('写真付きレポートは分析直後のみ作成できます。再分析してください。');return}const detail=document.getElementById('v77Patient');if(detail)detail.dataset.patientId=String(c.id);const sel=document.getElementById('v98HistorySelect');if(sel)sel.value='0';const pdf=document.getElementById('v257PdfLine');if(pdf)pdf.click();else alert('PDF機能を準備しています。少し待ってからお試しください。')};host.appendChild(b)}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
+})();
+</script></body></html>
