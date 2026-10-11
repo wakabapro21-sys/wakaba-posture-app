@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V243</title>
+<title>AI姿勢＆3次元歪み分析システム V244</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -352,7 +352,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V243</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V244</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3078,18 +3078,15 @@ async function verifyZipWithoutChanges(file){
  }
  return {present,recoverable,unmatched,invalid,total:obj.photos.length};
 }
-function mount(){if(document.getElementById('v234BackupPanel'))return;const old=document.getElementById('v232FolderPanel');if(old)old.remove();const anchor=document.getElementById('v116DataGuard')||document.getElementById('v91DetailModal');if(!anchor)return;const box=document.createElement('section');box.id='v234BackupPanel';box.style.cssText='padding:12px;margin:10px 0;border:1px solid #94a3b8;border-radius:12px;font-size:12px;line-height:1.7';box.innerHTML='<b>V243 写真の端末バックアップ・復元</b><p>分析ごとに3枚の写真をZIPで端末へ保存できます。ダウンロードはブラウザの許可が必要です。写真はFirebaseへ送信しません。</p><button id="v233Export" type="button" style="padding:10px;margin:4px;background:#0f766e;color:white;border:0;border-radius:8px">写真を一括バックアップ（ZIP）</button><button id="v233Import" type="button" style="padding:10px;margin:4px;background:#1d4ed8;color:white;border:0;border-radius:8px">バックアップZIPから復元</button><input id="v233Zip" type="file" accept=".zip,application/zip" style="display:none"><div id="v233Status" role="status"></div><small>※ ZIPの保存先は端末のダウンロード設定によります。完全自動の通常フォルダ保存ではありません。既存写真は上書きしません。ZIPには患者写真が含まれるため安全に保管してください。</small>';anchor.insertAdjacentElement('afterend',box);const status=box.querySelector('#v233Status'),input=box.querySelector('#v233Zip');const one=document.createElement('button');one.id='v237Latest';one.type='button';one.textContent='直近の分析写真3枚を端末へ保存（ZIP）';one.style.cssText='padding:10px;margin:4px;background:#b45309;color:white;border:0;border-radius:8px;font-weight:bold';box.querySelector('#v233Export').before(one);
+function mount(){if(document.getElementById('v234BackupPanel'))return;const old=document.getElementById('v232FolderPanel');if(old)old.remove();const anchor=document.getElementById('v116DataGuard')||document.getElementById('v91DetailModal');if(!anchor)return;const box=document.createElement('section');box.id='v234BackupPanel';box.style.cssText='padding:12px;margin:10px 0;border:1px solid #94a3b8;border-radius:12px;font-size:12px;line-height:1.7';box.innerHTML='<b>V244 写真の端末バックアップ・復元</b><p>分析ごとに3枚の写真をZIPで端末へ保存できます。ダウンロードはブラウザの許可が必要です。写真はFirebaseへ送信しません。</p><button id="v233Export" type="button" style="padding:10px;margin:4px;background:#0f766e;color:white;border:0;border-radius:8px">写真を一括バックアップ（ZIP）</button><button id="v233Import" type="button" style="padding:10px;margin:4px;background:#1d4ed8;color:white;border:0;border-radius:8px">バックアップZIPから復元</button><input id="v233Zip" type="file" accept=".zip,application/zip" style="display:none"><div id="v233Status" role="status"></div><small>※ ZIPの保存先は端末のダウンロード設定によります。完全自動の通常フォルダ保存ではありません。既存写真は上書きしません。ZIPには患者写真が含まれるため安全に保管してください。</small>';anchor.insertAdjacentElement('afterend',box);const status=box.querySelector('#v233Status'),input=box.querySelector('#v233Zip');const one=document.createElement('button');one.id='v237Latest';one.type='button';one.textContent='直近の分析写真3枚を端末へ保存（ZIP）';one.style.cssText='padding:10px;margin:4px;background:#b45309;color:white;border:0;border-radius:8px;font-weight:bold';box.querySelector('#v233Export').before(one);
  const hint=document.createElement('div');hint.id='v237Hint';hint.style.cssText='margin:7px 0;color:#92400e;font-weight:bold';hint.textContent='分析ごとに保存してください。端末のダウンロード一覧でZIPがあることを確認してください。';one.after(hint);
- // V243: Put the save action immediately before step ④, after the three photo inputs.
- const modelCard=document.getElementById('modelCard');
- if(modelCard&&modelCard.parentElement){
-   const saveCard=document.createElement('div');saveCard.className='card';saveCard.id='v243PhotoSaveCard';
-   saveCard.style.cssText='border:2px solid #fdba74;background:#fffaf0';
-   const heading=document.createElement('div');heading.style.cssText='font-size:14px;font-weight:900;color:#9a3412;margin-bottom:6px';heading.textContent='写真3枚の端末保存';
-   const help=document.createElement('p');help.style.cssText='font-size:12px;line-height:1.6;margin:4px 0 10px';help.textContent='正面・右・左の撮影後、④で3D分析を作成してから保存してください。保存したZIPはダウンロード一覧で確認できます。';
-   saveCard.append(heading,help,one,hint);
-   modelCard.parentElement.insertBefore(saveCard,modelCard);
- }
+ // V244: The analysis-complete reminder is the single everyday ZIP-save entry point.
+ // Keep the original button and handler in the DOM so the reminder can trigger it.
+ // It is hidden visually; the ZIP backup and restore tools remain unchanged.
+ one.hidden=true;
+ one.style.display='none';
+ hint.hidden=true;
+ hint.style.display='none';
  let lastId=null;one.onclick=async()=>{const id=lastId||(()=>{try{return JSON.parse(sessionStorage.getItem('wakaba_v61_current')||localStorage.getItem('wakaba_v66_current')||'null')?.id}catch(e){return null}})();if(!id){status.textContent='先に患者を選択してください。';return}try{const n=await exportLatest(id);status.textContent=n+'枚のZIPダウンロードを開始しました。ダウンロード一覧でファイルを確認してください。';hint.textContent='保存を開始しました。ダウンロード一覧にZIPがあることを必ず確認してください。'}catch(e){status.textContent=e.message||String(e);hint.textContent=e.message||String(e)}};
  window.addEventListener('wakaba:v103-history-saved',e=>{lastId=e.detail&&e.detail.id;hint.textContent='新しい分析が保存されました。写真消失防止のため「直近の分析写真3枚を端末へ保存」を押してください。';box.style.border='2px solid #f59e0b';});
 const verifyButton=document.createElement('button');verifyButton.type='button';verifyButton.id='v240Verify';verifyButton.textContent='ZIPの復元テスト（データ変更なし）';verifyButton.style.cssText='padding:10px;margin:4px;background:#475569;color:#fff;border:0;border-radius:8px;font-weight:bold';
@@ -3100,7 +3097,7 @@ const verifyButton=document.createElement('button');verifyButton.type='button';v
 // V242: Keep the everyday save action visible; group infrequent tools without changing handlers.
  const tools=document.createElement('details');tools.id='v242BackupTools';tools.style.cssText='margin-top:14px;padding:10px;border:1px solid #cbd5e1;border-radius:10px;background:#fff';
  const summary=document.createElement('summary');summary.textContent='バックアップ管理（復元・一括保存・確認）';summary.style.cssText='cursor:pointer;font-weight:bold;color:#334155;padding:5px';tools.appendChild(summary);
- const help=document.createElement('p');help.textContent='写真が消えたときは「バックアップZIPから復元」を選んでください。普段の分析では上のオレンジ色の保存ボタンだけ使います。';help.style.cssText='font-size:12px;color:#475569;margin:8px 0';tools.appendChild(help);
+ const help=document.createElement('p');help.textContent='写真が消えたときは「バックアップZIPから復元」を選んでください。普段の分析では分析完了時の案内からZIP保存してください。';help.style.cssText='font-size:12px;color:#475569;margin:8px 0';tools.appendChild(help);
  for(const el of [box.querySelector('#v233Export'),box.querySelector('#v233Import'),verifyButton]){if(el)tools.appendChild(el)}
  // Preserve the file inputs and their event listeners in the original section.
  const fineprint=box.querySelector('small');if(fineprint)box.insertBefore(tools,fineprint);else box.appendChild(tools);
@@ -3147,7 +3144,7 @@ function init(){if(document.getElementById('v241SaveReminder'))return;
  document.body.appendChild(banner);
  const txt=banner.querySelector('#v241ReminderText');
  banner.querySelector('#v241SaveLater').onclick=()=>{banner.hidden=true};
- banner.querySelector('#v241SaveNow').onclick=()=>{const btn=document.getElementById('v237Latest');if(!btn){txt.textContent='保存ボタンが見つかりません。写真バックアップ欄から保存してください。';return;}btn.scrollIntoView({behavior:'smooth',block:'center'});btn.click();txt.textContent='ZIPのダウンロードを開始しました。端末の「ダウンロード」にファイルがあることを確認してください。';};
+ banner.querySelector('#v241SaveNow').onclick=()=>{const btn=document.getElementById('v237Latest');if(!btn){txt.textContent='保存ボタンが見つかりません。写真バックアップ欄から保存してください。';return;}btn.click();txt.textContent='ZIPの保存処理を開始しました。端末の「ダウンロード」にZIPファイルがあることを必ず確認してください。';};
  window.addEventListener('wakaba:v103-history-saved',()=>{txt.textContent='分析が完了しました。写真3枚をZIPで端末に保存してください。';banner.hidden=false;});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
