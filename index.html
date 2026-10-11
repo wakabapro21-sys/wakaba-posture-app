@@ -1472,6 +1472,15 @@ document.addEventListener('DOMContentLoaded',function(){
 })();
 </script>
 
+<style id="v271-auth-layout">
+body.v271-signed-out #v100Cloud{width:min(460px,calc(100vw - 28px));padding:22px;top:50%;bottom:auto;max-height:calc(100dvh - 28px);transform:translate(-50%,-50%)}
+body.v271-signed-out #v100Cloud .v100head>span:first-child{font-size:0}
+body.v271-signed-out #v100Cloud .v100head>span:first-child:after{content:"わかば姿勢分析・ログイン";font-size:19px}
+body.v271-signed-out #v100Cloud #v139AutoRestore,body.v271-signed-out #v100Cloud #v100Actions,body.v271-signed-out #v100Cloud #v100Msg,body.v271-signed-out #v100Cloud #v214Summary,body.v271-signed-out #v100Cloud #v100Status{display:none!important}
+body.v271-signed-out #v100Cloud .v100row input{font-size:16px;padding:13px}
+body.v271-signed-out #v100Cloud #v100SignIn{font-size:16px}
+body.v271-signed-out #v100Cloud #v101CloudClose{display:none}
+</style>
 <style id="v100-firebase-style">
 #v100Cloud{display:none;position:fixed;left:50%;top:12px;bottom:12px;transform:translateX(-50%);z-index:1302;width:min(360px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:#fff;border:1px solid #cbd5e1;border-radius:16px;box-shadow:0 10px 30px #0f172a22;padding:12px;font-family:inherit}
 #v100Cloud .v100head{display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:900;color:#0f172a;position:sticky;top:-12px;z-index:3;background:#fff;padding:12px 0 8px}.v100badge{font-size:10px;padding:4px 8px;border-radius:999px;background:#f1f5f9;color:#475569}.v100row{display:flex;gap:7px;margin-top:8px}.v100row input{min-width:0;flex:1;border:1px solid #cbd5e1;border-radius:9px;padding:9px;font-size:11px}.v100btn{border:0;border-radius:10px;padding:9px 11px;font-weight:900;background:#0f766e;color:#fff}.v100btn.secondary{background:#2563eb}.v100btn.gray{background:#64748b}.v100note{font-size:9px;line-height:1.5;color:#64748b;margin-top:7px}.v100ok{color:#047857}.v100err{color:#b91c1c}
@@ -1488,7 +1497,7 @@ document.addEventListener('DOMContentLoaded',function(){
  <div id="v139AutoRestore" style="margin:8px 0;padding:9px 10px;border:1px solid #86efac;border-radius:10px;background:#f0fdf4;color:#166534;font-size:10px;font-weight:800;line-height:1.55">🛡 V139 自動復元保護 ON<br>ログイン時に端末患者が0件で、院別Firebaseに患者が存在する場合のみ自動復元します。既存データは削除・上書きしません。</div>
 <div id="v100Actions" style="display:none"><div class="v100row"><div style="flex:1;padding:8px 10px;border-radius:10px;background:#ecfdf5;color:#047857;font-size:10px;font-weight:900">✓ V114 院別保存 ON（旧 /patients はバックアップとして保持）</div></div><div id="v112ClinicAccount" style="margin:8px 0 10px;padding:11px 12px;border:1px solid #bfdbfe;border-radius:12px;background:#eff6ff;font-size:10px;line-height:1.65;color:#1e3a8a"><b style="font-size:12px">🏥 院アカウント</b><div id="v112ClinicEmail">ログイン確認中…</div><div id="v112ClinicId" style="word-break:break-all;color:#64748b"></div><div style="margin-top:5px;color:#475569">V114ではUIDを院IDとして、患者・履歴の保存先と復元元を院別領域に切り替えます。旧 /patients は削除・変更しません。</div></div>
   <div class="v100row"><button id="v100Sync" class="v100btn secondary" style="flex:1">端末→Firebaseへコピー</button></div>
-  <div class="v100row"><button id="v102Restore" class="v100btn" style="flex:1;background:#0f766e">Firebase→この端末へ安全復元</button><button id="v100SignOut" class="v100btn gray">ログアウト</button></div>
+  <div class="v100row"><button id="v102Restore" class="v100btn" style="flex:1;background:#0f766e">Firebase→この端末へ安全復元</button><button id="v100SignOut" class="v100btn gray" style="display:none">ログアウト</button></div>
  </div>
  <div id="v100Msg" class="v100note">端末データが原本です。同期しても端末の顧客・履歴は削除しません。写真はクラウドへ送りません。</div>
 </div>
@@ -1497,7 +1506,7 @@ document.addEventListener('DOMContentLoaded',function(){
 document.addEventListener('DOMContentLoaded',()=>{
  const nav=document.querySelector('#v77Menu .v77nav');
  if(nav && !document.getElementById('v101CloudMenu')){
-   const b=document.createElement('button'); b.id='v101CloudMenu'; b.type='button'; b.textContent='☁ Firebase同期'; nav.appendChild(b);
+   const b=document.createElement('button'); b.id='v101CloudMenu'; b.type='button'; b.textContent='☁ Firebase同期'; nav.insertBefore(b,document.getElementById('v270MenuLogout'));
  }
  const cloud=document.getElementById('v100Cloud'), back=document.getElementById('v101CloudBackdrop');
  function openCloud(){ if(cloud) cloud.style.display='block'; if(back) back.style.display='block'; document.getElementById('v77Menu')?.classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu'); }
@@ -1514,6 +1523,9 @@ import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,sendPasswordResetE
 import {getFirestore,doc,setDoc,getDoc,getDocFromServer,serverTimestamp,collection,getDocs,getDocsFromServer} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
 const firebaseConfig={apiKey:'AIzaSyCC4vKry9DQnQxwPWOMEy-xbiAzFJ3n6ic',authDomain:'wakaba-posture.firebaseapp.com',projectId:'wakaba-posture',storageBucket:'wakaba-posture.firebasestorage.app',messagingSenderId:'992802796991',appId:'1:992802796991:web:461ab115f39be2795b5d0a',measurementId:'G-1C96FJQPF6'};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+// V271: auth state controls only the login presentation; no patient data is modified.
+document.body.classList.add("v271-signed-out");
+function v271AuthView(signedIn){document.body.classList.toggle("v271-signed-out",!signedIn);const c=document.getElementById("v100Cloud"),b=document.getElementById("v101CloudBackdrop");if(!signedIn){if(c)c.style.display="block";if(b)b.style.display="block";document.getElementById("v77Menu")?.classList.remove("on");sessionStorage.removeItem("wakaba_v165_menu");}else{if(c)c.style.display="none";if(b)b.style.display="none";document.getElementById("v77Menu")?.classList.remove("on");sessionStorage.removeItem("wakaba_v165_menu");}}
 const $=id=>document.getElementById(id), status=$('v100Status'),msg=$('v100Msg');
 // V233: device owner lock. Never upload a prior clinic's local patients to a new login.
 const V233_OWNER='wakaba_v230_device_owner';
@@ -1714,8 +1726,8 @@ $('v266SendReset').onclick=async()=>{const email=$('v100Email').value.trim(),out
 function v266ShowLegal(index){const help=document.getElementById('v77Help');if(!help){alert('メニューの「お問い合わせ・ヘルプ」から規約をご確認ください。');return;}const panel=document.getElementById('v235LegalPanel'+index);if(panel){const win=window.open('','_blank');if(win){win.document.write('<!doctype html><html lang=ja><meta name=viewport content=width=device-width,initial-scale=1><meta charset=utf-8><title>規約の確認</title><body style="font-family:sans-serif;line-height:1.8;padding:20px">'+panel.innerHTML+'</body></html>');win.document.close();}else alert('お問い合わせ・ヘルプから規約を確認してください。');}else alert('お問い合わせ・ヘルプから規約を確認してください。');}
 $('v266Terms').onclick=e=>{e.preventDefault();v266ShowLegal(1)}; $('v266Privacy').onclick=e=>{e.preventDefault();v266ShowLegal(0)};
 document.getElementById('v270MenuLogout')?.addEventListener('click',()=>{document.getElementById('v77Menu')?.classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu');document.getElementById('v100SignOut')?.click();});
-$('v100SignOut').onclick=async()=>{sessionStorage.setItem('wakaba_v269_login_return','1');sessionStorage.setItem('wakaba_v165_page','home');document.getElementById('v77Menu')?.classList.remove('on');await signOut(auth);$('v100Cloud').style.display='block';$('v101CloudBackdrop').style.display='block';};$('v100Sync').onclick=uploadAll;$('v102Restore').onclick=restoreAll;
-onAuthStateChanged(auth,async u=>{if(u){if(!v230Block(u))return;localStorage.setItem('wakaba_clinic_uid',u.uid);localStorage.setItem('wakaba_clinic_email',u.email||'');const ce=$('v112ClinicEmail'),ci=$('v112ClinicId');if(ce)ce.textContent='ログイン：'+(u.email||'メール未設定');if(ci)ci.textContent='院ID：'+u.uid;status.textContent='ログイン済み';$('v100Login').style.display='none';$('v100Actions').style.display='block';/* V270: successful authentication returns to the customer list; cloud controls remain accessible from MENU */$('v100Cloud').style.display='none';$('v101CloudBackdrop').style.display='none';document.getElementById('v77Menu')?.classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu');sessionStorage.setItem('wakaba_v165_page','home');sessionStorage.removeItem('wakaba_v269_login_return');document.querySelectorAll('#v77Patient,#v77Reports,#v77Mypage,#v77News,#v77Help,#v77Settings').forEach(e=>e.classList.remove('on'));document.getElementById('v61Home')?.classList.remove('v77hidden');document.body.classList.remove('v61-analysis');msg.innerHTML='<span class="v100ok">V139：端末データを安全確認中です。端末の患者が0件でFirebaseに患者が存在する場合だけ、自動で安全復元します。</span>';
+$('v100SignOut').onclick=async()=>{sessionStorage.setItem('wakaba_v269_login_return','1');sessionStorage.setItem('wakaba_v165_page','home');document.getElementById('v77Menu')?.classList.remove('on');await signOut(auth);v271AuthView(false);};$('v100Sync').onclick=uploadAll;$('v102Restore').onclick=restoreAll;
+onAuthStateChanged(auth,async u=>{v271AuthView(!!u);if(u){if(!v230Block(u))return;localStorage.setItem('wakaba_clinic_uid',u.uid);localStorage.setItem('wakaba_clinic_email',u.email||'');const ce=$('v112ClinicEmail'),ci=$('v112ClinicId');if(ce)ce.textContent='ログイン：'+(u.email||'メール未設定');if(ci)ci.textContent='院ID：'+u.uid;status.textContent='ログイン済み';$('v100Login').style.display='none';$('v100Actions').style.display='block';/* V270: successful authentication returns to the customer list; cloud controls remain accessible from MENU */$('v100Cloud').style.display='none';$('v101CloudBackdrop').style.display='none';document.getElementById('v77Menu')?.classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu');sessionStorage.setItem('wakaba_v165_page','home');sessionStorage.removeItem('wakaba_v269_login_return');document.querySelectorAll('#v77Patient,#v77Reports,#v77Mypage,#v77News,#v77Help,#v77Settings').forEach(e=>e.classList.remove('on'));document.getElementById('v61Home')?.classList.remove('v77hidden');document.body.classList.remove('v61-analysis');msg.innerHTML='<span class="v100ok">V139：端末データを安全確認中です。端末の患者が0件でFirebaseに患者が存在する場合だけ、自動で安全復元します。</span>';
 try{
  if(patients().length===0){
   status.textContent='クラウド確認中';
