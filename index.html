@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V261</title>
+<title>AI姿勢＆3次元歪み分析システム V262</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -352,7 +352,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V261</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V262</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3027,9 +3027,9 @@ function rr(ctx,x,y,w,h,r,fill){ctx.fillStyle=fill;ctx.beginPath();ctx.roundRect
 function text(ctx,s,x,y,size=25,color='#172033',bold=false){ctx.fillStyle=color;ctx.font=(bold?'bold ':'')+size+'px sans-serif';ctx.fillText(String(s??'--'),x,y)}
 function fitText(ctx,s,max){s=String(s||'');while(s.length&&ctx.measureText(s).width>max)s=s.slice(0,-1);return s}
 async function render(id,x){
- const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=2860;
- const c=canvas.getContext('2d');c.fillStyle='#f6faf9';c.fillRect(0,0,1080,2860);
- rr(c,30,30,1020,2795,26,'#ffffff');rr(c,30,30,1020,140,24,'#0f766e');
+ const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=3000;
+ const c=canvas.getContext('2d');c.fillStyle='#f6faf9';c.fillRect(0,0,1080,3000);
+ rr(c,30,30,1020,2940,26,'#ffffff');rr(c,30,30,1020,140,24,'#0f766e');
  text(c,'姿勢分析レポート',65,102,44,'#ffffff',true);text(c,'わかば整体院・接骨院',715,106,21,'#ffffff');
  const patient=getPatient(id),nm=patient.kana||patient.name||'患者様';
  text(c,fitText(c,nm+' 様',700),64,220,30,'#172033',true);
@@ -3053,22 +3053,38 @@ async function render(id,x){
  const m=x.metrics||{};
  const metricLabels=[['shoulderTilt','肩の傾き','°'],['pelvisTilt','骨盤の傾き','°'],['headShift','頭部の左右偏位',''],['sideDeviation','前後方向の偏位',''],['thoraxYaw','胸郭の回旋','°'],['pelvisYaw','骨盤の回旋','°'],['relativeTwist','胸郭と骨盤の相対回旋','°']];
  const ml=metricLabels.filter(a=>num(m[a[0]])!==null).map(a=>a[1]+'：'+Number(m[a[0]]).toFixed(1)+a[2]);
- y=section(y,'② 肩・骨盤・脊柱・回旋の分析',ml.length?ml.concat(['撮影位置・姿勢・ランドマークの調整により数値は変動します。左右差と前後差を継続的に比較してください。']):['保存された履歴に詳細計測値がありません。分析画面で肩・骨盤・脊柱の位置関係を確認してください。'],410);
- y=section(y,'③ 緊張・弱化が疑われる筋肉の確認',[
- '頸部・肩：僧帽筋上部、肩甲挙筋、胸鎖乳突筋などの過緊張と、深頸屈筋群などの機能を確認します。',
- '体幹・骨盤：脊柱起立筋、腰方形筋、腸腰筋、腹筋群、殿筋群の左右差や活動性を確認します。',
- '下肢：大腿筋群、ハムストリングス、下腿筋群の柔軟性と支持性を確認します。',
- '※上記は一般的な評価候補です。写真だけで筋の緊張・弱化を確定できません。触診・可動域・筋力評価が必要です。'],440);
- y=section(y,'④ 脚軸・重心と日常動作',[
- '膝・足首の位置、X脚・O脚の傾向、左右の荷重バランスを正面写真と併せて確認します。',
- '立位では片側に体重を乗せ続けないこと、座位では長時間同じ姿勢を続けないことを意識しましょう。',
- '痛みやしびれがある場合は姿勢写真だけで原因を判断せず、専門家に相談してください。'],310);
- y=section(y,'⑤ 総合所見・次回の比較ポイント',[
- '今回の姿勢タイプ：'+(x.type||'分析結果')+'。',
- '次回も撮影距離・カメラ高さ・足幅をそろえ、正面・側面・回旋スコアと写真の変化を比較します。',
- '左右差・前後差の大きい部位を優先して、実際の動きや自覚症状と照合してください。'],305);
- text(c,'※写真と姿勢分析による参考評価です。医学的診断ではありません。',65,2760,20,'#64748b');
- text(c,'写真は患者様の同意を得て共有してください。',65,2798,20,'#64748b');return canvas
+ const strongest=[['正面',front,'肩の高さや骨盤の左右差'],['側面',side,'頭・胸・骨盤の前後位置'],['回旋',twist,'胸郭と骨盤のねじれ']].filter(v=>v[1]!==null).sort((a,b)=>a[1]-b[1]);
+ const focus=strongest[0];
+ const focusText=focus?('今回もっとも注目したいのは「'+focus[0]+'」です（'+focus[1]+'点）。'+focus[2]+'に着目して、実際の立ち姿や動作と照らし合わせましょう。'):'今回の写真から、肩・骨盤・頭の位置関係を確認します。';
+ y=section(y,'② あなたの姿勢で注目したいところ',[
+ focusText,
+ '「'+(x.type||'姿勢バランス')+'」は今回の写真の特徴を表す分類です。体の異常や病名を意味するものではありません。',
+ '正面 '+(front??'--')+'点・側面 '+(side??'--')+'点・回旋 '+(twist??'--')+'点。低い項目ほど、今回の撮影条件では基準からの差が目立ちます。'],310);
+ const tilt=num(m.shoulderTilt),pel=num(m.pelvisTilt),shift=num(m.headShift),dev=num(m.sideDeviation),rot=num(m.relativeTwist);
+ const explain=[];
+ if(tilt!==null)explain.push('肩：左右の高さに約'+Math.abs(tilt).toFixed(1)+'°の傾きが見られます。肩の力の入り方や立ち方を確認しましょう。');
+ if(pel!==null)explain.push('骨盤：左右の高さに約'+Math.abs(pel).toFixed(1)+'°の傾きが見られます。片脚への体重のかけ方も確認しましょう。');
+ if(shift!==null)explain.push('頭：体の中心線からの左右方向のずれが計測されています。首だけでなく体幹全体の位置も確認します。');
+ if(dev!==null)explain.push('横から：前後方向の位置関係に差が見られます。頭・胸・骨盤が縦に並ぶか確認しましょう。');
+ if(rot!==null)explain.push('ねじれ：胸郭と骨盤の向きに約'+Math.abs(rot).toFixed(1)+'°の相対差があります。体の向きや撮影姿勢にも影響されます。');
+ y=section(y,'③ 写真から読み取れる具体的な特徴',explain.length?explain.slice(0,5):['今回の履歴には部位別の数値が保存されていません。3方向の写真を見ながら、肩・骨盤・頭の位置を一緒に確認しましょう。'],410);
+ const muscle=focus?.[0]==='側面'?
+ ['前後のバランスに特徴があるため、首の前後・胸の前側・背中・股関節周囲の動きや筋力を確認することが役立ちます。','確認候補：胸鎖乳突筋、胸筋群、脊柱起立筋、腸腰筋、腹筋群、殿筋群。']:
+ focus?.[0]==='正面'?
+ ['左右のバランスに特徴があるため、首・肩・腰・股関節周囲の左右の動きや筋力を確認することが役立ちます。','確認候補：僧帽筋、肩甲挙筋、腰方形筋、中殿筋、内転筋群。']:
+ ['体の向きやねじれに特徴があるため、胸郭・背骨・骨盤の回しやすさの左右差を確認することが役立ちます。','確認候補：腹斜筋群、脊柱回旋筋群、腰方形筋、殿筋群。'];
+ y=section(y,'④ 関係する筋肉とチェックポイント',[
+ ...muscle,
+ 'これらは「硬い」「弱い」と確定した筋肉ではありません。写真からは筋肉の状態を直接測れないため、触診・可動域・筋力検査で確かめます。'],335);
+ y=section(y,'⑤ 日常生活で試せること',[
+ focus?.[0]==='側面'?'立つときは無理に胸を張りすぎず、頭・胸・骨盤の位置を鏡で確認してみましょう。':focus?.[0]==='正面'?'片脚に体重をかけ続けていないか、左右の足に無理なく体重を乗せられるか確認しましょう。':'正面を向いて立ち、左右に体をゆっくり回したときの動かしやすさを比べてみましょう。',
+ '長時間同じ姿勢を続けず、ときどき立ち上がって体を動かしましょう。痛みが出る動作は無理に続けないでください。'],275);
+ y=section(y,'⑥ 次回はここを比べましょう',[
+ focus?'まずは「'+focus[0]+'」の写真とスコアを今回と比較しましょう。':'3方向の写真とスコアを比較しましょう。',
+ '撮影距離・カメラの高さ・足幅をそろえると、変化を見比べやすくなります。',
+ '姿勢の写真だけで不調の原因や施術の必要性は判断できません。気になる症状や動きと合わせて確認します。'],285);
+ text(c,'※写真と姿勢分析による参考評価です。医学的診断ではありません。',65,2920,20,'#64748b');
+ text(c,'写真は患者様の同意を得て共有してください。',65,2960,20,'#64748b');return canvas
 }
 function blob(canvas){return new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(Error('画像生成に失敗しました')),'image/png'))}
 async function share(from,button){const a=from==='history'?currentFromHistory():currentFromLine();if(!a){alert('分析履歴が見つかりません。患者と分析日時を確認してください。');return}button.disabled=true;const label=button.textContent;button.textContent='レポート画像を作成中…';try{const canvas=await render(a.id,a.x),b=await blob(canvas),filename='姿勢分析レポート_'+String(a.x.date).slice(0,10)+'.png';const url=URL.createObjectURL(b),link=document.createElement('a');link.href=url;link.download=filename;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);alert('レポート画像のダウンロードを開始しました。保存を確認してから、LINE公式アカウントの管理画面で患者さんに送信してください。個人LINEからは送信されません。');}catch(e){console.error('V255 report',e);alert('レポート作成に失敗しました。'+e.message)}finally{button.disabled=false;button.textContent=label}}
