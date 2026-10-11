@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V282</title>
+<title>AI姿勢＆3次元歪み分析システム V283</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V282</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V283</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3189,15 +3189,15 @@ const observer=new MutationObserver(mount);function init(){mount();const body=do
 })();
 </script>
 
-<!-- V282: single contract panel; existing Stripe/Firebase handlers retained -->
-<style id="v282-unified-contract-style">
+<!-- V283: verified contract button state; existing Stripe/Firebase handlers retained -->
+<style id="v283-unified-contract-style">
 #v130Sales{display:none!important}
 #v282ApplyWrap{margin:12px 0 0}
 #v282ApplyWrap .v130btn{display:block;width:100%;box-sizing:border-box;font-size:14px}
 #v282ApplyWrap .v130note{font-size:11px;line-height:1.65}
 #v282ApplyWrap[hidden]{display:none!important}
 </style>
-<script id="v282-unified-contract">
+<script id="v283-unified-contract">
 (function(){
  function mount(){
   const panel=document.getElementById('v213ContractOverview');
@@ -3205,14 +3205,19 @@ const observer=new MutationObserver(mount);function init(){mount();const body=do
   const state=document.getElementById('v213State');
   if(!panel||!apply||!state)return false;
   if(document.getElementById('v282ApplyWrap'))return true;
-  const wrap=document.createElement('div');wrap.id='v282ApplyWrap';
+  const wrap=document.createElement('div');wrap.id='v282ApplyWrap';wrap.hidden=true;
   const heading=document.createElement('div');heading.textContent='お申込み';heading.style.cssText='font-size:14px;font-weight:800;margin-bottom:4px';
   const note=document.createElement('div');note.className='v130note';
   note.textContent='現在はStripeテスト環境です。本番の決済・請求は行われません。';
   wrap.append(heading,apply,note);
   const actions=panel.querySelector('.v213actions');
   if(actions)actions.insertAdjacentElement('afterend',wrap);else panel.append(wrap);
-  function update(){const status=state.textContent.trim();wrap.hidden=(status==='無料体験中'||status==='契約中');}
+  function update(){
+   const status=state.textContent.trim();
+   // Do not offer a second subscription while status is loading or cannot be verified.
+   const mayApply=['契約情報なし','準備中','期限切れ','解約済み','手続き未完了'].includes(status);
+   wrap.hidden=!mayApply;
+  }
   new MutationObserver(update).observe(state,{childList:true,characterData:true,subtree:true});update();
   return true;
  }
