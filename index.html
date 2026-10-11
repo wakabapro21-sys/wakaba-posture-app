@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V259</title>
+<title>AI姿勢＆3次元歪み分析システム V261</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -14,7 +14,7 @@ main{max-width:1100px;margin:auto;padding:12px}.card{background:#fff;border:1px 
 label.btn{display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:11px;font-size:12px;font-weight:900;cursor:pointer}
 .gallery{background:#ecfeff;border:1px solid #99f6e4;color:#0f766e}.camera{background:#0f766e;color:#fff}
 input[type=file]{position:absolute;width:1px;height:1px;opacity:.001;overflow:hidden}
-.note{font-size:12px;color:#64748b;margin-top:7px}
+.note{font-size:10px;color:#64748b;margin-top:7px}
 .review{position:fixed;inset:0;background:rgba(2,6,23,.9);z-index:9999;display:none;align-items:center;justify-content:center;padding:12px}.review.show{display:flex}.reviewbox{width:min(680px,100%);background:#fff;border-radius:18px;overflow:hidden}.reviewbox h2{font-size:15px;margin:0;padding:12px}.reviewbox img{display:block;width:100%;max-height:70vh;object-fit:contain;background:#000}.reviewactions{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px}.reviewactions button{border:0;border-radius:11px;padding:14px;font-weight:900;font-size:13px}.retry{background:#e2e8f0}.use{background:#0f766e;color:#fff}
 .okbox{font-size:12px;line-height:1.6;color:#166534;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:10px}
 @media(max-width:780px){.views{grid-template-columns:1fr}.stage{min-height:350px}}
@@ -352,7 +352,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V259</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V261</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3027,89 +3027,53 @@ function rr(ctx,x,y,w,h,r,fill){ctx.fillStyle=fill;ctx.beginPath();ctx.roundRect
 function text(ctx,s,x,y,size=25,color='#172033',bold=false){ctx.fillStyle=color;ctx.font=(bold?'bold ':'')+size+'px sans-serif';ctx.fillText(String(s??'--'),x,y)}
 function fitText(ctx,s,max){s=String(s||'');while(s.length&&ctx.measureText(s).width>max)s=s.slice(0,-1);return s}
 async function render(id,x){
- const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1740;
- const c=canvas.getContext('2d');c.fillStyle='#f6faf9';c.fillRect(0,0,1080,1740);
- rr(c,30,30,1020,1680,26,'#ffffff');rr(c,30,30,1020,140,24,'#0f766e');
+ const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=2860;
+ const c=canvas.getContext('2d');c.fillStyle='#f6faf9';c.fillRect(0,0,1080,2860);
+ rr(c,30,30,1020,2795,26,'#ffffff');rr(c,30,30,1020,140,24,'#0f766e');
  text(c,'姿勢分析レポート',65,102,44,'#ffffff',true);text(c,'わかば整体院・接骨院',715,106,21,'#ffffff');
  const patient=getPatient(id),nm=patient.kana||patient.name||'患者様';
  text(c,fitText(c,nm+' 様',700),64,220,30,'#172033',true);
  text(c,'分析日：'+String(x.date||'').slice(0,10),64,259,23,'#64748b');
+ text(c,'患者ID：'+String(id),620,259,19,'#64748b');
  const images=await Promise.all(sides.map(async side=>loadImage(await readPhoto(id,x,side))));
- for(let i=0;i<3;i++){const px=62+i*339,py=290,pw=315,ph=405;rr(c,px,py,pw,ph,14,'#111827');const im=images[i];if(im){const k=Math.min(pw/im.width,ph/im.height),w=im.width*k,h=im.height*k;c.drawImage(im,px+(pw-w)/2,py+(ph-h)/2,w,h)}else text(c,'写真なし',px+96,py+215,22,'#cbd5e1');text(c,labels[i],px+114,730,23,'#64748b')}
+ for(let i=0;i<3;i++){const px=62+i*339,py=290,pw=315,ph=405;rr(c,px,py,pw,ph,14,'#f1f5f9');const im=images[i];if(im){const k=Math.min(pw/im.width,ph/im.height),w=im.width*k,h=im.height*k;c.drawImage(im,px+(pw-w)/2,py+(ph-h)/2,w,h)}else text(c,'写真なし',px+96,py+215,22,'#64748b');text(c,labels[i],px+114,730,23,'#64748b')}
  const scores=[['総合',x.total],['正面',x.front],['側面',x.side],['回旋',x.twist]];
  scores.forEach((v,i)=>{const px=62+i*254;rr(c,px,766,238,120,14,i===0?'#0f766e':'#f1f5f9');text(c,v[0],px+20,808,23,i===0?'#d1fae5':'#64748b');text(c,v[1]??'--',px+20,861,47,i===0?'#fff':'#172033',true)});
  rr(c,62,910,955,112,14,'#eafaf6');text(c,'あなたの姿勢タイプ',84,950,22,'#0f766e');text(c,fitText(c,x.type||'分析結果',870),84,998,35,'#115e59',true);
- // The following compact summaries are derived from saved scores, not reconstructed screenshots.
- const num=v=>{const n=Number(v);return Number.isFinite(n)?n:null};
+ const num=v=>{if(v===null||v===undefined||v==='')return null;const n=Number(v);return Number.isFinite(n)?n:null};
  const front=num(x.front),side=num(x.side),twist=num(x.twist);
- const grade=v=>v===null?'評価データなし':v>=90?'良好':v>=70?'軽度の差':v>=50?'中等度の差':'大きめの差';
- const cards=[
-  {title:'① 姿勢バランスと総合評価',
-   main:'正面：'+grade(front)+'　側面：'+grade(side),
-   sub:'正面 '+(x.front??'--')+'点 ／ 側面 '+(x.side??'--')+'点。左右差と前後差を比較した参考評価'},
-  {title:'② 筋肉バランス・セルフケアの視点',
-   main:side!==null&&front!==null?(side<front?'前後の姿勢バランスを優先して確認':'左右の姿勢バランスを優先して確認'):'筋肉バランスの評価を確認',
-   sub:'筋の緊張・弱化は姿勢のみで確定できません。触診・動作確認と併せて判断'},
-  {title:'③ 骨盤・脊柱・回旋のバランス',
-   main:'回旋スコア：'+(x.twist??'--')+'点（'+grade(twist)+'）',
-   sub:'胸郭と骨盤の回旋差・前後方向のバランスを総合的に確認'},
-  {title:'④ 脚軸・重心と今後の確認点',
-   main:'脚軸・推定重心・骨盤の位置を確認',
-   sub:'X脚・O脚の傾向や荷重の偏りは分析画面の図と併せて確認'}
- ];
- cards.forEach((v,i)=>{const y=1030+i*150;rr(c,62,y,955,138,18,i%2?'#f1f5f9':'#ecfdf5');text(c,v.title,87,y+35,25,'#0f766e',true);text(c,fitText(c,v.main,895),87,y+81,27,'#172033',true);text(c,fitText(c,v.sub,895),87,y+119,18,'#64748b')});
- text(c,'※写真と姿勢分析による参考評価です。医学的診断ではありません。',65,1640,20,'#64748b');
- text(c,'写真は患者様の同意を得て共有してください。',65,1678,20,'#64748b');return canvas
+ const grade=v=>v===null?'評価データなし':v>=90?'良好':v>=70?'軽度の差':v>=50?'中等度の差':'大きな差';
+ function wrap(str,maxWidth,fontSize=21){c.font=fontSize+'px sans-serif';const lines=[];let line='';for(const ch of String(str||'')){if(c.measureText(line+ch).width>maxWidth&&line){lines.push(line);line=ch}else line+=ch}if(line)lines.push(line);return lines}
+ function section(y,title,lines,height){rr(c,62,y,955,height,16,'#f1f8f7');text(c,title,86,y+40,27,'#0f766e',true);let yy=y+80;for(const paragraph of lines){for(const line of wrap(paragraph,885,21)){text(c,line,88,yy,21,'#334155');yy+=32}yy+=12}return y+height+18}
+ let y=1045;
+ y=section(y,'① 姿勢バランスと全体評価',[
+ '正面：'+grade(front)+'／側面：'+grade(side)+'／回旋：'+grade(twist)+'。',
+ '総合 '+(x.total??'--')+'点。3方向の写真とランドマークから左右・前後・回旋のバランスを確認します。',
+ '点数は院内独自の比較指標であり、痛みや疾患の程度を示すものではありません。'],290);
+ const m=x.metrics||{};
+ const metricLabels=[['shoulderTilt','肩の傾き','°'],['pelvisTilt','骨盤の傾き','°'],['headShift','頭部の左右偏位',''],['sideDeviation','前後方向の偏位',''],['thoraxYaw','胸郭の回旋','°'],['pelvisYaw','骨盤の回旋','°'],['relativeTwist','胸郭と骨盤の相対回旋','°']];
+ const ml=metricLabels.filter(a=>num(m[a[0]])!==null).map(a=>a[1]+'：'+Number(m[a[0]]).toFixed(1)+a[2]);
+ y=section(y,'② 肩・骨盤・脊柱・回旋の分析',ml.length?ml.concat(['撮影位置・姿勢・ランドマークの調整により数値は変動します。左右差と前後差を継続的に比較してください。']):['保存された履歴に詳細計測値がありません。分析画面で肩・骨盤・脊柱の位置関係を確認してください。'],410);
+ y=section(y,'③ 緊張・弱化が疑われる筋肉の確認',[
+ '頸部・肩：僧帽筋上部、肩甲挙筋、胸鎖乳突筋などの過緊張と、深頸屈筋群などの機能を確認します。',
+ '体幹・骨盤：脊柱起立筋、腰方形筋、腸腰筋、腹筋群、殿筋群の左右差や活動性を確認します。',
+ '下肢：大腿筋群、ハムストリングス、下腿筋群の柔軟性と支持性を確認します。',
+ '※上記は一般的な評価候補です。写真だけで筋の緊張・弱化を確定できません。触診・可動域・筋力評価が必要です。'],440);
+ y=section(y,'④ 脚軸・重心と日常動作',[
+ '膝・足首の位置、X脚・O脚の傾向、左右の荷重バランスを正面写真と併せて確認します。',
+ '立位では片側に体重を乗せ続けないこと、座位では長時間同じ姿勢を続けないことを意識しましょう。',
+ '痛みやしびれがある場合は姿勢写真だけで原因を判断せず、専門家に相談してください。'],310);
+ y=section(y,'⑤ 総合所見・次回の比較ポイント',[
+ '今回の姿勢タイプ：'+(x.type||'分析結果')+'。',
+ '次回も撮影距離・カメラ高さ・足幅をそろえ、正面・側面・回旋スコアと写真の変化を比較します。',
+ '左右差・前後差の大きい部位を優先して、実際の動きや自覚症状と照合してください。'],305);
+ text(c,'※写真と姿勢分析による参考評価です。医学的診断ではありません。',65,2760,20,'#64748b');
+ text(c,'写真は患者様の同意を得て共有してください。',65,2798,20,'#64748b');return canvas
 }
 function blob(canvas){return new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(Error('画像生成に失敗しました')),'image/png'))}
 async function share(from,button){const a=from==='history'?currentFromHistory():currentFromLine();if(!a){alert('分析履歴が見つかりません。患者と分析日時を確認してください。');return}button.disabled=true;const label=button.textContent;button.textContent='レポート画像を作成中…';try{const canvas=await render(a.id,a.x),b=await blob(canvas),filename='姿勢分析レポート_'+String(a.x.date).slice(0,10)+'.png';const url=URL.createObjectURL(b),link=document.createElement('a');link.href=url;link.download=filename;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);alert('レポート画像のダウンロードを開始しました。保存を確認してから、LINE公式アカウントの管理画面で患者さんに送信してください。個人LINEからは送信されません。');}catch(e){console.error('V255 report',e);alert('レポート作成に失敗しました。'+e.message)}finally{button.disabled=false;button.textContent=label}}
 function mount(){const body=$('v91DetailBody');if(body&&!$('v250FromHistory')){const b=document.createElement('button');b.id='v250FromHistory';b.type='button';b.textContent='写真付き分析レポート画像を保存';b.onclick=()=>share('history',b);body.appendChild(b)}const old=$('v95LineShare');if(old&&!$('v250FromLine')){const b=document.createElement('button');b.id='v250FromLine';b.type='button';b.textContent='写真付き分析レポート画像を保存';b.onclick=()=>share('line',b);old.before(b);const note=document.createElement('div');note.style.cssText='font-size:12px;color:#475569;margin:5px 0 12px';note.textContent='個人LINEには送信しません。画像を保存し、LINE公式アカウントの管理画面から患者さんに送信してください。';b.after(note)}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();const modal=$('v91DetailModal');if(modal)new MutationObserver(()=>{if(modal.classList.contains('on'))mount()}).observe(modal,{attributes:true,attributeFilter:['class']});
-})();
-</script>
-<style id="v257-safe-style">
-.stage,.v91photo,.v67photo,.v70photo{background:#f1f5f9!important}
-.stage img,.v91photo img,.v67photo img,.v70photo img{object-fit:contain!important;background:transparent!important}
-#v256PdfHistory,#v256PdfPatient{width:100%;border:0;border-radius:12px;padding:14px;margin:10px 0;background:#0f766e;color:white;font-size:14px;font-weight:900}
-</style>
-<script id="v257-safe-report">
-(()=>{'use strict';
-const $=id=>document.getElementById(id), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function history(id){try{const a=JSON.parse(localStorage.getItem('wakaba_v63_history_'+id)||'[]');return Array.isArray(a)?a:[]}catch{return[]}}
-function patient(id){try{return JSON.parse(localStorage.getItem('wakaba_v61_customers')||'[]').find(c=>String(c.id)===String(id))||{}}catch{return{}}}
-async function photo(id,x,side){let v=x.photos?.[side];if(typeof v==='string'&&v.startsWith('data:image/'))return v;try{const root=await navigator.storage.getDirectory(),dir=await root.getDirectoryHandle('Wakaba_Posture_Photos'),f=await dir.getFileHandle(encodeURIComponent(String(id))+'__'+encodeURIComponent(String(x.date))+'__'+side+'.txt');v=await(await f.getFile()).text();return v.startsWith('data:image/')?v:null}catch{return null}}
-function classify(v){const n=Number(v);return v==null||!Number.isFinite(n)?'評価なし':n>=90?'おおむね良好':n>=70?'軽度の左右差・前後差':n>=50?'姿勢差がみられる':'姿勢差が比較的大きい'}
-function muscles(x){const m=x.metrics||{}, sh=Number(m.shoulderTilt),pel=Number(m.pelvisTilt),head=Number(m.headShift),side=Number(m.sideDeviation);const a=[];
-if(Number.isFinite(sh)&&Math.abs(sh)>=2)a.push(['肩・頸部','僧帽筋上部、肩甲挙筋','僧帽筋下部、前鋸筋']);
-if(Number.isFinite(pel)&&Math.abs(pel)>=2)a.push(['骨盤・腰部','腰方形筋、股関節周囲筋','中殿筋、腹部安定化筋']);
-if(Number.isFinite(head)&&Math.abs(head)>=3)a.push(['頭頸部','後頭下筋群、胸鎖乳突筋','深頸屈筋群']);
-if(Number.isFinite(side)&&Math.abs(side)>=3)a.push(['体幹','脊柱起立筋群、腸腰筋','腹横筋、多裂筋']);
-return a.length?a:[['全身バランス','写真だけでは特定できません','写真だけでは特定できません']];}
-function row(label,val){return '<div class="metric"><span>'+esc(label)+'</span><strong>'+esc(val)+'</strong></div>'}
-async function make(id,x){const p=patient(id), pics=await Promise.all(['front','right','left'].map(k=>photo(id,x,k)));const m=x.metrics||{};
-const name=p.kana||p.name||'患者様';const date=x.date?new Date(x.date).toLocaleString('ja-JP'): '日時未登録';
-const muscleRows=muscles(x).map(a=>'<tr>'+a.map(t=>'<td>'+esc(t)+'</td>').join('')+'</tr>').join('');
-return `<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>姿勢分析詳細レポート</title><style>
-@page{size:A4;margin:13mm}*{box-sizing:border-box}body{font-family:Arial,"Noto Sans JP",sans-serif;color:#172033;margin:0 auto;padding:14px 18px;max-width:850px;width:100%;font-size:14px;line-height:1.8}header{background:#0f766e;color:white;padding:16px 20px;border-radius:9px}h1{margin:0;font-size:25px}h2{font-size:19px;color:#0f766e;border-bottom:2px solid #ccfbf1;padding-bottom:5px;margin:18px 0 9px}.sub{color:#64748b}.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.photo{height:310px;background:#f1f5f9;border-radius:7px;display:flex;align-items:center;justify-content:center;overflow:hidden}.photo img{width:100%;height:100%;object-fit:contain}.cap{text-align:center;font-weight:bold;margin-top:3px}.scores{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.score{background:#f0fdfa;border-radius:8px;padding:10px;text-align:center}.score strong{display:block;font-size:28px;color:#0f766e}.metric{display:flex;justify-content:space-between;border-bottom:1px solid #e2e8f0;padding:5px 8px}.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}.panel{background:#f8fafc;padding:12px;border-radius:8px}.type{background:#ecfdf5;padding:12px;border-radius:8px;font-weight:bold;font-size:16px;color:#115e59}table{width:100%;border-collapse:collapse}th,td{border:1px solid #dbe4e8;padding:8px;text-align:left;vertical-align:top}th{background:#ecfdf5}.note{font-size:12px;color:#475569;background:#f8fafc;padding:10px;border-radius:8px}.pagebreak{break-before:page}.toolbar{padding:12px;background:#ecfdf5;text-align:center}.toolbar button{background:#0f766e;color:#fff;border:0;padding:12px 24px;border-radius:9px;font-size:16px;font-weight:bold}@media screen and (max-width:600px){body{padding:12px;font-size:13px}.photo{height:200px}.photos{gap:5px}.scores{gap:4px}.score{padding:7px 2px}.score strong{font-size:23px}}@media print{body{max-width:none;padding:0;font-size:11px}.photo{height:220px}.toolbar{display:none}section{break-inside:avoid}header{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
-</style><style id="v259-responsive-report">
-html{width:100%;max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}
-body{width:100%!important;max-width:850px!important;min-width:0!important;overflow-wrap:anywhere}
-@media screen and (max-width:900px){html,body{margin:0!important;padding:0!important}body{max-width:100%!important;font-size:15px!important;line-height:1.65!important}body>header,body>p,body>section{margin-left:12px!important;margin-right:12px!important}body>header{margin-top:10px}h1{font-size:23px!important}h2{font-size:18px!important}.toolbar{width:100%!important;padding:12px!important}.photos{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important}.photos>div{min-width:0!important}.photo{height:auto!important;aspect-ratio:3/4!important}.photo img{width:100%!important;height:100%!important;object-fit:contain!important}.scores{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:5px!important}.score{min-width:0!important;padding:7px 2px!important}.score strong{font-size:23px!important}.cols{grid-template-columns:1fr!important}.panel{padding:12px!important}table{font-size:12px!important;table-layout:fixed!important}th,td{padding:6px!important;word-break:break-word!important}}
-@media print{html,body{width:100%!important;max-width:none!important;overflow:visible!important}body{font-size:11px!important}.toolbar{display:none!important}.cols{grid-template-columns:1fr 1fr!important}.photo{height:200px!important;aspect-ratio:auto!important}section{break-inside:auto!important}h2{break-after:avoid}}
-</style></head><body><div class="toolbar"><button onclick="window.print()">印刷・保存（必要な場合のみ）</button><div>印刷画面で「PDFとして保存」を選択してください。</div></div><header><h1>姿勢分析レポート</h1>わかば整体院・接骨院　｜　3方向姿勢バランス評価</header>
-<p><b>お名前：</b>${esc(name)} 様　 <b>患者ID：</b>${esc(id)}<br><b>分析日時：</b>${esc(date)}</p>
-<section><h2>1. 3方向の姿勢写真</h2><div class="photos">${pics.map((src,i)=>'<div><div class="photo">'+(src?'<img src="'+src+'">':'写真データなし')+'</div><div class="cap">'+['正面','右側面','左側面'][i]+'</div></div>').join('')}</div><p class="sub">写真はこの端末内から読み込みます。保存されていない写真は表示できません。</p></section>
-<section><h2>2. 姿勢タイプと全体評価</h2><div class="type">${esc(x.type||'姿勢タイプ未保存')}</div><div class="scores">${[['総合',x.total],['正面',x.front],['側面',x.side],['回旋',x.twist]].map(v=>'<div class="score">'+v[0]+'<strong>'+esc(v[1]??'--')+'</strong></div>').join('')}</div><p>正面：${classify(x.front)}。側面：${classify(x.side)}。回旋：${classify(x.twist)}。これらは写真の撮影条件やランドマーク位置に影響される独自の比較用指標です。</p></section>
-<section><h2>3. 姿勢バランスの見方</h2><div class="panel"><p>正面からは肩と骨盤の左右バランス、側面からは頭・体幹・骨盤の前後位置を確認します。胸郭と骨盤のねじれもあわせて、日常姿勢の特徴を整理します。</p><p>写真だけでは痛みの原因や筋力は断定できません。実際の動作や触診と組み合わせて評価します。</p></div></section>
-<section><h2>4. 緊張・弱化が疑われる筋群</h2><table><thead><tr><th>観察部位</th><th>緊張・短縮の確認候補</th><th>働きの低下を確認する候補</th></tr></thead><tbody>${muscleRows}</tbody></table><p class="note">※筋肉の緊張・弛緩・筋力低下は写真だけでは判定できません。上記は姿勢所見に基づく確認候補であり、触診・可動域検査・筋力検査などによる確認が必要です。</p></section>
-<section><h2>5. 部位別の姿勢チェック</h2><div class="cols"><div class="panel"><b>頭部・頸部</b><p>頭の左右偏位や前方移動、首と肩の位置関係を確認します。首周囲の負担は姿勢だけでなく動作や生活習慣も関係します。</p></div><div class="panel"><b>肩・肩甲帯</b><p>肩の高さ、左右差、肩甲帯の位置と胸郭のバランスを確認します。肩の挙上・下制を動作検査と併せて評価します。</p></div><div class="panel"><b>胸郭・脊柱</b><p>上半身の傾き、前後の位置、胸郭と骨盤の相対的な回旋を確認します。側面写真で体幹の重心線を観察します。</p></div><div class="panel"><b>骨盤・下肢</b><p>骨盤の左右の高さと脚軸の傾向を確認します。股関節・膝・足部の機能は別途検査が必要です。</p></div></div></section>
-<section><h2>6. 日常生活での確認ポイント</h2><div class="panel"><p><b>座り姿勢：</b>長時間同じ姿勢が続く場合は適宜立ち上がり、無理のない範囲で姿勢を変えましょう。</p><p><b>立ち姿勢：</b>左右どちらかに体重をかけ続ける癖がないか、鏡などで確認しましょう。</p><p><b>次回比較：</b>撮影位置・カメラ高さ・足幅をそろえて、数値だけでなく写真の変化も見比べます。</p></div></section>
-<section><h2>7. 総合所見・今後の確認ポイント</h2><p>今回の姿勢タイプは「${esc(x.type||'未分類')}」です。${Number(x.front)<Number(x.side)?'左右の姿勢バランスを優先して確認します。':'前後の姿勢バランスと体幹の位置関係を確認します。'}肩・骨盤・頭部の位置と胸郭回旋を組み合わせ、日常姿勢や動作時の負担の偏りを確認することが有用です。</p><p>継続評価では、同じ距離・高さ・立ち位置で3方向を撮影し、前回と今回の変化を比較してください。必要に応じて専門家による身体評価を行います。</p><p class="note">このレポートは姿勢観察の参考資料であり、疾病の診断や治療効果を保証するものではありません。写真・患者情報を共有する際は本人の同意を得てください。</p></section></body></html>`}
-async function pdf(id,x){if(!id||!x){alert('対象の分析履歴が見つかりません');return}const w=window.open('','_blank');if(!w){alert('ポップアップを許可してから再度お試しください');return}w.document.write('<p>詳細レポートを準備中…</p>');try{const html=await make(id,x);w.document.open();w.document.write(html);w.document.close()}catch(e){w.document.body.textContent='レポート作成エラー: '+e.message}}
-function mount(){const body=$('v91DetailBody');if(body&&!$('v256PdfHistory')){const b=document.createElement('button');b.id='v256PdfHistory';b.textContent='詳しい姿勢分析レポートを表示・共有';b.onclick=()=>{const a=window.wakabaV227Current;if(!a)return alert('履歴を開き直してください');pdf(a.patientId,history(a.patientId).find(x=>String(x.date)===String(a.date)))};body.appendChild(b)}const line=$('v95LineShare');if(line&&!$('v256PdfPatient')){const b=document.createElement('button');b.id='v256PdfPatient';b.textContent='選択した分析レポートを表示・共有';b.onclick=()=>{const id=$('v77Patient')?.dataset.patientId,idx=Number($('v98HistorySelect')?.value||0);pdf(id,history(id)[idx])};line.before(b)}
-const sub=$('v77PatientSub'),id=$('v77Patient')?.dataset.patientId;if(sub&&id&&!sub.querySelector('[data-v256-id]')){const t=document.createElement('div');t.dataset.v256Id='1';t.style.cssText='margin-top:5px;font-weight:800;color:#0f766e';t.textContent='患者ID：'+id;sub.appendChild(t)}}
-const modal=$('v91DetailModal');if(modal)new MutationObserver(mount).observe(modal,{attributes:true,attributeFilter:['class']});const pat=$('v77Patient');if(pat)new MutationObserver(mount).observe(pat,{attributes:true,attributeFilter:['class','data-patient-id']});
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 })();
 </script>
 </body></html>
