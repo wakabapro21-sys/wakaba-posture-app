@@ -2967,8 +2967,8 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 window.wakabaV233PhotoFolder={supported,folder:FOLDER,read};
 })();
 </script>
-<script id="v233-device-photo-backup">
-/* V233: explicit local ZIP export/import fallback. No automatic directory access claimed. */
+<script id="v234-device-photo-backup">
+/* V234: central-directory ZIP parser, explicit local ZIP export/import fallback. No automatic directory access claimed. */
 (function(){'use strict';
 const PREFIX='wakaba_v63_history_',SIDES=['front','right','left'];
 const valid=s=>typeof s==='string'&&/^data:image\/(jpeg|jpg|png|webp);base64,/i.test(s);
@@ -2982,11 +2982,39 @@ const table=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;
 function crc(a){let c=0xffffffff;for(const v of a)c=table[(c^v)&255]^(c>>>8);return(c^0xffffffff)>>>0}
 function u16(v){return[v&255,(v>>>8)&255]}function u32(v){return[v&255,(v>>>8)&255,(v>>>16)&255,(v>>>24)&255]}
 function zip(files){const parts=[],central=[];let offset=0;for(const [n,data] of files){const nb=enc.encode(n),sum=crc(data),head=new Uint8Array([80,75,3,4,20,0,0,0,0,0,0,0,0,0,...u32(sum),...u32(data.length),...u32(data.length),...u16(nb.length),0,0]);parts.push(head,nb,data);central.push(new Uint8Array([80,75,1,2,20,0,20,0,0,0,0,0,0,0,0,0,...u32(sum),...u32(data.length),...u32(data.length),...u16(nb.length),0,0,0,0,0,0,0,0,0,0,0,0,...u32(offset)]),nb);offset+=head.length+nb.length+data.length}const cs=central.reduce((a,x)=>a+x.length,0);return new Blob([...parts,...central,new Uint8Array([80,75,5,6,0,0,0,0,...u16(files.length),...u16(files.length),...u32(cs),...u32(offset),0,0])],{type:'application/zip'})}
-function parseZip(buffer){const a=new Uint8Array(buffer),v=new DataView(buffer),out=new Map();let pos=0;while(pos+30<=a.length&&v.getUint32(pos,true)===0x04034b50){const method=v.getUint16(pos+8,true),len=v.getUint32(pos+18,true),nl=v.getUint16(pos+26,true),ex=v.getUint16(pos+28,true),start=pos+30+nl+ex;if(method!==0||start+len>a.length)throw Error('このZIP形式は読み込めません。V233で書き出したZIPを選んでください。');const n=dec.decode(a.slice(pos+30,pos+30+nl));const data=a.slice(start,start+len);if(crc(data)!==v.getUint32(pos+14,true))throw Error('ZIPの整合性確認に失敗しました。');out.set(n,data);pos=start+len}return out}
+function parseZip(buffer){
+ const a=new Uint8Array(buffer),v=new DataView(buffer),out=new Map();
+ // Read the central directory, not sequential local headers: Android ZIP tools
+ // may set data descriptors, padding or other optional header fields.
+ let eocd=-1;
+ for(let i=a.length-22;i>=Math.max(0,a.length-65557);i--){
+   if(v.getUint32(i,true)===0x06054b50&&i+22+v.getUint16(i+20,true)<=a.length){eocd=i;break}
+ }
+ if(eocd<0)throw Error('ZIPの管理情報を読み取れません。ZIPファイルを選び直してください。');
+ const count=v.getUint16(eocd+10,true),cdSize=v.getUint32(eocd+12,true),cdOffset=v.getUint32(eocd+16,true);
+ if(count>100000||cdOffset+cdSize>a.length||cdOffset+cdSize>eocd)throw Error('ZIPの管理情報が不正です。');
+ let pos=cdOffset;
+ for(let i=0;i<count;i++){
+   if(pos+46>a.length||v.getUint32(pos,true)!==0x02014b50)throw Error('ZIPのファイル一覧が破損しています。');
+   const method=v.getUint16(pos+10,true),checksum=v.getUint32(pos+16,true),compressed=v.getUint32(pos+20,true),uncompressed=v.getUint32(pos+24,true);
+   const nl=v.getUint16(pos+28,true),extra=v.getUint16(pos+30,true),comment=v.getUint16(pos+32,true),local=v.getUint32(pos+42,true);
+   if(pos+46+nl+extra+comment>a.length||local+30>a.length||v.getUint32(local,true)!==0x04034b50)throw Error('ZIP内のファイル位置が不正です。');
+   const filename=dec.decode(a.subarray(pos+46,pos+46+nl));
+   const ln=v.getUint16(local+26,true),le=v.getUint16(local+28,true),start=local+30+ln+le;
+   if(start+compressed>a.length)throw Error('ZIP内の写真データが途中で切れています。');
+   if(method!==0)throw Error('このZIPは圧縮方式が異なります。V233のバックアップZIPを選んでください。');
+   const data=a.slice(start,start+compressed);
+   if(data.length!==uncompressed||crc(data)!==checksum)throw Error('ZIPの写真データの整合性確認に失敗しました。');
+   if(out.has(filename))throw Error('ZIPに重複したファイル名があります。');
+   out.set(filename,data);
+   pos+=46+nl+extra+comment;
+ }
+ return out;
+}
 function download(blob,filename){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000)}
 async function exportZip(){const files=[],manifest=[];for(const {id,x} of entries())for(const side of SIDES){const src=x.photos&&x.photos[side];if(!valid(src))continue;const file=name(id,x.date,side);files.push([file,bytes(src)]);manifest.push({file,id,date:x.date,side,mime:src.slice(5,src.indexOf(';'))})}if(!files.length)throw Error('現在このブラウザに保存されている写真は0枚です。既に失われた写真は書き出せません。');files.push(['wakaba_manifest.json',enc.encode(JSON.stringify({format:'wakaba-photo-backup-v233',photos:manifest}))]);download(zip(files),'Wakaba_Posture_Photos_'+new Date().toISOString().slice(0,10)+'.zip');return files.length-1}
 async function importZip(file){const contents=parseZip(await file.arrayBuffer()),manifest=contents.get('wakaba_manifest.json');if(!manifest)throw Error('わかば専用バックアップZIPではありません。');const obj=JSON.parse(dec.decode(manifest));if(obj.format!=='wakaba-photo-backup-v233'||!Array.isArray(obj.photos))throw Error('バックアップ形式が一致しません。');let restored=0,skipped=0,failed=0;for(const item of obj.photos){if(!SIDES.includes(item.side)||!item.id||!item.date||item.file!==name(item.id,item.date,item.side)){skipped++;continue}const raw=contents.get(item.file);if(!raw){skipped++;continue}const key=PREFIX+item.id;try{const current=JSON.parse(localStorage.getItem(key)||'[]');if(!Array.isArray(current)){skipped++;continue}const hits=current.filter(x=>x&&x.date===item.date);if(hits.length!==1||valid(hits[0].photos&&hits[0].photos[item.side])){skipped++;continue}const mime=/^image\/(jpeg|jpg|png|webp)$/.test(item.mime)?item.mime:'image/jpeg';let binary='';for(let i=0;i<raw.length;i+=8192)binary+=String.fromCharCode(...raw.subarray(i,i+8192));const data='data:'+mime+';base64,'+btoa(binary);hits[0].photos=hits[0].photos||{};hits[0].photos[item.side]=data;localStorage.setItem(key,JSON.stringify(current));restored++}catch(e){failed++;console.warn('V233 photo import',e)}}return{restored,skipped,failed}}
-function mount(){if(document.getElementById('v233BackupPanel'))return;const old=document.getElementById('v232FolderPanel');if(old)old.remove();const anchor=document.getElementById('v116DataGuard')||document.getElementById('v91DetailModal');if(!anchor)return;const box=document.createElement('section');box.id='v233BackupPanel';box.style.cssText='padding:12px;margin:10px 0;border:1px solid #94a3b8;border-radius:12px;font-size:12px;line-height:1.7';box.innerHTML='<b>V233 写真の端末バックアップ</b><p>Androidのブラウザでは通常フォルダの自動操作ができない場合があります。代わりに、残っている写真を1つのZIPファイルにまとめて端末へ保存できます。Firebaseへ写真は送信しません。</p><button id="v233Export" type="button" style="padding:10px;margin:4px;background:#0f766e;color:white;border:0;border-radius:8px">写真を一括バックアップ（ZIP）</button><button id="v233Import" type="button" style="padding:10px;margin:4px;background:#1d4ed8;color:white;border:0;border-radius:8px">バックアップZIPから復元</button><input id="v233Zip" type="file" accept=".zip,application/zip" style="display:none"><div id="v233Status" role="status"></div><small>※ ZIPの保存先は端末のダウンロード設定によります。完全自動の通常フォルダ保存ではありません。既存写真は上書きしません。ZIPには患者写真が含まれるため安全に保管してください。</small>';anchor.insertAdjacentElement('afterend',box);const status=box.querySelector('#v233Status'),input=box.querySelector('#v233Zip');box.querySelector('#v233Export').onclick=async()=>{status.textContent='バックアップを作成中…';try{const n=await exportZip();status.textContent=n+'枚をZIPにまとめました。端末のダウンロード一覧で保存を確認してください。'}catch(e){status.textContent=e.message||String(e)}};box.querySelector('#v233Import').onclick=()=>input.click();input.onchange=async()=>{if(!input.files?.[0])return;status.textContent='照合・復元中…';try{const r=await importZip(input.files[0]);status.textContent='復元 '+r.restored+'枚／対象外 '+r.skipped+'枚／失敗 '+r.failed+'枚。履歴を開き直してください。'}catch(e){status.textContent=e.message||String(e)}input.value=''}}
+function mount(){if(document.getElementById('v234BackupPanel'))return;const old=document.getElementById('v232FolderPanel');if(old)old.remove();const anchor=document.getElementById('v116DataGuard')||document.getElementById('v91DetailModal');if(!anchor)return;const box=document.createElement('section');box.id='v234BackupPanel';box.style.cssText='padding:12px;margin:10px 0;border:1px solid #94a3b8;border-radius:12px;font-size:12px;line-height:1.7';box.innerHTML='<b>V234 写真の端末バックアップ</b><p>Androidのブラウザでは通常フォルダの自動操作ができない場合があります。代わりに、残っている写真を1つのZIPファイルにまとめて端末へ保存できます。Firebaseへ写真は送信しません。</p><button id="v233Export" type="button" style="padding:10px;margin:4px;background:#0f766e;color:white;border:0;border-radius:8px">写真を一括バックアップ（ZIP）</button><button id="v233Import" type="button" style="padding:10px;margin:4px;background:#1d4ed8;color:white;border:0;border-radius:8px">バックアップZIPから復元</button><input id="v233Zip" type="file" accept=".zip,application/zip" style="display:none"><div id="v233Status" role="status"></div><small>※ ZIPの保存先は端末のダウンロード設定によります。完全自動の通常フォルダ保存ではありません。既存写真は上書きしません。ZIPには患者写真が含まれるため安全に保管してください。</small>';anchor.insertAdjacentElement('afterend',box);const status=box.querySelector('#v233Status'),input=box.querySelector('#v233Zip');box.querySelector('#v233Export').onclick=async()=>{status.textContent='バックアップを作成中…';try{const n=await exportZip();status.textContent=n+'枚をZIPにまとめました。端末のダウンロード一覧で保存を確認してください。'}catch(e){status.textContent=e.message||String(e)}};box.querySelector('#v233Import').onclick=()=>input.click();input.onchange=async()=>{if(!input.files?.[0])return;status.textContent='照合・復元中…';try{const r=await importZip(input.files[0]);status.textContent='復元 '+r.restored+'枚／対象外 '+r.skipped+'枚／失敗 '+r.failed+'枚。履歴を開き直してください。'}catch(e){status.textContent=e.message||String(e)}input.value=''}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 })();
 </script>
