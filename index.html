@@ -3011,7 +3011,7 @@ window.wakabaV233PhotoFolder={supported,folder:FOLDER,read};
 </script>
 <style id="v235-privacy-style">#v235LegalBox{margin:12px 0;border-radius:12px;overflow:hidden;border:1px solid #e2e8f0;background:#fff}#v235LegalBox .v235legalpanel{display:none;padding:14px 18px;background:#f8fafc;border-bottom:1px solid #e2e8f0}#v235LegalBox .v235legalpanel.on{display:block}#v235LegalBox .v235legalpanel p{font-size:13px;line-height:1.85;margin:0 0 12px;white-space:normal}#v235LegalBox .v235draft{font-size:12px;color:#9a3412;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:10px;margin-bottom:14px}#v235LegalBox .v235legalpanel h3{font-size:16px;margin:0 0 12px}#v235LegalBox button{cursor:pointer}</style>
 <script id="v235-privacy-menu">(function(){
-function mount(){const help=document.getElementById('v77Help');if(!help||document.getElementById('v235LegalBox'))return;
+function mount(){if(document.getElementById('v235LegalBox'))return;
 const box=document.createElement('div');box.id='v235LegalBox';
 const warn='<div class="v235draft">【公開前の確認が必要なドラフト】所在地・電話番号・料金・課金・解約条件・データ取扱い等に未確定項目があります。正式販売前に確認してください。</div>';
 const entries=[
@@ -3020,7 +3020,17 @@ const entries=[
 ['特定商取引法に基づく表記',`<p>販売事業者：わかば整体院・接骨院</p><p>運営責任者：南 昇吾</p><p>所在地：【正式な事業所住所を記載】</p><p>電話番号：【公開方法を確認して記載】</p><p>メールアドレス：Wakaba.pro21@gmail.com</p><p>サービス名：わかば姿勢分析アプリ</p><p>販売価格：【正式な税込月額料金を記載】</p><p>商品代金以外の費用：インターネット通信費・端末購入費等</p><p>決済方法：クレジットカード決済（Stripe）</p><p>支払時期：【実際の課金設定に合わせて記載】</p><p>サービス提供時期：【決済・利用開始設定に合わせて記載】</p><p>契約更新：【更新周期と自動更新条件を記載】</p><p>解約方法：【実際に利用できる解約手順を記載】</p><p>返品・返金：【適用法令を踏まえて正式な条件を記載】</p><p>動作環境：【検証済みのOS・ブラウザを記載】</p>`]
 ];
 entries.forEach((e,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='v199helpRow';btn.innerHTML='<span></span><span class="arr">›</span>';btn.querySelector('span').textContent=e[0];const panel=document.createElement('div');panel.className='v235legalpanel';panel.id='v235LegalPanel'+i;panel.innerHTML='<h3>'+e[0]+'</h3>'+warn+e[1];btn.addEventListener('click',()=>panel.classList.toggle('on'));box.append(btn,panel)});
-const existing=document.getElementById('v199ExtraHelp');if(existing&&existing.parentElement)existing.insertAdjacentElement('afterend',box);else help.appendChild(box);
+// 法的表示はヘルプではなく、契約プランの末尾にまとめる。
+function placeInContract(){
+ const contract=document.getElementById('v213ContractOverview');
+ if(!contract)return false;
+ contract.appendChild(box);
+ return true;
+}
+if(!placeInContract()){
+ let attempts=0;
+ const timer=setInterval(()=>{if(placeInContract()||++attempts>=100)clearInterval(timer)},200);
+}
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(mount,750));else setTimeout(mount,750);
 })();</script>
