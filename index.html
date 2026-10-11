@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V283</title>
+<title>AI姿勢＆3次元歪み分析システム V284</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V283</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V284</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3222,6 +3222,59 @@ const observer=new MutationObserver(mount);function init(){mount();const body=do
   return true;
  }
  function start(){if(mount())return;let n=0;const timer=setInterval(()=>{if(mount()||++n>100)clearInterval(timer)},200)}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
+</script>
+
+<!-- V284: contract first, all administrative information below in one collapsed section. Presentation only. -->
+<style id="v284-order-style">
+#v284AdminGroup{margin:12px 0;border:1px solid #cbd5e1;border-radius:13px;background:#f8fafc;overflow:hidden}
+#v284AdminGroup>summary{cursor:pointer;padding:15px 13px;font-size:14px;font-weight:800;color:#334155}
+#v284AdminGroup[open]>summary{border-bottom:1px solid #e2e8f0}
+#v284AdminGroupBody{padding:10px}
+#v284AdminGroupBody>*{max-width:100%;box-sizing:border-box}
+#v284AdminGroupBody #v281Management{margin:8px 0}
+</style>
+<script id="v284-order-ui">
+(function(){
+ function arrange(){
+  const cloud=document.getElementById('v100Cloud');
+  const contract=document.getElementById('v213ContractOverview');
+  const head=cloud?.querySelector('.v100head');
+  if(!cloud||!contract||!head)return false;
+  let group=document.getElementById('v284AdminGroup');
+  if(!group){
+   group=document.createElement('details');group.id='v284AdminGroup';
+   const summary=document.createElement('summary');summary.textContent='管理・同期・データ保護（必要なときだけ開く）';
+   const body=document.createElement('div');body.id='v284AdminGroupBody';
+   group.append(summary,body);
+  }
+  // Contract is the first visible panel. Keep the login form in its original DOM location.
+  if(contract.parentElement===cloud){
+   const login=document.getElementById('v100Login');
+   (login&&login.parentElement===cloud?login:head).insertAdjacentElement('afterend',contract);
+  }
+  if(group.parentElement!==cloud)contract.insertAdjacentElement('afterend',group);
+  else if(contract.nextElementSibling!==group)contract.insertAdjacentElement('afterend',group);
+  const body=document.getElementById('v284AdminGroupBody');
+  for(const node of Array.from(cloud.children)){
+   if(node===head||node===contract||node===group||node.id==='v100Login')continue;
+   body.appendChild(node);
+  }
+  return true;
+ }
+ function start(){
+  arrange();
+  const cloud=document.getElementById('v100Cloud');if(!cloud)return;
+  let pending=false;
+  const observer=new MutationObserver(()=>{
+   if(pending)return;pending=true;
+   queueMicrotask(()=>{pending=false;arrange()});
+  });
+  observer.observe(cloud,{childList:true});
+  // Other UI modules insert their cards asynchronously after initial load.
+  let tries=0;const timer=setInterval(()=>{arrange();if(++tries>=40)clearInterval(timer)},500);
+ }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
 </script>
