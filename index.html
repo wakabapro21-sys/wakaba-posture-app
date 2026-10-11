@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V258</title>
+<title>AI姿勢＆3次元歪み分析システム V259</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -352,7 +352,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V258</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V259</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3089,8 +3089,13 @@ function row(label,val){return '<div class="metric"><span>'+esc(label)+'</span><
 async function make(id,x){const p=patient(id), pics=await Promise.all(['front','right','left'].map(k=>photo(id,x,k)));const m=x.metrics||{};
 const name=p.kana||p.name||'患者様';const date=x.date?new Date(x.date).toLocaleString('ja-JP'): '日時未登録';
 const muscleRows=muscles(x).map(a=>'<tr>'+a.map(t=>'<td>'+esc(t)+'</td>').join('')+'</tr>').join('');
-return `<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>姿勢分析詳細レポート</title><style>
+return `<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>姿勢分析詳細レポート</title><style>
 @page{size:A4;margin:13mm}*{box-sizing:border-box}body{font-family:Arial,"Noto Sans JP",sans-serif;color:#172033;margin:0 auto;padding:14px 18px;max-width:850px;width:100%;font-size:14px;line-height:1.8}header{background:#0f766e;color:white;padding:16px 20px;border-radius:9px}h1{margin:0;font-size:25px}h2{font-size:19px;color:#0f766e;border-bottom:2px solid #ccfbf1;padding-bottom:5px;margin:18px 0 9px}.sub{color:#64748b}.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.photo{height:310px;background:#f1f5f9;border-radius:7px;display:flex;align-items:center;justify-content:center;overflow:hidden}.photo img{width:100%;height:100%;object-fit:contain}.cap{text-align:center;font-weight:bold;margin-top:3px}.scores{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.score{background:#f0fdfa;border-radius:8px;padding:10px;text-align:center}.score strong{display:block;font-size:28px;color:#0f766e}.metric{display:flex;justify-content:space-between;border-bottom:1px solid #e2e8f0;padding:5px 8px}.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}.panel{background:#f8fafc;padding:12px;border-radius:8px}.type{background:#ecfdf5;padding:12px;border-radius:8px;font-weight:bold;font-size:16px;color:#115e59}table{width:100%;border-collapse:collapse}th,td{border:1px solid #dbe4e8;padding:8px;text-align:left;vertical-align:top}th{background:#ecfdf5}.note{font-size:12px;color:#475569;background:#f8fafc;padding:10px;border-radius:8px}.pagebreak{break-before:page}.toolbar{padding:12px;background:#ecfdf5;text-align:center}.toolbar button{background:#0f766e;color:#fff;border:0;padding:12px 24px;border-radius:9px;font-size:16px;font-weight:bold}@media screen and (max-width:600px){body{padding:12px;font-size:13px}.photo{height:200px}.photos{gap:5px}.scores{gap:4px}.score{padding:7px 2px}.score strong{font-size:23px}}@media print{body{max-width:none;padding:0;font-size:11px}.photo{height:220px}.toolbar{display:none}section{break-inside:avoid}header{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style><style id="v259-responsive-report">
+html{width:100%;max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}
+body{width:100%!important;max-width:850px!important;min-width:0!important;overflow-wrap:anywhere}
+@media screen and (max-width:900px){html,body{margin:0!important;padding:0!important}body{max-width:100%!important;font-size:15px!important;line-height:1.65!important}body>header,body>p,body>section{margin-left:12px!important;margin-right:12px!important}body>header{margin-top:10px}h1{font-size:23px!important}h2{font-size:18px!important}.toolbar{width:100%!important;padding:12px!important}.photos{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important}.photos>div{min-width:0!important}.photo{height:auto!important;aspect-ratio:3/4!important}.photo img{width:100%!important;height:100%!important;object-fit:contain!important}.scores{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:5px!important}.score{min-width:0!important;padding:7px 2px!important}.score strong{font-size:23px!important}.cols{grid-template-columns:1fr!important}.panel{padding:12px!important}table{font-size:12px!important;table-layout:fixed!important}th,td{padding:6px!important;word-break:break-word!important}}
+@media print{html,body{width:100%!important;max-width:none!important;overflow:visible!important}body{font-size:11px!important}.toolbar{display:none!important}.cols{grid-template-columns:1fr 1fr!important}.photo{height:200px!important;aspect-ratio:auto!important}section{break-inside:auto!important}h2{break-after:avoid}}
 </style></head><body><div class="toolbar"><button onclick="window.print()">印刷・保存（必要な場合のみ）</button><div>印刷画面で「PDFとして保存」を選択してください。</div></div><header><h1>姿勢分析レポート</h1>わかば整体院・接骨院　｜　3方向姿勢バランス評価</header>
 <p><b>お名前：</b>${esc(name)} 様　 <b>患者ID：</b>${esc(id)}<br><b>分析日時：</b>${esc(date)}</p>
 <section><h2>1. 3方向の姿勢写真</h2><div class="photos">${pics.map((src,i)=>'<div><div class="photo">'+(src?'<img src="'+src+'">':'写真データなし')+'</div><div class="cap">'+['正面','右側面','左側面'][i]+'</div></div>').join('')}</div><p class="sub">写真はこの端末内から読み込みます。保存されていない写真は表示できません。</p></section>
