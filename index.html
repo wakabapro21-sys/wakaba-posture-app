@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V279</title>
+<title>AI姿勢＆3次元歪み分析システム V280</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V279</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V280</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1496,8 +1496,13 @@ body.v271-signed-out #v100Cloud #v101CloudClose{display:none}
  </div>
  <div id="v139AutoRestore" style="margin:8px 0;padding:9px 10px;border:1px solid #86efac;border-radius:10px;background:#f0fdf4;color:#166534;font-size:10px;font-weight:800;line-height:1.55">🛡 V139 自動復元保護 ON<br>ログイン時に端末患者が0件で、院別Firebaseに患者が存在する場合のみ自動復元します。既存データは削除・上書きしません。</div>
 <div id="v100Actions" style="display:none"><div class="v100row"><div style="flex:1;padding:8px 10px;border-radius:10px;background:#ecfdf5;color:#047857;font-size:10px;font-weight:900">✓ V114 院別保存 ON（旧 /patients はバックアップとして保持）</div></div><div id="v112ClinicAccount" style="margin:8px 0 10px;padding:11px 12px;border:1px solid #bfdbfe;border-radius:12px;background:#eff6ff;font-size:10px;line-height:1.65;color:#1e3a8a"><b style="font-size:12px">🏥 院アカウント</b><div id="v112ClinicEmail">ログイン確認中…</div><div id="v112ClinicId" style="word-break:break-all;color:#64748b"></div><div style="margin-top:5px;color:#475569">V114ではUIDを院IDとして、患者・履歴の保存先と復元元を院別領域に切り替えます。旧 /patients は削除・変更しません。</div></div>
-  <div class="v100row"><button id="v100Sync" class="v100btn secondary" style="flex:1">端末→Firebaseへコピー</button></div>
-  <div class="v100row"><button id="v102Restore" class="v100btn" style="flex:1;background:#0f766e">Firebase→この端末へ安全復元</button><button id="v100SignOut" class="v100btn gray" style="display:none">ログアウト</button></div>
+  <details id="v280AdminData" style="margin-top:12px;border:1px solid #cbd5e1;border-radius:12px;padding:12px;background:#f8fafc">
+   <summary style="cursor:pointer;font-weight:800;color:#334155;font-size:13px">管理者用データ操作（必要なときだけ開く）</summary>
+   <div id="v280AdminDataBody" style="margin-top:12px">
+    <div class="v100row"><button id="v100Sync" class="v100btn secondary" style="flex:1">端末→Firebaseへコピー</button></div>
+    <div class="v100row"><button id="v102Restore" class="v100btn" style="flex:1;background:#0f766e">Firebase→この端末へ安全復元</button><button id="v100SignOut" class="v100btn gray" style="display:none">ログアウト</button></div>
+   </div>
+  </details>
  </div>
  <div id="v100Msg" class="v100note">端末データが原本です。同期しても端末の顧客・履歴は削除しません。写真はクラウドへ送りません。</div>
 </div>
@@ -1765,7 +1770,7 @@ function mountV113(){
  if(!actions||document.getElementById('v113Migration')) return;
  const box=document.createElement('div'); box.id='v113Migration';
  box.innerHTML='<b>🏥 院別データ領域（移行確認）</b><div id="v113MigrationStatus" style="margin-top:4px">まだコピーしていません。旧 /patients はそのまま残します。</div><button id="v113MigrateBtn" type="button">旧データから再確認コピー</button>';
- const acct=document.getElementById('v112ClinicAccount'); (acct||actions.firstElementChild)?.after(box);
+ const admin=document.getElementById('v280AdminDataBody'); if(admin) admin.prepend(box); else {const acct=document.getElementById('v112ClinicAccount'); (acct||actions.firstElementChild)?.after(box);}
  document.getElementById('v113MigrateBtn')?.addEventListener('click',migrateV113);
 }
 
