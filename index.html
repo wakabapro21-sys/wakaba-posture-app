@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V286</title>
+<title>AI姿勢＆3次元歪み分析システム V287</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V286</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V287</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1728,7 +1728,26 @@ $('v100SignIn').onclick=async()=>{
 };
 $('v266Forgot').onclick=()=>{$('v266ResetPanel').hidden=!$('v266ResetPanel').hidden};
 $('v266SendReset').onclick=async()=>{const email=$('v100Email').value.trim(),out=$('v266ResetMsg'),btn=$('v266SendReset');if(!email||!/^\S+@\S+\.\S+$/.test(email)){out.textContent='登録したメールアドレスを入力してください。';return;}btn.disabled=true;out.textContent='送信中…';try{await sendPasswordResetEmail(auth,email);out.textContent='再設定メールの送信を受け付けました。メールが届かない場合は迷惑メールもご確認ください。';}catch(e){console.error('password reset',e);out.textContent='送信できませんでした。時間をおいて再度お試しください。';}finally{btn.disabled=false}};
-function v266ShowLegal(index){const help=document.getElementById('v77Help');if(!help){alert('メニューの「お問い合わせ・ヘルプ」から規約をご確認ください。');return;}const panel=document.getElementById('v235LegalPanel'+index);if(panel){const win=window.open('','_blank');if(win){win.document.write('<!doctype html><html lang=ja><meta name=viewport content=width=device-width,initial-scale=1><meta charset=utf-8><title>規約の確認</title><body style="font-family:sans-serif;line-height:1.8;padding:20px">'+panel.innerHTML+'</body></html>');win.document.close();}else alert('お問い合わせ・ヘルプから規約を確認してください。');}else alert('お問い合わせ・ヘルプから規約を確認してください。');}
+function v266ShowLegal(index){const help=document.getElementById('v77Help');if(!help){alert('メニューの「お問い合わせ・ヘルプ」から規約をご確認ください。');return;}const panel=document.getElementById('v235LegalPanel'+index);if(panel){const win=window.open('','_blank');if(win){win.document.write('<!doctype html><html lang=ja><meta name=viewport content=width=device-width,initial-scale=1><meta charset=utf-8><title>規約の確認</title><body style="font-family:sans-serif;line-height:1.8;padding:20px">'+panel.innerHTML+'
+<style id="v287-grid-style">
+.v287-grid-controls{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:8px 0 4px;font-size:12px;color:#334155;font-weight:800}
+.v287-grid-controls input{width:18px;height:18px;accent-color:#0f766e}
+.v287-grid-layer{position:absolute;pointer-events:none;z-index:1;overflow:hidden;background-image:linear-gradient(to right,rgba(255,255,255,.72) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.72) 1px,transparent 1px),linear-gradient(to right,rgba(30,41,59,.22) 1px,transparent 1px),linear-gradient(to bottom,rgba(30,41,59,.22) 1px,transparent 1px);background-size:10% 100%,100% var(--v287-step),10% 100%,100% var(--v287-step);border-left:1px solid rgba(255,255,255,.5);border-top:1px solid rgba(255,255,255,.5)}
+.v287-grid-layer::before{content:'';position:absolute;top:0;bottom:0;left:50%;border-left:2px solid #e11d48}
+.v287-grid-label{position:absolute;top:3px;transform:translateX(-50%);color:#172033;font-size:clamp(8px,1.5vw,12px);font-weight:900;text-shadow:0 0 3px white,0 0 3px white}
+.stage .landmarkCanvas{z-index:2}
+</style>
+<script id="v287-grid-visual">
+(()=>{'use strict';
+ let enabled=true;
+ const types=['front','right','left'];
+ function refresh(){for(const t of types){const stage=document.getElementById('stage-'+t);if(!stage)continue;let layer=stage.querySelector('.v287-grid-layer');if(!enabled){if(layer)layer.remove();continue}const img=stage.querySelector('img');if(!img||!img.complete||!img.naturalWidth){if(layer)layer.remove();continue}if(!layer){layer=document.createElement('div');layer.className='v287-grid-layer';stage.appendChild(layer);for(let i=0;i<=10;i++){if(i===5)continue;const n=document.createElement('span');n.className='v287-grid-label';n.textContent=Math.abs(i-5);n.style.left=i*10+'%';layer.appendChild(n)}}const st=stage.getBoundingClientRect(),r=img.getBoundingClientRect();const scale=Math.min(r.width/img.naturalWidth,r.height/img.naturalHeight);const w=img.naturalWidth*scale,h=img.naturalHeight*scale;layer.style.left=(r.left-st.left+(r.width-w)/2)+'px';layer.style.top=(r.top-st.top+(r.height-h)/2)+'px';layer.style.width=w+'px';layer.style.height=h+'px';layer.style.setProperty('--v287-step',(w/10)+'px');}}
+ function init(){const status=document.getElementById('status');if(status&&!document.getElementById('v287GridToggle')){const label=document.createElement('label');label.className='v287-grid-controls';label.innerHTML='<input type="checkbox" id="v287GridToggle" checked> 分析写真の格子線を表示';status.after(label);label.querySelector('input').addEventListener('change',e=>{enabled=e.target.checked;refresh()})}refresh();const root=document.querySelector('.views')||document.body;const obs=new MutationObserver(()=>{if(!enabled)return;requestAnimationFrame(refresh)});obs.observe(root,{childList:true,subtree:true});window.addEventListener('resize',refresh);window.addEventListener('load',refresh);}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+
+</body></html>');win.document.close();}else alert('お問い合わせ・ヘルプから規約を確認してください。');}else alert('お問い合わせ・ヘルプから規約を確認してください。');}
 $('v266Terms').onclick=e=>{e.preventDefault();v266ShowLegal(1)}; $('v266Privacy').onclick=e=>{e.preventDefault();v266ShowLegal(0)};
 document.getElementById('v270MenuLogout')?.addEventListener('click',()=>{document.getElementById('v77Menu')?.classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu');document.getElementById('v100SignOut')?.click();});
 $('v100SignOut').onclick=async()=>{sessionStorage.setItem('wakaba_v269_login_return','1');sessionStorage.setItem('wakaba_v165_page','home');document.getElementById('v77Menu')?.classList.remove('on');await signOut(auth);v271AuthView(false);};$('v100Sync').onclick=uploadAll;$('v102Restore').onclick=restoreAll;
@@ -3076,6 +3095,24 @@ function loadImage(src){return new Promise(resolve=>{if(!src)return resolve(null
 function rr(ctx,x,y,w,h,r,fill){ctx.fillStyle=fill;ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()}
 function text(ctx,s,x,y,size=25,color='#172033',bold=false){ctx.fillStyle=color;ctx.font=(bold?'bold ':'')+size+'px sans-serif';ctx.fillText(String(s??'--'),x,y)}
 function fitText(ctx,s,max){s=String(s||'');while(s.length&&ctx.measureText(s).width>max)s=s.slice(0,-1);return s}
+
+/* V287: visual reference grid; overlay only, no photo or analysis data mutation. */
+function v287DrawGrid(ctx,x,y,w,h){
+ if(!w||!h)return;
+ ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();
+ const step=w/10;
+ ctx.lineWidth=Math.max(.75,w/360);ctx.strokeStyle='rgba(255,255,255,.70)';
+ for(let i=0;i<=10;i++){const xx=x+w*i/10;ctx.beginPath();ctx.moveTo(xx,y);ctx.lineTo(xx,y+h);ctx.stroke()}
+ const rows=Math.max(1,Math.round(h/step));
+ for(let i=0;i<=rows;i++){const yy=y+h*i/rows;ctx.beginPath();ctx.moveTo(x,yy);ctx.lineTo(x+w,yy);ctx.stroke()}
+ ctx.strokeStyle='rgba(20,37,51,.25)';ctx.lineWidth=.6;
+ for(let i=0;i<=10;i++){const xx=x+w*i/10;ctx.beginPath();ctx.moveTo(xx,y);ctx.lineTo(xx,y+h);ctx.stroke()}
+ ctx.strokeStyle='#e11d48';ctx.lineWidth=Math.max(1.4,w/145);ctx.beginPath();ctx.moveTo(x+w/2,y);ctx.lineTo(x+w/2,y+h);ctx.stroke();
+ ctx.font='bold '+Math.max(9,Math.round(w/25))+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='top';
+ for(let i=0;i<11;i++){if(i===5)continue;const n=Math.abs(i-5);const tx=x+w*i/10;ctx.fillStyle='rgba(255,255,255,.85)';ctx.fillText(String(n),tx+1,y+3);ctx.fillStyle='#172033';ctx.fillText(String(n),tx,y+2)}
+ ctx.restore();
+}
+
 async function render(id,x){
  const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=3150;
  const c=canvas.getContext('2d');c.fillStyle='#f6faf9';c.fillRect(0,0,1080,3150);
@@ -3086,7 +3123,7 @@ async function render(id,x){
  text(c,'分析日：'+String(x.date||'').slice(0,10),64,259,23,'#64748b');
  text(c,'患者ID：'+String(id),620,259,19,'#64748b');
  const images=await Promise.all(sides.map(async side=>loadImage(await readPhoto(id,x,side))));
- for(let i=0;i<3;i++){const px=62+i*339,py=290,pw=315,ph=405;rr(c,px,py,pw,ph,14,'#f1f5f9');const im=images[i];if(im){const k=Math.min(pw/im.width,ph/im.height),w=im.width*k,h=im.height*k;c.drawImage(im,px+(pw-w)/2,py+(ph-h)/2,w,h)}else text(c,'写真なし',px+96,py+215,22,'#64748b');text(c,labels[i],px+114,730,23,'#64748b')}
+ for(let i=0;i<3;i++){const px=62+i*339,py=290,pw=315,ph=405;rr(c,px,py,pw,ph,14,'#f1f5f9');const im=images[i];if(im){const k=Math.min(pw/im.width,ph/im.height),w=im.width*k,h=im.height*k;c.drawImage(im,px+(pw-w)/2,py+(ph-h)/2,w,h);v287DrawGrid(c,px+(pw-w)/2,py+(ph-h)/2,w,h)}else text(c,'写真なし',px+96,py+215,22,'#64748b');text(c,labels[i],px+114,730,23,'#64748b')}
  const scores=[['総合',x.total],['正面',x.front],['側面',x.side],['回旋',x.twist]];
  scores.forEach((v,i)=>{const px=62+i*254;rr(c,px,766,238,120,14,i===0?'#0f766e':'#f1f5f9');text(c,v[0],px+20,808,23,i===0?'#d1fae5':'#64748b');text(c,v[1]??'--',px+20,861,47,i===0?'#fff':'#172033',true)});
  rr(c,62,910,955,112,14,'#eafaf6');text(c,'あなたの姿勢タイプ',84,950,22,'#0f766e');text(c,fitText(c,x.type||'分析結果',870),84,998,35,'#115e59',true);
@@ -3236,7 +3273,7 @@ const observer=new MutationObserver(mount);function init(){mount();const body=do
 #v284AdminGroupBody #v281Management{margin:8px 0}
 </style>
 
-<!-- V286: keep legacy administrative detail cards immediately beneath their toggle, not at modal top. -->
+<!-- V287: keep legacy administrative detail cards immediately beneath their toggle, not at modal top. -->
 <style id="v285-local-detail-style">
 #v285LocalDetails{margin-top:10px;display:flex;flex-direction:column;gap:10px;min-width:0}
 #v285LocalDetails:empty{display:none}
@@ -3244,7 +3281,7 @@ const observer=new MutationObserver(mount);function init(){mount();const body=do
 </style>
 
 
-<!-- V286: one authoritative hierarchy for subscription and admin controls. No data handlers changed. -->
+<!-- V287: one authoritative hierarchy for subscription and admin controls. No data handlers changed. -->
 <style id="v286-layout-style">
 #v284AdminGroupBody{display:block;min-height:0;padding:10px}
 #v284AdminGroup:not([open])>#v284AdminGroupBody{display:none}
