@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V293</title>
+<title>AI姿勢＆3次元歪み分析システム V294</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V293</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V294</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -897,10 +897,12 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    var conflict=r.angle*l.angle<0&&Math.abs(r.angle)>2&&Math.abs(l.angle)>2;
    var difference=Math.abs(r.angle-l.angle);
    var reliable=!conflict&&difference<=10&&r.weight>=.35&&l.weight>=.35;
+   /* 骨盤は側面写真で左右股関節が重なりやすく、0°を確定値として扱わない。 */
+   if(aName==="leftHip"&&Math.abs(r.angle)<1.5&&Math.abs(l.angle)<1.5)reliable=false;
    var wr=Math.max(.15,r.weight),wl=Math.max(.15,l.weight);
    var yaw=(r.angle*wr+l.angle*wl)/(wr+wl);
    if(!Number.isFinite(yaw))return {yaw:0,reliable:false,reason:"角度計算エラー"};
-   return {yaw:reliable?yaw:0,reliable:reliable,reason:conflict?"左右側面で方向不一致":difference>10?"左右側面で差が大きい":"ランドマーク信頼度不足"};
+   return {yaw:reliable?yaw:0,reliable:reliable,reason:(!reliable&&aName==="leftHip"&&Math.abs(r.angle)<1.5&&Math.abs(l.angle)<1.5)?"側面では骨盤の左右差を識別できません":conflict?"左右側面で方向不一致":difference>10?"左右側面で差が大きい":"ランドマーク信頼度不足"};
  }
  var thoraxResult=yawFromProfiles("leftShoulder","rightShoulder");
  var pelvisResult=yawFromProfiles("leftHip","rightHip");
@@ -908,7 +910,8 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  /* 低信頼・ほぼ完全側面での微小ノイズを抑制 */
  if(Math.abs(thoraxYaw)<.35)thoraxYaw=0;if(Math.abs(pelvisYaw)<.35)pelvisYaw=0;
  if(!Number.isFinite(thoraxYaw))thoraxYaw=0;if(!Number.isFinite(pelvisYaw))pelvisYaw=0;
- var tw=thoraxYaw-pelvisYaw;
+ var twistAvailable=thoraxResult.reliable&&pelvisResult.reliable;
+ var tw=twistAvailable?thoraxYaw-pelvisYaw:0;
  function mag(v){var a=Math.abs(v);return a<1.5?"ほぼ中間位":a<5?"軽度の回旋傾向":"回旋傾向あり"}
  function yawLabel(result){return !result.reliable?"判定困難":Math.abs(result.yaw)<1.5?"ほぼ中間位":result.yaw>0?"左回旋傾向":"右回旋傾向"}
  document.getElementById("thoraxDeg").textContent=yawLabel(thoraxResult);document.getElementById("pelvisDeg").textContent=yawLabel(pelvisResult);document.getElementById("twistDeg").textContent=(!thoraxResult.reliable||!pelvisResult.reliable)?"判定困難":Math.abs(tw)<1.5?"小さい":"相対捻れあり";
@@ -961,12 +964,12 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  /* V204: 相対捻れ8〜9°で約60点になるよう、回旋の減点勾配だけを微調整。
     ランドマーク・正面・側面・脚軸ロジックは変更しない。 */
  var twistPenalty=10 + dz(tw,1.0)*3.9;
- var twistScore=Math.min(94,clampScore(100-twistPenalty));
- var totalScore=clampScore(frontScore*.45+sideScore*.40+twistScore*.15);
+ var twistScore=twistAvailable?Math.min(94,clampScore(100-twistPenalty)):null;
+ var totalScore=twistAvailable?clampScore(frontScore*.45+sideScore*.40+twistScore*.15):clampScore((frontScore*.45+sideScore*.40)/.85);
  document.getElementById("scoreTotal").textContent=totalScore;
  document.getElementById("scoreFront").textContent=frontScore;
  document.getElementById("scoreSide").textContent=sideScore;
- document.getElementById("scoreTwist").textContent=twistScore;
+ document.getElementById("scoreTwist").textContent=twistAvailable?twistScore:"判定不可";
  /* V72 脚軸・推定重心・骨盤/脊柱バランス。写真ランドマークからの参考推定 */
  function angle3(a,b,c){var ux=a.x-b.x,uy=a.y-b.y,vx=c.x-b.x,vy=c.y-b.y,du=Math.hypot(ux,uy)||1,dv=Math.hypot(vx,vy)||1,co=Math.max(-1,Math.min(1,(ux*vx+uy*vy)/(du*dv)));return Math.acos(co)*180/Math.PI}
  function lineOffset(h,k,a){var dx=a.x-h.x,dy=a.y-h.y,L=Math.hypot(dx,dy)||1;return ((k.x-h.x)*dy-(k.y-h.y)*dx)/L}
@@ -1024,8 +1027,8 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    "頭の前後位置：<b>"+Math.abs(headAP).toFixed(1)+"% "+apLabel(headAP)+"</b><br>"+
    "体幹の前後位置：<b>"+Math.abs(trunkAP2).toFixed(1)+"% "+apLabel(trunkAP2)+"</b><br>"+
    "骨盤の前後位置：<b>"+Math.abs(pelvisAP2).toFixed(1)+"% "+apLabel(pelvisAP2)+"</b><br>"+
-   "胸郭回旋：<b>"+Math.abs(thoraxYaw).toFixed(1)+"°</b><br>"+
-   "骨盤回旋：<b>"+Math.abs(pelvisYaw).toFixed(1)+"°</b>";
+   "胸郭回旋：<b>"+(thoraxResult.reliable?Math.abs(thoraxYaw).toFixed(1)+"°":"判定不可")+"</b><br>"+
+   "骨盤回旋：<b>"+(pelvisResult.reliable?Math.abs(pelvisYaw).toFixed(1)+"°":"判定不可")+"</b>";
 
  var bx=Math.max(8,Math.min(92,50+pelAP*2.0)),by=Math.max(8,Math.min(92,50-trAP*2.0)),star=document.getElementById("balanceStar");if(star){star.style.left=bx+"%";star.style.top=by+"%"}
  document.getElementById("balanceMapText").textContent="骨盤は"+(Math.abs(pelAP)<1?"ほぼ中央":pelAP>0?"前寄り":"後ろ寄り")+"、体幹は"+(Math.abs(trAP)<1?"ほぼ中央":trAP>0?"前寄り":"後ろ寄り")+"の参考傾向です。撮影条件によって位置は変わります。";
@@ -1036,19 +1039,19 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  var dims=[
    {key:"正面",score:frontScore,detail:"肩の傾き "+Math.abs(sh).toFixed(1)+"°・骨盤の傾き "+Math.abs(ph).toFixed(1)+"°・頭部偏位 "+Math.abs(hs).toFixed(1)+"%"},
    {key:"側面",score:sideScore,detail:"頭部と体幹の前後バランスに差がみられます。"},
-   {key:"回旋",score:twistScore,detail:"胸郭 "+Math.abs(thoraxYaw).toFixed(1)+"°・骨盤 "+Math.abs(pelvisYaw).toFixed(1)+"°・相対差 "+Math.abs(tw).toFixed(1)+"°"}
+   {key:"回旋",score:twistAvailable?twistScore:101,detail:twistAvailable?("胸郭 "+Math.abs(thoraxYaw).toFixed(1)+"°・骨盤 "+Math.abs(pelvisYaw).toFixed(1)+"°・相対差 "+Math.abs(tw).toFixed(1)+"°"):"骨盤回旋を判定できないため参考スコア対象外"}
  ];
  dims.sort(function(a,b){return a.score-b.score});var main=dims[0];
  var typeText=main.key==="正面"?"左右バランス型":main.key==="側面"?"前後バランス型":"回旋バランス型";
  if(totalScore>=90)typeText="全体バランス良好型";
  document.getElementById("postureType").textContent=typeText;
- document.getElementById("postureSummary").textContent="総合 "+totalScore+"点。正面 "+frontScore+"点／側面 "+sideScore+"点／回旋 "+twistScore+"点として、3方向の特徴を比較しています。";
+ document.getElementById("postureSummary").textContent="総合 "+totalScore+"点。正面 "+frontScore+"点／側面 "+sideScore+"点／回旋 "+(twistAvailable?twistScore+"点":"判定不可")+"として、3方向の特徴を比較しています。";
  /* V66: 履歴保存は wakaba-analysis イベント側で一元処理 */
  document.getElementById("mainFinding").textContent=main.key+"のバランス";
  document.getElementById("mainFindingDetail").textContent=main.detail+"　今回の3項目では「"+main.key+"」の参考スコアが最も低く、変化を追いやすいポイントです。";
  document.getElementById("reportFront").textContent=reportBand(frontScore);
  document.getElementById("reportSide").textContent=reportBand(sideScore);
- document.getElementById("reportTwist").textContent=reportBand(twistScore);
+ document.getElementById("reportTwist").textContent=twistAvailable?reportBand(twistScore):"判定不可";
  /* V47 筋バランス：写真姿勢からの傾向候補。診断や筋力測定の代用にはしない。 */
  var tight=[],weak=[],care=[];
  function add(arr,v){if(arr.indexOf(v)<0)arr.push(v)}
@@ -1078,7 +1081,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  document.getElementById("muscleWeak").innerHTML=weak.map(function(x){return "・"+x}).join("<br>");
  document.getElementById("careDirection").innerHTML=care.map(function(x){return "✓ "+x}).join("<br>");
  built=true;document.getElementById("threeHint").style.display="none";var b=document.getElementById("modelBadge");b.textContent="3方向反映済み";b.className="badge ok";
-window.WAKABA_3D_DATA={thoraxYaw:thoraxYaw,pelvisYaw:pelvisYaw,thoraxReliable:thoraxResult.reliable,pelvisReliable:pelvisResult.reliable,relativeTwist:tw,shoulderTilt:sh,pelvisTilt:ph,headShift:hs,sideDeviation:rawSide};
+window.WAKABA_3D_DATA={thoraxYaw:thoraxResult.reliable?thoraxYaw:null,pelvisYaw:pelvisResult.reliable?pelvisYaw:null,thoraxReliable:thoraxResult.reliable,pelvisReliable:pelvisResult.reliable,relativeTwist:tw,shoulderTilt:sh,pelvisTilt:ph,headShift:hs,sideDeviation:rawSide};
 window.dispatchEvent(new CustomEvent("wakaba-analysis",{detail:window.WAKABA_3D_DATA}));draw()}
 function rot(p){var a=angle*Math.PI/180,c=Math.cos(a),q=Math.sin(a);return{x:p.x*c-p.z*q,y:p.y,z:p.x*q+p.z*c}}
 function project(p){var r=rot(p),box=C.getBoundingClientRect(),sc=Math.min(box.width/2.20,box.height/3.05),pers=1/(1+r.z*.10);return{x:box.width/2+r.x*sc*pers,y:box.height-24-r.y*sc*pers,z:r.z}}
@@ -1088,7 +1091,8 @@ function mid(a,b,t){return{x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,z:a.z+(b.z-a.z)*t
 function arrow2(x1,y1,x2,y2,col,label){ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=8;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();var a=Math.atan2(y2-y1,x2-x1);ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-18*Math.cos(a-.55),y2-18*Math.sin(a-.55));ctx.lineTo(x2-18*Math.cos(a+.55),y2-18*Math.sin(a+.55));ctx.closePath();ctx.fill();ctx.font="bold 12px -apple-system,sans-serif";ctx.fillText(label,x1+8,y1-10)}
 function drawTop(){var box=C.getBoundingClientRect(),cx=box.width/2,cy=box.height/2,rx=Math.min(box.width*.31,125),ry=58;ctx.fillStyle="#cbd5e1";ctx.font="bold 13px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("上から見た回旋傾向（視認性のため ×"+twistBoost+"）",cx,35);ctx.textAlign="start";ctx.strokeStyle="#475569";ctx.lineWidth=2;ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(cx,65);ctx.lineTo(cx,box.height-55);ctx.stroke();ctx.setLineDash([]);
  function ellipseYaw(y,yaw,col,label){ctx.save();ctx.translate(cx,y);ctx.rotate(yaw*twistBoost*Math.PI/180);ctx.strokeStyle=col;ctx.lineWidth=7;ctx.globalAlpha=.9;ctx.beginPath();ctx.ellipse(0,0,rx,ry,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;arrow2(-rx*.72,0,rx*.82,0,col,label+" 実測推定 "+Math.abs(yaw).toFixed(1)+"°");ctx.restore()}
- ellipseYaw(cy-85,thoraxYaw,"#14b8a6","胸郭");ellipseYaw(cy+90,pelvisYaw,"#f97316","骨盤");var tw=thoraxYaw-pelvisYaw;ctx.fillStyle="#f8fafc";ctx.font="bold 18px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("参考推定差 "+Math.abs(tw).toFixed(1)+"°｜表示のみ×"+twistBoost,cx,box.height-22);ctx.textAlign="start"}
+ ellipseYaw(cy-85,thoraxYaw,"#14b8a6","胸郭");ellipseYaw(cy+90,pelvisYaw,"#f97316","骨盤");var twistAvailable=thoraxResult.reliable&&pelvisResult.reliable;
+ var tw=twistAvailable?thoraxYaw-pelvisYaw:0;ctx.fillStyle="#f8fafc";ctx.font="bold 18px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("参考推定差 "+Math.abs(tw).toFixed(1)+"°｜表示のみ×"+twistBoost,cx,box.height-22);ctx.textAlign="start"}
 function meshRing(center,rx,rz,n){var arr=[];for(var i=0;i<n;i++){var a=i*Math.PI*2/n;arr.push({x:center.x+Math.cos(a)*rx,y:center.y,z:center.z+Math.sin(a)*rz})}return arr}
 function drawRing(ring,col,alpha,w){for(var i=0;i<ring.length;i++)line(ring[i],ring[(i+1)%ring.length],w,col,alpha)}
 function connectRings(a,b,col,alpha,w){var n=Math.min(a.length,b.length);for(var i=0;i<n;i++)line(a[i],b[i],w,col,alpha)}
@@ -1202,9 +1206,10 @@ function apply(d={}){
  if(!ready)return;
  resetPartTransforms();
  const k=Math.PI/180;
- const finite=v=>{const n=Number(v);return Number.isFinite(n)?n:0};
+ const finite=v=>{if(v===null||v===undefined||v==="")return 0;const n=Number(v);return Number.isFinite(n)?n:0};
  const shoulder=finite(d.shoulderTilt),pelvisTilt=finite(d.pelvisTilt);
  const thorax=finite(d.thoraxYaw),pelvisYaw=finite(d.pelvisYaw);
+ const thoraxKnown=d.thoraxReliable!==false&&d.thoraxYaw!==null, pelvisKnown=d.pelvisReliable!==false&&d.pelvisYaw!==null;
  // V292: BodyParts3Dのローカル軸をワールドの上下(Y)・左右傾斜(Z)に変換。
  // 左回旋は解析値の正、右回旋は負として、骨格とリングを同じ符号で描画する。
  model.updateMatrixWorld(true);
@@ -1227,7 +1232,7 @@ function apply(d={}){
    if(!g)return;
    const visible=Math.abs(deg)>=1.5;
    g.visible=true;
-   // 0°でもリングは表示し、基準位置を確認できるようにする。
+   // 判定不能の回旋矢印は出さない（0°と誤認させない）。
    const rs=rotBoost===5?1.35:1;
    // zの反転は回旋矢印の進行方向だけを変え、骨格の向きとは別の符号を使わない。
    g.scale.set(rs,1,deg<0?-rs:rs);
@@ -1236,7 +1241,9 @@ function apply(d={}){
  }
  setRing(thoraxRing,thorax);
  setRing(pelvisRing,pelvisYaw);
- statusText('BodyParts3D｜胸郭 '+(thorax>=0?'左':'右')+Math.abs(thorax).toFixed(1)+'° / 骨盤 '+(pelvisYaw>=0?'左':'右')+Math.abs(pelvisYaw).toFixed(1)+'°'+(rotBoost===5?'（表示×5）':''));
+ if(thoraxRing)thoraxRing.visible=thoraxKnown;
+ if(pelvisRing)pelvisRing.visible=pelvisKnown;
+ statusText('BodyParts3D｜胸郭 '+(thoraxKnown?(thorax>=0?'左':'右')+Math.abs(thorax).toFixed(1)+'°':'判定不可')+' / 骨盤 '+(pelvisKnown?(pelvisYaw>=0?'左':'右')+Math.abs(pelvisYaw).toFixed(1)+'°':'判定不可')+(rotBoost===5?'（表示×5）':''));
 }
 async function init(){
  if(ready)return;
@@ -1341,7 +1348,7 @@ host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel'
  $('v64CompareBody').innerHTML=dates+'<div class="v70hero"><div class="v70scoreline"><div class="v70scorebox"><small>Before・総合</small><strong>'+before.total+'</strong></div><div class="v70arrow">→</div><div class="v70scorebox"><small>After・総合</small><strong>'+after.total+'</strong></div></div><div class="v70change">総合スコア変化　'+sign+scoreDelta+'点</div></div>'+types+'<div class="v93compareLead">選択した2回の分析結果を、スコアと姿勢の測定値で比較しています。写真は保存されていないため表示しません。</div>'+'<div class="v67section">スコア詳細</div><div class="v70metricRow" style="font-weight:900;color:#64748b"><span>項目</span><b>Before</b><b>After</b><span>差</span></div>'+scoreRow('総合',before.total,after.total)+scoreRow('正面',before.front,after.front)+scoreRow('側面',before.side,after.side)+scoreRow('回旋',before.twist,after.twist)+'<div class="v67section">姿勢数値の変化</div><div class="v70metricRow" style="font-weight:900;color:#64748b"><span>項目</span><b>Before</b><b>After</b><span>変化</span></div>'+rows+'<div class="v64note">※「改善」は写真上の左右差・偏位・回旋の絶対値が小さくなった場合の比較表示です。医学的な診断や治療効果の判定ではありません。同じ位置・距離・姿勢条件で撮影してください。</div>';
  $('v63HistoryModal').classList.remove('on');$('v64CompareModal').classList.add('on')}
  function makeThumb(type){try{const rec=window.WAKABA_PHOTOS&&window.WAKABA_PHOTOS[type];if(!rec)return null;if(rec.historyThumb)return rec.historyThumb;const img=document.querySelector('#stage-'+type+' img');if(!img||!img.naturalWidth)return null;const maxSide=960,scale=Math.min(1,maxSide/Math.max(img.naturalWidth,img.naturalHeight)),w=Math.max(1,Math.round(img.naturalWidth*scale)),h=Math.max(1,Math.round(img.naturalHeight*scale)),cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);rec.historyThumb=cv.toDataURL('image/jpeg',.62);return rec.historyThumb}catch(e){console.error('V204 history photo error',type,e);return null}}
- function saveAnalysisHistory(total,front,side,twist,type){try{const raw=sessionStorage.getItem('wakaba_v61_current')||localStorage.getItem('wakaba_v66_current');const c=JSON.parse(raw||'null');if(!c||!c.id){console.warn('V67 history: current customer missing');return false}const d=window.WAKABA_3D_DATA||{};const metrics={shoulderTilt:Number(d.shoulderTilt),pelvisTilt:Number(d.pelvisTilt),headShift:Number(d.headShift),thoraxYaw:Number(d.thoraxYaw),pelvisYaw:Number(d.pelvisYaw),relativeTwist:Number(d.relativeTwist),sideDeviation:Number(d.sideDeviation)};const photos={front:makeThumb('front'),right:makeThumb('right'),left:makeThumb('left')};const h=getHistory(c.id);h.unshift({version:70,date:new Date().toISOString(),total:Number(total),front:Number(front),side:Number(side),twist:Number(twist),type:String(type||''),metrics,photos});let keep=h.slice(0,30);try{localStorage.setItem(historyKey(c.id),JSON.stringify(keep))}catch(q){console.error('V227: history storage quota, existing history preserved',q);alert('写真付き分析履歴を保存できませんでした。端末の保存容量が不足している可能性があります。既存の履歴は削除していません。');return false}try{window.dispatchEvent(new CustomEvent('wakaba:v103-history-saved',{detail:{id:c.id}}))}catch(e){}return true}catch(e){console.error('V67 history save error',e);return false}}
+ function saveAnalysisHistory(total,front,side,twist,type){try{const raw=sessionStorage.getItem('wakaba_v61_current')||localStorage.getItem('wakaba_v66_current');const c=JSON.parse(raw||'null');if(!c||!c.id){console.warn('V67 history: current customer missing');return false}const d=window.WAKABA_3D_DATA||{};const metrics={shoulderTilt:Number(d.shoulderTilt),pelvisTilt:Number(d.pelvisTilt),headShift:Number(d.headShift),thoraxYaw:Number(d.thoraxYaw),pelvisYaw:d.pelvisYaw==null?null:Number(d.pelvisYaw),relativeTwist:d.pelvisReliable===false?null:Number(d.relativeTwist),sideDeviation:Number(d.sideDeviation)};const photos={front:makeThumb('front'),right:makeThumb('right'),left:makeThumb('left')};const h=getHistory(c.id);h.unshift({version:70,date:new Date().toISOString(),total:Number(total),front:Number(front),side:Number(side),twist:Number(twist),type:String(type||''),metrics,photos});let keep=h.slice(0,30);try{localStorage.setItem(historyKey(c.id),JSON.stringify(keep))}catch(q){console.error('V227: history storage quota, existing history preserved',q);alert('写真付き分析履歴を保存できませんでした。端末の保存容量が不足している可能性があります。既存の履歴は削除していません。');return false}try{window.dispatchEvent(new CustomEvent('wakaba:v103-history-saved',{detail:{id:c.id}}))}catch(e){}return true}catch(e){console.error('V67 history save error',e);return false}}
  window.saveAnalysisHistory=saveAnalysisHistory;
  window.addEventListener('wakaba-analysis',function(){
    const total=document.getElementById('scoreTotal')?.textContent;
