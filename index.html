@@ -506,7 +506,7 @@ html,body{
  </div>
  <div style="display:grid;grid-template-columns:2fr 1fr;gap:6px;margin-top:7px">
    <button id="topTwist" type="button" class="view3d">◎ 上から見た捻れ</button>
-   <button id="twistBoostBtn" type="button" class="view3d">回旋表示 ×5（表示強調）</button>
+   
  </div>
  <div id="clinicalPanel" style="margin-top:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:11px;padding:9px;font-size:10px;color:#475569;line-height:1.7">
   <b style="color:#172033">姿勢分析</b>　
@@ -853,7 +853,7 @@ addEventListener("resize",drawGuide);count();
 
 <script>
 (function(){
-var C=document.getElementById("threeCanvas"),ctx=C.getContext("2d"),angle=35,built=false,pts3={},dragX=null,mode="body",thoraxYaw=0,pelvisYaw=0,twistBoost=5;
+var C=document.getElementById("threeCanvas"),ctx=C.getContext("2d"),angle=35,built=false,pts3={},dragX=null,mode="body",thoraxYaw=0,pelvisYaw=0,twistBoost=1;
 var names=["head","leftShoulder","rightShoulder","leftElbow","rightElbow","leftWrist","rightWrist","leftHip","rightHip","leftKnee","rightKnee","leftAnkle","rightAnkle"];
 function resize(){var r=C.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);C.width=Math.round(r.width*d);C.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);if(built)draw()}addEventListener("resize",resize);setTimeout(resize,0);
 function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!photos.right||!photos.left){alert("正面・右側面・左側面の3枚を登録してください。");return}if(["front","right","left"].some(function(t){return photos[t].aiFailed||(!photos[t].ai&&!photos[t].manualAdjusted)})){alert("3枚すべてのAI解析が完了してから3D分析を作成してください。\n解析失敗と表示された写真は、もう一度選択してください。");return}
@@ -1115,10 +1115,10 @@ function line(a,b,w,col,alpha){var A=project(a),B=project(b);ctx.globalAlpha=alp
 function circle(p,r,col){var q=project(p);ctx.fillStyle=col;ctx.beginPath();ctx.arc(q.x,q.y,r,0,Math.PI*2);ctx.fill()}
 function mid(a,b,t){return{x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,z:a.z+(b.z-a.z)*t}}
 function arrow2(x1,y1,x2,y2,col,label){ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=8;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();var a=Math.atan2(y2-y1,x2-x1);ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-18*Math.cos(a-.55),y2-18*Math.sin(a-.55));ctx.lineTo(x2-18*Math.cos(a+.55),y2-18*Math.sin(a+.55));ctx.closePath();ctx.fill();ctx.font="bold 12px -apple-system,sans-serif";ctx.fillText(label,x1+8,y1-10)}
-function drawTop(){var box=C.getBoundingClientRect(),cx=box.width/2,cy=box.height/2,rx=Math.min(box.width*.31,125),ry=58;ctx.fillStyle="#cbd5e1";ctx.font="bold 13px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("上から見た回旋傾向（視認性のため ×"+twistBoost+"）",cx,35);ctx.textAlign="start";ctx.strokeStyle="#475569";ctx.lineWidth=2;ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(cx,65);ctx.lineTo(cx,box.height-55);ctx.stroke();ctx.setLineDash([]);
+function drawTop(){var box=C.getBoundingClientRect(),cx=box.width/2,cy=box.height/2,rx=Math.min(box.width*.31,125),ry=58;ctx.fillStyle="#cbd5e1";ctx.font="bold 13px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("上から見た回旋傾向（推定角度を等倍表示）",cx,35);ctx.textAlign="start";ctx.strokeStyle="#475569";ctx.lineWidth=2;ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(cx,65);ctx.lineTo(cx,box.height-55);ctx.stroke();ctx.setLineDash([]);
  function ellipseYaw(y,yaw,col,label){ctx.save();ctx.translate(cx,y);ctx.rotate(yaw*twistBoost*Math.PI/180);ctx.strokeStyle=col;ctx.lineWidth=7;ctx.globalAlpha=.9;ctx.beginPath();ctx.ellipse(0,0,rx,ry,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;arrow2(-rx*.72,0,rx*.82,0,col,label+" 実測推定 "+Math.abs(yaw).toFixed(1)+"°");ctx.restore()}
  if(thoraxResult.reliable)ellipseYaw(cy-85,thoraxYaw,"#14b8a6","胸郭");if(pelvisResult.reliable)ellipseYaw(cy+90,pelvisYaw,"#f97316","骨盤");var twistAvailable=thoraxResult.reliable&&pelvisResult.reliable;
- var tw=twistAvailable?thoraxYaw-pelvisYaw:null;ctx.fillStyle="#f8fafc";ctx.font="bold 18px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("参考推定差 "+(twistAvailable?Math.abs(tw).toFixed(1)+"°":"判定不可")+"｜表示のみ×"+twistBoost,cx,box.height-22);ctx.textAlign="start"}
+ var tw=twistAvailable?thoraxYaw-pelvisYaw:null;ctx.fillStyle="#f8fafc";ctx.font="bold 18px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("参考推定差 "+(twistAvailable?Math.abs(tw).toFixed(1)+"°":"判定不可")+"｜等倍表示",cx,box.height-22);ctx.textAlign="start"}
 function meshRing(center,rx,rz,n){var arr=[];for(var i=0;i<n;i++){var a=i*Math.PI*2/n;arr.push({x:center.x+Math.cos(a)*rx,y:center.y,z:center.z+Math.sin(a)*rz})}return arr}
 function drawRing(ring,col,alpha,w){for(var i=0;i<ring.length;i++)line(ring[i],ring[(i+1)%ring.length],w,col,alpha)}
 function connectRings(a,b,col,alpha,w){var n=Math.min(a.length,b.length);for(var i=0;i<n;i++)line(a[i],b[i],w,col,alpha)}
@@ -1177,7 +1177,7 @@ document.getElementById("make3d").onclick=function(){
     alert("3D分析エラー: "+(err&&err.message?err.message:String(err)));
   }
 };document.querySelectorAll(".view3d[data-a]").forEach(b=>b.onclick=function(){mode="body";angle=+b.dataset.a;draw()});document.getElementById("topTwist").onclick=function(){if(!built)return;mode=(mode==="top"?"body":"top");draw()};
-document.getElementById("twistBoostBtn").onclick=function(){twistBoost=twistBoost===1?3:twistBoost===3?5:1;this.textContent="回旋表示 ×"+twistBoost;if(built&&mode==="top")draw()};
+
 C.onpointerdown=function(e){dragX=e.clientX;C.setPointerCapture(e.pointerId)};C.onpointermove=function(e){if(dragX==null||!built||mode==="top")return;angle+=(e.clientX-dragX)*.55;dragX=e.clientX;draw()};C.onpointerup=C.onpointercancel=function(){dragX=null};
 })();
 </script>
@@ -1188,7 +1188,7 @@ import * as THREE from "three";
 import {GLTFLoader} from "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/GLTFLoader.js";
 
 const host=document.getElementById("real3d"), status=document.getElementById("real3dStatus"), old=document.getElementById("threeCanvas");
-let scene,camera,renderer,pivot,model,parts={},ready=false,topMode=false,rotBoost=1,thoraxRing=null,pelvisRing=null;
+let scene,camera,renderer,pivot,model,parts={},ready=false,topMode=false,thoraxRing=null,pelvisRing=null;
 let dragging=false,lastX=0,activePointer=null;
 const FRONT_DISTANCE=6.15, TOP_DISTANCE=5.3, target=new THREE.Vector3(0,0,0);
 
@@ -1235,16 +1235,16 @@ function apply(d={}){
  const finite=v=>{if(v===null||v===undefined||v==="")return 0;const n=Number(v);return Number.isFinite(n)?n:0};
  const shoulder=finite(d.shoulderTilt),pelvisTilt=finite(d.pelvisTilt);
  const thorax=finite(d.thoraxYaw),pelvisYaw=finite(d.pelvisYaw);
- const toModelYaw=deg=>-deg; // V302: anatomical left/right -> BodyParts3D local viewing convention
+ const toModelYaw=deg=>-deg; // V303: anatomical left/right -> BodyParts3D local viewing convention
  const thoraxKnown=d.thoraxReliable===true&&d.thoraxYaw!=null&&Number.isFinite(Number(d.thoraxYaw)), pelvisKnown=d.pelvisReliable===true&&d.pelvisYaw!=null&&Number.isFinite(Number(d.pelvisYaw));
  // V292: BodyParts3Dのローカル軸をワールドの上下(Y)・左右傾斜(Z)に変換。
- // V302: 解析の左回旋(+)とBodyParts3D背面基準の描画方向は逆。
+ // V303: 解析の左回旋(+)とBodyParts3D背面基準の描画方向は逆。
  // 描画専用の符号を反転し、骨格とリングに共通適用する（解析値・スコアは変更しない）。
  model.updateMatrixWorld(true);
  const invParent=model.getWorldQuaternion(new THREE.Quaternion()).invert();
  const yawAxis=new THREE.Vector3(0,1,0).applyQuaternion(invParent).normalize();
  const tiltAxis=new THREE.Vector3(0,0,1).applyQuaternion(invParent).normalize();
- const boost=rotBoost===5?5:1;
+ const boost=1; // V303: 推定角を等倍表示
  function posePart(g,yawDeg,tiltDeg){
    if(!g)return;
    const qYaw=new THREE.Quaternion().setFromAxisAngle(yawAxis,yawDeg*k*boost);
@@ -1261,7 +1261,7 @@ function apply(d={}){
    const visible=Math.abs(deg)>=1.5;
    g.visible=visible;
    // 判定不能の回旋矢印は出さない（0°と誤認させない）。
-   const rs=rotBoost===5?1.35:1;
+   const rs=1;
    // zの反転は回旋矢印の進行方向だけを変え、骨格の向きとは別の符号を使わない。
    g.scale.set(rs,1,deg<0?-rs:rs);
    g.rotation.set(0,deg*k*boost,0);
@@ -1271,7 +1271,7 @@ function apply(d={}){
  setRing(pelvisRing,pelvisKnown?toModelYaw(pelvisYaw):0);
  if(thoraxRing)thoraxRing.visible=thoraxKnown&&Math.abs(thorax)>=1.5;
  if(pelvisRing)pelvisRing.visible=pelvisKnown&&Math.abs(pelvisYaw)>=1.5;
- statusText('BodyParts3D｜胸郭 '+(thoraxKnown?(thorax>=0?'左':'右')+Math.abs(thorax).toFixed(1)+'°':'判定不可')+' / 骨盤 '+(pelvisKnown?(pelvisYaw>=0?'左':'右')+Math.abs(pelvisYaw).toFixed(1)+'°':'判定不可')+(rotBoost===5?'（表示×5）':''));
+ statusText('BodyParts3D｜胸郭 '+(thoraxKnown?(thorax>=0?'左':'右')+Math.abs(thorax).toFixed(1)+'°':'判定不可')+' / 骨盤 '+(pelvisKnown?(pelvisYaw>=0?'左':'右')+Math.abs(pelvisYaw).toFixed(1)+'°':'判定不可')+'（等倍表示・モデル適用：胸郭 '+(thoraxKnown?toModelYaw(thorax).toFixed(1):'—')+'° / 骨盤 '+(pelvisKnown?toModelYaw(pelvisYaw).toFixed(1):'—')+'°）');
 }
 async function init(){
  if(ready)return;
@@ -1325,7 +1325,7 @@ window.addEventListener('wakaba-analysis',e=>{const wasStopped=!renderActive;ren
 // 旧Canvasのonclickを解除して、V42のWebGL操作だけを使う。
 const viewBtns=[...document.querySelectorAll('.view3d[data-a]')];viewBtns.forEach(b=>{b.onclick=null;b.addEventListener('click',e=>{e.preventDefault();const a=+b.dataset.a;setView(a===90?'right':a===-90?'left':Math.abs(a)===35?'diag':'front');});});
 const topBtn=document.getElementById('topTwist');topBtn.onclick=null;topBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;setView(topMode?'front':'top');});
-const boostBtn=document.getElementById('twistBoostBtn');boostBtn.onclick=null;boostBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!ready)return;rotBoost=rotBoost===1?5:1;apply(window.WAKABA_3D_DATA||{});boostBtn.textContent=rotBoost===5?'回旋表示 ×5（表示強調）ON':'回旋表示 ×5（表示強調）';statusText('BodyParts3D V76｜回旋×5は表示強調｜推定角そのものは不変');});
+// V303: 回旋の表示強調ボタンを廃止。解析角度と描画角度を1:1で保持。
 
 host.addEventListener('pointerdown',e=>{if(!ready)return;dragging=true;activePointer=e.pointerId;lastX=e.clientX;try{host.setPointerCapture(e.pointerId)}catch(_){}e.preventDefault();},{passive:false});
 host.addEventListener('pointermove',e=>{if(!dragging||activePointer!==e.pointerId)return;rotateBy(e.clientX-lastX);lastX=e.clientX;e.preventDefault();},{passive:false});
