@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V299</title>
+<title>AI姿勢＆3次元歪み分析システム V300</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V299</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V300</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -877,7 +877,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  /* V291: 左右側面の観測を別々に検証。正面の左右幅を用い、
     右側面は画面右=前、左側面は画面左=前として同一前後軸へ変換。
     両側面が食い違うときは撮影・遮蔽誤差とみなし回旋方向を確定しない。 */
- /* V299: 回旋は実測角ではなく3段階の写真由来の参考指標。
+ /* V300: 回旋は実測角ではなく3段階の写真由来の参考指標。
     側面の隠れた反対側関節は推定誤差が大きいため、矛盾する2枚から角度を捏造しない。 */
  function profilePairYaw(aName,bName,side){
    var rec=photos[side],a=raw(rec,aName),b=raw(rec,bName);
@@ -973,7 +973,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  /* V204: 2D写真由来の回旋は絶対角の誤差を受けやすいため、胸郭-骨盤の相対差を主評価。減点勾配と総合点への寄与を緩和。 */
  /* V204: 相対捻れ8〜9°で約60点になるよう、回旋の減点勾配だけを微調整。
     ランドマーク・正面・側面・脚軸ロジックは変更しない。 */
- /* V299: 相対差が小さくても胸郭・骨盤の共通回旋が大きければ高得点にしない。
+ /* V300: 相対差が小さくても胸郭・骨盤の共通回旋が大きければ高得点にしない。
     数値が信頼できない場合は従来どおり回旋を判定不可にする。 */
  var commonRotation=twistAvailable?(Math.abs(thoraxYaw)+Math.abs(pelvisYaw))/2:0;
  var twistPenalty=10 + dz(tw,1.0)*3.9 + dz(commonRotation,2.0)*2.1;
@@ -1379,8 +1379,8 @@ host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel'
  function render(){let a=customers().slice().sort((x,y)=>v157Norm(x.kana||x.name).localeCompare(v157Norm(y.kana||y.name),'ja'));const host=$('v61List');if(!a.length){host.innerHTML='<div class="v61empty"><b>まだ顧客が登録されていません</b><br><br>「＋ 新規登録」から最初の顧客を登録してください。</div>';return}if(v157KanaRow!=='すべて')a=a.filter(c=>v157Row(c.kana||c.name)===v157KanaRow);host.innerHTML=v157Nav()+(a.length?a.map((c,i)=>'<div class="v61row" data-patient-id="'+esc(c.id)+'"><div class="v61avatar">'+esc((c.name||'?').slice(0,1))+'</div><div class="v61meta"><div class="v61name">'+esc(c.name)+'</div><div class="v61sub">'+esc([c.sex,c.birth].filter(Boolean).join(' ｜ ')||'登録情報あり')+'</div></div><button class="v63hist" data-h="'+i+'">履歴</button><button class="v61start" data-i="'+i+'">姿勢分析</button></div>').join(''):'<div class="v61empty">この行の顧客はまだ登録されていません。</div>');host.querySelectorAll('[data-v157row]').forEach(b=>b.onclick=()=>{v157KanaRow=b.dataset.v157row;render()});host.querySelectorAll('.v61start').forEach(b=>b.onclick=()=>start(a[+b.dataset.i]));host.querySelectorAll('.v63hist').forEach(b=>b.onclick=()=>showHistory(a[+b.dataset.h]))}
  function start(c){const raw=JSON.stringify(c);sessionStorage.setItem('wakaba_v61_current',raw);localStorage.setItem('wakaba_v66_current',raw); if(typeof window.wakabaResetAnalysisSession==='function')window.wakabaResetAnalysisSession(); $('v61CurrentName').textContent=c.name||'ゲスト'; document.body.classList.add('v61-analysis'); window.scrollTo(0,0)}
  function home(){document.body.classList.remove('v61-analysis');window.scrollTo(0,0);render()}
- let v246PendingId=null; $('v61Add').onclick=()=>{const ids=new Set(customers().map(c=>String(c.id)));let id=Date.now();while(ids.has(String(id)))id++;v246PendingId=id;$('v246NewPatientId').textContent=String(id);$('v61Modal').classList.add('on');$('v61Kana').focus()}; $('v61Cancel').onclick=()=>$('v61Modal').classList.remove('on'); $('v61Back').onclick=home;
- $('v61Save').onclick=()=>{const kana=$('v61Kana').value.trim().normalize('NFKC');if(!kana){alert('カタカナを入力してください');return}if(!/^[ァ-ヶー・･\s]+$/.test(kana)){alert('カタカナで入力してください');return}const a=customers();a.unshift({id:v246PendingId||Date.now(),name:kana,kana,sex:$('v61Sex').value,birth:$('v61Birth').value,tel:'',created:new Date().toISOString()});put(a);try{window.dispatchEvent(new CustomEvent('wakaba:v103-patient-saved',{detail:a[0]}))}catch(e){};['v61Kana','v61Birth'].forEach(id=>$(id).value='');$('v61Sex').value='';$('v61Modal').classList.remove('on');v246PendingId=null;render()};
+ let v246PendingId=null; $('v61Add').onclick=()=>{const ids=new Set(customers().map(c=>String(c.id)));let last=Number(localStorage.getItem('wakaba_v300_last_patient_number')||0);for(const id of ids){if(/^\d{5}$/.test(id))last=Math.max(last,Number(id))}let next=last+1;while(next<=99999&&ids.has(String(next).padStart(5,'0')))next++;if(next>99999){alert('5桁の患者IDが上限に達しました');return}v246PendingId=String(next).padStart(5,'0');$('v246NewPatientId').textContent=v246PendingId;$('v61Modal').classList.add('on');$('v61Kana').focus()}; $('v61Cancel').onclick=()=>$('v61Modal').classList.remove('on'); $('v61Back').onclick=home;
+ $('v61Save').onclick=()=>{const kana=$('v61Kana').value.trim().normalize('NFKC');if(!kana){alert('カタカナを入力してください');return}if(!/^[ァ-ヶー・･\s]+$/.test(kana)){alert('カタカナで入力してください');return}const a=customers();a.unshift({id:v246PendingId,name:kana,kana,sex:$('v61Sex').value,birth:$('v61Birth').value,tel:'',created:new Date().toISOString()});put(a);localStorage.setItem('wakaba_v300_last_patient_number',String(Number(v246PendingId)));try{window.dispatchEvent(new CustomEvent('wakaba:v103-patient-saved',{detail:a[0]}))}catch(e){};['v61Kana','v61Birth'].forEach(id=>$(id).value='');$('v61Sex').value='';$('v61Modal').classList.remove('on');v246PendingId=null;render()};
  $('v91DetailClose').onclick=()=>$('v91DetailModal').classList.remove('on');$('v91DetailModal').addEventListener('click',e=>{if(e.target===$('v91DetailModal'))$('v91DetailModal').classList.remove('on')});
  $('v61Modal').addEventListener('click',e=>{if(e.target===$('v61Modal'))$('v61Modal').classList.remove('on')}); $('v63HistoryClose').onclick=()=>$('v63HistoryModal').classList.remove('on'); $('v64CompareClose').onclick=()=>$('v64CompareModal').classList.remove('on'); $('v63HistoryModal').addEventListener('click',e=>{if(e.target===$('v63HistoryModal'))$('v63HistoryModal').classList.remove('on')});
  render();
@@ -1516,33 +1516,24 @@ document.addEventListener('DOMContentLoaded',function(){
  function closeDel(){
    $('v90DeleteModal').classList.remove('open'); $('v90DeleteModal').setAttribute('aria-hidden','true');
  }
- function removePatientFromLocalStorage(name){
-   let removed=false;
-   for(let i=localStorage.length-1;i>=0;i--){
-     const key=localStorage.key(i);
-     try{
-       const raw=localStorage.getItem(key), data=JSON.parse(raw);
-       if(Array.isArray(data)){
-         const filtered=data.filter(x=>{
-           if(!x||typeof x!=='object') return true;
-           const nm=(x.name||x.patientName||x.customerName||'').trim();
-           return nm!==name;
-         });
-         if(filtered.length!==data.length){localStorage.setItem(key,JSON.stringify(filtered));removed=true;}
-       }
-     }catch(e){}
-   }
-   return removed;
+ function removePatientFromLocalStorage(id){
+   const key='wakaba_v61_customers';const list=JSON.parse(localStorage.getItem(key)||'[]');
+   if(!Array.isArray(list))throw Error('患者一覧が不正です');
+   localStorage.setItem(key,JSON.stringify(list.filter(c=>String(c?.id)!==String(id))));
  }
  document.addEventListener('DOMContentLoaded',()=>{
    $('v90DeletePatient')?.addEventListener('click',openDel);
    $('v90DeleteCancel')?.addEventListener('click',closeDel);
    $('v90DeleteModal')?.addEventListener('click',e=>{if(e.target===e.currentTarget)closeDel()});
    $('v90DeleteConfirm')?.addEventListener('click',()=>{
-      const n=patientName();
-      // V297: 削除IDを保存し、Firebase復元時に同じIDを再追加しない。
-      try{const list=JSON.parse(localStorage.getItem('wakaba_v61_customers')||'[]');const ids=list.filter(x=>x&&String(x.name||x.patientName||x.customerName||'').trim()===n).map(x=>String(x.id)).filter(Boolean);const key='wakaba_v297_deleted_patient_ids';const old=JSON.parse(localStorage.getItem(key)||'[]');localStorage.setItem(key,JSON.stringify([...new Set([...old,...ids])]));}catch(e){console.error('V297 delete marker',e);alert('削除記録の保存に失敗しました。患者データは削除せずに再試行してください。');return;}
-      removePatientFromLocalStorage(n);
+      const id=String(document.getElementById('v77Patient')?.dataset.patientId||'');
+      if(!id){alert('患者IDが確認できません');return}
+      try{
+        const key='wakaba_v297_deleted_patient_ids';const old=JSON.parse(localStorage.getItem(key)||'[]');
+        localStorage.setItem(key,JSON.stringify([...new Set([...(Array.isArray(old)?old:[]),id])]));
+        removePatientFromLocalStorage(id);
+        window.dispatchEvent(new CustomEvent('wakaba:v300-patient-deleted',{detail:{id}}));
+      }catch(e){console.error('V300 delete',e);alert('削除情報の保存に失敗しました。再試行してください。');return}
       closeDel();
       // Return to the customer list; its existing renderer reloads saved patients.
       const back=document.querySelector('#v77Patient button, #v77Patient .v77back');
@@ -1641,6 +1632,7 @@ async function v104SyncPatient(c){
  if(!c||!c.id)return false;
  if(!auth.currentUser || !v230OwnerAllowed(auth.currentUser)){status.textContent='院ID不一致・同期停止';return false}
  const id=String(c.id);
+ if(JSON.parse(localStorage.getItem('wakaba_v297_deleted_patient_ids')||'[]').includes(id))return false;
  try{
   status.textContent='自動同期中';
   await setDoc(doc(db,'clinics',auth.currentUser.uid,'patients',id),{...c,localId:id,updatedAt:serverTimestamp()},{merge:true});
@@ -1711,7 +1703,7 @@ async function v104SyncAllPatients(){
  // Add ONLY IDs that do not already exist. Existing documents are untouched.
  for(const c of valid){
   const id=String(c.id);
-  if(beforeIds.has(id))continue;
+  if(beforeIds.has(id)||JSON.parse(localStorage.getItem('wakaba_v297_deleted_patient_ids')||'[]').includes(id))continue;
   try{
    const safe={...c};
    delete safe.photos; delete safe.photo; delete safe.images;
@@ -1747,6 +1739,11 @@ async function v104SyncAllPatients(){
   failed
  };
 }
+window.addEventListener('wakaba:v300-patient-deleted',async e=>{
+ const id=String(e.detail?.id||'');if(!id||!auth.currentUser||!v230OwnerAllowed(auth.currentUser))return;
+ try{await setDoc(doc(db,'clinics',auth.currentUser.uid,'patients',id),{deleted:true,deletedAt:serverTimestamp()},{merge:true});status.textContent='削除状態を同期済み'}
+ catch(err){console.error('V300 deletion sync',err);status.textContent='削除状態の同期失敗';}
+});
 window.addEventListener('wakaba:v216-patient-edited',e=>{if(e.detail)v104SyncPatient(e.detail)});
 window.addEventListener('wakaba:v103-patient-saved',()=>v104SyncAllPatients());
 window.addEventListener('wakaba:v103-history-saved',e=>v104SyncLatestHistory(e.detail&&e.detail.id));
@@ -1757,7 +1754,7 @@ async function restoreAll(){
  try{
   const snap=await getDocs(collection(db,'clinics',auth.currentUser.uid,'patients')); const local=patients(); const byId=new Map(local.map(c=>[String(c.id),c])); let added=0,hAdded=0;
   for(const d of snap.docs){
-   const raw=d.data()||{}; const id=String(raw.localId||raw.id||d.id); const cloud={...raw,id:raw.id??id}; delete cloud.updatedAt; delete cloud.localId;
+   const raw=d.data()||{}; if(raw.deleted===true)continue; const id=String(raw.localId||raw.id||d.id); const cloud={...raw,id:raw.id??id}; delete cloud.updatedAt; delete cloud.localId;
    const deletedIds=JSON.parse(localStorage.getItem('wakaba_v297_deleted_patient_ids')||'[]');
    if(Array.isArray(deletedIds)&&deletedIds.includes(id))continue;
    if(!byId.has(id)){local.unshift(cloud);byId.set(id,cloud);added++}
