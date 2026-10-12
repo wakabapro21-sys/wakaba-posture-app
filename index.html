@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V297</title>
+<title>AI姿勢＆3次元歪み分析システム V298</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V297</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V298</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -877,35 +877,33 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  /* V291: 左右側面の観測を別々に検証。正面の左右幅を用い、
     右側面は画面右=前、左側面は画面左=前として同一前後軸へ変換。
     両側面が食い違うときは撮影・遮蔽誤差とみなし回旋方向を確定しない。 */
+ /* V298: 各側面の左右ランドマーク間の奥行き差を個別評価。
+    2D写真から実際の軸回旋角は確定できないため、左右画像が一致する場合だけ参考推定する。 */
  function profilePairYaw(aName,bName,side){
    var rec=photos[side],a=raw(rec,aName),b=raw(rec,bName);
    if(!a||!b||!pts3[aName]||!pts3[bName])return null;
-   var ha=raw(rec,"leftHip"),hb=raw(rec,"rightHip");
-   var center=ha&&hb?(ha.x+hb.x)/2:.5;
+   var weight=Math.min(Number(a.visibility??.5),Number(b.visibility??.5));
+   if(!Number.isFinite(weight)||weight<.45)return null;
    var orient=side==="right"?1:-1;
-   var dz=((b.x-center)-(a.x-center))*orient*depthScale;
-   var dx=Math.max(.12,Math.abs(pts3[bName].x-pts3[aName].x));
+   var dz=(b.x-a.x)*orient*depthScale;
+   var dx=Math.abs(pts3[bName].x-pts3[aName].x);
+   if(!Number.isFinite(dx)||dx<.12||!Number.isFinite(dz))return null;
    var angle=Math.atan2(dz,dx)*180/Math.PI;
    if(!Number.isFinite(angle))return null;
-   return {angle:Math.max(-18,Math.min(18,angle)),weight:Math.min(a.visibility??.5,b.visibility??.5)};
+   return {angle:angle,weight:weight};
  }
  function yawFromProfiles(aName,bName){
    var r=profilePairYaw(aName,bName,"right"),l=profilePairYaw(aName,bName,"left");
-   if(!r&&!l)return {yaw:0,reliable:false,reason:"ランドマーク不足"};
-   if(!r||!l)return {yaw:0,reliable:false,reason:"片側のランドマーク不足"};
-   /* 両側面の回旋方向が逆なら、どちらかの肩・股関節が隠れている可能性 */
+   if(!r||!l)return {yaw:null,reliable:false,reason:"両側面で左右のランドマークが十分に確認できない"};
    var conflict=r.angle*l.angle<0&&Math.abs(r.angle)>2&&Math.abs(l.angle)>2;
    var difference=Math.abs(r.angle-l.angle);
-   var saturated=Math.abs(r.angle)>=17.95||Math.abs(l.angle)>=17.95;
-   var reliable=!conflict&&!saturated&&difference<=10&&r.weight>=.35&&l.weight>=.35;
-   /* V296: 両側面で股関節の前後分離が小さい場合は、真の0°と遮蔽・推定重なりを区別できない。
-      片側だけの大きな角度も採用せず、左右双方で同じ方向の十分な分離を要求する。 */
-   var pelvisUnresolved=aName==="leftHip"&&(Math.abs(r.angle)<3||Math.abs(l.angle)<3);
-   if(pelvisUnresolved)reliable=false;
-   var wr=Math.max(.15,r.weight),wl=Math.max(.15,l.weight);
+   var extreme=Math.abs(r.angle)>35||Math.abs(l.angle)>35;
+   var uncertainZero=aName==="leftHip"&&(Math.abs(r.angle)<3||Math.abs(l.angle)<3);
+   var reliable=!conflict&&!extreme&&!uncertainZero&&difference<=8;
+   var wr=r.weight,wl=l.weight;
    var yaw=(r.angle*wr+l.angle*wl)/(wr+wl);
-   if(!Number.isFinite(yaw))return {yaw:0,reliable:false,reason:"角度計算エラー"};
-   return {yaw:reliable?yaw:null,reliable:reliable,reason:saturated?"推定角度が上限18°に達したため判定不可":pelvisUnresolved?"左右側面で骨盤の前後分離が不十分":conflict?"左右側面で方向不一致":difference>10?"左右側面で差が大きい":"ランドマーク信頼度不足"};
+   if(!Number.isFinite(yaw))reliable=false;
+   return {yaw:reliable?yaw:null,reliable:reliable,reason:extreme?"側面写真の重なりが大きく角度を推定できない":uncertainZero?"股関節の左右分離が不十分":conflict?"左右側面で方向不一致":difference>8?"左右側面の推定角度が一致しない":"ランドマーク信頼度不足"};
  }
  var thoraxResult=yawFromProfiles("leftShoulder","rightShoulder");
  var pelvisResult=yawFromProfiles("leftHip","rightHip");
@@ -965,7 +963,10 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  /* V204: 2D写真由来の回旋は絶対角の誤差を受けやすいため、胸郭-骨盤の相対差を主評価。減点勾配と総合点への寄与を緩和。 */
  /* V204: 相対捻れ8〜9°で約60点になるよう、回旋の減点勾配だけを微調整。
     ランドマーク・正面・側面・脚軸ロジックは変更しない。 */
- var twistPenalty=10 + dz(tw,1.0)*3.9;
+ /* V298: 相対差が小さくても胸郭・骨盤の共通回旋が大きければ高得点にしない。
+    数値が信頼できない場合は従来どおり回旋を判定不可にする。 */
+ var commonRotation=twistAvailable?(Math.abs(thoraxYaw)+Math.abs(pelvisYaw))/2:0;
+ var twistPenalty=10 + dz(tw,1.0)*3.9 + dz(commonRotation,2.0)*2.1;
  var twistScore=twistAvailable?Math.min(94,clampScore(100-twistPenalty)):null;
  var totalScore=twistAvailable?clampScore(frontScore*.45+sideScore*.40+twistScore*.15):clampScore((frontScore*.45+sideScore*.40)/.85);
  document.getElementById("scoreTotal").textContent=totalScore;
