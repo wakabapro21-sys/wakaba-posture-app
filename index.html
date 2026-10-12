@@ -1235,9 +1235,11 @@ function apply(d={}){
  const finite=v=>{if(v===null||v===undefined||v==="")return 0;const n=Number(v);return Number.isFinite(n)?n:0};
  const shoulder=finite(d.shoulderTilt),pelvisTilt=finite(d.pelvisTilt);
  const thorax=finite(d.thoraxYaw),pelvisYaw=finite(d.pelvisYaw);
+ const toModelYaw=deg=>-deg; // V302: anatomical left/right -> BodyParts3D local viewing convention
  const thoraxKnown=d.thoraxReliable===true&&d.thoraxYaw!=null&&Number.isFinite(Number(d.thoraxYaw)), pelvisKnown=d.pelvisReliable===true&&d.pelvisYaw!=null&&Number.isFinite(Number(d.pelvisYaw));
  // V292: BodyParts3Dのローカル軸をワールドの上下(Y)・左右傾斜(Z)に変換。
- // 左回旋は解析値の正、右回旋は負として、骨格とリングを同じ符号で描画する。
+ // V302: 解析の左回旋(+)とBodyParts3D背面基準の描画方向は逆。
+ // 描画専用の符号を反転し、骨格とリングに共通適用する（解析値・スコアは変更しない）。
  model.updateMatrixWorld(true);
  const invParent=model.getWorldQuaternion(new THREE.Quaternion()).invert();
  const yawAxis=new THREE.Vector3(0,1,0).applyQuaternion(invParent).normalize();
@@ -1249,10 +1251,10 @@ function apply(d={}){
    const qTilt=new THREE.Quaternion().setFromAxisAngle(tiltAxis,tiltDeg*k);
    g.quaternion.copy(qYaw).multiply(qTilt);
  }
- posePart(parts.chest,thoraxKnown?thorax:0,-shoulder*1.5);
- posePart(parts.pelvis,pelvisKnown?pelvisYaw:0,-pelvisTilt*1.7);
+ posePart(parts.chest,thoraxKnown?toModelYaw(thorax):0,-shoulder*1.5);
+ posePart(parts.pelvis,pelvisKnown?toModelYaw(pelvisYaw):0,-pelvisTilt*1.7);
  // 頭部は胸郭の向きに追従。従来の頭部偏位量は維持。
- posePart(parts.skull,thoraxKnown?thorax:0,0);
+ posePart(parts.skull,thoraxKnown?toModelYaw(thorax):0,0);
  if(parts.skull)parts.skull.position.x=parts.skull.userData.baseX+finite(d.headShift)*.008;
  function setRing(g,deg){
    if(!g)return;
@@ -1265,8 +1267,8 @@ function apply(d={}){
    g.rotation.set(0,deg*k*boost,0);
    if(g.userData.direction)g.userData.direction.visible=true;
  }
- setRing(thoraxRing,thoraxKnown?thorax:0);
- setRing(pelvisRing,pelvisKnown?pelvisYaw:0);
+ setRing(thoraxRing,thoraxKnown?toModelYaw(thorax):0);
+ setRing(pelvisRing,pelvisKnown?toModelYaw(pelvisYaw):0);
  if(thoraxRing)thoraxRing.visible=thoraxKnown&&Math.abs(thorax)>=1.5;
  if(pelvisRing)pelvisRing.visible=pelvisKnown&&Math.abs(pelvisYaw)>=1.5;
  statusText('BodyParts3D｜胸郭 '+(thoraxKnown?(thorax>=0?'左':'右')+Math.abs(thorax).toFixed(1)+'°':'判定不可')+' / 骨盤 '+(pelvisKnown?(pelvisYaw>=0?'左':'右')+Math.abs(pelvisYaw).toFixed(1)+'°':'判定不可')+(rotBoost===5?'（表示×5）':''));
