@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V298</title>
+<title>AI姿勢＆3次元歪み分析システム V299</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V298</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V299</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -877,33 +877,43 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  /* V291: 左右側面の観測を別々に検証。正面の左右幅を用い、
     右側面は画面右=前、左側面は画面左=前として同一前後軸へ変換。
     両側面が食い違うときは撮影・遮蔽誤差とみなし回旋方向を確定しない。 */
- /* V298: 各側面の左右ランドマーク間の奥行き差を個別評価。
-    2D写真から実際の軸回旋角は確定できないため、左右画像が一致する場合だけ参考推定する。 */
+ /* V299: 回旋は実測角ではなく3段階の写真由来の参考指標。
+    側面の隠れた反対側関節は推定誤差が大きいため、矛盾する2枚から角度を捏造しない。 */
  function profilePairYaw(aName,bName,side){
    var rec=photos[side],a=raw(rec,aName),b=raw(rec,bName);
    if(!a||!b||!pts3[aName]||!pts3[bName])return null;
    var weight=Math.min(Number(a.visibility??.5),Number(b.visibility??.5));
-   if(!Number.isFinite(weight)||weight<.45)return null;
+   if(!Number.isFinite(weight)||weight<.25)return null;
    var orient=side==="right"?1:-1;
    var dz=(b.x-a.x)*orient*depthScale;
    var dx=Math.abs(pts3[bName].x-pts3[aName].x);
    if(!Number.isFinite(dx)||dx<.12||!Number.isFinite(dz))return null;
    var angle=Math.atan2(dz,dx)*180/Math.PI;
-   if(!Number.isFinite(angle))return null;
+   if(!Number.isFinite(angle)||Math.abs(angle)>65)return null;
    return {angle:angle,weight:weight};
  }
  function yawFromProfiles(aName,bName){
    var r=profilePairYaw(aName,bName,"right"),l=profilePairYaw(aName,bName,"left");
-   if(!r||!l)return {yaw:null,reliable:false,reason:"両側面で左右のランドマークが十分に確認できない"};
-   var conflict=r.angle*l.angle<0&&Math.abs(r.angle)>2&&Math.abs(l.angle)>2;
-   var difference=Math.abs(r.angle-l.angle);
-   var extreme=Math.abs(r.angle)>35||Math.abs(l.angle)>35;
-   var uncertainZero=aName==="leftHip"&&(Math.abs(r.angle)<3||Math.abs(l.angle)<3);
-   var reliable=!conflict&&!extreme&&!uncertainZero&&difference<=8;
-   var wr=r.weight,wl=l.weight;
-   var yaw=(r.angle*wr+l.angle*wl)/(wr+wl);
-   if(!Number.isFinite(yaw))reliable=false;
-   return {yaw:reliable?yaw:null,reliable:reliable,reason:extreme?"側面写真の重なりが大きく角度を推定できない":uncertainZero?"股関節の左右分離が不十分":conflict?"左右側面で方向不一致":difference>8?"左右側面の推定角度が一致しない":"ランドマーク信頼度不足"};
+   if(!r&&!l)return {yaw:null,reliable:false,reason:"ランドマークを確認できない"};
+   // 2枚が反対方向を示すときは撮影・遮蔽の可能性があるため判定を保留する。
+   if(r&&l&&r.angle*l.angle<0&&Math.abs(r.angle)>=5&&Math.abs(l.angle)>=5)
+     return {yaw:null,reliable:false,reason:"左右側面で方向が一致しない"};
+   var best=r&&l?(r.weight>=l.weight?r:l):(r||l);
+   var estimate;
+   if(r&&l&&Math.abs(r.angle-l.angle)<=16){
+     estimate=(r.angle*r.weight+l.angle*l.weight)/(r.weight+l.weight);
+   }else if(r&&l){
+     // 視認性が明確に優れた片側だけを採用。近い信頼度で食い違えば保留。
+     if(Math.abs(r.weight-l.weight)<.18)return {yaw:null,reliable:false,reason:"左右側面の推定値に差がある"};
+     estimate=best.angle;
+   }else{
+     // 片側のみの推定は強い根拠にならないため判定不可とする。
+     return {yaw:null,reliable:false,reason:"片側のランドマークが不足"};
+   }
+   // 0/5/10/15の4段階。表示値は解剖学的な回旋角度ではない。
+   var magnitude=Math.abs(estimate),tier=magnitude<4?0:magnitude<10?5:magnitude<20?10:15;
+   var yaw=tier===0?0:Math.sign(estimate)*tier;
+   return {yaw:yaw,reliable:true,reason:"",level:tier===0?"ほぼなし":tier===5?"軽度":tier===10?"中程度":"大きい"};
  }
  var thoraxResult=yawFromProfiles("leftShoulder","rightShoulder");
  var pelvisResult=yawFromProfiles("leftHip","rightHip");
@@ -915,9 +925,9 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  function mag(v){var a=Math.abs(v);return a<1.5?"ほぼ中間位":a<5?"軽度の回旋傾向":"回旋傾向あり"}
  function yawLabel(result){return !result.reliable?"判定困難":Math.abs(result.yaw)<1.5?"ほぼ中間位":result.yaw>0?"左回旋傾向":"右回旋傾向"}
  document.getElementById("thoraxDeg").textContent=yawLabel(thoraxResult);document.getElementById("pelvisDeg").textContent=yawLabel(pelvisResult);document.getElementById("twistDeg").textContent=(!thoraxResult.reliable||!pelvisResult.reliable)?"判定困難":Math.abs(tw)<1.5?"小さい":"相対捻れあり";
- document.getElementById("thoraxText").textContent=thoraxResult.reliable?"側面照合・参考 "+Math.abs(thoraxYaw).toFixed(1)+"°":"要再確認："+thoraxResult.reason;
- document.getElementById("pelvisText").textContent=pelvisResult.reliable?"側面照合・参考 "+Math.abs(pelvisYaw).toFixed(1)+"°":"要再確認："+pelvisResult.reason;
- document.getElementById("twistText").textContent=(thoraxResult.reliable&&pelvisResult.reliable)?"参考差 "+Math.abs(tw).toFixed(1)+"°":"左右側面のランドマークを再確認";
+ document.getElementById("thoraxText").textContent=thoraxResult.reliable?"回旋参考指標 "+Math.abs(thoraxYaw).toFixed(0)+"（"+thoraxResult.level+"）":"要再確認："+thoraxResult.reason;
+ document.getElementById("pelvisText").textContent=pelvisResult.reliable?"回旋参考指標 "+Math.abs(pelvisYaw).toFixed(0)+"（"+pelvisResult.level+"）":"要再確認："+pelvisResult.reason;
+ document.getElementById("twistText").textContent=(thoraxResult.reliable&&pelvisResult.reliable)?"参考指標差 "+Math.abs(tw).toFixed(0):"左右側面のランドマークを再確認";
  function horizontalTilt(a,b){
    var dx=Math.abs(b.x-a.x),dy=b.y-a.y;
    if(dx<0.0001)return 0;
@@ -963,7 +973,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  /* V204: 2D写真由来の回旋は絶対角の誤差を受けやすいため、胸郭-骨盤の相対差を主評価。減点勾配と総合点への寄与を緩和。 */
  /* V204: 相対捻れ8〜9°で約60点になるよう、回旋の減点勾配だけを微調整。
     ランドマーク・正面・側面・脚軸ロジックは変更しない。 */
- /* V298: 相対差が小さくても胸郭・骨盤の共通回旋が大きければ高得点にしない。
+ /* V299: 相対差が小さくても胸郭・骨盤の共通回旋が大きければ高得点にしない。
     数値が信頼できない場合は従来どおり回旋を判定不可にする。 */
  var commonRotation=twistAvailable?(Math.abs(thoraxYaw)+Math.abs(pelvisYaw))/2:0;
  var twistPenalty=10 + dz(tw,1.0)*3.9 + dz(commonRotation,2.0)*2.1;
