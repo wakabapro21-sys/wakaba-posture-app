@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V301</title>
+<title>AI姿勢＆3次元歪み分析システム V304</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V301</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V303</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -517,7 +517,7 @@ html,body{
  </div>
  <div id="threeStage" style="height:650px;margin-top:8px;border-radius:13px;overflow:hidden;background:#0b1220;position:relative">
    <canvas id="threeCanvas" style="width:100%;height:100%;display:block;touch-action:none"></canvas>
-<div id="real3d" style="position:absolute;inset:0;display:none;touch-action:none"></div>
+<div id="v304YawLabels" style="position:absolute;top:9px;left:9px;right:9px;z-index:7;display:none;pointer-events:none;justify-content:space-between;gap:6px;font-size:11px;font-weight:900;text-shadow:0 1px 2px #000"><span id="v304ThoraxLabel" style="background:rgba(8,17,31,.85);border:1px solid #ff3655;color:#ff8094;border-radius:8px;padding:6px 8px"></span><span id="v304PelvisLabel" style="background:rgba(8,17,31,.85);border:1px solid #ff963f;color:#ffba79;border-radius:8px;padding:6px 8px"></span></div><div id="real3d" style="position:absolute;inset:0;display:none;touch-action:none"></div>
 <div id="real3dStatus" style="position:absolute;left:10px;right:10px;bottom:10px;z-index:6;background:rgba(2,6,23,.86);border:1px solid #334155;color:#e2e8f0;border-radius:10px;padding:8px 10px;font-size:10px;font-weight:800">3D待機中</div>
    <div id="threeHint" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#94a3b8;text-align:center;font-size:12px;pointer-events:none">3枚登録後に分析ボタンを押してください。<br>表示後は指で左右に回転できます。</div>
  </div>
@@ -1199,19 +1199,19 @@ function loadGLB(name){return new Promise((resolve,reject)=>new GLTFLoader().loa
 function style(obj,m){obj.traverse(x=>{if(x.isMesh){x.material=m;if(x.geometry&&!x.geometry.attributes.normal)x.geometry.computeVertexNormals();}});return obj;}
 function makeRing(color,r,y){
  const g=new THREE.Group();
- const ellipse=new THREE.EllipseCurve(0,0,r,r*.40,.20,Math.PI*1.82,false,0);
+ const ellipse=new THREE.EllipseCurve(0,0,r,r*.50,Math.PI*.10,Math.PI*.91,false,0);
  const pts=ellipse.getPoints(72).map(p=>new THREE.Vector3(p.x,0,p.y));
  // V60: 回旋矢印のみ修正。円錐型矢尻をリング終端の接線と完全に平行にし、側面からも輪郭が見える形状にする
  const path=new THREE.CatmullRomCurve3(pts,false,'centripetal');
- const tube=new THREE.Mesh(new THREE.TubeGeometry(path,96,.015,12,false),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.98}));
+ const tube=new THREE.Mesh(new THREE.TubeGeometry(path,96,.022,12,false),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.98}));
  g.add(tube);
- const tip=new THREE.Mesh(new THREE.ConeGeometry(.050,.12,24),new THREE.MeshBasicMaterial({color,side:THREE.DoubleSide}));
+ const tip=new THREE.Mesh(new THREE.ConeGeometry(.090,.19,24),new THREE.MeshBasicMaterial({color,side:THREE.DoubleSide}));
  const end=pts[pts.length-1].clone();
  const tangent=path.getTangent(1).normalize();
  // ConeGeometryの長軸(+Y)をリング終端の接線方向へ合わせる
  tip.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),tangent);
  // 円錐の先端をリング終端へ置き、軸はリング線と平行のままにする
- tip.position.copy(end).addScaledVector(tangent,-.060);
+ tip.position.copy(end).addScaledVector(tangent,-.095);
  g.add(tip);
  // 中央から外周への指示線を設け、上面から回旋角を読み取れるようにする。
  const direction=new THREE.Group();
@@ -1271,6 +1271,8 @@ function apply(d={}){
  setRing(pelvisRing,pelvisKnown?toModelYaw(pelvisYaw):0);
  if(thoraxRing)thoraxRing.visible=thoraxKnown&&Math.abs(thorax)>=1.5;
  if(pelvisRing)pelvisRing.visible=pelvisKnown&&Math.abs(pelvisYaw)>=1.5;
+ const labels=document.getElementById('v304YawLabels');
+ if(labels){labels.style.display='flex';document.getElementById('v304ThoraxLabel').textContent='胸郭 '+(thoraxKnown?(thorax>=0?'↶ 左 ':'↷ 右 ')+Math.abs(thorax).toFixed(1)+'°':'判定不可');document.getElementById('v304PelvisLabel').textContent='骨盤 '+(pelvisKnown?(pelvisYaw>=0?'↶ 左 ':'↷ 右 ')+Math.abs(pelvisYaw).toFixed(1)+'°':'判定不可');}
  statusText('BodyParts3D｜胸郭 '+(thoraxKnown?(thorax>=0?'左':'右')+Math.abs(thorax).toFixed(1)+'°':'判定不可')+' / 骨盤 '+(pelvisKnown?(pelvisYaw>=0?'左':'右')+Math.abs(pelvisYaw).toFixed(1)+'°':'判定不可')+'（等倍表示・モデル適用：胸郭 '+(thoraxKnown?toModelYaw(thorax).toFixed(1):'—')+'° / 骨盤 '+(pelvisKnown?toModelYaw(pelvisYaw).toFixed(1):'—')+'°）');
 }
 async function init(){
@@ -1300,7 +1302,7 @@ async function init(){
   model.position.add(pivot.position);pivot.position.set(0,0,0);model.updateMatrixWorld(true);
   // 最終bboxを使い、画面中心に対する微小誤差をmodelの親座標で補正。
   bb=new THREE.Box3().setFromObject(model);const fc=bb.getCenter(new THREE.Vector3());model.position.x-=fc.x;model.position.y-=fc.y;model.position.z-=fc.z;model.updateMatrixWorld(true);
-  thoraxRing=makeRing(0xff3655,.70,.46);pelvisRing=makeRing(0xff963f,.57,-.36);pivot.add(thoraxRing);pivot.add(pelvisRing);
+  thoraxRing=makeRing(0xff3655,1.12,.46);pelvisRing=makeRing(0xff963f,.92,-.36);pivot.add(thoraxRing);pivot.add(pelvisRing);
   ready=true;host.style.display='block';old.style.visibility='hidden';old.style.pointerEvents='none';document.getElementById('threeHint').style.display='none';
   setView('front');apply(window.WAKABA_3D_DATA||{});
  }catch(e){console.error(e);statusText('3D読込エラー：'+(e?.message||'モデルを確認してください'));old.style.visibility='visible';}
@@ -1319,7 +1321,7 @@ function rotateBy(dx){
 function endDrag(){dragging=false;activePointer=null;}
 let renderActive=true;function loop(){if(!renderActive)return;requestAnimationFrame(loop);if(renderer&&ready)renderer.render(scene,camera);}loop();
 window.addEventListener('resize',()=>{if(ready)fitCamera(topMode?'top':'front');});
-window.addEventListener('wakaba-reset-3d',()=>{try{renderActive=false;ready=false;if(renderer){renderer.dispose();const gl=renderer.getContext&&renderer.getContext();const ext=gl&&gl.getExtension&&gl.getExtension('WEBGL_lose_context');if(ext)ext.loseContext();if(renderer.domElement&&renderer.domElement.parentNode)renderer.domElement.parentNode.removeChild(renderer.domElement);}renderer=null;scene=null;camera=null;pivot=null;model=null;parts={};thoraxRing=null;pelvisRing=null;old.style.visibility='visible';old.style.pointerEvents='auto';host.style.display='none';document.getElementById('threeHint').style.display='block';}catch(e){console.warn('3D dispose',e)}});
+window.addEventListener('wakaba-reset-3d',()=>{try{renderActive=false;ready=false;if(renderer){renderer.dispose();const gl=renderer.getContext&&renderer.getContext();const ext=gl&&gl.getExtension&&gl.getExtension('WEBGL_lose_context');if(ext)ext.loseContext();if(renderer.domElement&&renderer.domElement.parentNode)renderer.domElement.parentNode.removeChild(renderer.domElement);}renderer=null;scene=null;camera=null;pivot=null;model=null;parts={};thoraxRing=null;pelvisRing=null;old.style.visibility='visible';old.style.pointerEvents='auto';host.style.display='none';const labels=document.getElementById('v304YawLabels');if(labels)labels.style.display='none';document.getElementById('threeHint').style.display='block';}catch(e){console.warn('3D dispose',e)}});
 window.addEventListener('wakaba-analysis',e=>{const wasStopped=!renderActive;renderActive=true;if(wasStopped)loop();init().then(()=>apply(e.detail));});
 
 // 旧Canvasのonclickを解除して、V42のWebGL操作だけを使う。
