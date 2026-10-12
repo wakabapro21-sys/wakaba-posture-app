@@ -1199,34 +1199,44 @@ function fitCamera(kind='front'){
 }
 function resetPartTransforms(){if(!ready)return;Object.values(parts).forEach(g=>{g.rotation.set(0,0,0);g.quaternion.identity();});}
 function apply(d={}){
- if(!ready)return; resetPartTransforms(); const k=Math.PI/180;
- const shoulder=Number(d.shoulderTilt)||0,pelvis=Number(d.pelvisTilt)||0,thorax=Number(d.thoraxYaw)||0,pelvisYaw=Number(d.pelvisYaw)||0;
- /* V76: BodyParts3Dの親modelは座標系変換で回転済み。
-    旧版は子パーツのlocal Y/Zをそのまま回していたため、画面上の上下・回旋軸と一致せず
-    胸郭や骨盤が横倒しになることがあった。表示座標のY(回旋)・Z(傾斜)を
-    modelのlocal軸へ逆変換してからクォータニオンで適用する。 */
- const invParent=model.quaternion.clone().invert();
+ if(!ready)return;
+ resetPartTransforms();
+ const k=Math.PI/180;
+ const finite=v=>{const n=Number(v);return Number.isFinite(n)?n:0};
+ const shoulder=finite(d.shoulderTilt),pelvisTilt=finite(d.pelvisTilt);
+ const thorax=finite(d.thoraxYaw),pelvisYaw=finite(d.pelvisYaw);
+ // V292: BodyParts3Dのローカル軸をワールドの上下(Y)・左右傾斜(Z)に変換。
+ // 左回旋は解析値の正、右回旋は負として、骨格とリングを同じ符号で描画する。
+ model.updateMatrixWorld(true);
+ const invParent=model.getWorldQuaternion(new THREE.Quaternion()).invert();
  const yawAxis=new THREE.Vector3(0,1,0).applyQuaternion(invParent).normalize();
  const tiltAxis=new THREE.Vector3(0,0,1).applyQuaternion(invParent).normalize();
  const boost=rotBoost===5?5:1;
  function posePart(g,yawDeg,tiltDeg){
+   if(!g)return;
    const qYaw=new THREE.Quaternion().setFromAxisAngle(yawAxis,yawDeg*k*boost);
    const qTilt=new THREE.Quaternion().setFromAxisAngle(tiltAxis,tiltDeg*k);
    g.quaternion.copy(qYaw).multiply(qTilt);
  }
  posePart(parts.chest,thorax,-shoulder*1.5);
- posePart(parts.pelvis,pelvisYaw,-pelvis*1.7);
- parts.skull.position.x=parts.skull.userData.baseX+(Number(d.headShift)||0)*.008;
- if(thoraxRing&&pelvisRing){
+ posePart(parts.pelvis,pelvisYaw,-pelvisTilt*1.7);
+ // 頭部は胸郭の向きに追従。従来の頭部偏位量は維持。
+ posePart(parts.skull,thorax,0);
+ if(parts.skull)parts.skull.position.x=parts.skull.userData.baseX+finite(d.headShift)*.008;
+ function setRing(g,deg){
+   if(!g)return;
+   const visible=Math.abs(deg)>=1.5;
+   g.visible=visible;
+   if(!visible)return;
    const rs=rotBoost===5?1.35:1;
-   thoraxRing.scale.set(rs,1,thorax<0?-rs:rs);
-   pelvisRing.scale.set(rs,1,pelvisYaw<0?-rs:rs);
-   // 上面表示の回旋指標は胸郭・骨盤の実際の姿勢角と同期させる。
-   thoraxRing.rotation.y=thorax*k*boost;
-   pelvisRing.rotation.y=pelvisYaw*k*boost;
-   if(thoraxRing.userData.direction)thoraxRing.userData.direction.visible=Math.abs(thorax)>=1.5;
-   if(pelvisRing.userData.direction)pelvisRing.userData.direction.visible=Math.abs(pelvisYaw)>=1.5;
+   // zの反転は回旋矢印の進行方向だけを変え、骨格の向きとは別の符号を使わない。
+   g.scale.set(rs,1,deg<0?-rs:rs);
+   g.rotation.set(0,deg*k*boost,0);
+   if(g.userData.direction)g.userData.direction.visible=true;
  }
+ setRing(thoraxRing,thorax);
+ setRing(pelvisRing,pelvisYaw);
+ statusText('BodyParts3D｜胸郭 '+(thorax>=0?'左':'右')+Math.abs(thorax).toFixed(1)+'° / 骨盤 '+(pelvisYaw>=0?'左':'右')+Math.abs(pelvisYaw).toFixed(1)+'°'+(rotBoost===5?'（表示×5）':''));
 }
 async function init(){
  if(ready)return;
