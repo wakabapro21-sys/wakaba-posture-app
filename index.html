@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V300</title>
+<title>AI姿勢＆3次元歪み分析システム V301</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V300</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V301</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -894,25 +894,38 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  }
  function yawFromProfiles(aName,bName){
    var r=profilePairYaw(aName,bName,"right"),l=profilePairYaw(aName,bName,"left");
-   if(!r&&!l)return {yaw:null,reliable:false,reason:"ランドマークを確認できない"};
-   // 2枚が反対方向を示すときは撮影・遮蔽の可能性があるため判定を保留する。
-   if(r&&l&&r.angle*l.angle<0&&Math.abs(r.angle)>=5&&Math.abs(l.angle)>=5)
-     return {yaw:null,reliable:false,reason:"左右側面で方向が一致しない"};
-   var best=r&&l?(r.weight>=l.weight?r:l):(r||l);
-   var estimate;
-   if(r&&l&&Math.abs(r.angle-l.angle)<=16){
-     estimate=(r.angle*r.weight+l.angle*l.weight)/(r.weight+l.weight);
-   }else if(r&&l){
-     // 視認性が明確に優れた片側だけを採用。近い信頼度で食い違えば保留。
-     if(Math.abs(r.weight-l.weight)<.18)return {yaw:null,reliable:false,reason:"左右側面の推定値に差がある"};
-     estimate=best.angle;
+   var fa=raw(photos.front,aName),fb=raw(photos.front,bName);
+   var frontA=photos.front.points[aName],frontB=photos.front.points[bName];
+   var width=frontA&&frontB?Math.abs(frontB.x-frontA.x):NaN;
+   var bodyHeight=frontHeight;
+   // 正面の左右幅は回旋の補助指標。体格差を考慮し、幅だけでは方向を決めない。
+   var ratio=Number.isFinite(width)?width/Math.max(.25,bodyHeight):NaN;
+   var narrow=Number.isFinite(ratio)&&ratio<(aName==="leftShoulder"?.205:.115);
+   // MediaPipeの正面奥行き(z)は相対量であり、強い根拠としては使わない。
+   var frontDepth=fa&&fb&&Number.isFinite(fa.z)&&Number.isFinite(fb.z)?fb.z-fa.z:null;
+   var candidates=[r,l].filter(Boolean);
+   if(!candidates.length)return {yaw:null,reliable:false,reason:"側面ランドマークが不足"};
+   var chosen=null;
+   if(r&&l){
+     if(r.angle*l.angle>=0||Math.abs(r.angle)<4||Math.abs(l.angle)<4){
+       chosen=(r.angle*r.weight+l.angle*l.weight)/(r.weight+l.weight);
+     }else{
+       // 側面同士が矛盾するときは、正面の相対奥行きで方向が合う場合のみ採用。
+       // 左右側面の撮影条件が異なる場合、誤判定より判定保留を優先。
+       var sign=frontDepth!=null&&Math.abs(frontDepth)>.035?Math.sign(frontDepth):0;
+       var supported=candidates.filter(function(c){return sign&&Math.sign(c.angle)===sign});
+       if(supported.length&&narrow)chosen=supported[0].angle;
+       else return {yaw:null,reliable:false,reason:"左右側面の方向が不一致"};
+     }
    }else{
-     // 片側のみの推定は強い根拠にならないため判定不可とする。
-     return {yaw:null,reliable:false,reason:"片側のランドマークが不足"};
+     // 一方の側面が遮蔽されても、正面の奥行き差が同方向なら参考判定する。
+     var c=candidates[0],sign=frontDepth!=null&&Math.abs(frontDepth)>.035?Math.sign(frontDepth):0;
+     if(sign&&Math.sign(c.angle)===sign&&narrow)chosen=c.angle;
+     else return {yaw:null,reliable:false,reason:"正面と側面の照合が不足"};
    }
-   // 0/5/10/15の4段階。表示値は解剖学的な回旋角度ではない。
-   var magnitude=Math.abs(estimate),tier=magnitude<4?0:magnitude<10?5:magnitude<20?10:15;
-   var yaw=tier===0?0:Math.sign(estimate)*tier;
+   if(!Number.isFinite(chosen))return {yaw:null,reliable:false,reason:"角度計算に失敗"};
+   var magnitude=Math.abs(chosen),tier=magnitude<4?0:magnitude<10?5:magnitude<20?10:15;
+   var yaw=tier===0?0:Math.sign(chosen)*tier;
    return {yaw:yaw,reliable:true,reason:"",level:tier===0?"ほぼなし":tier===5?"軽度":tier===10?"中程度":"大きい"};
  }
  var thoraxResult=yawFromProfiles("leftShoulder","rightShoulder");
