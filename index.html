@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V296</title>
+<title>AI姿勢＆3次元歪み分析システム V297</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V296</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V297</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -896,7 +896,8 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    /* 両側面の回旋方向が逆なら、どちらかの肩・股関節が隠れている可能性 */
    var conflict=r.angle*l.angle<0&&Math.abs(r.angle)>2&&Math.abs(l.angle)>2;
    var difference=Math.abs(r.angle-l.angle);
-   var reliable=!conflict&&difference<=10&&r.weight>=.35&&l.weight>=.35;
+   var saturated=Math.abs(r.angle)>=17.95||Math.abs(l.angle)>=17.95;
+   var reliable=!conflict&&!saturated&&difference<=10&&r.weight>=.35&&l.weight>=.35;
    /* V296: 両側面で股関節の前後分離が小さい場合は、真の0°と遮蔽・推定重なりを区別できない。
       片側だけの大きな角度も採用せず、左右双方で同じ方向の十分な分離を要求する。 */
    var pelvisUnresolved=aName==="leftHip"&&(Math.abs(r.angle)<3||Math.abs(l.angle)<3);
@@ -904,7 +905,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    var wr=Math.max(.15,r.weight),wl=Math.max(.15,l.weight);
    var yaw=(r.angle*wr+l.angle*wl)/(wr+wl);
    if(!Number.isFinite(yaw))return {yaw:0,reliable:false,reason:"角度計算エラー"};
-   return {yaw:reliable?yaw:null,reliable:reliable,reason:pelvisUnresolved?"左右側面で骨盤の前後分離が不十分":conflict?"左右側面で方向不一致":difference>10?"左右側面で差が大きい":"ランドマーク信頼度不足"};
+   return {yaw:reliable?yaw:null,reliable:reliable,reason:saturated?"推定角度が上限18°に達したため判定不可":pelvisUnresolved?"左右側面で骨盤の前後分離が不十分":conflict?"左右側面で方向不一致":difference>10?"左右側面で差が大きい":"ランドマーク信頼度不足"};
  }
  var thoraxResult=yawFromProfiles("leftShoulder","rightShoulder");
  var pelvisResult=yawFromProfiles("leftHip","rightHip");
@@ -1092,8 +1093,8 @@ function mid(a,b,t){return{x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,z:a.z+(b.z-a.z)*t
 function arrow2(x1,y1,x2,y2,col,label){ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=8;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();var a=Math.atan2(y2-y1,x2-x1);ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-18*Math.cos(a-.55),y2-18*Math.sin(a-.55));ctx.lineTo(x2-18*Math.cos(a+.55),y2-18*Math.sin(a+.55));ctx.closePath();ctx.fill();ctx.font="bold 12px -apple-system,sans-serif";ctx.fillText(label,x1+8,y1-10)}
 function drawTop(){var box=C.getBoundingClientRect(),cx=box.width/2,cy=box.height/2,rx=Math.min(box.width*.31,125),ry=58;ctx.fillStyle="#cbd5e1";ctx.font="bold 13px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("上から見た回旋傾向（視認性のため ×"+twistBoost+"）",cx,35);ctx.textAlign="start";ctx.strokeStyle="#475569";ctx.lineWidth=2;ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(cx,65);ctx.lineTo(cx,box.height-55);ctx.stroke();ctx.setLineDash([]);
  function ellipseYaw(y,yaw,col,label){ctx.save();ctx.translate(cx,y);ctx.rotate(yaw*twistBoost*Math.PI/180);ctx.strokeStyle=col;ctx.lineWidth=7;ctx.globalAlpha=.9;ctx.beginPath();ctx.ellipse(0,0,rx,ry,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;arrow2(-rx*.72,0,rx*.82,0,col,label+" 実測推定 "+Math.abs(yaw).toFixed(1)+"°");ctx.restore()}
- ellipseYaw(cy-85,thoraxYaw,"#14b8a6","胸郭");ellipseYaw(cy+90,pelvisYaw,"#f97316","骨盤");var twistAvailable=thoraxResult.reliable&&pelvisResult.reliable;
- var tw=twistAvailable?thoraxYaw-pelvisYaw:null;ctx.fillStyle="#f8fafc";ctx.font="bold 18px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("参考推定差 "+Math.abs(tw).toFixed(1)+"°｜表示のみ×"+twistBoost,cx,box.height-22);ctx.textAlign="start"}
+ if(thoraxResult.reliable)ellipseYaw(cy-85,thoraxYaw,"#14b8a6","胸郭");if(pelvisResult.reliable)ellipseYaw(cy+90,pelvisYaw,"#f97316","骨盤");var twistAvailable=thoraxResult.reliable&&pelvisResult.reliable;
+ var tw=twistAvailable?thoraxYaw-pelvisYaw:null;ctx.fillStyle="#f8fafc";ctx.font="bold 18px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("参考推定差 "+(twistAvailable?Math.abs(tw).toFixed(1)+"°":"判定不可")+"｜表示のみ×"+twistBoost,cx,box.height-22);ctx.textAlign="start"}
 function meshRing(center,rx,rz,n){var arr=[];for(var i=0;i<n;i++){var a=i*Math.PI*2/n;arr.push({x:center.x+Math.cos(a)*rx,y:center.y,z:center.z+Math.sin(a)*rz})}return arr}
 function drawRing(ring,col,alpha,w){for(var i=0;i<ring.length;i++)line(ring[i],ring[(i+1)%ring.length],w,col,alpha)}
 function connectRings(a,b,col,alpha,w){var n=Math.min(a.length,b.length);for(var i=0;i<n;i++)line(a[i],b[i],w,col,alpha)}
@@ -1311,7 +1312,7 @@ host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel'
  const home=document.getElementById('v61Home'); if(home)home.style.visibility='hidden';
  function finish(){if(home)home.style.visibility='';}
  let cur=[]; try{cur=JSON.parse(localStorage.getItem(CUSTOMER)||'[]')}catch(e){}
- if(Array.isArray(cur)&&cur.length){finish();return;}
+ if(Array.isArray(cur)){finish();return;}
  try{
   const r=indexedDB.open(DB,1);
   r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(STORE))r.result.createObjectStore(STORE)};
@@ -1528,6 +1529,8 @@ document.addEventListener('DOMContentLoaded',function(){
    $('v90DeleteModal')?.addEventListener('click',e=>{if(e.target===e.currentTarget)closeDel()});
    $('v90DeleteConfirm')?.addEventListener('click',()=>{
       const n=patientName();
+      // V297: 削除IDを保存し、Firebase復元時に同じIDを再追加しない。
+      try{const list=JSON.parse(localStorage.getItem('wakaba_v61_customers')||'[]');const ids=list.filter(x=>x&&String(x.name||x.patientName||x.customerName||'').trim()===n).map(x=>String(x.id)).filter(Boolean);const key='wakaba_v297_deleted_patient_ids';const old=JSON.parse(localStorage.getItem(key)||'[]');localStorage.setItem(key,JSON.stringify([...new Set([...old,...ids])]));}catch(e){console.error('V297 delete marker',e);alert('削除記録の保存に失敗しました。患者データは削除せずに再試行してください。');return;}
       removePatientFromLocalStorage(n);
       closeDel();
       // Return to the customer list; its existing renderer reloads saved patients.
@@ -1744,6 +1747,8 @@ async function restoreAll(){
   const snap=await getDocs(collection(db,'clinics',auth.currentUser.uid,'patients')); const local=patients(); const byId=new Map(local.map(c=>[String(c.id),c])); let added=0,hAdded=0;
   for(const d of snap.docs){
    const raw=d.data()||{}; const id=String(raw.localId||raw.id||d.id); const cloud={...raw,id:raw.id??id}; delete cloud.updatedAt; delete cloud.localId;
+   const deletedIds=JSON.parse(localStorage.getItem('wakaba_v297_deleted_patient_ids')||'[]');
+   if(Array.isArray(deletedIds)&&deletedIds.includes(id))continue;
    if(!byId.has(id)){local.unshift(cloud);byId.set(id,cloud);added++}
    const hsnap=await getDocs(collection(db,'clinics',auth.currentUser.uid,'patients',d.id,'histories')); let lh=[]; try{lh=JSON.parse(localStorage.getItem('wakaba_v63_history_'+id)||'[]')}catch(e){}
    const keys=new Set(lh.map((h,i)=>String(h.date||h.created||('local_'+i))));
@@ -1798,9 +1803,9 @@ function v266ShowLegal(index){const help=document.getElementById('v77Help');if(!
 $('v266Terms').onclick=e=>{e.preventDefault();v266ShowLegal(1)}; $('v266Privacy').onclick=e=>{e.preventDefault();v266ShowLegal(0)};
 document.getElementById('v270MenuLogout')?.addEventListener('click',()=>{document.getElementById('v77Menu')?.classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu');document.getElementById('v100SignOut')?.click();});
 $('v100SignOut').onclick=async()=>{sessionStorage.setItem('wakaba_v269_login_return','1');sessionStorage.setItem('wakaba_v165_page','home');document.getElementById('v77Menu')?.classList.remove('on');await signOut(auth);v271AuthView(false);};$('v100Sync').onclick=uploadAll;$('v102Restore').onclick=restoreAll;
-onAuthStateChanged(auth,async u=>{v271AuthView(!!u);if(u){if(!v230Block(u))return;localStorage.setItem('wakaba_clinic_uid',u.uid);localStorage.setItem('wakaba_clinic_email',u.email||'');const ce=$('v112ClinicEmail'),ci=$('v112ClinicId');if(ce)ce.textContent='ログイン：'+(u.email||'メール未設定');if(ci)ci.textContent='院ID：'+u.uid;status.textContent='ログイン済み';$('v100Login').style.display='none';$('v100Actions').style.display='block';/* V270: successful authentication returns to the customer list; cloud controls remain accessible from MENU */$('v100Cloud').style.display='none';$('v101CloudBackdrop').style.display='none';document.getElementById('v77Menu')?.classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu');sessionStorage.setItem('wakaba_v165_page','home');sessionStorage.removeItem('wakaba_v269_login_return');document.querySelectorAll('#v77Patient,#v77Reports,#v77Mypage,#v77News,#v77Help,#v77Settings').forEach(e=>e.classList.remove('on'));document.getElementById('v61Home')?.classList.remove('v77hidden');document.body.classList.remove('v61-analysis');msg.innerHTML='<span class="v100ok">V139：端末データを安全確認中です。端末の患者が0件でFirebaseに患者が存在する場合だけ、自動で安全復元します。</span>';
+onAuthStateChanged(auth,async u=>{v271AuthView(!!u);if(u){if(!v230Block(u))return;localStorage.setItem('wakaba_clinic_uid',u.uid);localStorage.setItem('wakaba_clinic_email',u.email||'');const ce=$('v112ClinicEmail'),ci=$('v112ClinicId');if(ce)ce.textContent='ログイン：'+(u.email||'メール未設定');if(ci)ci.textContent='院ID：'+u.uid;status.textContent='ログイン済み';$('v100Login').style.display='none';$('v100Actions').style.display='block';/* V270: successful authentication returns to the customer list; cloud controls remain accessible from MENU */$('v100Cloud').style.display='none';$('v101CloudBackdrop').style.display='none';document.getElementById('v77Menu')?.classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu');sessionStorage.setItem('wakaba_v165_page','home');sessionStorage.removeItem('wakaba_v269_login_return');document.querySelectorAll('#v77Patient,#v77Reports,#v77Mypage,#v77News,#v77Help,#v77Settings').forEach(e=>e.classList.remove('on'));document.getElementById('v61Home')?.classList.remove('v77hidden');document.body.classList.remove('v61-analysis');msg.innerHTML='<span class="v100ok">V139：端末データを安全確認中です。自動復元を停止しています。必要な場合のみ管理画面から確認してください。</span>';
 try{
- if(patients().length===0){
+ if(false && patients().length===0){
   status.textContent='クラウド確認中';
   const cloudCheck=await getDocsFromServer(collection(db,'clinics',u.uid,'patients'));
   if(cloudCheck.size>0){
@@ -2059,13 +2064,13 @@ document.addEventListener('DOMContentLoaded',()=>{
  Storage.prototype.setItem=function(k,v){const out=origSet.apply(this,arguments);if(this===localStorage&&relevant(String(k)))keepPhotoBackup(String(k),String(v));return out};
  Storage.prototype.removeItem=function(k){if(this===localStorage&&relevant(String(k))){const old=this.getItem(k);if(old!=null)idbPut(String(k),old)}return origRemove.apply(this,arguments)};
  async function boot(){
-  const recovered=await recoverIfNeeded();
+  const recovered=false; // V297: 空一覧を削除状態と区別できないため自動復元停止
   if(recovered){setTimeout(()=>location.reload(),150);return}
   await recoverMissingPhotos();
   await mirrorAll();
   setTimeout(()=>{
    const anchor=document.getElementById('v115SecurityPrep')||document.getElementById('v114Mode');
-   if(anchor&&!document.getElementById('v116DataGuard')){const d=document.createElement('div');d.id='v116DataGuard';d.innerHTML='💾 <b>V116 ローカルDataGuard ON</b><br>患者・履歴・縮小写真を端末内のIndexedDBへ二重保存します。履歴写真は長辺1280px・JPEG品質72%で、タブレットでも確認しやすいサイズです。<br><span style="color:#1d4ed8">写真はFirebaseへ送信しません。端末データが空になった場合はローカルバックアップから自動復元します。</span>';anchor.insertAdjacentElement('afterend',d)}
+   if(anchor&&!document.getElementById('v116DataGuard')){const d=document.createElement('div');d.id='v116DataGuard';d.innerHTML='💾 <b>V116 ローカルDataGuard ON</b><br>患者・履歴・縮小写真を端末内のIndexedDBへ二重保存します。履歴写真は長辺1280px・JPEG品質72%で、タブレットでも確認しやすいサイズです。<br><span style="color:#1d4ed8">写真はFirebaseへ送信しません。端末データが空でも自動復元は行いません。バックアップは保持します。</span>';anchor.insertAdjacentElement('afterend',d)}
   },650);
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
