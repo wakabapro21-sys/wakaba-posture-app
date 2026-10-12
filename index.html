@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V290</title>
+<title>AI姿勢＆3次元歪み分析システム V291</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V290</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V291</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -663,11 +663,13 @@ function pairPoint(lm,a,b){
  if(lmOk(qb))return {a:lmPt(qb),b:lmPt(qb)};
  return null;
 }
-function chooseSidePrefix(lm){
- /* score shoulder/elbow/wrist/hip/knee/ankle visibility for each anatomical side */
+function chooseSidePrefix(lm,type){
+ /* V291: prefer the camera-facing anatomical side, unless its measured visibility is clearly worse. */
  var L=[11,13,15,23,25,27],R=[12,14,16,24,26,28];
  function score(ids){return ids.reduce(function(a,i){var v=lm[i]&&lm[i].visibility;return a+(isFinite(v)?v:0)},0)}
- return score(L)>=score(R)?"left":"right";
+ var sl=score(L),sr=score(R),preferred=type==="left"?"left":type==="right"?"right":null;
+ if(preferred&&Math.abs(sl-sr)<1.15)return preferred;
+ return sl>=sr?"left":"right";
 }
 function stabilizeFront(p){
  /* reject accidental left/right crossing while preserving measured asymmetry */
@@ -718,7 +720,7 @@ function attachPose(){if(!window.Pose||poseReady)return;try{pose=new Pose({locat
  }else{
    /* Side view: use whichever anatomical side MediaPipe sees more reliably in THIS image.
       This fixes shoulder/hip/knee/ankle jumps caused by hard-coding right-view/right landmarks. */
-   var pre=chooseSidePrefix(lm);
+   var pre=chooseSidePrefix(lm,type);
 
    /* V204: 側面だけ頭部ポイントを「顔の平均点」ではなく耳珠付近のAI耳点へ。
       他の肩・肘・手首・股関節・膝・足首には一切影響させない。 */
@@ -732,7 +734,7 @@ function attachPose(){if(!window.Pose||poseReady)return;try{pose=new Pose({locat
        /* V204: 左側面だけ耳ランドマークを少し後方へ。
           左側面写真では被写体が画面左向きなので、後方=画像右方向。 */
        var earX=earPt.x;
-       if(type==="left") earX=v180Clamp(earX+0.012);
+       /* V291: no arbitrary camera-side ear displacement */
        p.head={x:earX,y:earPt.y};
      }
    }
@@ -763,10 +765,10 @@ if(type!=="front" && v186SideHipRaw && p.leftShoulder && p.leftKnee){
     finalHip={x:v180Clamp(rh.x+shift),y:rh.y};
   }
   /* V204: 右側面だけ股関節をわずかに前方へ。左側面と他ランドマークは変更しない。 */
-  if(type==="right") finalHip.x=v180Clamp(finalHip.x+0.012);
+  /* V291: no arbitrary hip displacement */
   p.leftHip={x:finalHip.x,y:finalHip.y};p.rightHip={x:finalHip.x,y:finalHip.y};
 }
-rec.points=p;rec.ai=true;rec.aiSide=type==="front"?"both":chooseSidePrefix(lm);b.textContent="AI検出済み";b.className="badge ok";draw(type)}else if(b){b.textContent="手動補正";b.className="badge ok"}busy=false;runQueue()});poseReady=true;runQueue()}catch(e){poseReady=false}}
+if(!rec.manualAdjusted)rec.points=p;rec.ai=true;rec.aiSide=type==="front"?"both":chooseSidePrefix(lm,type);b.textContent="AI検出済み";b.className="badge ok";draw(type)}else if(b){b.textContent="手動補正";b.className="badge ok"}busy=false;runQueue()});poseReady=true;runQueue()}catch(e){poseReady=false}}
 var adjustType=null,adjustDrag=null,AC=document.getElementById("adjustCanvas"),AI=document.getElementById("adjustImg"),AS=document.getElementById("adjustStage");
 function adjustLayout(){
  if(!adjustType||!photos[adjustType]||!AI.naturalWidth)return null;
@@ -858,7 +860,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  var mpIndex={head:0,leftShoulder:11,rightShoulder:12,leftElbow:13,rightElbow:14,leftWrist:15,rightWrist:16,leftHip:23,rightHip:24,leftKnee:25,rightKnee:26,leftAnkle:27,rightAnkle:28};
  /* V45 回旋推定v2: 左右側面のMediaPipe生ランドマークを、左右反転を補正して統合。
     正面幅を基準に胸郭・骨盤の前後差を角度化する。3枚写真からの参考推定であり実測3Dではない。 */
- function raw(rec,name){var i=mpIndex[name],q=rec&&rec.rawLandmarks&&rec.rawLandmarks[i];return q&&isFinite(q.x)?q:null}
+ function raw(rec,name){var i=mpIndex[name],q=rec&&rec.rawLandmarks&&rec.rawLandmarks[i];return q&&Number.isFinite(q.x)&&Number.isFinite(q.y)&&q.x>=0&&q.x<=1&&q.y>=0&&q.y<=1?q:null}
  function profileDepth(name){
    var rr=raw(photos.right,name),ll=raw(photos.left,name);
    var rrHipL=raw(photos.right,"leftHip"),rrHipR=raw(photos.right,"rightHip"),llHipL=raw(photos.left,"leftHip"),llHipR=raw(photos.left,"rightHip");
@@ -870,9 +872,9 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    var sum=0,w=0;for(var i=0;i<vals.length;i++){sum+=vals[i]*weights[i];w+=weights[i]}return sum/Math.max(.001,w);
  }
  var frontHeight=Math.max(.35,Math.abs(photos.front.points.head.y-(photos.front.points.leftAnkle.y+photos.front.points.rightAnkle.y)/2));
- var depthScale=2.15/frontHeight;
- names.forEach(function(n){var f=photos.front.points[n];pts3[n]={x:(f.x-.5)*2,y:(.98-f.y)*3,z:profileDepth(n)*depthScale}});
- /* V290: 左右側面の観測を別々に検証。正面の左右幅を用い、
+ var depthScale=Number.isFinite(frontHeight)&&frontHeight>.1?2.15/frontHeight:3;
+ names.forEach(function(n){var f=photos.front.points[n];pts3[n]={x:(f.x-.5)*2,y:(.98-f.y)*3,z:(Number.isFinite(profileDepth(n))?profileDepth(n):0)*depthScale}});
+ /* V291: 左右側面の観測を別々に検証。正面の左右幅を用い、
     右側面は画面右=前、左側面は画面左=前として同一前後軸へ変換。
     両側面が食い違うときは撮影・遮蔽誤差とみなし回旋方向を確定しない。 */
  function profilePairYaw(aName,bName,side){
@@ -905,6 +907,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  thoraxYaw=thoraxResult.yaw;pelvisYaw=pelvisResult.y;
  /* 低信頼・ほぼ完全側面での微小ノイズを抑制 */
  if(Math.abs(thoraxYaw)<.35)thoraxYaw=0;if(Math.abs(pelvisYaw)<.35)pelvisYaw=0;
+ if(!Number.isFinite(thoraxYaw))thoraxYaw=0;if(!Number.isFinite(pelvisYaw))pelvisYaw=0;
  var tw=thoraxYaw-pelvisYaw;
  function mag(v){var a=Math.abs(v);return a<1.5?"ほぼ中間位":a<5?"軽度の回旋傾向":"回旋傾向あり"}
  function yawLabel(result){return !result.reliable?"判定困難":Math.abs(result.yaw)<1.5?"ほぼ中間位":result.yaw>0?"左回旋傾向":"右回旋傾向"}
@@ -937,7 +940,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    "肩の左右傾き：<b>"+Math.abs(sh).toFixed(1)+"° "+tiltLabel(sh)+"</b><br>"+
    "骨盤の左右傾き：<b>"+Math.abs(ph).toFixed(1)+"° "+tiltLabel(ph)+"</b>";
 
- function clampScore(v){return Math.max(0,Math.min(100,Math.round(v)))}
+ function clampScore(v){return Number.isFinite(v)?Math.max(0,Math.min(100,Math.round(v))):0}
  function sideDeviation(rec){
    var p=rec.points,smx=(p.leftShoulder.x+p.rightShoulder.x)/2,hmx=(p.leftHip.x+p.rightHip.x)/2;
    var head=Math.abs(p.head.x-smx)*100,trunk=Math.abs(smx-hmx)*100;
@@ -949,7 +952,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  function dz(v,z){v=Math.abs(v);return Math.max(0,v-z)}
  var frontPenalty=14 + dz(sh,.20)*7.0 + dz(ph,.35)*9.0 + dz(hs,.15)*3.4;
  var frontScore=clampScore(100-frontPenalty);
- var rawSide=(sideDeviation(photos.right)+sideDeviation(photos.left))/2;
+ var rawSide=(sideDeviation(photos.right)+sideDeviation(photos.left))/2; if(!Number.isFinite(rawSide))rawSide=0;
  var sidePenalty=19 + dz(rawSide,.35)*3.25;
  var sideScore=clampScore(100-sidePenalty);
  /* V76: 回旋スコアは胸郭と骨盤の絶対向きではなく、相対捻れを主評価にする。
