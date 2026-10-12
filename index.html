@@ -394,7 +394,7 @@ html,body{
 
 <div class="v91detail" id="v91DetailModal"><div class="v91box"><div class="v91head"><div><b style="font-size:19px">分析履歴の詳細</b><div class="v91date" id="v91DetailDate"></div></div><button class="v91close" id="v91DetailClose">×</button></div><div id="v91DetailBody"></div></div></div>
 <div class="v63modal" id="v64CompareModal"><div class="v63sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:18px">施術前 / 施術後 比較</b><div id="v64CompareName" style="font-size:11px;color:#64748b;margin-top:2px"></div></div></div><div id="v64CompareBody"></div><button class="v63close" id="v64CompareClose">閉じる</button></div></div>
-<div class="v63modal" id="v63HistoryModal"><div class="v63sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:18px">分析履歴</b><div id="v63HistoryName" style="font-size:11px;color:#64748b;margin-top:2px"></div></div></div><div id="v63HistoryList"></div><button class="v63close" id="v63HistoryClose">閉じる</button></div></div>
+<div class="v63modal" id="v63HistoryModal"><div class="v63sheet"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><b style="font-size:18px">分析履歴</b><div id="v63HistoryName" style="font-size:11px;color:#64748b;margin-top:2px"></div></div><button class="v63close" id="v63HistoryClose" type="button" style="width:auto;min-width:76px;margin:0;padding:9px 13px;flex-shrink:0">閉じる</button></div><div id="v63HistoryList"></div></div></div>
 <div id="v61AnalysisTop"><div class="v61current"><span>分析中：<b id="v61CurrentName">ゲスト</b></span><button class="v61btn v61ghost" id="v61Back" style="padding:8px 10px">顧客一覧へ</button></div></div>
 <div class="v61modal" id="v61Modal"><div class="v61sheet"><h2>新規顧客登録</h2><div class="v61field"><label>患者ID（自動発行）</label><div id="v246NewPatientId" style="padding:12px;border:1px solid #cbd5e1;border-radius:10px;background:#f1f5f9;color:#334155;font-weight:700;user-select:text" aria-live="polite">登録時に発行</div></div><div class="v61field"><label>カタカナ *</label><input id="v61Kana" inputmode="text" autocomplete="off" placeholder="例：ヤマダ タロウ"></div><div class="v61field"><label>性別</label><select id="v61Sex"><option value="">未設定</option><option>男性</option><option>女性</option><option>その他</option></select></div><div class="v61field"><label>生年月日</label><input id="v61Birth" type="date"></div><div class="v61actions"><button class="v61btn v61ghost" id="v61Cancel">キャンセル</button><button class="v61btn" id="v61Save">登録</button></div></div></div>
 <main>
@@ -1200,7 +1200,7 @@ function style(obj,m){obj.traverse(x=>{if(x.isMesh){x.material=m;if(x.geometry&&
 function makeRing(color,r,y){
  const g=new THREE.Group();
  const ellipse=new THREE.EllipseCurve(0,0,r,r*.50,Math.PI*.10,Math.PI*.91,false,0);
- const pts=ellipse.getPoints(72).map(p=>new THREE.Vector3(p.x,0,p.y));
+ const pts=ellipse.getPoints(72).reverse().map(p=>new THREE.Vector3(p.x,0,p.y)); // V305: 矢印の進行方向のみ逆転（骨格回旋・角度は不変）
  // V60: 回旋矢印のみ修正。円錐型矢尻をリング終端の接線と完全に平行にし、側面からも輪郭が見える形状にする
  const path=new THREE.CatmullRomCurve3(pts,false,'centripetal');
  const tube=new THREE.Mesh(new THREE.TubeGeometry(path,96,.022,12,false),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.98}));
