@@ -980,7 +980,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    var dif=Math.abs(r.hip-l.hip)*.65+Math.abs(r.knee-l.knee)*.22+Math.abs(r.ankle-l.ankle)*.13;
    if(!Number.isFinite(dif))return {yaw:null,reliable:false,reason:'左右側面の一致度を計算できません'};
    // しきい値は臨床検証前の仮基準。点数は回旋角ではなく側面対称性の参考値。
-   var tier=dif<.035?0:dif<.075?5:dif<.14?10:15;
+   var tier=dif<.027?0:dif<.067?5:dif<.132?10:15; // V318: 各境界の手前0.008以内は低い点数に統一
    return {yaw:0,reliable:true,directionKnown:false,magnitudeProxy:tier, audit:{difference:dif,hip:Math.abs(r.hip-l.hip),knee:Math.abs(r.knee-l.knee),ankle:Math.abs(r.ankle-l.ankle),right:r,left:l},
            reason:'左右側面の鏡像比較による参考評価（回旋方向・実角度は判定しません）',
            level:tier===0?'ほぼなし':tier===5?'軽度':tier===10?'中等度':'強い'};
@@ -1007,7 +1007,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    var bar=document.getElementById(prefix+"Bar");bar.style.width=(grade.score||0)+"%";bar.style.background=grade.color;
  }
  showGrade("thorax",thoraxGrade);showGrade("pelvis",pelvisGrade);
- /* V317: 判定式を変更せず、骨盤側面対称性の根拠と撮影整合性を可視化する。 */
+ /* V318: 境界付近は低得点に統一し、骨盤側面対称性の根拠を表示する。 */
  (function(){
    var out=document.getElementById('v317TwistAuditText');if(!out)return;
    var a=pelvisResult.audit;
@@ -1015,15 +1015,15 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    var lines=['【現在の判定】','胸郭：'+(thoraxGrade.score==null?'判定不可':thoraxGrade.score+'点')+'／骨盤：'+(pelvisGrade.score==null?'判定不可':pelvisGrade.score+'点')];
    if(a){
      lines.push('【骨盤の左右側面・鏡像比較】');
-     lines.push('加重差：'+f(a.difference)+'（仮しきい値 0.035 / 0.075 / 0.140）');
+     lines.push('加重差：'+f(a.difference)+'（元の境界 0.035 / 0.075 / 0.140、境界手前0.008は低得点側）');
      lines.push('股関節差：'+f(a.hip)+' × 0.65');
      lines.push('膝差：'+f(a.knee)+' × 0.22');
      lines.push('足首差：'+f(a.ankle)+' × 0.13');
      lines.push('右側面（肩基準）：股 '+f(a.right.hip)+'／膝 '+f(a.right.knee)+'／足首 '+f(a.right.ankle));
      lines.push('左側面（鏡像）：股 '+f(a.left.hip)+'／膝 '+f(a.left.knee)+'／足首 '+f(a.left.ankle));
      var margin=Math.min(Math.abs(a.difference-.035),Math.abs(a.difference-.075),Math.abs(a.difference-.14));
-     if(margin<.008)lines.push('注意：階級境界に近いため、ランドマークの微調整で点数が変わる可能性があります。');
-     if(a.difference<.035)lines.push('注意：90点は「骨盤回旋なし」の実測値ではなく、側面の対称性が高いという意味です。');
+     if(margin<.008)lines.push('注意：判定境界付近のため、低い点数に統一しています。ランドマークの微調整で変動する可能性があります。');
+     if(a.difference<.027)lines.push('注意：90点は「骨盤回旋なし」の実測値ではなく、側面の対称性が高いという意味です。');
    }else{lines.push('骨盤指標：'+(pelvisResult.reason||'計算できません'));}
    lines.push('【整合性】');
    lines.push('胸郭方向：'+(thoraxResult.directionKnown===false?'未確定':thoraxResult.reliable?'参考推定あり':'判定不可'));
