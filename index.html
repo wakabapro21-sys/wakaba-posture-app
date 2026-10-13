@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V311</title>
+<title>AI姿勢＆3次元歪み分析システム V312</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V311</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V312</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -887,7 +887,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    var rec=photos[side],a=raw(rec,aName),b=raw(rec,bName);
    if(!a||!b||!pts3[aName]||!pts3[bName])return null;
    var weight=Math.min(Number(a.visibility??.5),Number(b.visibility??.5));
-   // V311: 側面で奥側の股関節は遮蔽されやすい。骨盤のみ可視度の下限を緩め、
+   // V312: 側面で奥側の股関節は遮蔽されやすい。骨盤のみ可視度の下限を緩め、
    // 2枚の側面が整合する場合に限って参考評価に使う。
    var minVisibility=(aName==="leftHip"&&bName==="rightHip")?.08:.25;
    if(!Number.isFinite(weight)||weight<minVisibility)return null;
@@ -911,7 +911,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    // MediaPipeの正面奥行き(z)は相対量であり、強い根拠としては使わない。
    var frontDepth=fa&&fb&&Number.isFinite(fa.z)&&Number.isFinite(fb.z)?fb.z-fa.z:null;
    var candidates=[r,l].filter(Boolean);
-   if(!candidates.length)return {yaw:null,reliable:false,reason:"側面ランドマークが不足"};
+   if(!candidates.length)return {yaw:null,reliable:false,reason:"側面ランドマークが不足（右・左とも検出条件未達）"};
    var chosen=null;
    if(r&&l){
      // V310: 両側面とも微小角なら、符号の不一致は撮影ノイズとして扱う。
@@ -927,7 +927,15 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
        var sign=frontDepth!=null&&Math.abs(frontDepth)>.035?Math.sign(frontDepth):0;
        var supported=candidates.filter(function(c){return sign&&Math.sign(c.angle)===sign});
        if(supported.length&&narrow)chosen=supported[0].angle;
-       else return {yaw:null,reliable:false,reason:"左右側面の方向が不一致"};
+       else {
+         // V312: 方向が逆でも、左右とも小さい回旋信号ならゼロ近傍として扱う。
+         // 大きい矛盾は無理に良好判定しない。
+         var nearNeutral=Math.max(Math.abs(r.angle),Math.abs(l.angle))<=11 &&
+           Math.abs((r.angle*r.weight+l.angle*l.weight)/(r.weight+l.weight))<=3.5 &&
+           Number.isFinite(ratio) && ratio>0.07;
+         if(nearNeutral)chosen=0;
+         else return {yaw:null,reliable:false,reason:"左右側面の方向が不一致（右"+r.angle.toFixed(1)+"°／左"+l.angle.toFixed(1)+"°）"};
+       }
      }
    }else{
      // 一方の側面が遮蔽されても、正面の奥行き差が同方向なら参考判定する。
@@ -958,7 +966,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  function showGrade(prefix,grade){
    document.getElementById(prefix+"Score").textContent=grade.score==null?"--":grade.score+"点";
    document.getElementById(prefix+"Deg").textContent=grade.label+"の捻じれ";
-   document.getElementById(prefix+"Text").textContent=grade.side|| (grade.score==null?"画像情報不足・再確認":"左右差が小さい状態");
+   document.getElementById(prefix+"Text").textContent=grade.side|| (grade.score==null?(prefix==="pelvis"?"要確認："+pelvisResult.reason:"要確認："+thoraxResult.reason):"左右差が小さい状態");
    var bar=document.getElementById(prefix+"Bar");bar.style.width=(grade.score||0)+"%";bar.style.background=grade.color;
  }
  showGrade("thorax",thoraxGrade);showGrade("pelvis",pelvisGrade);
