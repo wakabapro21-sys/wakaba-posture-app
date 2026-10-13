@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V309</title>
+<title>AI姿勢＆3次元歪み分析システム V310</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V309</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V310</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -442,6 +442,15 @@ html,body{
   </div>
   <div style="font-size:9px;color:#94a3b8;line-height:1.5;margin-top:8px">※ 写真とランドマークから得た比較用の参考評価です。医学的診断ではありません。</div>
  </div>
+ <div id="twistPanel" style="margin-top:9px;background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:12px">
+  <div style="font-size:14px;font-weight:900;color:#172033;margin-bottom:9px">捻じれバランス評価 <span style="font-size:9px;font-weight:500;color:#64748b">4段階・参考評価</span></div>
+  <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">
+   <div style="background:#ecfeff;border-radius:12px;padding:11px;min-width:0"><div style="font-size:11px;color:#475569;font-weight:800">上半身（胸郭）</div><div id="thoraxScore" style="font-size:25px;font-weight:900;margin-top:5px">--</div><b id="thoraxDeg" style="font-size:13px;display:block;margin-top:3px">--</b><div style="height:7px;border-radius:9px;background:#cbd5e1;overflow:hidden;margin-top:9px"><div id="thoraxBar" style="height:100%;width:0;background:#16a34a;border-radius:9px"></div></div><div id="thoraxText" style="font-size:10px;color:#64748b;margin-top:6px">参考評価</div></div>
+   <div style="background:#fff7ed;border-radius:12px;padding:11px;min-width:0"><div style="font-size:11px;color:#475569;font-weight:800">下半身（骨盤）</div><div id="pelvisScore" style="font-size:25px;font-weight:900;margin-top:5px">--</div><b id="pelvisDeg" style="font-size:13px;display:block;margin-top:3px">--</b><div style="height:7px;border-radius:9px;background:#cbd5e1;overflow:hidden;margin-top:9px"><div id="pelvisBar" style="height:100%;width:0;background:#16a34a;border-radius:9px"></div></div><div id="pelvisText" style="font-size:10px;color:#64748b;margin-top:6px">参考評価</div></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;border-top:1px solid #e2e8f0;padding-top:10px"><div><div style="font-size:11px;color:#64748b">総合回旋バランス</div><b id="twistDeg" style="font-size:22px">--</b></div><div id="twistText" style="font-size:10px;color:#64748b;text-align:right">上半身と下半身の平均</div></div>
+  <div class="v309TwistNote" style="font-size:10px;color:#64748b;line-height:1.6;margin-top:9px">※捻じれは写真だけでは正確に測定できないため、参考評価となります。</div>
+ </div>
  <div id="detailPosturePanel" style="margin-top:10px;border:1px solid #99f6e4;border-radius:16px;padding:13px;background:#fff">
   <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
    <b style="font-size:15px;color:#172033">姿勢分析ポイント詳細</b>
@@ -498,15 +507,6 @@ html,body{
   </div>
   <div style="margin-top:8px;border-radius:11px;padding:10px;background:#f0fdfa"><div style="font-size:10px;font-weight:900;color:#0f766e">施術・セルフケアの方向性</div><div id="careDirection" style="font-size:10px;color:#475569;line-height:1.7;margin-top:4px">分析後に表示します。</div></div>
   <div style="font-size:9px;color:#94a3b8;line-height:1.5;margin-top:7px">※ 写真上の姿勢特徴から推定した参考候補です。実際の筋緊張・筋力は触診、可動域、筋力検査などと合わせて確認してください。</div>
- </div>
- <div id="twistPanel" style="margin-top:9px;background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:12px">
-  <div style="font-size:14px;font-weight:900;color:#172033;margin-bottom:9px">捻じれバランス評価 <span style="font-size:9px;font-weight:500;color:#64748b">4段階・参考評価</span></div>
-  <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">
-   <div style="background:#ecfeff;border-radius:12px;padding:11px;min-width:0"><div style="font-size:11px;color:#475569;font-weight:800">上半身（胸郭）</div><div id="thoraxScore" style="font-size:25px;font-weight:900;margin-top:5px">--</div><b id="thoraxDeg" style="font-size:13px;display:block;margin-top:3px">--</b><div style="height:7px;border-radius:9px;background:#cbd5e1;overflow:hidden;margin-top:9px"><div id="thoraxBar" style="height:100%;width:0;background:#16a34a;border-radius:9px"></div></div><div id="thoraxText" style="font-size:10px;color:#64748b;margin-top:6px">参考評価</div></div>
-   <div style="background:#fff7ed;border-radius:12px;padding:11px;min-width:0"><div style="font-size:11px;color:#475569;font-weight:800">下半身（骨盤）</div><div id="pelvisScore" style="font-size:25px;font-weight:900;margin-top:5px">--</div><b id="pelvisDeg" style="font-size:13px;display:block;margin-top:3px">--</b><div style="height:7px;border-radius:9px;background:#cbd5e1;overflow:hidden;margin-top:9px"><div id="pelvisBar" style="height:100%;width:0;background:#16a34a;border-radius:9px"></div></div><div id="pelvisText" style="font-size:10px;color:#64748b;margin-top:6px">参考評価</div></div>
-  </div>
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;border-top:1px solid #e2e8f0;padding-top:10px"><div><div style="font-size:11px;color:#64748b">総合回旋バランス</div><b id="twistDeg" style="font-size:22px">--</b></div><div id="twistText" style="font-size:10px;color:#64748b;text-align:right">上半身と下半身の平均</div></div>
-  <div class="v309TwistNote" style="font-size:10px;color:#64748b;line-height:1.6;margin-top:9px">※捻じれは写真だけでは正確に測定できないため、参考評価となります。</div>
  </div>
  <div style="display:grid;grid-template-columns:2fr 1fr;gap:6px;margin-top:7px">
    <button id="topTwist" type="button" class="view3d">◎ 上から見た捻れ</button>
@@ -911,7 +911,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    if(!candidates.length)return {yaw:null,reliable:false,reason:"側面ランドマークが不足"};
    var chosen=null;
    if(r&&l){
-     // V309: 両側面とも微小角なら、符号の不一致は撮影ノイズとして扱う。
+     // V310: 両側面とも微小角なら、符号の不一致は撮影ノイズとして扱う。
      // 十分なランドマークが揃う場合に限り「ほぼなし」を判定できるようにする。
      var lowSignal=Math.max(Math.abs(r.angle),Math.abs(l.angle))<6;
      if(lowSignal){
@@ -944,7 +944,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  if(thoraxYaw!==null&&Math.abs(thoraxYaw)<.35)thoraxYaw=0;if(pelvisYaw!==null&&Math.abs(pelvisYaw)<.35)pelvisYaw=0;
  var twistAvailable=thoraxResult.reliable&&pelvisResult.reliable;
  var tw=twistAvailable?thoraxYaw-pelvisYaw:null;
- /* V309: 推定角度は内部の3D描画用のみ。患者向けは胸郭・骨盤の独立した4段階評価。 */
+ /* V310: 推定角度は内部の3D描画用のみ。患者向けは胸郭・骨盤の独立した4段階評価。 */
  function rotationGrade(result){
    if(!result.reliable)return {label:"判定不可",score:null,side:"",color:"#94a3b8"};
    var magnitude=Math.abs(result.yaw),score=magnitude<1.5?100:magnitude<7.5?85:magnitude<12.5?65:40;
@@ -1218,7 +1218,7 @@ function style(obj,m){obj.traverse(x=>{if(x.isMesh){x.material=m;if(x.geometry&&
 function makeRing(color,r,y){
  const g=new THREE.Group();
  const ellipse=new THREE.EllipseCurve(0,0,r,r*.50,-Math.PI*.90,Math.PI*.10,false,0);
- const pts=ellipse.getPoints(72).map(p=>new THREE.Vector3(p.x,0,p.y)); // V309: 反時計回りの接線方向を維持しつつ、円弧を背面から前面へ配置。逆順化はしない。
+ const pts=ellipse.getPoints(72).map(p=>new THREE.Vector3(p.x,0,p.y)); // V310: 反時計回りの接線方向を維持しつつ、円弧を背面から前面へ配置。逆順化はしない。
  // V60: 回旋矢印のみ修正。円錐型矢尻をリング終端の接線と完全に平行にし、側面からも輪郭が見える形状にする
  const path=new THREE.CatmullRomCurve3(pts,false,'centripetal');
  const tube=new THREE.Mesh(new THREE.TubeGeometry(path,96,.022,12,false),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.98}));
