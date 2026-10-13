@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V312</title>
+<title>AI姿勢＆3次元歪み分析システム V314</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V312</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V314</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -934,7 +934,13 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
            Math.abs((r.angle*r.weight+l.angle*l.weight)/(r.weight+l.weight))<=3.5 &&
            Number.isFinite(ratio) && ratio>0.07;
          if(nearNeutral)chosen=0;
-         else return {yaw:null,reliable:false,reason:"左右側面の方向が不一致（右"+r.angle.toFixed(1)+"°／左"+l.angle.toFixed(1)+"°）"};
+         else {
+           /* V314: 逆方向の側面推定は、遮蔽ランドマークの投影誤差の可能性が高い。
+              絶対値から強さを作るV313処理は誤判定につながるため撤回。
+              正面写真から回旋の実角度は得られないので、ゼロ判定も強制しない。 */
+           return {yaw:null,reliable:false,directionKnown:false,
+             reason:"左右側面の推定が不整合（右"+r.angle.toFixed(1)+"°／左"+l.angle.toFixed(1)+"°）。股関節の重なり・撮影角度・座標変換を要確認。数値から強さを推定しません。"};
+         }
        }
      }
    }else{
@@ -946,7 +952,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    if(!Number.isFinite(chosen))return {yaw:null,reliable:false,reason:"角度計算に失敗"};
    var magnitude=Math.abs(chosen),tier=magnitude<4?0:magnitude<10?5:magnitude<20?10:15;
    var yaw=tier===0?0:Math.sign(chosen)*tier;
-   return {yaw:yaw,reliable:true,reason:"",level:tier===0?"ほぼなし":tier===5?"軽度":tier===10?"中程度":"大きい"};
+   return {yaw:yaw,reliable:true,directionKnown:true,reason:"",level:tier===0?"ほぼなし":tier===5?"軽度":tier===10?"中程度":"大きい"};
  }
  var thoraxResult=yawFromProfiles("leftShoulder","rightShoulder");
  var pelvisResult=yawFromProfiles("leftHip","rightHip");
@@ -954,13 +960,13 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  /* 低信頼・ほぼ完全側面での微小ノイズを抑制 */
  if(thoraxYaw!==null&&Math.abs(thoraxYaw)<.35)thoraxYaw=0;if(pelvisYaw!==null&&Math.abs(pelvisYaw)<.35)pelvisYaw=0;
  var twistAvailable=thoraxResult.reliable&&pelvisResult.reliable;
- var tw=twistAvailable?thoraxYaw-pelvisYaw:null;
+ var tw=twistAvailable&&thoraxResult.directionKnown!==false&&pelvisResult.directionKnown!==false?thoraxYaw-pelvisYaw:null;
  /* V310: 推定角度は内部の3D描画用のみ。患者向けは胸郭・骨盤の独立した4段階評価。 */
  function rotationGrade(result){
    if(!result.reliable)return {label:"判定不可",score:null,side:"",color:"#94a3b8"};
-   var magnitude=Math.abs(result.yaw),score=magnitude<1.5?100:magnitude<7.5?85:magnitude<12.5?65:40;
+   var magnitude=Number.isFinite(result.magnitudeProxy)?result.magnitudeProxy:Math.abs(result.yaw),score=magnitude<1.5?100:magnitude<7.5?85:magnitude<12.5?65:40;
    var label=score===100?"ほぼなし":score===85?"軽度":score===65?"中等度":"強い";
-   return {label:label,score:score,side:score===100?"":(result.yaw>0?"左回旋傾向": "右回旋傾向"),color:score===100?"#16a34a":score===85?"#65a30d":score===65?"#eab308":"#ea580c"};
+   return {label:label,score:score,side:result.directionKnown===false?"方向未確定（左右差の強さのみ参考評価）":score===100?"":(result.yaw>0?"左回旋傾向": "右回旋傾向"),color:score===100?"#16a34a":score===85?"#65a30d":score===65?"#eab308":"#ea580c"};
  }
  var thoraxGrade=rotationGrade(thoraxResult),pelvisGrade=rotationGrade(pelvisResult);
  function showGrade(prefix,grade){
@@ -1136,7 +1142,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  document.getElementById("muscleWeak").innerHTML=weak.map(function(x){return "・"+x}).join("<br>");
  document.getElementById("careDirection").innerHTML=care.map(function(x){return "✓ "+x}).join("<br>");
  built=true;document.getElementById("threeHint").style.display="none";var b=document.getElementById("modelBadge");b.textContent="3方向反映済み";b.className="badge ok";
-window.WAKABA_3D_DATA={thoraxYaw:thoraxResult.reliable?thoraxYaw:null,pelvisYaw:pelvisResult.reliable?pelvisYaw:null,thoraxReliable:thoraxResult.reliable,pelvisReliable:pelvisResult.reliable,relativeTwist:tw,shoulderTilt:sh,pelvisTilt:ph,headShift:hs,sideDeviation:rawSide};
+window.WAKABA_3D_DATA={thoraxYaw:thoraxResult.reliable?thoraxYaw:null,pelvisYaw:pelvisResult.reliable?pelvisYaw:null,thoraxReliable:thoraxResult.reliable&&thoraxResult.directionKnown!==false,pelvisReliable:pelvisResult.reliable&&pelvisResult.directionKnown!==false,thoraxDirectionUnknown:thoraxResult.directionKnown===false,pelvisDirectionUnknown:pelvisResult.directionKnown===false,relativeTwist:tw,shoulderTilt:sh,pelvisTilt:ph,headShift:hs,sideDeviation:rawSide};
 window.dispatchEvent(new CustomEvent("wakaba-analysis",{detail:window.WAKABA_3D_DATA}));draw()}
 function rot(p){var a=angle*Math.PI/180,c=Math.cos(a),q=Math.sin(a);return{x:p.x*c-p.z*q,y:p.y,z:p.x*q+p.z*c}}
 function project(p){var r=rot(p),box=C.getBoundingClientRect(),sc=Math.min(box.width/2.20,box.height/3.05),pers=1/(1+r.z*.10);return{x:box.width/2+r.x*sc*pers,y:box.height-24-r.y*sc*pers,z:r.z}}
@@ -1146,8 +1152,8 @@ function mid(a,b,t){return{x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,z:a.z+(b.z-a.z)*t
 function arrow2(x1,y1,x2,y2,col,label){ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=8;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();var a=Math.atan2(y2-y1,x2-x1);ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-18*Math.cos(a-.55),y2-18*Math.sin(a-.55));ctx.lineTo(x2-18*Math.cos(a+.55),y2-18*Math.sin(a+.55));ctx.closePath();ctx.fill();ctx.font="bold 12px -apple-system,sans-serif";ctx.fillText(label,x1+8,y1-10)}
 function drawTop(){var box=C.getBoundingClientRect(),cx=box.width/2,cy=box.height/2,rx=Math.min(box.width*.31,125),ry=58;ctx.fillStyle="#cbd5e1";ctx.font="bold 13px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("上から見た捻じれバランス（参考イメージ）",cx,35);ctx.textAlign="start";ctx.strokeStyle="#475569";ctx.lineWidth=2;ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(cx,65);ctx.lineTo(cx,box.height-55);ctx.stroke();ctx.setLineDash([]);
  function ellipseYaw(y,yaw,col,label){ctx.save();ctx.translate(cx,y);ctx.rotate(yaw*twistBoost*Math.PI/180);ctx.strokeStyle=col;ctx.lineWidth=7;ctx.globalAlpha=.9;ctx.beginPath();ctx.ellipse(0,0,rx,ry,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;arrow2(-rx*.72,0,rx*.82,0,col,label+" 実測推定 "+Math.abs(yaw).toFixed(1)+"°");ctx.restore()}
- if(thoraxResult.reliable)ellipseYaw(cy-85,thoraxYaw,"#14b8a6","胸郭");if(pelvisResult.reliable)ellipseYaw(cy+90,pelvisYaw,"#f97316","骨盤");var twistAvailable=thoraxResult.reliable&&pelvisResult.reliable;
- var tw=twistAvailable?thoraxYaw-pelvisYaw:null;ctx.fillStyle="#f8fafc";ctx.font="bold 18px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("総合回旋バランス "+(twistAvailable?twistScore+"点":"判定不可")+"｜参考表示",cx,box.height-22);ctx.textAlign="start"}
+ if(thoraxResult.reliable&&thoraxResult.directionKnown!==false)ellipseYaw(cy-85,thoraxYaw,"#14b8a6","胸郭");if(pelvisResult.reliable&&pelvisResult.directionKnown!==false)ellipseYaw(cy+90,pelvisYaw,"#f97316","骨盤");var twistAvailable=thoraxResult.reliable&&pelvisResult.reliable;
+ var tw=twistAvailable&&thoraxResult.directionKnown!==false&&pelvisResult.directionKnown!==false?thoraxYaw-pelvisYaw:null;ctx.fillStyle="#f8fafc";ctx.font="bold 18px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("総合回旋バランス "+(twistAvailable?twistScore+"点":"判定不可")+"｜参考表示",cx,box.height-22);ctx.textAlign="start"}
 function meshRing(center,rx,rz,n){var arr=[];for(var i=0;i<n;i++){var a=i*Math.PI*2/n;arr.push({x:center.x+Math.cos(a)*rx,y:center.y,z:center.z+Math.sin(a)*rz})}return arr}
 function drawRing(ring,col,alpha,w){for(var i=0;i<ring.length;i++)line(ring[i],ring[(i+1)%ring.length],w,col,alpha)}
 function connectRings(a,b,col,alpha,w){var n=Math.min(a.length,b.length);for(var i=0;i<n;i++)line(a[i],b[i],w,col,alpha)}
@@ -1301,7 +1307,7 @@ function apply(d={}){
  if(thoraxRing)thoraxRing.visible=thoraxKnown&&Math.abs(thorax)>=1.5;
  if(pelvisRing)pelvisRing.visible=pelvisKnown&&Math.abs(pelvisYaw)>=1.5;
  const labels=document.getElementById('v304YawLabels');
- if(labels){labels.style.display='flex';document.getElementById('v304ThoraxLabel').textContent='胸郭 '+(thoraxKnown?(thorax>=0?'↶ 左 ':'↷ 右 ')+(Math.abs(thorax)<1.5?'ほぼなし':Math.abs(thorax)<7.5?'軽度':Math.abs(thorax)<12.5?'中等度':'強い'):'判定不可');document.getElementById('v304PelvisLabel').textContent='骨盤 '+(pelvisKnown?(pelvisYaw>=0?'↶ 左 ':'↷ 右 ')+(Math.abs(pelvisYaw)<1.5?'ほぼなし':Math.abs(pelvisYaw)<7.5?'軽度':Math.abs(pelvisYaw)<12.5?'中等度':'強い'):'判定不可');}
+ if(labels){labels.style.display='flex';document.getElementById('v304ThoraxLabel').textContent='胸郭 '+(d.thoraxDirectionUnknown?'方向未確定':thoraxKnown?(thorax>=0?'↶ 左 ':'↷ 右 ')+(Math.abs(thorax)<1.5?'ほぼなし':Math.abs(thorax)<7.5?'軽度':Math.abs(thorax)<12.5?'中等度':'強い'):'判定不可');document.getElementById('v304PelvisLabel').textContent='骨盤 '+(d.pelvisDirectionUnknown?'方向未確定':pelvisKnown?(pelvisYaw>=0?'↶ 左 ':'↷ 右 ')+(Math.abs(pelvisYaw)<1.5?'ほぼなし':Math.abs(pelvisYaw)<7.5?'軽度':Math.abs(pelvisYaw)<12.5?'中等度':'強い'):'判定不可');}
  statusText('BodyParts3D｜胸郭 '+(thoraxKnown?(thorax>=0?'左':'右')+(Math.abs(thorax)<1.5?'ほぼなし':Math.abs(thorax)<7.5?'軽度':Math.abs(thorax)<12.5?'中等度':'強い'):'判定不可')+' / 骨盤 '+(pelvisKnown?(pelvisYaw>=0?'左':'右')+(Math.abs(pelvisYaw)<1.5?'ほぼなし':Math.abs(pelvisYaw)<7.5?'軽度':Math.abs(pelvisYaw)<12.5?'中等度':'強い'):'判定不可')+'（等倍表示・モデル適用：胸郭 '+(thoraxKnown?toModelYaw(thorax).toFixed(1):'—')+'° / 骨盤 '+(pelvisKnown?toModelYaw(pelvisYaw).toFixed(1):'—')+'°）');
 }
 async function init(){
