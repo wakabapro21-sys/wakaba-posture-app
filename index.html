@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V308</title>
+<title>AI姿勢＆3次元歪み分析システム V309</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V308</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V309</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -394,7 +394,7 @@ html,body{
 
 <div class="v91detail" id="v91DetailModal"><div class="v91box"><div class="v91head"><div><b style="font-size:19px">分析履歴の詳細</b><div class="v91date" id="v91DetailDate"></div></div><button class="v91close" id="v91DetailClose">×</button></div><div id="v91DetailBody"></div></div></div>
 <div class="v63modal" id="v64CompareModal"><div class="v63sheet"><div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:18px">施術前 / 施術後 比較</b><div id="v64CompareName" style="font-size:11px;color:#64748b;margin-top:2px"></div></div></div><div id="v64CompareBody"></div><button class="v63close" id="v64CompareClose">閉じる</button></div></div>
-<div class="v63modal" id="v63HistoryModal"><div class="v63sheet"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><b style="font-size:18px">分析履歴</b><div id="v63HistoryName" style="font-size:11px;color:#64748b;margin-top:2px"></div></div><button class="v63close" id="v63HistoryClose" type="button" style="width:auto;min-width:76px;margin:0 0 8px;padding:9px 13px;flex-shrink:0;transform:translateY(-8px)">閉じる</button></div><div id="v63HistoryList"></div></div></div>
+<div class="v63modal" id="v63HistoryModal"><div class="v63sheet"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><b style="font-size:18px">分析履歴</b><div id="v63HistoryName" style="font-size:11px;color:#64748b;margin-top:2px"></div></div><button class="v63close" id="v63HistoryClose" type="button" style="width:auto;min-width:76px;margin:0 0 8px;padding:9px 13px;flex-shrink:0;transform:translateY(-4px)">閉じる</button></div><div id="v63HistoryList"></div></div></div>
 <div id="v61AnalysisTop"><div class="v61current"><span>分析中：<b id="v61CurrentName">ゲスト</b></span><button class="v61btn v61ghost" id="v61Back" style="padding:8px 10px">顧客一覧へ</button></div></div>
 <div class="v61modal" id="v61Modal"><div class="v61sheet"><h2>新規顧客登録</h2><div class="v61field"><label>患者ID（自動発行）</label><div id="v246NewPatientId" style="padding:12px;border:1px solid #cbd5e1;border-radius:10px;background:#f1f5f9;color:#334155;font-weight:700;user-select:text" aria-live="polite">登録時に発行</div></div><div class="v61field"><label>カタカナ *</label><input id="v61Kana" inputmode="text" autocomplete="off" placeholder="例：ヤマダ タロウ"></div><div class="v61field"><label>性別</label><select id="v61Sex"><option value="">未設定</option><option>男性</option><option>女性</option><option>その他</option></select></div><div class="v61field"><label>生年月日</label><input id="v61Birth" type="date"></div><div class="v61actions"><button class="v61btn v61ghost" id="v61Cancel">キャンセル</button><button class="v61btn" id="v61Save">登録</button></div></div></div>
 <main>
@@ -419,9 +419,9 @@ html,body{
    <div style="background:#0f766e;color:#fff;border-radius:12px;padding:10px 4px"><div style="font-size:9px">総合</div><b id="scoreTotal" style="font-size:27px">--</b><span style="font-size:10px"> /100</span></div>
    <div style="background:#fff;border-radius:12px;padding:10px 3px"><div style="font-size:9px;color:#64748b">正面</div><b id="scoreFront" style="font-size:21px">--</b><div style="font-size:8px;color:#94a3b8">左右バランス</div></div>
    <div style="background:#fff;border-radius:12px;padding:10px 3px"><div style="font-size:9px;color:#64748b">側面</div><b id="scoreSide" style="font-size:21px">--</b><div style="font-size:8px;color:#94a3b8">前後バランス</div></div>
-   <div style="background:#fff;border-radius:12px;padding:10px 3px"><div style="font-size:9px;color:#64748b">回旋</div><b id="scoreTwist" style="font-size:21px">--</b><div style="font-size:8px;color:#94a3b8">相対ねじれ</div></div>
+   <div style="background:#fff;border-radius:12px;padding:10px 3px"><div style="font-size:9px;color:#64748b">回旋</div><b id="scoreTwist" style="font-size:21px">--</b><div style="font-size:8px;color:#94a3b8">捻じれ評価</div></div>
   </div>
-  <div style="font-size:9px;color:#64748b;line-height:1.5;margin-top:7px">※ 写真条件とランドマーク位置から算出する比較用の参考スコアです。医学的な診断値ではありません。目安：90〜100 良好／70〜89 軽度差／50〜69 中等度差／0〜49 大きな差。</div>
+  <div style="font-size:9px;color:#64748b;line-height:1.5;margin-top:7px">※ 写真条件とランドマーク位置から算出する比較用の参考スコアです。捻じれは写真だけでは正確に測定できないため、参考評価となります。医学的な診断値ではありません。</div>
  </div>
  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px">
   <button class="view3d" data-a="0">正面</button><button class="view3d" data-a="90">右</button><button class="view3d" data-a="-90">左</button><button class="view3d" data-a="35">斜め</button>
@@ -499,10 +499,14 @@ html,body{
   <div style="margin-top:8px;border-radius:11px;padding:10px;background:#f0fdfa"><div style="font-size:10px;font-weight:900;color:#0f766e">施術・セルフケアの方向性</div><div id="careDirection" style="font-size:10px;color:#475569;line-height:1.7;margin-top:4px">分析後に表示します。</div></div>
   <div style="font-size:9px;color:#94a3b8;line-height:1.5;margin-top:7px">※ 写真上の姿勢特徴から推定した参考候補です。実際の筋緊張・筋力は触診、可動域、筋力検査などと合わせて確認してください。</div>
  </div>
- <div id="twistPanel" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px">
-  <div style="background:#ecfeff;border-radius:10px;padding:8px;text-align:center"><div style="font-size:10px;color:#64748b">胸郭回旋傾向</div><b id="thoraxDeg">--</b><div id="thoraxText" style="font-size:9px;color:#64748b;margin-top:2px">参考推定</div></div>
-  <div style="background:#fff7ed;border-radius:10px;padding:8px;text-align:center"><div style="font-size:10px;color:#64748b">骨盤回旋傾向</div><b id="pelvisDeg">--</b><div id="pelvisText" style="font-size:9px;color:#64748b;margin-top:2px">参考推定</div></div>
-  <div style="background:#fef2f2;border-radius:10px;padding:8px;text-align:center"><div style="font-size:10px;color:#64748b">相対捻れ傾向</div><b id="twistDeg">--</b><div id="twistText" style="font-size:9px;color:#64748b;margin-top:2px">参考推定差</div></div>
+ <div id="twistPanel" style="margin-top:9px;background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:12px">
+  <div style="font-size:14px;font-weight:900;color:#172033;margin-bottom:9px">捻じれバランス評価 <span style="font-size:9px;font-weight:500;color:#64748b">4段階・参考評価</span></div>
+  <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">
+   <div style="background:#ecfeff;border-radius:12px;padding:11px;min-width:0"><div style="font-size:11px;color:#475569;font-weight:800">上半身（胸郭）</div><div id="thoraxScore" style="font-size:25px;font-weight:900;margin-top:5px">--</div><b id="thoraxDeg" style="font-size:13px;display:block;margin-top:3px">--</b><div style="height:7px;border-radius:9px;background:#cbd5e1;overflow:hidden;margin-top:9px"><div id="thoraxBar" style="height:100%;width:0;background:#16a34a;border-radius:9px"></div></div><div id="thoraxText" style="font-size:10px;color:#64748b;margin-top:6px">参考評価</div></div>
+   <div style="background:#fff7ed;border-radius:12px;padding:11px;min-width:0"><div style="font-size:11px;color:#475569;font-weight:800">下半身（骨盤）</div><div id="pelvisScore" style="font-size:25px;font-weight:900;margin-top:5px">--</div><b id="pelvisDeg" style="font-size:13px;display:block;margin-top:3px">--</b><div style="height:7px;border-radius:9px;background:#cbd5e1;overflow:hidden;margin-top:9px"><div id="pelvisBar" style="height:100%;width:0;background:#16a34a;border-radius:9px"></div></div><div id="pelvisText" style="font-size:10px;color:#64748b;margin-top:6px">参考評価</div></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;border-top:1px solid #e2e8f0;padding-top:10px"><div><div style="font-size:11px;color:#64748b">総合回旋バランス</div><b id="twistDeg" style="font-size:22px">--</b></div><div id="twistText" style="font-size:10px;color:#64748b;text-align:right">上半身と下半身の平均</div></div>
+  <div class="v309TwistNote" style="font-size:10px;color:#64748b;line-height:1.6;margin-top:9px">※捻じれは写真だけでは正確に測定できないため、参考評価となります。</div>
  </div>
  <div style="display:grid;grid-template-columns:2fr 1fr;gap:6px;margin-top:7px">
    <button id="topTwist" type="button" class="view3d">◎ 上から見た捻れ</button>
@@ -513,7 +517,7 @@ html,body{
   <span id="shoulderTilt">肩傾斜 --</span> ／
   <span id="pelvisTilt">骨盤傾斜 --</span> ／
   <span id="headShift">頭部偏位 --</span><br>
-  <span style="color:#94a3b8">※ 回旋角は3方向写真からの参考推定で、診断値・3Dスキャン値ではありません。AI内部ではMediaPipe 33点を保持し、表示点は手動補正できます。</span>
+  <span style="color:#94a3b8">※捻じれは写真だけでは正確に測定できないため、参考評価となります。AI内部ではMediaPipe 33点を保持し、表示点は手動補正できます。</span>
  </div>
  <div id="threeStage" style="height:650px;margin-top:8px;border-radius:13px;overflow:hidden;background:#0b1220;position:relative">
    <canvas id="threeCanvas" style="width:100%;height:100%;display:block;touch-action:none"></canvas>
@@ -907,7 +911,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    if(!candidates.length)return {yaw:null,reliable:false,reason:"側面ランドマークが不足"};
    var chosen=null;
    if(r&&l){
-     // V308: 両側面とも微小角なら、符号の不一致は撮影ノイズとして扱う。
+     // V309: 両側面とも微小角なら、符号の不一致は撮影ノイズとして扱う。
      // 十分なランドマークが揃う場合に限り「ほぼなし」を判定できるようにする。
      var lowSignal=Math.max(Math.abs(r.angle),Math.abs(l.angle))<6;
      if(lowSignal){
@@ -940,12 +944,23 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  if(thoraxYaw!==null&&Math.abs(thoraxYaw)<.35)thoraxYaw=0;if(pelvisYaw!==null&&Math.abs(pelvisYaw)<.35)pelvisYaw=0;
  var twistAvailable=thoraxResult.reliable&&pelvisResult.reliable;
  var tw=twistAvailable?thoraxYaw-pelvisYaw:null;
- function mag(v){var a=Math.abs(v);return a<1.5?"ほぼ中間位":a<5?"軽度の回旋傾向":"回旋傾向あり"}
- function yawLabel(result){return !result.reliable?"判定困難":Math.abs(result.yaw)<1.5?"ほぼ中間位":result.yaw>0?"左回旋傾向":"右回旋傾向"}
- document.getElementById("thoraxDeg").textContent=yawLabel(thoraxResult);document.getElementById("pelvisDeg").textContent=yawLabel(pelvisResult);document.getElementById("twistDeg").textContent=(!thoraxResult.reliable||!pelvisResult.reliable)?"判定困難":Math.abs(tw)<1.5?"小さい":"相対捻れあり";
- document.getElementById("thoraxText").textContent=thoraxResult.reliable?"回旋参考指標 "+Math.abs(thoraxYaw).toFixed(0)+"（"+thoraxResult.level+"）":"要再確認："+thoraxResult.reason;
- document.getElementById("pelvisText").textContent=pelvisResult.reliable?"回旋参考指標 "+Math.abs(pelvisYaw).toFixed(0)+"（"+pelvisResult.level+"）":"要再確認："+pelvisResult.reason;
- document.getElementById("twistText").textContent=(thoraxResult.reliable&&pelvisResult.reliable)?"参考指標差 "+Math.abs(tw).toFixed(0):"左右側面のランドマークを再確認";
+ /* V309: 推定角度は内部の3D描画用のみ。患者向けは胸郭・骨盤の独立した4段階評価。 */
+ function rotationGrade(result){
+   if(!result.reliable)return {label:"判定不可",score:null,side:"",color:"#94a3b8"};
+   var magnitude=Math.abs(result.yaw),score=magnitude<1.5?100:magnitude<7.5?85:magnitude<12.5?65:40;
+   var label=score===100?"ほぼなし":score===85?"軽度":score===65?"中等度":"強い";
+   return {label:label,score:score,side:score===100?"":(result.yaw>0?"左回旋傾向": "右回旋傾向"),color:score===100?"#16a34a":score===85?"#65a30d":score===65?"#eab308":"#ea580c"};
+ }
+ var thoraxGrade=rotationGrade(thoraxResult),pelvisGrade=rotationGrade(pelvisResult);
+ function showGrade(prefix,grade){
+   document.getElementById(prefix+"Score").textContent=grade.score==null?"--":grade.score+"点";
+   document.getElementById(prefix+"Deg").textContent=grade.label+"の捻じれ";
+   document.getElementById(prefix+"Text").textContent=grade.side|| (grade.score==null?"画像情報不足・再確認":"左右差が小さい状態");
+   var bar=document.getElementById(prefix+"Bar");bar.style.width=(grade.score||0)+"%";bar.style.background=grade.color;
+ }
+ showGrade("thorax",thoraxGrade);showGrade("pelvis",pelvisGrade);
+ document.getElementById("twistDeg").textContent=twistAvailable?Math.round((thoraxGrade.score+pelvisGrade.score)/2)+"点":"判定不可";
+ document.getElementById("twistText").textContent=twistAvailable?"（"+thoraxGrade.score+"＋"+pelvisGrade.score+"）÷2":"評価できる画像情報が不足";
  function horizontalTilt(a,b){
    var dx=Math.abs(b.x-a.x),dy=b.y-a.y;
    if(dx<0.0001)return 0;
@@ -993,9 +1008,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
     ランドマーク・正面・側面・脚軸ロジックは変更しない。 */
  /* V300: 相対差が小さくても胸郭・骨盤の共通回旋が大きければ高得点にしない。
     数値が信頼できない場合は従来どおり回旋を判定不可にする。 */
- var commonRotation=twistAvailable?(Math.abs(thoraxYaw)+Math.abs(pelvisYaw))/2:0;
- var twistPenalty=10 + dz(tw,1.0)*3.9 + dz(commonRotation,2.0)*2.1;
- var twistScore=twistAvailable?Math.min(94,clampScore(100-twistPenalty)):null;
+ var twistScore=twistAvailable?Math.round((thoraxGrade.score+pelvisGrade.score)/2):null;
  var totalScore=twistAvailable?clampScore(frontScore*.45+sideScore*.40+twistScore*.15):clampScore((frontScore*.45+sideScore*.40)/.85);
  document.getElementById("scoreTotal").textContent=totalScore;
  document.getElementById("scoreFront").textContent=frontScore;
@@ -1058,8 +1071,8 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    "頭の前後位置：<b>"+Math.abs(headAP).toFixed(1)+"% "+apLabel(headAP)+"</b><br>"+
    "体幹の前後位置：<b>"+Math.abs(trunkAP2).toFixed(1)+"% "+apLabel(trunkAP2)+"</b><br>"+
    "骨盤の前後位置：<b>"+Math.abs(pelvisAP2).toFixed(1)+"% "+apLabel(pelvisAP2)+"</b><br>"+
-   "胸郭回旋：<b>"+(thoraxResult.reliable?Math.abs(thoraxYaw).toFixed(1)+"°":"判定不可")+"</b><br>"+
-   "骨盤回旋：<b>"+(pelvisResult.reliable?Math.abs(pelvisYaw).toFixed(1)+"°":"判定不可")+"</b>";
+   "上半身の捻じれ：<b>"+thoraxGrade.label+"（"+(thoraxGrade.score==null?"判定不可":thoraxGrade.score+"点")+"）</b><br>"+
+   "下半身の捻じれ：<b>"+pelvisGrade.label+"（"+(pelvisGrade.score==null?"判定不可":pelvisGrade.score+"点")+"）</b>";
 
  var bx=Math.max(8,Math.min(92,50+pelAP*2.0)),by=Math.max(8,Math.min(92,50-trAP*2.0)),star=document.getElementById("balanceStar");if(star){star.style.left=bx+"%";star.style.top=by+"%"}
  document.getElementById("balanceMapText").textContent="骨盤は"+(Math.abs(pelAP)<1?"ほぼ中央":pelAP>0?"前寄り":"後ろ寄り")+"、体幹は"+(Math.abs(trAP)<1?"ほぼ中央":trAP>0?"前寄り":"後ろ寄り")+"の参考傾向です。撮影条件によって位置は変わります。";
@@ -1070,7 +1083,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  var dims=[
    {key:"正面",score:frontScore,detail:"肩の傾き "+Math.abs(sh).toFixed(1)+"°・骨盤の傾き "+Math.abs(ph).toFixed(1)+"°・頭部偏位 "+Math.abs(hs).toFixed(1)+"%"},
    {key:"側面",score:sideScore,detail:"頭部と体幹の前後バランスに差がみられます。"},
-   {key:"回旋",score:twistAvailable?twistScore:101,detail:twistAvailable?("胸郭 "+Math.abs(thoraxYaw).toFixed(1)+"°・骨盤 "+Math.abs(pelvisYaw).toFixed(1)+"°・相対差 "+Math.abs(tw).toFixed(1)+"°"):"骨盤回旋を判定できないため参考スコア対象外"}
+   {key:"回旋",score:twistAvailable?twistScore:101,detail:twistAvailable?("上半身 "+thoraxGrade.label+"（"+thoraxGrade.score+"点）・下半身 "+pelvisGrade.label+"（"+pelvisGrade.score+"点）"):"骨盤回旋を判定できないため参考スコア対象外"}
  ];
  dims.sort(function(a,b){return a.score-b.score});var main=dims[0];
  var typeText=main.key==="正面"?"左右バランス型":main.key==="側面"?"前後バランス型":"回旋バランス型";
@@ -1082,7 +1095,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  document.getElementById("mainFindingDetail").textContent=main.detail+"　今回の3項目では「"+main.key+"」の参考スコアが最も低く、変化を追いやすいポイントです。";
  document.getElementById("reportFront").textContent=reportBand(frontScore);
  document.getElementById("reportSide").textContent=reportBand(sideScore);
- document.getElementById("reportTwist").textContent=twistAvailable?reportBand(twistScore):"判定不可";
+ document.getElementById("reportTwist").textContent=twistAvailable?("上半身 "+thoraxGrade.label+"／下半身 "+pelvisGrade.label):"判定不可";
  /* V47 筋バランス：写真姿勢からの傾向候補。診断や筋力測定の代用にはしない。 */
  var tight=[],weak=[],care=[];
  function add(arr,v){if(arr.indexOf(v)<0)arr.push(v)}
@@ -1120,10 +1133,10 @@ function line(a,b,w,col,alpha){var A=project(a),B=project(b);ctx.globalAlpha=alp
 function circle(p,r,col){var q=project(p);ctx.fillStyle=col;ctx.beginPath();ctx.arc(q.x,q.y,r,0,Math.PI*2);ctx.fill()}
 function mid(a,b,t){return{x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,z:a.z+(b.z-a.z)*t}}
 function arrow2(x1,y1,x2,y2,col,label){ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=8;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();var a=Math.atan2(y2-y1,x2-x1);ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-18*Math.cos(a-.55),y2-18*Math.sin(a-.55));ctx.lineTo(x2-18*Math.cos(a+.55),y2-18*Math.sin(a+.55));ctx.closePath();ctx.fill();ctx.font="bold 12px -apple-system,sans-serif";ctx.fillText(label,x1+8,y1-10)}
-function drawTop(){var box=C.getBoundingClientRect(),cx=box.width/2,cy=box.height/2,rx=Math.min(box.width*.31,125),ry=58;ctx.fillStyle="#cbd5e1";ctx.font="bold 13px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("上から見た回旋傾向（推定角度を等倍表示）",cx,35);ctx.textAlign="start";ctx.strokeStyle="#475569";ctx.lineWidth=2;ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(cx,65);ctx.lineTo(cx,box.height-55);ctx.stroke();ctx.setLineDash([]);
+function drawTop(){var box=C.getBoundingClientRect(),cx=box.width/2,cy=box.height/2,rx=Math.min(box.width*.31,125),ry=58;ctx.fillStyle="#cbd5e1";ctx.font="bold 13px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("上から見た捻じれバランス（参考イメージ）",cx,35);ctx.textAlign="start";ctx.strokeStyle="#475569";ctx.lineWidth=2;ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(cx,65);ctx.lineTo(cx,box.height-55);ctx.stroke();ctx.setLineDash([]);
  function ellipseYaw(y,yaw,col,label){ctx.save();ctx.translate(cx,y);ctx.rotate(yaw*twistBoost*Math.PI/180);ctx.strokeStyle=col;ctx.lineWidth=7;ctx.globalAlpha=.9;ctx.beginPath();ctx.ellipse(0,0,rx,ry,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;arrow2(-rx*.72,0,rx*.82,0,col,label+" 実測推定 "+Math.abs(yaw).toFixed(1)+"°");ctx.restore()}
  if(thoraxResult.reliable)ellipseYaw(cy-85,thoraxYaw,"#14b8a6","胸郭");if(pelvisResult.reliable)ellipseYaw(cy+90,pelvisYaw,"#f97316","骨盤");var twistAvailable=thoraxResult.reliable&&pelvisResult.reliable;
- var tw=twistAvailable?thoraxYaw-pelvisYaw:null;ctx.fillStyle="#f8fafc";ctx.font="bold 18px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("参考推定差 "+(twistAvailable?Math.abs(tw).toFixed(1)+"°":"判定不可")+"｜等倍表示",cx,box.height-22);ctx.textAlign="start"}
+ var tw=twistAvailable?thoraxYaw-pelvisYaw:null;ctx.fillStyle="#f8fafc";ctx.font="bold 18px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("総合回旋バランス "+(twistAvailable?twistScore+"点":"判定不可")+"｜参考表示",cx,box.height-22);ctx.textAlign="start"}
 function meshRing(center,rx,rz,n){var arr=[];for(var i=0;i<n;i++){var a=i*Math.PI*2/n;arr.push({x:center.x+Math.cos(a)*rx,y:center.y,z:center.z+Math.sin(a)*rz})}return arr}
 function drawRing(ring,col,alpha,w){for(var i=0;i<ring.length;i++)line(ring[i],ring[(i+1)%ring.length],w,col,alpha)}
 function connectRings(a,b,col,alpha,w){var n=Math.min(a.length,b.length);for(var i=0;i<n;i++)line(a[i],b[i],w,col,alpha)}
@@ -1205,7 +1218,7 @@ function style(obj,m){obj.traverse(x=>{if(x.isMesh){x.material=m;if(x.geometry&&
 function makeRing(color,r,y){
  const g=new THREE.Group();
  const ellipse=new THREE.EllipseCurve(0,0,r,r*.50,-Math.PI*.90,Math.PI*.10,false,0);
- const pts=ellipse.getPoints(72).map(p=>new THREE.Vector3(p.x,0,p.y)); // V308: 反時計回りの接線方向を維持しつつ、円弧を背面から前面へ配置。逆順化はしない。
+ const pts=ellipse.getPoints(72).map(p=>new THREE.Vector3(p.x,0,p.y)); // V309: 反時計回りの接線方向を維持しつつ、円弧を背面から前面へ配置。逆順化はしない。
  // V60: 回旋矢印のみ修正。円錐型矢尻をリング終端の接線と完全に平行にし、側面からも輪郭が見える形状にする
  const path=new THREE.CatmullRomCurve3(pts,false,'centripetal');
  const tube=new THREE.Mesh(new THREE.TubeGeometry(path,96,.022,12,false),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.98}));
@@ -1277,8 +1290,8 @@ function apply(d={}){
  if(thoraxRing)thoraxRing.visible=thoraxKnown&&Math.abs(thorax)>=1.5;
  if(pelvisRing)pelvisRing.visible=pelvisKnown&&Math.abs(pelvisYaw)>=1.5;
  const labels=document.getElementById('v304YawLabels');
- if(labels){labels.style.display='flex';document.getElementById('v304ThoraxLabel').textContent='胸郭 '+(thoraxKnown?(thorax>=0?'↶ 左 ':'↷ 右 ')+Math.abs(thorax).toFixed(1)+'°':'判定不可');document.getElementById('v304PelvisLabel').textContent='骨盤 '+(pelvisKnown?(pelvisYaw>=0?'↶ 左 ':'↷ 右 ')+Math.abs(pelvisYaw).toFixed(1)+'°':'判定不可');}
- statusText('BodyParts3D｜胸郭 '+(thoraxKnown?(thorax>=0?'左':'右')+Math.abs(thorax).toFixed(1)+'°':'判定不可')+' / 骨盤 '+(pelvisKnown?(pelvisYaw>=0?'左':'右')+Math.abs(pelvisYaw).toFixed(1)+'°':'判定不可')+'（等倍表示・モデル適用：胸郭 '+(thoraxKnown?toModelYaw(thorax).toFixed(1):'—')+'° / 骨盤 '+(pelvisKnown?toModelYaw(pelvisYaw).toFixed(1):'—')+'°）');
+ if(labels){labels.style.display='flex';document.getElementById('v304ThoraxLabel').textContent='胸郭 '+(thoraxKnown?(thorax>=0?'↶ 左 ':'↷ 右 ')+(Math.abs(thorax)<1.5?'ほぼなし':Math.abs(thorax)<7.5?'軽度':Math.abs(thorax)<12.5?'中等度':'強い'):'判定不可');document.getElementById('v304PelvisLabel').textContent='骨盤 '+(pelvisKnown?(pelvisYaw>=0?'↶ 左 ':'↷ 右 ')+(Math.abs(pelvisYaw)<1.5?'ほぼなし':Math.abs(pelvisYaw)<7.5?'軽度':Math.abs(pelvisYaw)<12.5?'中等度':'強い'):'判定不可');}
+ statusText('BodyParts3D｜胸郭 '+(thoraxKnown?(thorax>=0?'左':'右')+(Math.abs(thorax)<1.5?'ほぼなし':Math.abs(thorax)<7.5?'軽度':Math.abs(thorax)<12.5?'中等度':'強い'):'判定不可')+' / 骨盤 '+(pelvisKnown?(pelvisYaw>=0?'左':'右')+(Math.abs(pelvisYaw)<1.5?'ほぼなし':Math.abs(pelvisYaw)<7.5?'軽度':Math.abs(pelvisYaw)<12.5?'中等度':'強い'):'判定不可')+'（等倍表示・モデル適用：胸郭 '+(thoraxKnown?toModelYaw(thorax).toFixed(1):'—')+'° / 骨盤 '+(pelvisKnown?toModelYaw(pelvisYaw).toFixed(1):'—')+'°）');
 }
 async function init(){
  if(ready)return;
