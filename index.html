@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V307</title>
+<title>AI姿勢＆3次元歪み分析システム V308</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V307</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V308</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -907,7 +907,12 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    if(!candidates.length)return {yaw:null,reliable:false,reason:"側面ランドマークが不足"};
    var chosen=null;
    if(r&&l){
-     if(r.angle*l.angle>=0||Math.abs(r.angle)<4||Math.abs(l.angle)<4){
+     // V308: 両側面とも微小角なら、符号の不一致は撮影ノイズとして扱う。
+     // 十分なランドマークが揃う場合に限り「ほぼなし」を判定できるようにする。
+     var lowSignal=Math.max(Math.abs(r.angle),Math.abs(l.angle))<6;
+     if(lowSignal){
+       chosen=0;
+     }else if(r.angle*l.angle>=0||Math.abs(r.angle)<4||Math.abs(l.angle)<4){
        chosen=(r.angle*r.weight+l.angle*l.weight)/(r.weight+l.weight);
      }else{
        // 側面同士が矛盾するときは、正面の相対奥行きで方向が合う場合のみ採用。
@@ -1200,7 +1205,7 @@ function style(obj,m){obj.traverse(x=>{if(x.isMesh){x.material=m;if(x.geometry&&
 function makeRing(color,r,y){
  const g=new THREE.Group();
  const ellipse=new THREE.EllipseCurve(0,0,r,r*.50,-Math.PI*.90,Math.PI*.10,false,0);
- const pts=ellipse.getPoints(72).map(p=>new THREE.Vector3(p.x,0,p.y)); // V307: 反時計回りの接線方向を維持しつつ、円弧を背面から前面へ配置。逆順化はしない。
+ const pts=ellipse.getPoints(72).map(p=>new THREE.Vector3(p.x,0,p.y)); // V308: 反時計回りの接線方向を維持しつつ、円弧を背面から前面へ配置。逆順化はしない。
  // V60: 回旋矢印のみ修正。円錐型矢尻をリング終端の接線と完全に平行にし、側面からも輪郭が見える形状にする
  const path=new THREE.CatmullRomCurve3(pts,false,'centripetal');
  const tube=new THREE.Mesh(new THREE.TubeGeometry(path,96,.022,12,false),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.98}));
