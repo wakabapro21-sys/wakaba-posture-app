@@ -994,9 +994,9 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  /* V310: 推定角度は内部の3D描画用のみ。患者向けは胸郭・骨盤の独立した4段階評価。 */
  function rotationGrade(result){
    if(!result.reliable)return {label:"判定不可",score:null,side:"",color:"#94a3b8"};
-   var magnitude=Number.isFinite(result.magnitudeProxy)?result.magnitudeProxy:Math.abs(result.yaw),score=magnitude<1.5?100:magnitude<7.5?85:magnitude<12.5?65:40;
-   var label=score===100?"ほぼなし":score===85?"軽度":score===65?"中等度":"強い";
-   return {label:label,score:score,side:result.directionKnown===false?"方向未確定（左右側面の鏡像一致度による参考評価）":score===100?"":(result.yaw>0?"左回旋傾向": "右回旋傾向"),color:score===100?"#16a34a":score===85?"#65a30d":score===65?"#eab308":"#ea580c"};
+   var magnitude=Number.isFinite(result.magnitudeProxy)?result.magnitudeProxy:Math.abs(result.yaw),score=magnitude<1.5?90:magnitude<7.5?80:magnitude<12.5?60:40;
+   var label=score===90?"ほぼなし":score===80?"軽度":score===60?"中等度":"強い";
+   return {label:label,score:score,side:result.directionKnown===false?"方向未確定（左右側面の鏡像一致度による参考評価）":score===90?"":(result.yaw>0?"左回旋傾向": "右回旋傾向"),color:score===90?"#16a34a":score===80?"#65a30d":score===60?"#eab308":"#ea580c"};
  }
  var thoraxGrade=rotationGrade(thoraxResult),pelvisGrade=rotationGrade(pelvisResult);
  function showGrade(prefix,grade){
