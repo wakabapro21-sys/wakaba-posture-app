@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V314</title>
+<title>AI姿勢＆3次元歪み分析システム V315</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V314</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V315</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -935,7 +935,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
            Number.isFinite(ratio) && ratio>0.07;
          if(nearNeutral)chosen=0;
          else {
-           /* V314: 逆方向の側面推定は、遮蔽ランドマークの投影誤差の可能性が高い。
+           /* V315: 逆方向の側面推定は、遮蔽ランドマークの投影誤差の可能性が高い。
               絶対値から強さを作るV313処理は誤判定につながるため撤回。
               正面写真から回旋の実角度は得られないので、ゼロ判定も強制しない。 */
            return {yaw:null,reliable:false,directionKnown:false,
@@ -954,8 +954,38 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    var yaw=tier===0?0:Math.sign(chosen)*tier;
    return {yaw:yaw,reliable:true,directionKnown:true,reason:"",level:tier===0?"ほぼなし":tier===5?"軽度":tier===10?"中程度":"大きい"};
  }
+ /* V315: 奥側股関節の見かけの左右差を回旋角に換算しない。
+    右・左側面の外形ランドマークを鏡像化し、各写真の足首-肩の長さで正規化した
+    前後位置の一致度を「側面対称性の参考指標」として利用する。
+    これは解剖学的な骨盤回旋角や回旋方向の測定ではない。 */
+ function sideSymmetryProxy(){
+   var right=photos.right,left=photos.left;
+   function point(rec,n){var q=rec&&rec.points&&rec.points[n];return q&&Number.isFinite(q.x)&&Number.isFinite(q.y)?q:null}
+   function center(rec,names){var v=names.map(n=>point(rec,n)).filter(Boolean);return v.length?v.reduce((a,q)=>a+q.x,0)/v.length:null}
+   function level(rec,names){var v=names.map(n=>point(rec,n)).filter(Boolean);return v.length?v.reduce((a,q)=>a+q.y,0)/v.length:null}
+   function metric(rec,orientation){
+     var shoulder=center(rec,['leftShoulder','rightShoulder']),hip=center(rec,['leftHip','rightHip']);
+     var knee=center(rec,['leftKnee','rightKnee']),ankle=center(rec,['leftAnkle','rightAnkle']);
+     var shY=level(rec,['leftShoulder','rightShoulder']),anY=level(rec,['leftAnkle','rightAnkle']);
+     if([shoulder,hip,knee,ankle,shY,anY].some(v=>!Number.isFinite(v)))return null;
+     var h=Math.abs(anY-shY);if(h<.20)return null;
+     // 両側面を身体の前方が正になる座標に揃え、肩を基準に並進・縮尺を除去。
+     return {hip:orientation*(hip-shoulder)/h,knee:orientation*(knee-shoulder)/h,
+             ankle:orientation*(ankle-shoulder)/h};
+   }
+   var r=metric(right,1),l=metric(left,-1);
+   if(!r||!l)return {yaw:null,reliable:false,reason:'左右側面の位置合わせに必要なランドマークが不足'};
+   // 骨盤の側面輪郭と下肢の重心線を併用。単独の奥側股関節を使用しない。
+   var dif=Math.abs(r.hip-l.hip)*.65+Math.abs(r.knee-l.knee)*.22+Math.abs(r.ankle-l.ankle)*.13;
+   if(!Number.isFinite(dif))return {yaw:null,reliable:false,reason:'左右側面の一致度を計算できません'};
+   // しきい値は臨床検証前の仮基準。点数は回旋角ではなく側面対称性の参考値。
+   var tier=dif<.035?0:dif<.075?5:dif<.14?10:15;
+   return {yaw:0,reliable:true,directionKnown:false,magnitudeProxy:tier,
+           reason:'左右側面の鏡像比較による参考評価（回旋方向・実角度は判定しません）',
+           level:tier===0?'ほぼなし':tier===5?'軽度':tier===10?'中等度':'強い'};
+ }
  var thoraxResult=yawFromProfiles("leftShoulder","rightShoulder");
- var pelvisResult=yawFromProfiles("leftHip","rightHip");
+ var pelvisResult=sideSymmetryProxy();
  thoraxYaw=thoraxResult.reliable?thoraxResult.yaw:null;pelvisYaw=pelvisResult.reliable?pelvisResult.yaw:null;
  /* 低信頼・ほぼ完全側面での微小ノイズを抑制 */
  if(thoraxYaw!==null&&Math.abs(thoraxYaw)<.35)thoraxYaw=0;if(pelvisYaw!==null&&Math.abs(pelvisYaw)<.35)pelvisYaw=0;
@@ -966,7 +996,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    if(!result.reliable)return {label:"判定不可",score:null,side:"",color:"#94a3b8"};
    var magnitude=Number.isFinite(result.magnitudeProxy)?result.magnitudeProxy:Math.abs(result.yaw),score=magnitude<1.5?100:magnitude<7.5?85:magnitude<12.5?65:40;
    var label=score===100?"ほぼなし":score===85?"軽度":score===65?"中等度":"強い";
-   return {label:label,score:score,side:result.directionKnown===false?"方向未確定（左右差の強さのみ参考評価）":score===100?"":(result.yaw>0?"左回旋傾向": "右回旋傾向"),color:score===100?"#16a34a":score===85?"#65a30d":score===65?"#eab308":"#ea580c"};
+   return {label:label,score:score,side:result.directionKnown===false?"方向未確定（左右側面の鏡像一致度による参考評価）":score===100?"":(result.yaw>0?"左回旋傾向": "右回旋傾向"),color:score===100?"#16a34a":score===85?"#65a30d":score===65?"#eab308":"#ea580c"};
  }
  var thoraxGrade=rotationGrade(thoraxResult),pelvisGrade=rotationGrade(pelvisResult);
  function showGrade(prefix,grade){
