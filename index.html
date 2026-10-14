@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V317</title>
+<title>AI姿勢＆3次元歪み分析システム V319</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V317</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V319</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3518,6 +3518,26 @@ body.v214-simple #v285LocalDetails{display:none!important}
  function refresh(){for(const t of types){const stage=document.getElementById('stage-'+t);if(!stage)continue;let layer=stage.querySelector('.v287-grid-layer');if(!enabled){if(layer)layer.remove();continue}const img=stage.querySelector('img');if(!img||!img.complete||!img.naturalWidth){if(layer)layer.remove();continue}if(!layer){layer=document.createElement('div');layer.className='v287-grid-layer';stage.appendChild(layer);for(let i=0;i<=10;i++){if(i===5)continue;const n=document.createElement('span');n.className='v287-grid-label';n.textContent=Math.abs(i-5);n.style.left=i*10+'%';layer.appendChild(n)}}const st=stage.getBoundingClientRect(),r=img.getBoundingClientRect();const scale=Math.min(r.width/img.naturalWidth,r.height/img.naturalHeight);const w=img.naturalWidth*scale,h=img.naturalHeight*scale;layer.style.left=(r.left-st.left+(r.width-w)/2)+'px';layer.style.top=(r.top-st.top+(r.height-h)/2)+'px';layer.style.width=w+'px';layer.style.height=h+'px';layer.style.setProperty('--v287-step',(w/10)+'px');}}
  function init(){const status=document.getElementById('status');if(status&&!document.getElementById('v287GridToggle')){const label=document.createElement('label');label.className='v287-grid-controls';label.innerHTML='<input type="checkbox" id="v287GridToggle" checked> 分析写真の格子線を表示';status.after(label);label.querySelector('input').addEventListener('change',e=>{enabled=e.target.checked;refresh()})}refresh();const root=document.querySelector('.views')||document.body;const obs=new MutationObserver(()=>{if(!enabled)return;requestAnimationFrame(refresh)});obs.observe(root,{childList:true,subtree:true});window.addEventListener('resize',refresh);window.addEventListener('load',refresh);}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+<style id="v319-share-style">#v319ShareBtn{display:block;width:100%;margin:12px 0;padding:15px;border:0;border-radius:12px;background:#06c755;color:#fff;font-size:15px;font-weight:900}#v319ShareStatus{font-size:12px;line-height:1.6;color:#0f766e;margin:4px 0 12px}</style>
+<script id="v319-share-script">
+(function(){'use strict';
+const ids=['scorePanel','patientReport','twistPanel','detailPosturePanel','alignmentPanel','muscleBalancePanel','clinicalPanel'];
+let loading=null;
+function loadRenderer(){if(window.html2canvas)return Promise.resolve(window.html2canvas);if(loading)return loading;loading=new Promise((resolve,reject)=>{const tag=document.createElement('script');tag.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';tag.onload=()=>window.html2canvas?resolve(window.html2canvas):reject(Error('画像化ライブラリが読み込めません'));tag.onerror=()=>reject(Error('画像化ライブラリの通信に失敗しました'));document.head.appendChild(tag)});return loading;}
+function isAnalyzed(){const e=document.getElementById('scoreTotal');const panel=document.getElementById('scorePanel');return !!panel && !!document.getElementById('patientReport') && (document.getElementById('postureType')?.textContent||'').trim()!=='3方向分析後に表示' && (document.getElementById('postureType')?.textContent||'').trim()!=='';}
+function makeSheet(){const root=document.createElement('div');root.id='v319CaptureRoot';root.style.cssText='position:fixed;left:-20000px;top:0;width:540px;box-sizing:border-box;padding:20px;background:#fff;color:#172033;z-index:-1;font-family:system-ui,-apple-system,sans-serif';
+const h=document.createElement('div');h.style.cssText='font-size:20px;font-weight:900;color:#0f766e;margin-bottom:6px';h.textContent='姿勢分析結果';root.appendChild(h);
+const desc=document.createElement('div');desc.style.cssText='font-size:12px;color:#64748b;margin-bottom:14px';desc.textContent='正面・左右側面の写真から分析した参考評価';root.appendChild(desc);
+const pics=document.createElement('div');pics.style.cssText='display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:14px';
+for(const [key,label] of [['front','正面'],['right','右側面'],['left','左側面']]){const item=document.createElement('div');item.style.cssText='border:1px solid #e2e8f0;border-radius:10px;padding:5px;min-width:0';const title=document.createElement('div');title.textContent=label;title.style.cssText='font-size:12px;font-weight:800;text-align:center;margin-bottom:5px';item.appendChild(title);const src=document.getElementById('stage-'+key);if(src){const visual=src.querySelector('canvas,img');if(visual){try{const img=document.createElement('img');img.src=visual.tagName==='CANVAS'?visual.toDataURL('image/png'):visual.src;img.style.cssText='width:100%;height:190px;object-fit:contain;background:#f8fafc;display:block';item.appendChild(img)}catch(e){const msg=document.createElement('div');msg.textContent='写真の画像化に失敗';item.appendChild(msg)}}}pics.appendChild(item)}root.appendChild(pics);
+for(const id of ids){const src=document.getElementById(id);if(!src)continue;const clone=src.cloneNode(true);clone.removeAttribute('id');clone.style.display='block';clone.style.width='100%';clone.style.boxSizing='border-box';clone.style.margin='0 0 12px';clone.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));clone.querySelectorAll('details').forEach(e=>{if(e.textContent.includes('内部検証'))e.remove()});root.appendChild(clone)}
+const foot=document.createElement('div');foot.textContent='※ 写真とランドマークから得た参考評価です。医学的診断ではありません。';foot.style.cssText='font-size:11px;color:#64748b;line-height:1.7';root.appendChild(foot);document.body.appendChild(root);return root;}
+function save(blob){const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='姿勢分析結果_'+new Date().toISOString().slice(0,10)+'.png';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000)}
+async function create(button){if(!isAnalyzed()){alert('先に3方向の写真を分析してください。');return}const original=button.textContent;button.disabled=true;button.textContent='分析画面を画像にしています…';let root=null;try{await loadRenderer();root=makeSheet();await Promise.all(Array.from(root.images).map(im=>im.decode?im.decode().catch(()=>{}):Promise.resolve()));const canvas=await window.html2canvas(root,{backgroundColor:'#ffffff',scale:2,useCORS:true,logging:false,windowWidth:600});const blob=await new Promise((res,rej)=>canvas.toBlob(b=>b?res(b):rej(Error('PNG生成に失敗')),'image/png'));save(blob);alert('ガイコツを除いた分析画面を画像で保存しました。保存した画像をLINE公式アカウントの管理画面から患者さんに送信してください。')}catch(e){console.error('V319 share',e);alert('分析画面の画像化に失敗しました。'+(e.message||e))}finally{if(root)root.remove();button.disabled=false;button.textContent=original}}
+function mount(){const panel=document.getElementById('scorePanel');if(!panel||document.getElementById('v319ShareBtn'))return;const btn=document.createElement('button');btn.id='v319ShareBtn';btn.type='button';btn.textContent='分析画面を丸ごと画像保存（ガイコツ除外）';btn.addEventListener('click',()=>create(btn));const note=document.createElement('div');note.id='v319ShareStatus';note.textContent='写真・スコア・姿勢タイプ・筋バランス・分析詳細を縦長画像にします。LINE公式アカウントから送信してください。';panel.after(note);panel.after(btn)}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 })();
 </script>
 </body></html>
