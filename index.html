@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V323</title>
+<title>AI姿勢＆3次元歪み分析システム V324</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V323</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V324</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1025,7 +1025,36 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
      if(margin<.008)lines.push('注意：判定境界付近のため、低い点数に統一しています。ランドマークの微調整で変動する可能性があります。');
      if(a.difference<.027)lines.push('注意：90点は「骨盤回旋なし」の実測値ではなく、側面の対称性が高いという意味です。');
    }else{lines.push('骨盤指標：'+(pelvisResult.reason||'計算できません'));}
-   // V323: 胸郭の左右側面の観測値と採用・保留理由のみを診断表示（採点処理は変更しない）。
+   // V324: 外くるぶし基準の左右側面比較。既存の採点には介入しない。
+   (function(){
+     function get(rec,key){var q=rec&&rec.points&&rec.points[key];return q&&Number.isFinite(q.x)&&Number.isFinite(q.y)?q:null;}
+     function mid(rec,a,b){var p=get(rec,a),q=get(rec,b);return p&&q?{x:(p.x+q.x)/2,y:(p.y+q.y)/2}:p||q;}
+     function side(rec,orientation){
+       var ankle=mid(rec,'leftAnkle','rightAnkle');
+       var hip=mid(rec,'leftHip','rightHip');
+       var shoulder=mid(rec,'leftShoulder','rightShoulder');
+       var head=get(rec,'head');
+       if(!ankle||!hip||!shoulder)return null;
+       var height=Math.abs(ankle.y-shoulder.y);
+       if(!Number.isFinite(height)||height<.20)return null;
+       function offset(q){return q?orientation*(q.x-ankle.x)/height:null;}
+       return {ear:offset(head),shoulder:offset(shoulder),hip:offset(hip),height:height};
+     }
+     var r=side(photos.right,1),l=side(photos.left,-1);
+     lines.push('【V324 外くるぶし基準・左右前後差（試験指標／採点には未反映）】');
+     if(!r||!l){lines.push('必要な足首・肩・股関節ランドマークが不足しています。');return;}
+     function signed(v){return v==null?'未取得':(v>=0?'+':'')+(v*100).toFixed(2)+'%';}
+     function diff(a,b){return a==null||b==null?null:Math.abs(a-b);}
+     var ear=diff(r.ear,l.ear),sh=diff(r.shoulder,l.shoulder),hip=diff(r.hip,l.hip);
+     lines.push('右側面（足首起点）：頭部 '+signed(r.ear)+'／肩 '+signed(r.shoulder)+'／大転子相当 '+signed(r.hip));
+     lines.push('左側面（鏡像補正・足首起点）：頭部 '+signed(l.ear)+'／肩 '+signed(l.shoulder)+'／大転子相当 '+signed(l.hip));
+     lines.push('左右の絶対差：頭部 '+signed(ear)+'／肩 '+signed(sh)+'／股関節 '+signed(hip));
+     lines.push('肩−股関節の相対的左右差：'+signed(diff(r.shoulder-r.hip,l.shoulder-l.hip)));
+     lines.push('※単位は肩〜足首の画像上の縦距離に対する割合であり、cmや回旋角度ではありません。');
+     lines.push('※頭部は耳介そのものではなく既存の頭部マーカー、股関節は大転子そのものではなく既存の股関節マーカーです。');
+     lines.push('※肩甲帯の前方突出を含む左右非対称性の試験指標。閾値・点数は未検証のため表示しません。');
+   })();
+   // V324: 胸郭の左右側面の観測値と採用・保留理由のみを診断表示（採点処理は変更しない）。
    lines.push('【胸郭の判定診断（参考推定値）】');
    var tr=profilePairYaw('leftShoulder','rightShoulder','right');
    var tl=profilePairYaw('leftShoulder','rightShoulder','left');
@@ -3580,7 +3609,7 @@ async function create(button){
   }
   for(const file of files)save(file,file.name);
   alert(files.length+'枚の読みやすい画像に分割しました。端末によっては複数ダウンロードの許可が必要です。画像を順番にLINEで送信してください。');
- }catch(e){console.error('V323 share',e);alert('分析画面の画像化に失敗しました。'+(e.message||e));}
+ }catch(e){console.error('V324 share',e);alert('分析画面の画像化に失敗しました。'+(e.message||e));}
  finally{if(root)root.remove();button.disabled=false;button.textContent=original;}
 }
 function mount(){const panel=document.getElementById('scorePanel');if(!panel||document.getElementById('v322ShareBtn'))return;const btn=document.createElement('button');btn.id='v322ShareBtn';btn.type='button';btn.textContent='読みやすい画像で共有（ガイコツ除外）';btn.addEventListener('click',()=>create(btn));const note=document.createElement('div');note.id='v322ShareStatus';note.textContent='写真・スコア・姿勢タイプ・筋バランス・分析詳細を読みやすい複数枚の画像にします。対応端末では共有画面が開きます。';panel.after(note);panel.after(btn)}
