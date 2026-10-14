@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V321</title>
+<title>AI姿勢＆3次元歪み分析システム V322</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V321</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V322</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1025,6 +1025,23 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
      if(margin<.008)lines.push('注意：判定境界付近のため、低い点数に統一しています。ランドマークの微調整で変動する可能性があります。');
      if(a.difference<.027)lines.push('注意：90点は「骨盤回旋なし」の実測値ではなく、側面の対称性が高いという意味です。');
    }else{lines.push('骨盤指標：'+(pelvisResult.reason||'計算できません'));}
+   // V322: 胸郭の左右側面の観測値と採用・保留理由のみを診断表示（採点処理は変更しない）。
+   lines.push('【胸郭の判定診断（参考推定値）】');
+   var tr=profilePairYaw('leftShoulder','rightShoulder','right');
+   var tl=profilePairYaw('leftShoulder','rightShoulder','left');
+   function angleText(v){return v?(v.angle.toFixed(1)+'° / 可視度 '+v.weight.toFixed(3)):'取得不可（可視度・正面幅・角度などの条件未達）'}
+   lines.push('右側面：'+angleText(tr));
+   lines.push('左側面：'+angleText(tl));
+   var tsA=raw(photos.front,'leftShoulder'),tsB=raw(photos.front,'rightShoulder');
+   var tfa=photos.front.points.leftShoulder,tfb=photos.front.points.rightShoulder;
+   var twidth=tfa&&tfb?Math.abs(tfb.x-tfa.x):NaN;
+   var tratio=Number.isFinite(twidth)?twidth/Math.max(.25,frontHeight):NaN;
+   var tdepth=tsA&&tsB&&Number.isFinite(tsA.z)&&Number.isFinite(tsB.z)?tsB.z-tsA.z:null;
+   lines.push('正面肩幅/身長比：'+f(tratio)+'（狭い判定 < 0.205）');
+   lines.push('正面肩の相対奥行き差：'+f(tdepth));
+   if(tr&&tl)lines.push('左右の符号：'+(tr.angle*tl.angle<0?'逆方向':'同方向またはゼロ'));
+   lines.push('判定理由：'+(thoraxResult.reason||'判定条件を満たしました'));
+   lines.push('※角度は側面写真からの内部参考推定であり、実際の胸郭回旋角ではありません。');
    lines.push('【整合性】');
    lines.push('胸郭方向：'+(thoraxResult.directionKnown===false?'未確定':thoraxResult.reliable?'参考推定あり':'判定不可'));
    lines.push('骨盤方向：未確定（左右側面の対称性のみ評価）');
@@ -3520,14 +3537,14 @@ body.v214-simple #v285LocalDetails{display:none!important}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
-<style id="v321-share-style">#v321ShareBtn{display:block;width:100%;margin:12px 0;padding:15px;border:0;border-radius:12px;background:#06c755;color:#fff;font-size:15px;font-weight:900}#v321ShareStatus{font-size:12px;line-height:1.6;color:#0f766e;margin:4px 0 12px}</style>
-<script id="v321-share-script">
+<style id="v322-share-style">#v322ShareBtn{display:block;width:100%;margin:12px 0;padding:15px;border:0;border-radius:12px;background:#06c755;color:#fff;font-size:15px;font-weight:900}#v322ShareStatus{font-size:12px;line-height:1.6;color:#0f766e;margin:4px 0 12px}</style>
+<script id="v322-share-script">
 (function(){'use strict';
 const ids=['scorePanel','patientReport','twistPanel','detailPosturePanel','alignmentPanel','muscleBalancePanel','clinicalPanel'];
 let loading=null;
 function loadRenderer(){if(window.html2canvas)return Promise.resolve(window.html2canvas);if(loading)return loading;loading=new Promise((resolve,reject)=>{const tag=document.createElement('script');tag.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';tag.onload=()=>window.html2canvas?resolve(window.html2canvas):reject(Error('画像化ライブラリが読み込めません'));tag.onerror=()=>reject(Error('画像化ライブラリの通信に失敗しました'));document.head.appendChild(tag)});return loading;}
 function isAnalyzed(){const e=document.getElementById('scoreTotal');const panel=document.getElementById('scorePanel');return !!panel && !!document.getElementById('patientReport') && (document.getElementById('postureType')?.textContent||'').trim()!=='3方向分析後に表示' && (document.getElementById('postureType')?.textContent||'').trim()!=='';}
-function makeSheet(){const root=document.createElement('div');root.id='v321CaptureRoot';root.style.cssText='position:fixed;left:-20000px;top:0;width:540px;box-sizing:border-box;padding:20px;background:#fff;color:#172033;z-index:-1;font-family:system-ui,-apple-system,sans-serif';
+function makeSheet(){const root=document.createElement('div');root.id='v322CaptureRoot';root.style.cssText='position:fixed;left:-20000px;top:0;width:540px;box-sizing:border-box;padding:20px;background:#fff;color:#172033;z-index:-1;font-family:system-ui,-apple-system,sans-serif';
 const h=document.createElement('div');h.style.cssText='font-size:20px;font-weight:900;color:#0f766e;margin-bottom:6px';h.textContent='姿勢分析結果';root.appendChild(h);
 const desc=document.createElement('div');desc.style.cssText='font-size:12px;color:#64748b;margin-bottom:14px';desc.textContent='正面・左右側面の写真から分析した参考評価';root.appendChild(desc);
 const pics=document.createElement('div');pics.style.cssText='display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:14px';
@@ -3562,10 +3579,10 @@ async function create(button){
   }
   for(const file of files)save(file,file.name);
   alert(files.length+'枚の読みやすい画像に分割しました。端末によっては複数ダウンロードの許可が必要です。画像を順番にLINEで送信してください。');
- }catch(e){console.error('V321 share',e);alert('分析画面の画像化に失敗しました。'+(e.message||e));}
+ }catch(e){console.error('V322 share',e);alert('分析画面の画像化に失敗しました。'+(e.message||e));}
  finally{if(root)root.remove();button.disabled=false;button.textContent=original;}
 }
-function mount(){const panel=document.getElementById('scorePanel');if(!panel||document.getElementById('v321ShareBtn'))return;const btn=document.createElement('button');btn.id='v321ShareBtn';btn.type='button';btn.textContent='読みやすい画像で共有（ガイコツ除外）';btn.addEventListener('click',()=>create(btn));const note=document.createElement('div');note.id='v321ShareStatus';note.textContent='写真・スコア・姿勢タイプ・筋バランス・分析詳細を読みやすい複数枚の画像にします。対応端末では共有画面が開きます。';panel.after(note);panel.after(btn)}
+function mount(){const panel=document.getElementById('scorePanel');if(!panel||document.getElementById('v322ShareBtn'))return;const btn=document.createElement('button');btn.id='v322ShareBtn';btn.type='button';btn.textContent='読みやすい画像で共有（ガイコツ除外）';btn.addEventListener('click',()=>create(btn));const note=document.createElement('div');note.id='v322ShareStatus';note.textContent='写真・スコア・姿勢タイプ・筋バランス・分析詳細を読みやすい複数枚の画像にします。対応端末では共有画面が開きます。';panel.after(note);panel.after(btn)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 })();
 </script>
