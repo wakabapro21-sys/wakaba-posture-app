@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V327</title>
+<title>AI姿勢＆3次元歪み分析システム V328</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V327</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V328</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -627,7 +627,7 @@ function geometry(type){var stage=document.getElementById("stage-"+type),img=sta
 function draw(type){var rec=photos[type],g=geometry(type);if(!rec||!g)return;var d=devicePixelRatio||1,c=g.cv;c.width=Math.round(g.sr.width*d);c.height=Math.round(g.sr.height*d);var x=c.getContext("2d");x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,g.sr.width,g.sr.height);
  var ns=visibleNames(type),pts=ns.map(n=>rec.points[n]),es=visibleEdges(type);x.strokeStyle="rgba(20,184,166,.95)";x.lineWidth=3;
  es.forEach(function(e){x.beginPath();x.moveTo(g.ox+pts[e[0]].x*g.w,g.oy+pts[e[0]].y*g.h);x.lineTo(g.ox+pts[e[1]].x*g.w,g.oy+pts[e[1]].y*g.h);x.stroke()});
- // V327: side-view vertical reference through the AI-detected (or manually corrected) ankle.
+ // V328: side-view vertical reference through the AI-detected (or manually corrected) ankle.
  if(type==="right"||type==="left"){
    var ap=rec.points.leftAnkle||rec.points.rightAnkle;
    if(ap&&Number.isFinite(ap.x)){
@@ -1010,7 +1010,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    var label=score===90?"ほぼなし":score===80?"軽度":score===60?"中等度":"強い";
    return {label:label,score:score,side:result.directionKnown===false?"方向未確定（左右側面の鏡像一致度による参考評価）":score===90?"":(result.yaw>0?"左回旋傾向": "右回旋傾向"),color:score===90?"#16a34a":score===80?"#65a30d":score===60?"#eab308":"#ea580c"};
  }
- // V327: use ankle-origin bilateral asymmetry for patient-facing twist grades.
+ // V328: use ankle-origin bilateral asymmetry for patient-facing twist grades.
  // Keep the former profile-yaw estimator only for internal diagnostics and 3D directional safety.
  function v327Point(rec,key){var q=rec&&rec.points&&rec.points[key];return q&&Number.isFinite(q.x)&&Number.isFinite(q.y)?q:null;}
  function v327Mid(rec,a,b){var p=v327Point(rec,a),q=v327Point(rec,b);return p&&q?{x:(p.x+q.x)/2,y:(p.y+q.y)/2}:p||q;}
@@ -1027,8 +1027,8 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  function v327Band(value){
    if(value==null||!Number.isFinite(value))return {label:'判定不可',score:null};
    // Exact boundaries always go to the lower score.
-   var score=value<.02?90:value<.04?80:value<.08?60:40;
-   return {label:score===90?'ほぼなし':score===80?'軽度':score===60?'中等度':'強い',score:score};
+   var score=value<.01?90:value<.015?80:value<.025?70:value<.045?60:40;
+   return {label:score===90?'ほぼなし':score===80?'ごく軽度':score===70?'軽度':score===60?'中等度':'強い',score:score};
  }
  var v327Right=v327Side(photos.right,1),v327Left=v327Side(photos.left,-1);
  var v327Diffs=v327Right&&v327Left?{
@@ -1040,7 +1040,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  var v327Upper=v327Diffs?Math.max(v327Diffs.shoulder==null?0:v327Diffs.shoulder,v327Diffs.ear==null?0:v327Diffs.ear,v327Diffs.relative==null?0:v327Diffs.relative):null;
  if(v327Diffs&&v327Diffs.shoulder==null&&v327Diffs.ear==null&&v327Diffs.relative==null)v327Upper=null;
  var v327Lower=v327Diffs?v327Diffs.hip:null;
- function v327Grade(value){var g=v327Band(value);return {label:g.label,score:g.score,side:g.score==null?'必要なランドマークが不足しています':'左右の非対称性 '+(value*100).toFixed(2)+'%（参考指標・回旋角ではありません）',color:g.score===90?'#16a34a':g.score===80?'#65a30d':g.score===60?'#eab308':g.score===40?'#ea580c':'#94a3b8'};}
+ function v327Grade(value){var g=v327Band(value);return {label:g.label,score:g.score,side:g.score==null?'必要なランドマークが不足しています':'左右の非対称性 '+(value*100).toFixed(2)+'%（参考指標・回旋角ではありません）',color:g.score===90?'#16a34a':g.score===80?'#65a30d':g.score===70?'#84cc16':g.score===60?'#eab308':g.score===40?'#ea580c':'#94a3b8'};}
  var thoraxGrade=v327Grade(v327Upper),pelvisGrade=v327Grade(v327Lower);
  twistAvailable=thoraxGrade.score!=null&&pelvisGrade.score!=null;
 
@@ -1056,7 +1056,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    var out=document.getElementById('v317TwistAuditText');if(!out)return;
    var a=pelvisResult.audit;
    function f(v){return Number.isFinite(v)?v.toFixed(4):'取得不可'}
-   var lines=['【V327 新方式による正式判定】','胸郭：'+(thoraxGrade.score==null?'判定不可':thoraxGrade.score+'点')+'／骨盤：'+(pelvisGrade.score==null?'判定不可':pelvisGrade.score+'点')];
+   var lines=['【V328 新方式による正式判定】','胸郭：'+(thoraxGrade.score==null?'判定不可':thoraxGrade.score+'点')+'／骨盤：'+(pelvisGrade.score==null?'判定不可':pelvisGrade.score+'点')];
    if(a){
      lines.push('【旧方式の骨盤側面・鏡像比較（採点には使用しません）】');
      lines.push('加重差：'+f(a.difference)+'（元の境界 0.035 / 0.075 / 0.140、境界手前0.008は低得点側）');
@@ -1069,7 +1069,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
      if(margin<.008)lines.push('注意：判定境界付近のため、低い点数に統一しています。ランドマークの微調整で変動する可能性があります。');
      if(a.difference<.027)lines.push('注意：90点は「骨盤回旋なし」の実測値ではなく、側面の対称性が高いという意味です。');
    }else{lines.push('骨盤指標：'+(pelvisResult.reason||'計算できません'));}
-   // V327: ankle-origin diagnostics for the same scoring method.
+   // V328: ankle-origin diagnostics for the same scoring method.
    (function(){
      function get(rec,key){var q=rec&&rec.points&&rec.points[key];return q&&Number.isFinite(q.x)&&Number.isFinite(q.y)?q:null;}
      function mid(rec,a,b){var p=get(rec,a),q=get(rec,b);return p&&q?{x:(p.x+q.x)/2,y:(p.y+q.y)/2}:p||q;}
@@ -1085,7 +1085,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
        return {ear:offset(head),shoulder:offset(shoulder),hip:offset(hip),height:height};
      }
      var r=side(photos.right,1),l=side(photos.left,-1);
-     lines.push('【V327 足首自動垂直線・左右前後差（採点に反映）】');
+     lines.push('【V328 足首自動垂直線・左右前後差（採点に反映）】');
      if(!r||!l){lines.push('必要な足首・肩・股関節ランドマークが不足しています。');return;}
      function signed(v){return v==null?'未取得':(v>=0?'+':'')+(v*100).toFixed(2)+'%';}
      function diff(a,b){return a==null||b==null?null:Math.abs(a-b);}
@@ -1094,23 +1094,23 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
      lines.push('左側面（鏡像補正・足首自動起点）：耳付近 '+signed(l.ear)+'／肩 '+signed(l.shoulder)+'／大転子相当 '+signed(l.hip));
      lines.push('左右の絶対差：耳付近 '+signed(ear)+'／肩 '+signed(sh)+'／股関節 '+signed(hip));
      lines.push('肩−股関節の相対的左右差：'+signed(diff(r.shoulder-r.hip,l.shoulder-l.hip)));
-     // V327: diagnostic replication of the patient-facing ankle-origin grading.
+     // V328: diagnostic replication of the patient-facing ankle-origin grading.
      var rel=diff(r.shoulder-r.hip,l.shoulder-l.hip);
      function band(v){if(v==null||!Number.isFinite(v))return '判定不可';
-       return v<.02?'ほぼなし':v<.04?'軽度':v<.08?'中等度':'強い';}
+       return v<.01?'ほぼなし':v<.015?'ごく軽度':v<.025?'軽度':v<.045?'中等度':'強い';}
      var upper=Math.max(sh==null?0:sh,ear==null?0:ear,rel==null?0:rel);
      lines.push('【新方式の左右非対称性（採点に反映・境界は低得点）】');
      lines.push('頭頸部：'+band(ear)+'／肩・上半身：'+band(upper)+'／股関節・下半身：'+band(hip));
      lines.push('上半身指標：肩差・耳差・肩と股関節の相対差の最大値 '+signed(upper));
-     lines.push('V327正式判定：上半身 '+thoraxGrade.label+'（'+(thoraxGrade.score==null?'判定不可':thoraxGrade.score+'点')+'）／下半身 '+pelvisGrade.label+'（'+(pelvisGrade.score==null?'判定不可':pelvisGrade.score+'点')+'）');
-     lines.push('境界：2%以上=軽度、4%以上=中等度、8%以上=強い。境界ちょうどは低得点。臨床的妥当性・再現性は未検証。');
+     lines.push('V328正式判定：上半身 '+thoraxGrade.label+'（'+(thoraxGrade.score==null?'判定不可':thoraxGrade.score+'点')+'）／下半身 '+pelvisGrade.label+'（'+(pelvisGrade.score==null?'判定不可':pelvisGrade.score+'点')+'）');
+     lines.push('境界：1%以上=ごく軽度、1.5%以上=軽度、2.5%以上=中等度、4.5%以上=強い。境界ちょうどは低得点。臨床的妥当性・再現性は未検証。');
      lines.push('※左右の側面で同一姿勢・同じカメラ距離・鉛直が維持される前提です。足首ランドマークは外くるぶしそのものではありません。');
 
      lines.push('※単位は耳付近〜足首（耳点が無い場合は肩〜足首）の画像上の縦距離に対する割合であり、cmや回旋角度ではありません。');
      lines.push('※側面の頭部マーカーはAIの耳ランドマークを優先（検出できない場合は頭部代用）。股関節は大転子そのものではありません。足首点は外くるぶしの厳密な位置とは限らず、手動補正できます。');
      lines.push('※ここでの「捻じれ」は左右の非対称性をもとにした参考指標です。実際の骨格の回旋角度ではありません。閾値・点数は未検証です。');
    })();
-   // V327: 胸郭の左右側面の観測値と採用・保留理由のみを診断表示（採点処理は変更しない）。
+   // V328: 胸郭の左右側面の観測値と採用・保留理由のみを診断表示（採点処理は変更しない）。
    lines.push('【旧方式の胸郭推定診断（採点には使用しません）】');
    var tr=profilePairYaw('leftShoulder','rightShoulder','right');
    var tl=profilePairYaw('leftShoulder','rightShoulder','left');
@@ -3665,10 +3665,10 @@ async function create(button){
   }
   for(const file of files)save(file,file.name);
   alert(files.length+'枚の読みやすい画像に分割しました。端末によっては複数ダウンロードの許可が必要です。画像を順番にLINEで送信してください。');
- }catch(e){console.error('V327 share',e);alert('分析画面の画像化に失敗しました。'+(e.message||e));}
+ }catch(e){console.error('V328 share',e);alert('分析画面の画像化に失敗しました。'+(e.message||e));}
  finally{if(root)root.remove();button.disabled=false;button.textContent=original;}
 }
-function mount(){const panel=document.getElementById('scorePanel');if(!panel||document.getElementById('v322ShareBtn'))return;const btn=document.createElement('button');btn.id='v322ShareBtn';btn.type='button';btn.textContent='読みやすい画像で共有（ガイコツ除外）';btn.addEventListener('click',()=>create(btn));const note=document.createElement('div');note.id='v322ShareStatus';note.textContent='写真・スコア・姿勢タイプ・筋バランス・分析詳細を読みやすい複数枚の画像にします。対応端末では共有画面が開きます。';panel.after(note);panel.after(btn)}
+function mount(){const panel=document.getElementById('scorePanel');if(!panel||document.getElementById('v322ShareBtn'))return;const btn=document.createElement('button');btn.id='v322ShareBtn';btn.type='button';btn.textContent='読みやすい画像で共有（骨格表示以外）';btn.addEventListener('click',()=>create(btn));const note=document.createElement('div');note.id='v322ShareStatus';note.textContent='写真・スコア・姿勢タイプ・筋バランス・分析詳細を読みやすい複数枚の画像にします。対応端末では共有画面が開きます。';panel.after(note);panel.after(btn)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 })();
 </script>
