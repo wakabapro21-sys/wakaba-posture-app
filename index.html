@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V332</title>
+<title>AI姿勢＆3次元歪み分析システム V333</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V332</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V333</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3158,6 +3158,7 @@ boot();
 #v213ContractOverview{margin:12px 0;padding:16px;border:1px solid #fdba74;border-radius:14px;background:#fff7ed;color:#7c2d12;font-size:13px;line-height:1.7}
 #v213ContractOverview h3{margin:0 0 12px;font-size:17px}
 #v213ContractOverview .v213grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+#v213ContractOverview #v213TrialRow[hidden]{display:none!important}
 #v213ContractOverview .v213cell{background:#fff;border:1px solid #fed7aa;border-radius:10px;padding:10px;min-width:0}
 #v213ContractOverview .v213cell strong{display:block;color:#9a3412;font-size:15px;overflow-wrap:anywhere}
 #v213ContractOverview .v213actions{display:grid;gap:9px;margin-top:12px}
@@ -3174,9 +3175,9 @@ const labels={trial:'無料体験中',trialing:'無料体験中',active:'契約�
 function date(v){if(!v)return '未確認';try{const d=v.toDate?v.toDate():new Date(typeof v==='number'&&v<1e12?v*1000:v);return Number.isNaN(d.getTime())?'未確認':d.toLocaleDateString('ja-JP')}catch{return '未確認'}}
 function mount(){const sales=document.getElementById('v130Sales');if(!sales||document.getElementById('v213ContractOverview'))return;
 const el=document.createElement('section');el.id='v213ContractOverview';
-el.innerHTML='<h3>💳 ご契約状況</h3><div class="v213grid"><div class="v213cell">契約状態<strong id="v213State">確認中…</strong></div><div class="v213cell">プラン<strong>スタンダード</strong></div><div class="v213cell">無料体験<strong>14日間</strong></div><div class="v213cell">月額料金<strong>3,980円（税込）</strong></div><div class="v213cell">無料体験終了日<strong id="v213Trial">未確認</strong></div><div class="v213cell">次回更新・契約期限<strong id="v213Renew">未確認</strong></div></div><div class="v213actions"><button type="button" id="v213Refresh">契約状態を再確認</button><a href="'+portal+'" target="_blank" rel="noopener noreferrer">契約内容の確認・解約（Stripeテスト）</a></div><div class="v213fine" id="v213Message">契約状態はFirebaseの院アカウントから読み取ります。</div><div class="v213fine">※現在はテスト環境です。本番の契約・請求には使用できません。</div>';
+el.innerHTML='<h3>💳 ご契約状況</h3><div class="v213grid"><div class="v213cell">契約状態<strong id="v213State">確認中…</strong></div><div class="v213cell">プラン<strong>スタンダード</strong></div><div class="v213cell">無料体験<strong id="v213TrialStatus">14日間</strong></div><div class="v213cell">月額料金<strong>3,980円（税込）</strong></div><div class="v213cell" id="v213TrialRow">無料体験終了日<strong id="v213Trial">未確認</strong></div><div class="v213cell">次回更新・契約期限<strong id="v213Renew">未確認</strong></div></div><div class="v213actions"><button type="button" id="v213Refresh">契約状態を再確認</button><a href="'+portal+'" target="_blank" rel="noopener noreferrer">契約内容の確認・解約（Stripeテスト）</a></div><div class="v213fine" id="v213Message">契約状態はFirebaseの院アカウントから読み取ります。</div><div class="v213fine">※現在はテスト環境です。本番の契約・請求には使用できません。</div>';
 sales.insertAdjacentElement('beforebegin',el);
-const state=el.querySelector('#v213State'),trial=el.querySelector('#v213Trial'),renew=el.querySelector('#v213Renew'),msg=el.querySelector('#v213Message'),btn=el.querySelector('#v213Refresh');
+const state=el.querySelector('#v213State'),trial=el.querySelector('#v213Trial'),trialStatus=el.querySelector('#v213TrialStatus'),trialRow=el.querySelector('#v213TrialRow'),renew=el.querySelector('#v213Renew'),msg=el.querySelector('#v213Message'),btn=el.querySelector('#v213Refresh');
 let refreshing=false;
 async function refresh(){
  if(refreshing)return;
@@ -3198,7 +3199,12 @@ async function refresh(){
   const remaining=Math.max(0,1200-(Date.now()-started));
   if(remaining)await new Promise(resolve=>setTimeout(resolve,remaining));
   state.textContent=labels[st]||'確認が必要';
-  trial.textContent=date(d.trialEnd??d.trial_end??d.trialEndAt??d.trialEndsAt);
+  // V333: display-only trial presentation. Do not change Stripe/Firebase/access logic.
+  const savedTrialEnd=d.trialEnd??d.trial_end??d.trialEndAt??d.trialEndsAt;
+  const inTrial=st==='trial'||st==='trialing';
+  trialStatus.textContent=inTrial?'14日間':(savedTrialEnd?'利用済み':'14日間');
+  trialRow.hidden=!inTrial;
+  trial.textContent=inTrial?date(savedTrialEnd):'';
   renew.textContent=date(d.currentPeriodEnd??d.current_period_end);
   msg.textContent='再確認完了：'+new Date().toLocaleTimeString('ja-JP')+'。Firebaseの契約情報を取得しました。Stripe側の最新状態とは限りません。';
  }catch(e){state.textContent='取得できません';msg.textContent='再確認に失敗しました：'+(e?.message||'通信・ログイン状態をご確認ください。');}
