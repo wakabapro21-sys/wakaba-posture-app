@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V334</title>
+<title>AI姿勢＆3次元歪み分析システム V335</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -353,7 +353,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V334</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V335</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -2429,11 +2429,11 @@ async function render121(){
   else if(effective==='active'){accessTitle='✓ 契約中：利用OK';accessClass='v121ok';accessNote='契約更新日：'+fmt(x.currentPeriodEnd)}
   else if(effective==='expired'){accessTitle='⚠ 無料体験・契約期限切れ';accessClass='v121warn';accessNote='現在は警告表示のみで、姿勢分析は停止しません。'}
   else if(effective==='canceled'){accessTitle='⚠ 解約済み';accessClass='v121warn';accessNote='現在は警告表示のみで、姿勢分析は停止しません。'}
-  box.innerHTML='🧾 <b>V128 契約状態・利用制御</b><div class="v121grid"><div class="v121cell">契約状態<br><span class="v121num">'+(labels[effective]||effective)+'</span></div><div class="v121cell">プラン<br><span class="v121num">'+plan+'</span></div><div class="v121cell">無料体験終了<br><span class="v121num">'+fmt(x.trialEnd ?? x.trial_end ?? x.trialEndsAt)+'</span></div><div class="v121cell">契約更新日<br><span class="v121num">'+fmt(x.currentPeriodEnd)+'</span></div></div><div style="margin-top:10px;padding:10px;border-radius:10px;background:#fff;border:1px solid #f5d0fe"><div class="'+accessClass+'" style="font-size:14px">'+accessTitle+'</div><div>'+accessNote+'</div></div>'+(snap.exists()?'<div class="v121ok" style="margin-top:8px">✓ 院専用Firebaseの契約情報から利用判定しています。</div>':'<div class="v121warn" style="margin-top:8px">まだ契約状態がありません。下のボタンで14日無料体験のテスト情報を作成できます。</div>')+'<button class="v121btn" id="v121Trial">14日無料体験を開始（テスト）</button><button class="v121btn secondary" id="v121Refresh">契約状態・利用判定を再確認</button><div style="margin-top:6px">保存先：/clinics/{ログインUID}/subscription/status<br>※V128は無料体験終了日・契約更新日・解約状態を自動判定します。無料体験中・契約中は利用OK、期限切れ・解約済みは利用停止画面を表示します。患者・履歴・写真・DataGuardのデータ自体は削除・変更しません。</div>';
+  box.innerHTML='🧾 <b>V128 契約状態・利用制御</b><div class="v121grid"><div class="v121cell">契約状態<br><span class="v121num">'+(labels[effective]||effective)+'</span></div><div class="v121cell">プラン<br><span class="v121num">'+plan+'</span></div><div class="v121cell">無料体験終了<br><span class="v121num">'+fmt(x.trialEnd ?? x.trial_end ?? x.trialEndsAt)+'</span></div><div class="v121cell">契約更新日<br><span class="v121num">'+fmt(x.currentPeriodEnd)+'</span></div></div><div style="margin-top:10px;padding:10px;border-radius:10px;background:#fff;border:1px solid #f5d0fe"><div class="'+accessClass+'" style="font-size:14px">'+accessTitle+'</div><div>'+accessNote+'</div></div>'+(snap.exists()?'<div class="v121ok" style="margin-top:8px">✓ 院専用Firebaseの契約情報から利用判定しています。</div>':'<div class="v121warn" style="margin-top:8px">まだ契約状態がありません。下のボタンで7日無料体験のテスト情報を作成できます。</div>')+'<button class="v121btn" id="v121Trial">7日無料体験を開始（テスト）</button><button class="v121btn secondary" id="v121Refresh">契約状態・利用判定を再確認</button><div style="margin-top:6px">保存先：/clinics/{ログインUID}/subscription/status<br>※V128は無料体験終了日・契約更新日・解約状態を自動判定します。無料体験中・契約中は利用OK、期限切れ・解約済みは利用停止画面を表示します。患者・履歴・写真・DataGuardのデータ自体は削除・変更しません。</div>';
   document.getElementById('v121Refresh').onclick=render121;
   document.getElementById('v121Trial').onclick=async()=>{
-   if(!confirm('この院アカウントに「14日無料体験」のテスト契約情報を作成しますか？\n患者・履歴・写真は変更しません。'))return;
-   const end=new Date(Date.now()+14*24*60*60*1000);
+   if(!confirm('この院アカウントに「7日無料体験」のテスト契約情報を作成しますか？\n患者・履歴・写真は変更しません。'))return;
+   const end=new Date(Date.now()+7*24*60*60*1000);
    await setDoc(ref,{status:'trial',plan:'trial',trialEndsAt:Timestamp.fromDate(end),currentPeriodEnd:null,updatedAt:serverTimestamp(),source:'v121-test'}, {merge:true});
    await render121();
   };
@@ -2455,7 +2455,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   const anchor=document.getElementById('v121SubscriptionControl');
   if(!anchor||document.getElementById('v129SalesPlan'))return;
   const d=document.createElement('div');d.id='v129SalesPlan';
-  d.innerHTML='💳 <b>V129 販売プラン基盤</b><div class="v129grid"><div class="v129cell">販売プラン<br><span class="v129num">スタンダード</span></div><div class="v129cell">無料体験<br><span class="v129num">14日間</span></div><div class="v129cell">決済<br><span class="v129num">Stripe準備</span></div><div class="v129cell">現在の課金<br><span class="v129num">なし</span></div></div><div class="v129ok" style="margin-top:8px">✓ V129販売プラン基盤を確認できます。</div><div style="margin-top:4px">※現在は販売画面の土台のみです。実際の決済・請求は発生しません。患者・履歴・写真・DataGuard・Firebase保存先は変更しません。</div>';
+  d.innerHTML='💳 <b>V129 販売プラン基盤</b><div class="v129grid"><div class="v129cell">販売プラン<br><span class="v129num">スタンダード</span></div><div class="v129cell">無料体験<br><span class="v129num">7日間</span></div><div class="v129cell">決済<br><span class="v129num">Stripe準備</span></div><div class="v129cell">現在の課金<br><span class="v129num">なし</span></div></div><div class="v129ok" style="margin-top:8px">✓ V129販売プラン基盤を確認できます。</div><div style="margin-top:4px">※現在は販売画面の土台のみです。実際の決済・請求は発生しません。患者・履歴・写真・DataGuard・Firebase保存先は変更しません。</div>';
   anchor.insertAdjacentElement('afterend',d);
  }
  function start(){let n=0;const t=setInterval(()=>{mount129();if(document.getElementById('v129SalesPlan')||++n>30)clearInterval(t)},200)}
@@ -2473,7 +2473,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   const anchor=document.getElementById('v129SalesPlan');
   if(!anchor||document.getElementById('v130Sales'))return;
   const d=document.createElement('div');d.id='v130Sales';
-  d.innerHTML='🛒 <b>料金プラン・お申込み</b><div class="v130grid"><div class="v130cell">プラン<br><span class="v130num">スタンダード</span></div><div class="v130cell">無料体験<br><span class="v130num">14日間</span></div><div class="v130cell">月額料金<br><span class="v130num">3,980円（税込）</span></div><div class="v130cell">決済<br><span class="v130num">Stripeテスト準備</span></div></div><button class="v130btn" id="v130Apply">スタンダードプランを申し込む（準備中）</button><div class="v130note">※現在はStripeテスト接続前です。ボタンを押しても決済・請求は発生しません。患者・履歴・写真・DataGuard・Firebase保存先は変更しません。</div>';
+  d.innerHTML='🛒 <b>料金プラン・お申込み</b><div class="v130grid"><div class="v130cell">プラン<br><span class="v130num">スタンダード</span></div><div class="v130cell">無料体験<br><span class="v130num">7日間</span></div><div class="v130cell">月額料金<br><span class="v130num">3,980円（税込）</span></div><div class="v130cell">決済<br><span class="v130num">Stripeテスト準備</span></div></div><button class="v130btn" id="v130Apply">スタンダードプランを申し込む（準備中）</button><div class="v130note">※現在はStripeテスト接続前です。ボタンを押しても決済・請求は発生しません。患者・履歴・写真・DataGuard・Firebase保存先は変更しません。</div>';
   anchor.insertAdjacentElement('afterend',d);
   document.getElementById('v130Apply').onclick=()=>alert('現在はStripeテスト接続前です。まだ決済・請求は発生しません。');
  }
@@ -2526,7 +2526,7 @@ mount141();
 #v131Cancel{background:#e2e8f0;color:#334155}#v131Continue{background:#ea580c;color:#fff}
 </style>
 <div id="v131Modal" aria-hidden="true"><div id="v131Card"><h2>🛒 スタンダードプラン申込み確認</h2>
-<div class="v131row"><span>プラン</span><b>スタンダード</b></div><div class="v131row"><span>無料体験</span><b>14日間</b></div><div class="v131row"><span>月額料金</span><b>3,980円（税込）</b></div><div class="v131row"><span>決済</span><b>Stripe テスト接続前</b></div><div class="v131row"><span>院アカウント</span><b id="v131Email">確認中…</b></div>
+<div class="v131row"><span>プラン</span><b>スタンダード</b></div><div class="v131row"><span>無料体験</span><b>7日間</b></div><div class="v131row"><span>月額料金</span><b>3,980円（税込）</b></div><div class="v131row"><span>決済</span><b>Stripe テスト接続前</b></div><div class="v131row"><span>院アカウント</span><b id="v131Email">確認中…</b></div>
 <div class="v131notice">V131は申込み内容の確認画面までです。「次へ」を押しても決済・請求は発生しません。患者・履歴・写真・DataGuard・Firebase保存先は変更しません。</div>
 <div class="v131actions"><button id="v131Cancel">戻る</button><button id="v131Continue">次へ（テスト）</button></div></div></div>
 <script type="module" id="v131-application-confirm">
@@ -2545,7 +2545,7 @@ document.getElementById('v131Cancel').onclick=close131;document.getElementById('
 .v132actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}.v132actions button{border:0;border-radius:11px;padding:13px;font-size:14px;font-weight:900}#v132Back{background:#e2e8f0;color:#334155}#v132Test{background:#635bff;color:#fff}
 </style>
 <div id="v132Modal" aria-hidden="true"><div id="v132Card"><span class="v132badge">PRICE SET + STRIPE CHECKOUT PREP</span><h2>💳 V136 月額3,980円・スマホ決済対応準備</h2>
-<div class="v132row"><span>プラン</span><b>スタンダード（分析回数無制限）</b></div><div class="v132row"><span>無料体験</span><b>14日間</b></div><div class="v132row"><span>月額料金</span><b>3,980円（税込）</b></div><div class="v132row"><span>院アカウント</span><b id="v132Email">確認中…</b></div><div class="v132row"><span>終了判定</span><b>終了日時に自動確認</b></div><div class="v132row"><span>決済成功後</span><b>?checkout=success で復帰</b></div><div class="v132row"><span>キャンセル後</span><b>?checkout=cancel で復帰</b></div>
+<div class="v132row"><span>プラン</span><b>スタンダード（分析回数無制限）</b></div><div class="v132row"><span>無料体験</span><b>7日間</b></div><div class="v132row"><span>月額料金</span><b>3,980円（税込）</b></div><div class="v132row"><span>院アカウント</span><b id="v132Email">確認中…</b></div><div class="v132row"><span>終了判定</span><b>終了日時に自動確認</b></div><div class="v132row"><span>決済成功後</span><b>?checkout=success で復帰</b></div><div class="v132row"><span>キャンセル後</span><b>?checkout=cancel で復帰</b></div>
 <div class="v132ok">✓ 無料体験の終了日時をFirebaseから読み取り、アプリ起動時と利用中に自動確認します。患者・履歴・写真・DataGuard・Firebase保存先には触れません。</div>
 <div class="v132note">V136ではAndroid・iPhoneのスマホ表示を最適化し、Stripe Checkoutから戻った時の成功・キャンセル判定と無料体験終了日時の自動判定を両立します。月額料金は3,980円（税込）に設定しました。まだStripe本番決済には接続していないため、送信・決済・請求は発生しません。</div>
 <div class="v132actions"><button id="v132Back">戻る</button><button id="v132Test">Checkout準備を確認</button></div></div></div>
