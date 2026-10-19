@@ -865,7 +865,7 @@ function drawGuide(){if(document.getElementById("guideCam").style.display==="non
   x.beginPath();x.arc(cx,cy,5,0,Math.PI*2);x.fillStyle="rgba(249,115,22,.98)";x.fill();
   x.strokeStyle="rgba(255,255,255,.95)";x.lineWidth=1.5;x.stroke();
   // V204: ePose-style fixed head/toe framing lines for consistent subject size
-  var headLineY=h*.205,toeLineY=h*.815,lineHalf=Math.min(w*.22,150);
+  var headLineY=h*.175,toeLineY=h*.845,lineHalf=Math.min(w*.22,150);
   x.strokeStyle="rgba(255,255,255,.96)";x.lineWidth=4;x.lineCap="butt";
   x.beginPath();x.moveTo(cx-lineHalf,headLineY);x.lineTo(cx+lineHalf,headLineY);x.stroke();
   x.beginPath();x.moveTo(cx-lineHalf,toeLineY);x.lineTo(cx+lineHalf,toeLineY);x.stroke();
@@ -2050,7 +2050,7 @@ $('v100SignIn').onclick=async()=>{
 };
 $('v266Forgot').onclick=()=>{$('v266ResetPanel').hidden=!$('v266ResetPanel').hidden};
 $('v266SendReset').onclick=async()=>{const email=$('v100Email').value.trim(),out=$('v266ResetMsg'),btn=$('v266SendReset');if(!email||!/^\S+@\S+\.\S+$/.test(email)){out.textContent='登録したメールアドレスを入力してください。';return;}btn.disabled=true;out.textContent='送信中…';try{await sendPasswordResetEmail(auth,email);out.textContent='再設定メールの送信を受け付けました。メールが届かない場合は迷惑メールもご確認ください。';}catch(e){console.error('password reset',e);out.textContent='送信できませんでした。時間をおいて再度お試しください。';}finally{btn.disabled=false}};
-function v266ShowLegal(index){const help=document.getElementById('v77Help');if(!help){alert('メニューの「お問い合わせ・ヘルプ」から規約をご確認ください。');return;}const panel=document.getElementById('v235LegalPanel'+index);if(panel){const win=window.open('','_blank');if(win){win.document.write('<!doctype html><html lang=ja><meta name=viewport content=width=device-width,initial-scale=1><meta charset=utf-8><title>規約の確認</title><body style="font-family:sans-serif;line-height:1.8;padding:20px">'+panel.innerHTML+'</body></html>');win.document.close();}else alert('お問い合わせ・ヘルプから規約を確認してください。');}else alert('お問い合わせ・ヘルプから規約を確認してください。');}
+function v266ShowLegal(index){const help=document.getElementById('v77Help');if(!help){alert('メニューの「お問い合わせ・ヘルプ」から規約をご確認ください。');return;}const panel=document.getElementById('v235LegalPanel'+index);if(panel){const win=window.open('','_blank');if(win){win.document.write('<!doctype html><html lang=ja><meta name=viewport content=width=device-width,initial-scale=1><meta charset=utf-8><title>規約の確認</title><body style="font-family:sans-serif;line-height:1.8;padding:20px">'+panel.innerHTML+'\n</body></html>');win.document.close();}else alert('お問い合わせ・ヘルプから規約を確認してください。');}else alert('お問い合わせ・ヘルプから規約を確認してください。');}
 $('v266Terms').onclick=e=>{e.preventDefault();v266ShowLegal(1)}; $('v266Privacy').onclick=e=>{e.preventDefault();v266ShowLegal(0)};
 document.getElementById('v270MenuLogout')?.addEventListener('click',()=>{document.getElementById('v77Menu')?.classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu');document.getElementById('v100SignOut')?.click();});
 $('v100SignOut').onclick=async()=>{sessionStorage.setItem('wakaba_v269_login_return','1');sessionStorage.setItem('wakaba_v165_page','home');document.getElementById('v77Menu')?.classList.remove('on');await signOut(auth);v271AuthView(false);};$('v100Sync').onclick=uploadAll;$('v102Restore').onclick=restoreAll;
@@ -3708,6 +3708,47 @@ async function create(button){
 }
 function mount(){const panel=document.getElementById('scorePanel');if(!panel||document.getElementById('v322ShareBtn'))return;const btn=document.createElement('button');btn.id='v322ShareBtn';btn.type='button';btn.textContent='読みやすい画像で共有（骨格表示以外）';btn.addEventListener('click',()=>create(btn));const note=document.createElement('div');note.id='v322ShareStatus';note.textContent='写真・スコア・姿勢タイプ・筋バランス・分析詳細を読みやすい複数枚の画像にします。対応端末では共有画面が開きます。';panel.after(note);panel.after(btn)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
+})();
+</script>
+
+<!-- V339: minimal sign-in and accessible safe recovery; no changes to Firebase data routines -->
+<style id="v338-auth-recovery-style">
+body.v271-signed-out #v100Cloud > :not(.v100head):not(#v100Login){display:none!important}
+body.v271-signed-out #v100Cloud #v213ContractOverview,body.v271-signed-out #v100Cloud #v284AdminGroup{display:none!important}
+body.v271-signed-out #v100Cloud{height:auto!important;bottom:auto!important;max-height:calc(100dvh - 28px)!important}
+#v338RestoreShortcut{display:none;margin:12px 14px;padding:14px;border:1px solid #99f6e4;border-radius:14px;background:#f0fdfa;color:#115e59;text-align:center}
+#v338RestoreShortcut button{border:0;border-radius:10px;background:#0f766e;color:white;font-weight:800;font-size:15px;padding:12px 18px;width:100%;margin-top:9px}
+#v338RestoreQuick{display:block;width:100%;padding:12px;margin:12px 0;border:1px solid #0f766e;border-radius:10px;background:#f0fdfa;color:#115e59;font-size:14px;font-weight:800}
+</style>
+<script id="v338-auth-recovery-script">
+(function(){
+ function start(){
+  const cloud=document.getElementById('v100Cloud'),home=document.getElementById('v61Home');
+  if(!cloud||!home)return;
+  const quick=document.createElement('button');quick.id='v338RestoreQuick';quick.type='button';quick.textContent='顧客データをFirebaseから復元';
+  quick.addEventListener('click',()=>{document.getElementById('v102Restore')?.click()});
+  const actions=document.getElementById('v100Actions');if(actions)actions.prepend(quick);
+  const notice=document.createElement('div');notice.id='v338RestoreShortcut';
+  notice.innerHTML='<strong>顧客一覧が表示されない場合</strong><div style="font-size:12px;margin-top:6px">Firebaseに保存された顧客データを確認し、この端末に安全復元できます。既存の顧客データは削除しません。</div><button type="button">Firebaseから顧客を復元</button>';
+  notice.querySelector('button').addEventListener('click',()=>{
+   const c=document.getElementById('v100Cloud'),b=document.getElementById('v101CloudBackdrop');
+   if(c)c.style.display='block';if(b)b.style.display='block';
+   document.getElementById('v284AdminGroup')?.setAttribute('open','');
+   document.getElementById('v280AdminData')?.setAttribute('open','');
+   document.getElementById('v281Management')?.setAttribute('open','');
+   document.getElementById('v100Msg')?.scrollIntoView({block:'nearest'});
+  });
+  home.prepend(notice);
+  function refresh(){
+   const signedOut=document.body.classList.contains('v271-signed-out');
+   let count=0;try{const a=JSON.parse(localStorage.getItem('wakaba_v61_customers')||'[]');count=Array.isArray(a)?a.length:0}catch(e){}
+   notice.style.display=(!signedOut&&count===0)?'block':'none';
+  }
+  refresh();window.addEventListener('storage',refresh);
+  document.addEventListener('click',()=>setTimeout(refresh,150));
+  setInterval(refresh,2500);
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
 </script>
 </body></html>
