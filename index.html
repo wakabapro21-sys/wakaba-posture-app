@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V353</title>
+<title>AI姿勢＆3次元歪み分析システム V354</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -355,7 +355,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V353</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V354</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3350,16 +3350,17 @@ function fitText(ctx,s,max){s=String(s||'');while(s.length&&ctx.measureText(s).w
 function v287DrawGrid(ctx,x,y,w,h){
  if(!w||!h)return;
  ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();
- const step=w/10;
+ const divisions=16;
+ const step=w/divisions;
  ctx.lineWidth=Math.max(.75,w/360);ctx.strokeStyle='rgba(255,255,255,.80)';
- for(let i=0;i<=10;i++){const xx=x+w*i/10;ctx.beginPath();ctx.moveTo(xx,y);ctx.lineTo(xx,y+h);ctx.stroke()}
+ for(let i=0;i<=divisions;i++){const xx=x+w*i/divisions;ctx.beginPath();ctx.moveTo(xx,y);ctx.lineTo(xx,y+h);ctx.stroke()}
  // Use the same pixel pitch in both directions, preserving square cells.
  for(let yy=y;yy<=y+h+0.001;yy+=step){ctx.beginPath();ctx.moveTo(x,yy);ctx.lineTo(x+w,yy);ctx.stroke()}
  ctx.strokeStyle='rgba(20,37,51,.38)';ctx.lineWidth=.6;
- for(let i=0;i<=10;i++){const xx=x+w*i/10;ctx.beginPath();ctx.moveTo(xx,y);ctx.lineTo(xx,y+h);ctx.stroke()}
+ for(let i=0;i<=divisions;i++){const xx=x+w*i/divisions;ctx.beginPath();ctx.moveTo(xx,y);ctx.lineTo(xx,y+h);ctx.stroke()}
  ctx.strokeStyle='#e11d48';ctx.lineWidth=Math.max(1.4,w/145);ctx.beginPath();ctx.moveTo(x+w/2,y);ctx.lineTo(x+w/2,y+h);ctx.stroke();
  ctx.font='bold '+Math.max(9,Math.round(w/25))+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='top';
- for(let i=0;i<11;i++){if(i===5)continue;const n=Math.abs(i-5);const tx=x+w*i/10;ctx.fillStyle='rgba(255,255,255,.85)';ctx.fillText(String(n),tx+1,y+3);ctx.fillStyle='#172033';ctx.fillText(String(n),tx,y+2)}
+ for(let i=0;i<=divisions;i++){if(i===divisions/2)continue;const n=Math.abs(i-divisions/2);const tx=x+w*i/divisions;ctx.fillStyle='rgba(255,255,255,.85)';ctx.fillText(String(n),tx+1,y+3);ctx.fillStyle='#172033';ctx.fillText(String(n),tx,y+2)}
  ctx.restore();
 }
 
@@ -3588,7 +3589,7 @@ body.v214-simple #v285LocalDetails{display:none!important}
 <style id="v287-grid-style">
 .v287-grid-controls{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:8px 0 4px;font-size:12px;color:#334155;font-weight:800}
 .v287-grid-controls input{width:18px;height:18px;accent-color:#0f766e}
-.v287-grid-layer{position:absolute;pointer-events:none;z-index:1;overflow:hidden;background-image:linear-gradient(to right,rgba(255,255,255,.72) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.72) 1px,transparent 1px),linear-gradient(to right,rgba(30,41,59,.22) 1px,transparent 1px),linear-gradient(to bottom,rgba(30,41,59,.22) 1px,transparent 1px);background-size:10% 100%,100% var(--v287-step),10% 100%,100% var(--v287-step);border-left:1px solid rgba(255,255,255,.5);border-top:1px solid rgba(255,255,255,.5)}
+.v287-grid-layer{position:absolute;pointer-events:none;z-index:1;overflow:hidden;background-image:linear-gradient(to right,rgba(255,255,255,.72) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.72) 1px,transparent 1px),linear-gradient(to right,rgba(30,41,59,.22) 1px,transparent 1px),linear-gradient(to bottom,rgba(30,41,59,.22) 1px,transparent 1px);background-size:6.25% 100%,100% var(--v287-step),6.25% 100%,100% var(--v287-step);border-left:1px solid rgba(255,255,255,.5);border-top:1px solid rgba(255,255,255,.5)}
 .v287-grid-layer::before{content:'';position:absolute;top:0;bottom:0;left:50%;border-left:2px solid #e11d48}
 .v287-grid-label{position:absolute;top:3px;transform:translateX(-50%);color:#172033;font-size:clamp(8px,1.5vw,12px);font-weight:900;text-shadow:0 0 3px white,0 0 3px white}
 .stage .landmarkCanvas{z-index:2}
@@ -3597,7 +3598,7 @@ body.v214-simple #v285LocalDetails{display:none!important}
 (()=>{'use strict';
  let enabled=true;
  const types=['front','right','left'];
- function refresh(){for(const t of types){const stage=document.getElementById('stage-'+t);if(!stage)continue;let layer=stage.querySelector('.v287-grid-layer');if(!enabled){if(layer)layer.remove();continue}const img=stage.querySelector('img');if(!img||!img.complete||!img.naturalWidth){if(layer)layer.remove();continue}if(!layer){layer=document.createElement('div');layer.className='v287-grid-layer';stage.appendChild(layer);for(let i=0;i<=10;i++){if(i===5)continue;const n=document.createElement('span');n.className='v287-grid-label';n.textContent=Math.abs(i-5);n.style.left=i*10+'%';layer.appendChild(n)}}const st=stage.getBoundingClientRect(),r=img.getBoundingClientRect();const scale=Math.min(r.width/img.naturalWidth,r.height/img.naturalHeight);const w=img.naturalWidth*scale,h=img.naturalHeight*scale;layer.style.left=(r.left-st.left+(r.width-w)/2)+'px';layer.style.top=(r.top-st.top+(r.height-h)/2)+'px';layer.style.width=w+'px';layer.style.height=h+'px';layer.style.setProperty('--v287-step',(w/10)+'px');}}
+ function refresh(){for(const t of types){const stage=document.getElementById('stage-'+t);if(!stage)continue;let layer=stage.querySelector('.v287-grid-layer');if(!enabled){if(layer)layer.remove();continue}const img=stage.querySelector('img');if(!img||!img.complete||!img.naturalWidth){if(layer)layer.remove();continue}if(!layer){layer=document.createElement('div');layer.className='v287-grid-layer';stage.appendChild(layer);for(let i=0;i<=16;i++){if(i===8)continue;const n=document.createElement('span');n.className='v287-grid-label';n.textContent=Math.abs(i-8);n.style.left=i*6.25+'%';layer.appendChild(n)}}const st=stage.getBoundingClientRect(),r=img.getBoundingClientRect();const scale=Math.min(r.width/img.naturalWidth,r.height/img.naturalHeight);const w=img.naturalWidth*scale,h=img.naturalHeight*scale;layer.style.left=(r.left-st.left+(r.width-w)/2)+'px';layer.style.top=(r.top-st.top+(r.height-h)/2)+'px';layer.style.width=w+'px';layer.style.height=h+'px';layer.style.setProperty('--v287-step',(w/16)+'px');}}
  function init(){const status=document.getElementById('status');if(status&&!document.getElementById('v287GridToggle')){const label=document.createElement('label');label.className='v287-grid-controls';label.innerHTML='<input type="checkbox" id="v287GridToggle" checked> 分析写真の格子線を表示';status.after(label);label.querySelector('input').addEventListener('change',e=>{enabled=e.target.checked;refresh()})}refresh();const root=document.querySelector('.views')||document.body;const obs=new MutationObserver(()=>{if(!enabled)return;requestAnimationFrame(refresh)});obs.observe(root,{childList:true,subtree:true});window.addEventListener('resize',refresh);window.addEventListener('load',refresh);}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
@@ -3629,9 +3630,8 @@ for(const [key,label] of [['front','正面'],['right','右側面'],['left','左�
  const p=pts&&(key==='front'?(pts.leftHip&&pts.rightHip?{x:(pts.leftHip.x+pts.rightHip.x)/2}:pts.nose):(pts.leftAnkle||pts.rightAnkle));
  const gw=cv.width,gh=cv.height;
  cx.save();cx.strokeStyle='rgba(255,255,255,.45)';cx.lineWidth=Math.max(1,gw/500);
- // V353: identical spacing in both axes, based on the photograph's native pixels.
- // A 12-column square grid increases the number of horizontal guides on portrait photos.
- const gridStep=gw/12;
+ // V354: one common square-cell pitch on both axes, 16 columns.
+ const gridStep=gw/16;
  cx.beginPath();
  for(let xx=gridStep;xx<gw-0.5;xx+=gridStep){cx.moveTo(xx,0);cx.lineTo(xx,gh);}
  for(let yy=gridStep;yy<gh-0.5;yy+=gridStep){cx.moveTo(0,yy);cx.lineTo(gw,yy);}
