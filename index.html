@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V344</title>
+<title>AI姿勢＆3次元歪み分析システム V345</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -355,7 +355,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V344</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V345</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3692,7 +3692,9 @@ for(const [key,label] of [['front','正面'],['right','右側面'],['left','左�
  const p=pts&&(key==='front'?(pts.leftHip&&pts.rightHip?{x:(pts.leftHip.x+pts.rightHip.x)/2}:pts.nose):(pts.leftAnkle||pts.rightAnkle));
  const gw=cv.width,gh=cv.height;
  cx.save();cx.strokeStyle='rgba(255,255,255,.45)';cx.lineWidth=Math.max(1,gw/500);
- for(let k=1;k<10;k++){cx.beginPath();cx.moveTo(gw*k/10,0);cx.lineTo(gw*k/10,gh);cx.stroke();cx.beginPath();cx.moveTo(0,gh*k/10);cx.lineTo(gw,gh*k/10);cx.stroke();}
+ const gridStep=gw/10;
+ for(let k=1;k<10;k++){cx.beginPath();cx.moveTo(gridStep*k,0);cx.lineTo(gridStep*k,gh);cx.stroke();}
+ for(let yy=gridStep;yy<gh;yy+=gridStep){cx.beginPath();cx.moveTo(0,yy);cx.lineTo(gw,yy);cx.stroke();}
  if(p&&Number.isFinite(p.x)){const xx=Math.max(0,Math.min(gw,gw*p.x));cx.beginPath();cx.strokeStyle='#ef4444';cx.lineWidth=Math.max(2,gw/240);cx.moveTo(xx,0);cx.lineTo(xx,gh);cx.stroke();}
  cx.restore();
  const im=document.createElement('img');im.src=cv.toDataURL('image/png');
