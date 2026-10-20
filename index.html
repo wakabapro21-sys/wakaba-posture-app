@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V347</title>
+<title>AI姿勢＆3次元歪み分析システム V349</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -355,14 +355,14 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V347</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V349</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
 <div class="v77overlay" id="v77Menu"><aside class="v77drawer"><div class="v77drawerHead"><div><b>MENU</b><div class="v77muted">わかば姿勢分析</div></div><button class="v77x" id="v77MenuClose">×</button></div><div class="v77nav"><button class="primary" data-v77="home">👥 顧客一覧</button><button data-v77="reports">📋 分析レポート一覧</button><button data-v77="mypage">👤 マイページ</button><button data-v77="news">🔔 お知らせ</button><button data-v77="manual">📖 使い方マニュアル</button><button data-v77="help">❓ ヘルプ・お問い合わせ</button><button data-v77="settings">⚙️ 設定</button><button type="button" id="v270MenuLogout" style="margin-top:14px;border:1px solid #fca5a5;background:#fff7f7;color:#991b1b">🚪 ログアウト</button></div></aside></div>
 <section class="v77page" id="v77Patient"><div class="v77pageHead"><button class="v77back" data-v77home>← 顧客一覧</button><h2>顧客詳細</h2><span></span></div><div class="v77card"><div class="v77patientTop"><div class="v77avatar" id="v77PatientAvatar">患</div><div><div class="v77patientName" id="v77PatientName"></div><div class="v77muted" id="v77PatientSub"></div></div></div><div class="v77grid"><button class="v77big v77orange" id="v77Start">姿勢分析を開始</button><button class="v77big v77green" id="v77History">分析履歴を見る</button><button class="v77big v77line" id="v77Line">LINEで結果を共有</button><button class="v77big v77soft" id="v77Edit">登録情報</button></div><div class="v87hint">分析履歴は患者ごとに保存します。写真付きレポートは画像として渡せます。</div><button id="v90DeletePatient" type="button">この患者を削除</button></div></section>
 <section class="v77page" id="v77Reports"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>分析レポート一覧</h2><span></span></div><div id="v77ReportList"></div></section>
-<section class="v77page" id="v77Mypage"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>マイページ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>プロフィール</b><span>南 昇吾</span></div><div class="v77settingRow"><b>院名</b><span>わかば整体院・接骨院</span></div><div class="v77settingRow"><b>メールアドレス</b><span class="v77muted">クラウド版で設定</span></div><div class="v77settingRow"><b>パスワード</b><span class="v77muted">クラウド版で設定</span></div></div></section>
+<section class="v77page" id="v77Mypage"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>マイページ</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>プロフィール</b><span>南 昇吾</span></div><div class="v77settingRow"><b>院名</b><span>わかば整体院・接骨院</span></div></div></section>
 <section class="v77page" id="v77News"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>お知らせ</h2><span></span></div><div class="v77card v77empty">現在、お知らせはありません。</div></section>
 <section class="v77page" id="v341Manual"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>使い方マニュアル</h2><span></span></div><div class="v77card v341manual"><p>操作手順・ランドマーク基準・姿勢スコアの計算根拠を確認できます。</p><h2>わかば姿勢分析アプリ 操作・評価基準マニュアル（V339コード準拠・初版）</h2><h3>1. 操作手順</h3><p>1. ログインし、利用規約等に同意します。契約状態を確認します。</p><p>2. 患者を登録または選択します。個人情報は必要最小限にしてください。</p><p>3. 正面、右側面、左側面の順に全身を撮影・登録します。撮影距離は約2〜3m、スマホの高さは胸〜みぞおちを目安とします。</p><p>4. AI検出されたオレンジのランドマークを確認し、身体の部位と一致しない点は「ランドマークを微調整」で補正します。</p><p>5. 分析結果で総合・正面・側面・回旋スコア、所見、3D表示を確認します。</p><p>6. LINE共有用レポートを作成し、患者さんに渡します。写真はFirebaseに保存しない運用です。</p><p>7. 分析履歴から過去の記録を選択し、2回分のBefore/Afterを比較できます。</p><p>8. 顧客一覧が空の場合は、ログイン状態・同期状況を確認し、既存データを上書き・削除しないよう注意してFirebaseから復元します。</p><h3>2. ランドマークの基準（実装）</h3><p>アプリはMediaPipe Poseのランドマークを使います。写真上の推定点であり、骨性指標の触診・医療用計測と同一ではありません。</p><table class="v341table"><tr><td>アプリの点</td><td>使用するMediaPipe番号・基準</td></tr><tr><td>頭部</td><td>鼻0、両眼2・5、両耳7・8の有効な点の平均（鼻のみへのフォールバックあり）</td></tr><tr><td>左右肩</td><td>11・12（肩関節周辺の推定点）</td></tr><tr><td>左右肘</td><td>13・14</td></tr><tr><td>左右手首</td><td>15・16</td></tr><tr><td>左右股関節</td><td>23・24（骨盤の骨性ランドマークそのものではない）</td></tr><tr><td>左右膝</td><td>25・26</td></tr><tr><td>左右足首</td><td>27・28</td></tr></table><p>左右側面では重なりを考慮した独自補正が入るため、単純なMediaPipe出力とは一致しない場合があります。写真の中央線は画像幅の50%です。</p><h3>3. 点数の計算根拠（V339ソースに記載された独自比較スコア）</h3><p>以下は診断基準や公的な標準スコアではなく、施術前後の比較のために設定されたアプリ独自の指標です。</p><h4>正面スコア</h4><p>100 − 正面減点 を0〜100に収めて四捨五入します。</p><p>正面減点 = 14 + max(0, |肩傾斜角|−0.20)×7 + max(0, |骨盤傾斜角|−0.35)×9 + max(0, |頭部偏位%|−0.15)×3.4 + 正中線減点</p><p>正中線減点は、頭部と骨盤中心がともに許容範囲内なら0点、両者が同じ側で範囲外なら10点、それ以外の範囲外の場合は20点です。許容幅は頭から足首までの画像上の縦距離の1%（最低0.003）です。</p><h4>側面スコア</h4><p>各側面で 頭部と肩中央の水平距離×100×1.7 + 肩中央と股関節中央の水平距離×100×1.25 を計算し、左右の平均を D とします。</p><p>側面スコア = round(clamp(100 − [19 + max(0, D−0.35)×3.25], 0, 100))</p><h4>回旋スコア</h4><p>左右側面の非対称性をもとに、上半身・下半身を別々に評価します。左右側面の差は身体の画像上の縦距離で正規化した参考指標で、解剖学的な回旋角度を直接測定したものではありません。</p><table class="v341table"><tr><td>非対称性の値</td><td>評価</td><td>点数</td></tr><tr><td>1%未満</td><td>ほぼなし</td><td>90</td></tr><tr><td>1%以上1.5%未満</td><td>ごく軽度</td><td>80</td></tr><tr><td>1.5%以上2.5%未満</td><td>軽度</td><td>70</td></tr><tr><td>2.5%以上4.5%未満</td><td>中等度</td><td>60</td></tr><tr><td>4.5%以上</td><td>強い</td><td>40</td></tr></table><p>境界値は低い点数側に入ります。上半身の評価には耳・肩・肩と骨盤の相対位置の左右差の最大値、下半身には股関節の左右差を使用します。回旋スコアは上半身と下半身の点数の平均（四捨五入）です。判定に必要な点がない場合は判定不可です。</p><h4>総合スコア</h4><p>回旋を判定できる場合：正面×0.45 + 側面×0.40 + 回旋×0.15 を四捨五入。</p><p>回旋を判定できない場合：(正面×0.45 + 側面×0.40)÷0.85 を四捨五入。</p><h3>4. 精度と注意事項</h3><p>- 写真の角度、距離、服装、姿勢、AI検出誤差、ランドマーク補正で結果は変動します。比較時は撮影条件をそろえてください。</p><p>- スコアはアプリ独自の比較用参考値です。臨床的な妥当性、再現性、正常値の根拠となる研究を確認したものではありません。</p><p>- 緊張・機能低下の筋肉表示は写真からの推定候補であり、筋力や筋緊張を直接測定していません。</p><p>- 回旋の3D表示は模式的な可視化であり、実測の三次元骨格回旋ではありません。</p><p>- 患者さんには医療上の診断ではないことを説明してください。</p><h3>5. 今後追加する画面付き説明</h3><p>ログイン・契約、患者登録、3方向撮影、微調整、結果画面、LINE共有、履歴比較、Firebase復元の各画面に番号・矢印を付けたスクリーンショットを追加する予定です。患者情報が写った画像は匿名化してから使用してください。</p></div></section>
 <section class="v77page" id="v77Help">
@@ -371,8 +371,7 @@ html,body{
 <details><summary><b>撮影・カメラについて</b><span>›</span></summary><div class="helpBody"><b>きれいに分析する撮影のコツ</b><p>正面・右側面・左側面の3方向を、頭から足先まで全身が入るように撮影してください。</p><p>約2〜3m離れ、スマホは胸〜みぞおち付近の高さを目安にします。ガイド撮影では中央線と水平・垂直の目安を合わせてください。</p><p>撮影後はランドマークの位置を確認し、必要な場合は「ランドマークを微調整」から修正できます。</p></div></details>
 <details><summary><b>分析について</b><span>›</span></summary><div class="helpBody"><b>分析結果の見方</b><p>3方向の写真とランドマークから、正面・側面・回旋のバランスを参考値として可視化します。</p><p>姿勢スコア、左右差、骨盤・脊柱バランス、脚軸、推定重心などを確認できます。</p><p>分析結果は姿勢評価の参考情報であり、医療上の診断を行うものではありません。</p></div></details>
 <details><summary><b>顧客データについて</b><span>›</span></summary><div class="helpBody"><b>保存されるデータ</b><p>顧客情報と分析履歴を保存し、過去の分析結果を確認・比較できます。</p><p>分析時の写真は端末内に保存されるため、端末やブラウザのデータを削除した場合などは写真を復元できないことがあります。</p><p>不要な履歴や顧客データは、各画面の削除機能から削除できます。</p></div></details>
-<details><summary><b>お問い合わせ</b><span>›</span></summary><div class="helpBody"><b>不具合・操作について</b><p>カメラが開かない、分析結果が表示されない、契約状態が反映されないなどの問題がある場合は、発生した画面のスクリーンショットと状況を添えてお問い合わせください。</p><p>お問い合わせ窓口は、運用開始時にここへ連絡先を設定できます。</p>
-<div id="v204InlineContact" style="margin-top:18px;padding-top:16px;border-top:1px solid #e5e7eb">
+<details><summary><b>お問い合わせ</b><span>›</span></summary><div class="helpBody"><div id="v204InlineContact" style="margin-top:18px;padding-top:16px;border-top:1px solid #e5e7eb">
   <div style="font-size:15px;font-weight:800;color:#0f172a;margin-bottom:10px">お問い合わせフォーム</div>
   <form id="v204Form" novalidate>
     <label style="display:block;font-size:13px;font-weight:700;margin:10px 0 5px">お名前</label>
@@ -388,7 +387,7 @@ html,body{
 </div>
 </div></details>
 </div></section>
-<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>会社・院情報</b><span>›</span></div><div class="v77settingRow"><b>契約プラン</b><span class="v77pill">開発版</span></div><div class="v77settingRow"><b>契約期間</b><span class="v77muted">サブスク実装時</span></div><div class="v77settingRow"><b>LINE連携</b><span class="v77muted">準備中</span></div><div class="v77settingRow"><b>アカウント基盤</b><span class="v77pill">V204 ログイン保護</span></div><div class="v77settingRow"><b>ログイン試行制限</b><span class="v77pill">5回失敗→15分制限</span></div><div class="v77settingRow"><b>院ごとのデータ分離</b><span class="v77pill">院別保存 ON</span></div></div></section>
+<section class="v77page" id="v77Settings"><div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>設定</h2><span></span></div><div class="v77card"><div class="v77settingRow"><b>契約プラン</b><span class="v77muted">契約内容はメニューから確認</span></div></div></section>
 <section id="v61Home">
  <div class="v61bar"><div><div class="v61title">顧客一覧</div><div style="font-size:10px;color:#64748b;margin-top:3px">顧客を選択して姿勢分析を開始</div></div><button class="v61btn" id="v61Add">＋ 新規登録</button></div>
  <div id="v61List" class="v61list"></div>
@@ -2079,71 +2078,8 @@ const r=await v104SyncAllPatients();if(r){if(r.cloud!==null && r.missing.length=
 </script>
 
 
-<style id="v113-style">
-#v113Migration{margin-top:10px;padding:11px 12px;border:1px solid #fdba74;border-radius:12px;background:#fff7ed;font-size:10px;line-height:1.6;color:#9a3412}
-#v113MigrateBtn{width:100%;margin-top:8px;border:0;border-radius:10px;padding:11px;background:#f97316;color:#fff;font-weight:900}
-#v113MigrateBtn:disabled{opacity:.55}.v113ok{color:#047857}.v113err{color:#b91c1c}
-</style>
-
 <style id="v114-style">#v114Mode{margin:8px 0;padding:10px 12px;border:1px solid #86efac;border-radius:12px;background:#f0fdf4;color:#166534;font-size:10px;line-height:1.6;font-weight:700}</style>
 <script id="v114-ui">document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{const a=document.getElementById('v112ClinicAccount');if(a&&!document.getElementById('v114Mode')){const d=document.createElement('div');d.id='v114Mode';d.innerHTML='🔒 <b>V114 院別保存モード</b><br>新規患者・分析履歴・復元はログイン中の院ID専用領域を使用します。旧 /patients はバックアップとして残し、削除・変更しません。';a.insertAdjacentElement('afterend',d)}},500)});</script>
-<script type="module" id="v113-migration-js">
-import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
-import {getAuth} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
-import {getFirestore,collection,doc,getDoc,getDocsFromServer,setDoc,serverTimestamp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
-
-function mountV113(){
- const actions=document.getElementById('v100Actions');
- if(!actions||document.getElementById('v113Migration')) return;
- const box=document.createElement('div'); box.id='v113Migration';
- box.innerHTML='<b>🏥 院別データ領域（移行確認）</b><div id="v113MigrationStatus" style="margin-top:4px">まだコピーしていません。旧 /patients はそのまま残します。</div><button id="v113MigrateBtn" type="button">旧データから再確認コピー</button>';
- const admin=document.getElementById('v280AdminDataBody'); if(admin) admin.prepend(box); else {const acct=document.getElementById('v112ClinicAccount'); (acct||actions.firstElementChild)?.after(box);}
- document.getElementById('v113MigrateBtn')?.addEventListener('click',migrateV113);
-}
-
-async function migrateV113(){
- const st=document.getElementById('v113MigrationStatus'),btn=document.getElementById('v113MigrateBtn');
- try{
-  if(!getApps().length) throw new Error('Firebase初期化待ちです。数秒後に再試行してください。');
-  const app=getApp(),auth=getAuth(app),db=getFirestore(app),u=auth.currentUser;
-  if(!u) throw new Error('先にFirebaseへログインしてください。');
-  const owner=localStorage.getItem('wakaba_v230_device_owner')||localStorage.getItem('wakaba_clinic_uid');
-  if(owner && owner!==u.uid)throw new Error('別の院アカウントの端末データがあるため移行を停止しました。');
-  btn.disabled=true; st.textContent='旧データを確認中…';
-  const root=await getDocsFromServer(collection(db,'patients'));
-  let created=0,existing=0,hCreated=0; const failed=[];
-  for(const pd of root.docs){
-   const id=String(pd.id),target=doc(db,'clinics',u.uid,'patients',id);
-   try{
-    const chk=await getDoc(target);
-    if(!chk.exists()){
-      const raw={...(pd.data()||{})}; delete raw.photos; delete raw.photo; delete raw.images; delete raw.frontPhoto; delete raw.rightPhoto; delete raw.leftPhoto;
-      await setDoc(target,{...raw,clinicId:u.uid,legacyPatientId:id,migratedAt:serverTimestamp()}); created++;
-    }else existing++;
-    const hs=await getDocsFromServer(collection(db,'patients',id,'histories'));
-    for(const hd of hs.docs){
-      const ht=doc(db,'clinics',u.uid,'patients',id,'histories',hd.id);
-      const hc=await getDoc(ht);
-      if(!hc.exists()){ const h={...(hd.data()||{})}; delete h.photos; await setDoc(ht,{...h,clinicId:u.uid,migratedAt:serverTimestamp()}); hCreated++; }
-    }
-   }catch(e){console.error('V113 migrate patient',id,e);failed.push(id)}
-  }
-  const verify=await getDocsFromServer(collection(db,'clinics',u.uid,'patients'));
-  const rootIds=new Set(root.docs.map(d=>String(d.id))), newIds=new Set(verify.docs.map(d=>String(d.id)));
-  const missing=[...rootIds].filter(id=>!newIds.has(id));
-  if(failed.length||missing.length){
-    st.innerHTML='<span class="v113err">⚠ コピー確認：旧 '+root.size+'件 / 院別 '+verify.size+'件。未確認 '+missing.length+'件。旧 /patients は変更していません。</span>';
-  }else{
-    st.innerHTML='<span class="v113ok">✓ 安全コピー完了：旧 '+root.size+'件 / 院別 '+verify.size+'件。新規コピー '+created+'件、既存 '+existing+'件、履歴コピー '+hCreated+'件。旧 /patients は削除・変更していません。</span>';
-  }
- }catch(e){console.error('V113 migration',e);st.innerHTML='<span class="v113err">コピーできませんでした：'+String(e.message||e)+'<br>旧データは一切変更していません。</span>';
- }finally{if(btn)btn.disabled=false}
-}
-
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(mountV113,500));else setTimeout(mountV113,500);
-</script>
-
-
 <style id="v115-style">
 #v115SecurityPrep{margin:8px 0;padding:10px 12px;border:1px solid #c4b5fd;border-radius:12px;background:#f5f3ff;color:#4c1d95;font-size:10px;line-height:1.6}
 #v115SecurityPrep b{font-size:11px}
@@ -3740,8 +3676,8 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 })();
 </script>
 
-<!-- V347: display-only simplification; no Firebase, Stripe, or patient-data logic changes -->
-<style id="v347-clean-admin-ui">
+<!-- V349: display-only simplification; no Firebase, Stripe, or patient-data logic changes -->
+<style id="v348-clean-admin-ui">
 #v112ClinicId{display:none!important}
 #v100Cloud #v100Actions > .v100row:first-child{display:none!important}
 #v100Cloud #v100Actions #v112ClinicAccount{font-size:12px}
