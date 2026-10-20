@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V355</title>
+<title>AI姿勢＆3次元歪み分析システム V356</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -355,7 +355,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V355</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V356</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3352,12 +3352,10 @@ function v287DrawGrid(ctx,x,y,w,h){
  ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();
  const divisions=16;
  const step=w/divisions;
- ctx.lineWidth=Math.max(.75,w/360);ctx.strokeStyle='rgba(255,255,255,.80)';
+ ctx.lineWidth=1;ctx.strokeStyle='rgba(255,255,255,.48)';
  for(let i=0;i<=divisions;i++){const xx=x+w*i/divisions;ctx.beginPath();ctx.moveTo(xx,y);ctx.lineTo(xx,y+h);ctx.stroke()}
  // Use the same pixel pitch in both directions, preserving square cells.
  for(let yy=y;yy<=y+h+0.001;yy+=step){ctx.beginPath();ctx.moveTo(x,yy);ctx.lineTo(x+w,yy);ctx.stroke()}
- ctx.strokeStyle='rgba(20,37,51,.38)';ctx.lineWidth=.6;
- for(let i=0;i<=divisions;i++){const xx=x+w*i/divisions;ctx.beginPath();ctx.moveTo(xx,y);ctx.lineTo(xx,y+h);ctx.stroke()}
  ctx.strokeStyle='#e11d48';ctx.lineWidth=Math.max(1.4,w/145);ctx.beginPath();ctx.moveTo(x+w/2,y);ctx.lineTo(x+w/2,y+h);ctx.stroke();
  ctx.font='bold '+Math.max(9,Math.round(w/25))+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='top';
  for(let i=0;i<=divisions;i++){if(i===divisions/2)continue;const n=Math.abs(i-divisions/2);const tx=x+w*i/divisions;ctx.fillStyle='rgba(255,255,255,.85)';ctx.fillText(String(n),tx+1,y+3);ctx.fillStyle='#172033';ctx.fillText(String(n),tx,y+2)}
@@ -3589,7 +3587,7 @@ body.v214-simple #v285LocalDetails{display:none!important}
 <style id="v287-grid-style">
 .v287-grid-controls{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:8px 0 4px;font-size:12px;color:#334155;font-weight:800}
 .v287-grid-controls input{width:18px;height:18px;accent-color:#0f766e}
-.v287-grid-layer{position:absolute;pointer-events:none;z-index:1;overflow:hidden;background-image:linear-gradient(to right,rgba(255,255,255,.38) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.38) 1px,transparent 1px);background-size:var(--v287-step) var(--v287-step);background-position:0 0;border:0}
+.v287-grid-layer{position:absolute;pointer-events:none;z-index:1;overflow:hidden;background-image:linear-gradient(to right,rgba(255,255,255,.48) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.48) 1px,transparent 1px);background-size:var(--v287-step) var(--v287-step);background-position:0 0;border:0}
 .v287-grid-layer::before{content:'';position:absolute;top:0;bottom:0;left:50%;border-left:2px solid #e11d48}
 .v287-grid-label{position:absolute;top:3px;transform:translateX(-50%);color:#172033;font-size:clamp(8px,1.5vw,12px);font-weight:900;text-shadow:0 0 3px white,0 0 3px white}
 .stage .landmarkCanvas{z-index:2}
@@ -3629,8 +3627,8 @@ for(const [key,label] of [['front','正面'],['right','右側面'],['left','左�
  const pts=window.v344ReportLandmarks&&window.v344ReportLandmarks(key);
  const p=pts&&(key==='front'?(pts.leftHip&&pts.rightHip?{x:(pts.leftHip.x+pts.rightHip.x)/2}:pts.nose):(pts.leftAnkle||pts.rightAnkle));
  const gw=cv.width,gh=cv.height;
- cx.save();cx.strokeStyle='rgba(255,255,255,.45)';cx.lineWidth=Math.max(1,gw/500);
- // V355: one common square-cell pitch on both axes, 16 columns.
+ cx.save();cx.strokeStyle='rgba(255,255,255,.48)';cx.lineWidth=1;
+ // V356: identical spacing, color, opacity and stroke width for both axes.
  const gridStep=gw/16;
  cx.beginPath();
  for(let xx=gridStep;xx<gw-0.5;xx+=gridStep){cx.moveTo(xx,0);cx.lineTo(xx,gh);}
