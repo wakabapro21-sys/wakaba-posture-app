@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V342</title>
+<title>AI姿勢＆3次元歪み分析システム V343</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -355,7 +355,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V342</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V343</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3671,7 +3671,7 @@ const ids=['scorePanel','patientReport','twistPanel','detailPosturePanel','align
 let loading=null;
 function loadRenderer(){if(window.html2canvas)return Promise.resolve(window.html2canvas);if(loading)return loading;loading=new Promise((resolve,reject)=>{const tag=document.createElement('script');tag.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';tag.onload=()=>window.html2canvas?resolve(window.html2canvas):reject(Error('画像化ライブラリが読み込めません'));tag.onerror=()=>reject(Error('画像化ライブラリの通信に失敗しました'));document.head.appendChild(tag)});return loading;}
 function isAnalyzed(){const e=document.getElementById('scoreTotal');const panel=document.getElementById('scorePanel');return !!panel && !!document.getElementById('patientReport') && (document.getElementById('postureType')?.textContent||'').trim()!=='3方向分析後に表示' && (document.getElementById('postureType')?.textContent||'').trim()!=='';}
-function makeSheet(){const root=document.createElement('div');root.id='v322CaptureRoot';root.style.cssText='position:fixed;left:-20000px;top:0;width:540px;box-sizing:border-box;padding:20px;background:#fff;color:#172033;z-index:-1;font-family:system-ui,-apple-system,sans-serif';
+async function makeSheet(){const root=document.createElement('div');root.id='v322CaptureRoot';root.style.cssText='position:fixed;left:0;top:0;width:540px;box-sizing:border-box;padding:20px;background:#fff;color:#172033;z-index:-1;font-family:system-ui,-apple-system,sans-serif';
 const h=document.createElement('div');h.style.cssText='font-size:20px;font-weight:900;color:#0f766e;margin-bottom:6px';h.textContent='姿勢分析結果';root.appendChild(h);
 const desc=document.createElement('div');desc.style.cssText='font-size:12px;color:#64748b;margin-bottom:14px';desc.textContent='正面・左右側面の写真から分析した参考評価';root.appendChild(desc);
 const pics=document.createElement('div');pics.style.cssText='display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:14px';
@@ -3680,12 +3680,21 @@ for(const [key,label] of [['front','正面'],['right','右側面'],['left','左�
  const title=document.createElement('div');title.textContent=label;title.style.cssText='font-size:12px;font-weight:800;text-align:center;margin-bottom:5px';item.appendChild(title);
  const frame=document.createElement('div');frame.style.cssText='position:relative;width:100%;height:190px;background:#f8fafc;overflow:hidden';
  const stage=document.getElementById('stage-'+key);
- if(stage){const visual=Array.from(stage.querySelectorAll('img')).find(x=>x.naturalWidth>0&&x.naturalHeight>0)||stage.querySelector('canvas');
- if(visual){try{const im=document.createElement('img');im.src=visual.tagName==='CANVAS'?visual.toDataURL('image/png'):visual.currentSrc||visual.src;im.style.cssText='width:100%;height:100%;object-fit:contain;display:block';frame.appendChild(im);
- const grid=document.createElement('div');grid.style.cssText='position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(to right,rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.5) 1px,transparent 1px);background-size:10% 10%;border:1px solid rgba(255,255,255,.5)';
- // Keep the grid exactly over the visible image, including letterboxing.
- im.addEventListener('load',()=>{const scale=Math.min(frame.clientWidth/im.naturalWidth,frame.clientHeight/im.naturalHeight);const w=im.naturalWidth*scale,h=im.naturalHeight*scale;grid.style.left=(frame.clientWidth-w)/2+'px';grid.style.top=(frame.clientHeight-h)/2+'px';grid.style.width=w+'px';grid.style.height=h+'px';grid.style.right='auto';grid.style.bottom='auto';});frame.appendChild(grid);
- }catch(e){frame.textContent='写真の画像化に失敗';}}}
+ const source=stage&&Array.from(stage.querySelectorAll('img')).find(x=>x.complete&&x.naturalWidth>0&&x.naturalHeight>0);
+ if(!source)throw Error(label+'の写真が読み込まれていません。写真を再選択してください。');
+ // Convert each source to a self-contained data URL before html2canvas. Blob URLs
+ // referenced by an off-screen cloned DOM are unreliable on some mobile browsers.
+ const cv=document.createElement('canvas');cv.width=source.naturalWidth;cv.height=source.naturalHeight;
+ const cx=cv.getContext('2d');if(!cx)throw Error(label+'の画像処理を開始できません');
+ cx.drawImage(source,0,0);
+ const im=document.createElement('img');im.src=cv.toDataURL('image/png');
+ im.style.cssText='width:100%;height:100%;object-fit:contain;display:block';
+ frame.appendChild(im);
+ const grid=document.createElement('div');grid.style.cssText='position:absolute;pointer-events:none;background-image:linear-gradient(to right,rgba(255,255,255,.55) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.55) 1px,transparent 1px);background-size:10% 10%;border:1px solid rgba(255,255,255,.5)';
+ const scale=Math.min(150/source.naturalWidth,190/source.naturalHeight);
+ const w=source.naturalWidth*scale,h=source.naturalHeight*scale;
+ grid.style.left='calc(50% - '+(w/2)+'px)';grid.style.top=(190-h)/2+'px';grid.style.width=w+'px';grid.style.height=h+'px';
+ frame.appendChild(grid);
  item.appendChild(frame);pics.appendChild(item);
  }root.appendChild(pics);
 for(const id of ids){const src=document.getElementById(id);if(!src)continue;const clone=src.cloneNode(true);clone.removeAttribute('id');clone.style.display='block';clone.style.width='100%';clone.style.boxSizing='border-box';clone.style.margin='0 0 12px';clone.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));clone.querySelectorAll('details').forEach(e=>{if(e.textContent.includes('内部検証'))e.remove()});root.appendChild(clone)}
@@ -3696,7 +3705,7 @@ async function create(button){
  if(!isAnalyzed()){alert('先に3方向の写真を分析してください。');return;}
  const original=button.textContent;button.disabled=true;button.textContent='読みやすい画像を作成しています…';let root=null;
  try{
-  await loadRenderer();root=makeSheet();await Promise.all(Array.from(root.querySelectorAll('img')).map(im=>im.decode?im.decode().catch(()=>{}):Promise.resolve()));root.querySelectorAll('img').forEach(im=>im.dispatchEvent(new Event('load')));
+  await loadRenderer();root=await makeSheet();await Promise.all(Array.from(root.querySelectorAll('img')).map(async im=>{if(im.decode)await im.decode();else if(!im.complete)await new Promise((resolve,reject)=>{im.onload=resolve;im.onerror=reject});if(!im.naturalWidth)throw Error('共有画像の写真を読み込めませんでした');}));
   // Each complete report section stays on one page where possible. Never produce one extremely tall thumbnail.
   const children=Array.from(root.children);const groups=[];let group=[];let height=0;
   for(const el of children){const h=Math.ceil(el.getBoundingClientRect().height)+14;
@@ -3706,7 +3715,7 @@ async function create(button){
   if(group.length)groups.push(group);
   const files=[];const date=new Date().toLocaleDateString('sv-SE');
   for(let i=0;i<groups.length;i++){
-   const sheet=document.createElement('div');sheet.style.cssText='position:fixed;left:-25000px;top:0;width:540px;box-sizing:border-box;padding:20px;background:#fff;color:#172033;font-family:system-ui,-apple-system,sans-serif;';
+   const sheet=document.createElement('div');sheet.style.cssText='position:fixed;left:0;top:0;width:540px;box-sizing:border-box;padding:20px;background:#fff;color:#172033;font-family:system-ui,-apple-system,sans-serif;';
    const heading=document.createElement('div');heading.textContent='姿勢分析結果　'+(i+1)+' / '+groups.length;heading.style.cssText='font-size:18px;font-weight:800;color:#0f766e;margin-bottom:12px;';sheet.appendChild(heading);
    for(const el of groups[i])sheet.appendChild(el);
    document.body.appendChild(sheet);
