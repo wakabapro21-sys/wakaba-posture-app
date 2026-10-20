@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V343</title>
+<title>AI姿勢＆3次元歪み分析システム V344</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -355,7 +355,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V343</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V344</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -626,6 +626,8 @@ photoTypes.forEach(function(type){var g=document.getElementById("gallery-"+type)
 });
 document.getElementById("retry").onclick=function(){var p=pending;document.getElementById("review").classList.remove("show");pending=null;if(p){p.input.value="";setTimeout(()=>p.input.click(),100)}};
 document.getElementById("use").onclick=function(){if(!pending)return;var p=pending;document.getElementById("review").classList.remove("show");pending=null;p.input.value="";save(p.type,p.file)};
+// Read-only normalized landmarks for the patient report; never modify analysis data.
+window.v344ReportLandmarks=function(type){var r=photos[type];return r&&r.points?JSON.parse(JSON.stringify(r.points)):null};
 function geometry(type){var stage=document.getElementById("stage-"+type),img=stage.querySelector("img"),cv=document.getElementById("canvas-"+type);if(!img||!cv)return null;var sr=stage.getBoundingClientRect(),ir=img.getBoundingClientRect();return {cv:cv,sr:sr,ir:ir,ox:ir.left-sr.left,oy:ir.top-sr.top,w:ir.width,h:ir.height}}
 function draw(type){var rec=photos[type],g=geometry(type);if(!rec||!g)return;var d=devicePixelRatio||1,c=g.cv;c.width=Math.round(g.sr.width*d);c.height=Math.round(g.sr.height*d);var x=c.getContext("2d");x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,g.sr.width,g.sr.height);
  var ns=visibleNames(type),pts=ns.map(n=>rec.points[n]),es=visibleEdges(type);x.strokeStyle="rgba(20,184,166,.95)";x.lineWidth=3;
@@ -3678,23 +3680,24 @@ const pics=document.createElement('div');pics.style.cssText='display:grid;grid-t
 for(const [key,label] of [['front','正面'],['right','右側面'],['left','左側面']]){
  const item=document.createElement('div');item.style.cssText='border:1px solid #e2e8f0;border-radius:10px;padding:5px;min-width:0';
  const title=document.createElement('div');title.textContent=label;title.style.cssText='font-size:12px;font-weight:800;text-align:center;margin-bottom:5px';item.appendChild(title);
- const frame=document.createElement('div');frame.style.cssText='position:relative;width:100%;height:190px;background:#f8fafc;overflow:hidden';
+ const frame=document.createElement('div');frame.style.cssText='position:relative;width:100%;height:190px;background:#f8fafc;overflow:hidden;display:flex;align-items:center;justify-content:center';
  const stage=document.getElementById('stage-'+key);
  const source=stage&&Array.from(stage.querySelectorAll('img')).find(x=>x.complete&&x.naturalWidth>0&&x.naturalHeight>0);
  if(!source)throw Error(label+'の写真が読み込まれていません。写真を再選択してください。');
- // Convert each source to a self-contained data URL before html2canvas. Blob URLs
- // referenced by an off-screen cloned DOM are unreliable on some mobile browsers.
  const cv=document.createElement('canvas');cv.width=source.naturalWidth;cv.height=source.naturalHeight;
  const cx=cv.getContext('2d');if(!cx)throw Error(label+'の画像処理を開始できません');
  cx.drawImage(source,0,0);
+ // Keep the photograph's intrinsic aspect ratio; draw guides in the same coordinate system.
+ const pts=window.v344ReportLandmarks&&window.v344ReportLandmarks(key);
+ const p=pts&&(key==='front'?(pts.leftHip&&pts.rightHip?{x:(pts.leftHip.x+pts.rightHip.x)/2}:pts.nose):(pts.leftAnkle||pts.rightAnkle));
+ const gw=cv.width,gh=cv.height;
+ cx.save();cx.strokeStyle='rgba(255,255,255,.45)';cx.lineWidth=Math.max(1,gw/500);
+ for(let k=1;k<10;k++){cx.beginPath();cx.moveTo(gw*k/10,0);cx.lineTo(gw*k/10,gh);cx.stroke();cx.beginPath();cx.moveTo(0,gh*k/10);cx.lineTo(gw,gh*k/10);cx.stroke();}
+ if(p&&Number.isFinite(p.x)){const xx=Math.max(0,Math.min(gw,gw*p.x));cx.beginPath();cx.strokeStyle='#ef4444';cx.lineWidth=Math.max(2,gw/240);cx.moveTo(xx,0);cx.lineTo(xx,gh);cx.stroke();}
+ cx.restore();
  const im=document.createElement('img');im.src=cv.toDataURL('image/png');
- im.style.cssText='width:100%;height:100%;object-fit:contain;display:block';
+ im.style.cssText='max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block';
  frame.appendChild(im);
- const grid=document.createElement('div');grid.style.cssText='position:absolute;pointer-events:none;background-image:linear-gradient(to right,rgba(255,255,255,.55) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.55) 1px,transparent 1px);background-size:10% 10%;border:1px solid rgba(255,255,255,.5)';
- const scale=Math.min(150/source.naturalWidth,190/source.naturalHeight);
- const w=source.naturalWidth*scale,h=source.naturalHeight*scale;
- grid.style.left='calc(50% - '+(w/2)+'px)';grid.style.top=(190-h)/2+'px';grid.style.width=w+'px';grid.style.height=h+'px';
- frame.appendChild(grid);
  item.appendChild(frame);pics.appendChild(item);
  }root.appendChild(pics);
 for(const id of ids){const src=document.getElementById(id);if(!src)continue;const clone=src.cloneNode(true);clone.removeAttribute('id');clone.style.display='block';clone.style.width='100%';clone.style.boxSizing='border-box';clone.style.margin='0 0 12px';clone.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));clone.querySelectorAll('details').forEach(e=>{if(e.textContent.includes('内部検証'))e.remove()});root.appendChild(clone)}
