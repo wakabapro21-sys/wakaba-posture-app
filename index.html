@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V336</title>
+<title>AI姿勢＆3次元歪み分析システム V342</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -355,7 +355,7 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V336</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V342</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1607,7 +1607,7 @@ host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel'
  $('v64CompareBody').innerHTML=dates+'<div class="v70hero"><div class="v70scoreline"><div class="v70scorebox"><small>Before・総合</small><strong>'+before.total+'</strong></div><div class="v70arrow">→</div><div class="v70scorebox"><small>After・総合</small><strong>'+after.total+'</strong></div></div><div class="v70change">総合スコア変化　'+sign+scoreDelta+'点</div></div>'+types+'<div class="v93compareLead">選択した2回の分析結果を、スコアと姿勢の測定値で比較しています。写真は保存されていないため表示しません。</div>'+'<div class="v67section">スコア詳細</div><div class="v70metricRow" style="font-weight:900;color:#64748b"><span>項目</span><b>Before</b><b>After</b><span>差</span></div>'+scoreRow('総合',before.total,after.total)+scoreRow('正面',before.front,after.front)+scoreRow('側面',before.side,after.side)+scoreRow('回旋',before.twist,after.twist)+'<div class="v67section">姿勢数値の変化</div><div class="v70metricRow" style="font-weight:900;color:#64748b"><span>項目</span><b>Before</b><b>After</b><span>変化</span></div>'+rows+'<div class="v64note">※「改善」は写真上の左右差・偏位・回旋の絶対値が小さくなった場合の比較表示です。医学的な診断や治療効果の判定ではありません。同じ位置・距離・姿勢条件で撮影してください。</div>';
  $('v63HistoryModal').classList.remove('on');$('v64CompareModal').classList.add('on')}
  function makeThumb(type){try{const rec=window.WAKABA_PHOTOS&&window.WAKABA_PHOTOS[type];if(!rec)return null;if(rec.historyThumb)return rec.historyThumb;const img=document.querySelector('#stage-'+type+' img');if(!img||!img.naturalWidth)return null;const maxSide=960,scale=Math.min(1,maxSide/Math.max(img.naturalWidth,img.naturalHeight)),w=Math.max(1,Math.round(img.naturalWidth*scale)),h=Math.max(1,Math.round(img.naturalHeight*scale)),cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);rec.historyThumb=cv.toDataURL('image/jpeg',.62);return rec.historyThumb}catch(e){console.error('V204 history photo error',type,e);return null}}
- function saveAnalysisHistory(total,front,side,twist,type){try{const raw=sessionStorage.getItem('wakaba_v61_current')||localStorage.getItem('wakaba_v66_current');const c=JSON.parse(raw||'null');if(!c||!c.id){console.warn('V67 history: current customer missing');return false}const d=window.WAKABA_3D_DATA||{};const metrics={shoulderTilt:Number(d.shoulderTilt),pelvisTilt:Number(d.pelvisTilt),headShift:Number(d.headShift),thoraxYaw:d.thoraxYaw==null?null:Number(d.thoraxYaw),pelvisYaw:d.pelvisYaw==null?null:Number(d.pelvisYaw),relativeTwist:d.pelvisReliable===false||d.thoraxReliable===false||d.relativeTwist==null?null:Number(d.relativeTwist),sideDeviation:Number(d.sideDeviation)};const read=id=>document.getElementById(id)?.textContent?.trim()||'';const h=getHistory(c.id);h.unshift({version:336,date:new Date().toISOString(),total:Number(total),front:Number(front),side:Number(side),twist:twist==null||twist==="判定不可"?null:Number(twist),type:String(type||''),metrics,mainFinding:read('mainFinding'),mainFindingDetail:read('mainFindingDetail'),muscleTight:read('muscleTight'),muscleWeak:read('muscleWeak'),careDirection:read('careDirection')});let keep=h.slice(0,30);try{localStorage.setItem(historyKey(c.id),JSON.stringify(keep))}catch(q){console.error('V227: history storage quota, existing history preserved',q);alert('分析履歴を保存できませんでした。端末の保存容量が不足している可能性があります。既存の履歴は削除していません。');return false}try{window.dispatchEvent(new CustomEvent('wakaba:v103-history-saved',{detail:{id:c.id}}))}catch(e){}return true}catch(e){console.error('V67 history save error',e);return false}}
+ function saveAnalysisHistory(total,front,side,twist,type){try{const raw=sessionStorage.getItem('wakaba_v61_current')||localStorage.getItem('wakaba_v66_current');const c=JSON.parse(raw||'null');if(!c||!c.id){console.warn('V67 history: current customer missing');return false}const d=window.WAKABA_3D_DATA||{};const metrics={shoulderTilt:Number(d.shoulderTilt),pelvisTilt:Number(d.pelvisTilt),headShift:Number(d.headShift),thoraxYaw:d.thoraxYaw==null?null:Number(d.thoraxYaw),pelvisYaw:d.pelvisYaw==null?null:Number(d.pelvisYaw),relativeTwist:d.pelvisReliable===false||d.thoraxReliable===false||d.relativeTwist==null?null:Number(d.relativeTwist),sideDeviation:Number(d.sideDeviation)};const read=id=>document.getElementById(id)?.textContent?.trim()||'';const h=getHistory(c.id);h.unshift({version:342,date:new Date().toISOString(),total:Number(total),front:Number(front),side:Number(side),twist:twist==null||twist==="判定不可"?null:Number(twist),type:String(type||''),metrics,mainFinding:read('mainFinding'),mainFindingDetail:read('mainFindingDetail'),muscleTight:read('muscleTight'),muscleWeak:read('muscleWeak'),careDirection:read('careDirection')});let keep=h.slice(0,30);try{localStorage.setItem(historyKey(c.id),JSON.stringify(keep))}catch(q){console.error('V227: history storage quota, existing history preserved',q);alert('分析履歴を保存できませんでした。端末の保存容量が不足している可能性があります。既存の履歴は削除していません。');return false}try{window.dispatchEvent(new CustomEvent('wakaba:v103-history-saved',{detail:{id:c.id}}))}catch(e){}return true}catch(e){console.error('V67 history save error',e);return false}}
  window.saveAnalysisHistory=saveAnalysisHistory;
  window.addEventListener('wakaba-analysis',function(){
    const total=document.getElementById('scoreTotal')?.textContent;
@@ -3675,7 +3675,19 @@ function makeSheet(){const root=document.createElement('div');root.id='v322Captu
 const h=document.createElement('div');h.style.cssText='font-size:20px;font-weight:900;color:#0f766e;margin-bottom:6px';h.textContent='姿勢分析結果';root.appendChild(h);
 const desc=document.createElement('div');desc.style.cssText='font-size:12px;color:#64748b;margin-bottom:14px';desc.textContent='正面・左右側面の写真から分析した参考評価';root.appendChild(desc);
 const pics=document.createElement('div');pics.style.cssText='display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:14px';
-for(const [key,label] of [['front','正面'],['right','右側面'],['left','左側面']]){const item=document.createElement('div');item.style.cssText='border:1px solid #e2e8f0;border-radius:10px;padding:5px;min-width:0';const title=document.createElement('div');title.textContent=label;title.style.cssText='font-size:12px;font-weight:800;text-align:center;margin-bottom:5px';item.appendChild(title);const src=document.getElementById('stage-'+key);if(src){const visual=src.querySelector('canvas,img');if(visual){try{const img=document.createElement('img');img.src=visual.tagName==='CANVAS'?visual.toDataURL('image/png'):visual.src;img.style.cssText='width:100%;height:190px;object-fit:contain;background:#f8fafc;display:block';item.appendChild(img)}catch(e){const msg=document.createElement('div');msg.textContent='写真の画像化に失敗';item.appendChild(msg)}}}pics.appendChild(item)}root.appendChild(pics);
+for(const [key,label] of [['front','正面'],['right','右側面'],['left','左側面']]){
+ const item=document.createElement('div');item.style.cssText='border:1px solid #e2e8f0;border-radius:10px;padding:5px;min-width:0';
+ const title=document.createElement('div');title.textContent=label;title.style.cssText='font-size:12px;font-weight:800;text-align:center;margin-bottom:5px';item.appendChild(title);
+ const frame=document.createElement('div');frame.style.cssText='position:relative;width:100%;height:190px;background:#f8fafc;overflow:hidden';
+ const stage=document.getElementById('stage-'+key);
+ if(stage){const visual=Array.from(stage.querySelectorAll('img')).find(x=>x.naturalWidth>0&&x.naturalHeight>0)||stage.querySelector('canvas');
+ if(visual){try{const im=document.createElement('img');im.src=visual.tagName==='CANVAS'?visual.toDataURL('image/png'):visual.currentSrc||visual.src;im.style.cssText='width:100%;height:100%;object-fit:contain;display:block';frame.appendChild(im);
+ const grid=document.createElement('div');grid.style.cssText='position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(to right,rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.5) 1px,transparent 1px);background-size:10% 10%;border:1px solid rgba(255,255,255,.5)';
+ // Keep the grid exactly over the visible image, including letterboxing.
+ im.addEventListener('load',()=>{const scale=Math.min(frame.clientWidth/im.naturalWidth,frame.clientHeight/im.naturalHeight);const w=im.naturalWidth*scale,h=im.naturalHeight*scale;grid.style.left=(frame.clientWidth-w)/2+'px';grid.style.top=(frame.clientHeight-h)/2+'px';grid.style.width=w+'px';grid.style.height=h+'px';grid.style.right='auto';grid.style.bottom='auto';});frame.appendChild(grid);
+ }catch(e){frame.textContent='写真の画像化に失敗';}}}
+ item.appendChild(frame);pics.appendChild(item);
+ }root.appendChild(pics);
 for(const id of ids){const src=document.getElementById(id);if(!src)continue;const clone=src.cloneNode(true);clone.removeAttribute('id');clone.style.display='block';clone.style.width='100%';clone.style.boxSizing='border-box';clone.style.margin='0 0 12px';clone.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));clone.querySelectorAll('details').forEach(e=>{if(e.textContent.includes('内部検証'))e.remove()});root.appendChild(clone)}
 const foot=document.createElement('div');foot.textContent='※ 写真とランドマークから得た参考評価です。医学的診断ではありません。';foot.style.cssText='font-size:11px;color:#64748b;line-height:1.7';root.appendChild(foot);document.body.appendChild(root);return root;}
 function toBlob(canvas){return new Promise((res,rej)=>canvas.toBlob(b=>b?res(b):rej(Error('PNG生成に失敗')),'image/png'));}
@@ -3684,7 +3696,7 @@ async function create(button){
  if(!isAnalyzed()){alert('先に3方向の写真を分析してください。');return;}
  const original=button.textContent;button.disabled=true;button.textContent='読みやすい画像を作成しています…';let root=null;
  try{
-  await loadRenderer();root=makeSheet();await Promise.all(Array.from(root.querySelectorAll('img')).map(im=>im.decode?im.decode().catch(()=>{}):Promise.resolve()));
+  await loadRenderer();root=makeSheet();await Promise.all(Array.from(root.querySelectorAll('img')).map(im=>im.decode?im.decode().catch(()=>{}):Promise.resolve()));root.querySelectorAll('img').forEach(im=>im.dispatchEvent(new Event('load')));
   // Each complete report section stays on one page where possible. Never produce one extremely tall thumbnail.
   const children=Array.from(root.children);const groups=[];let group=[];let height=0;
   for(const el of children){const h=Math.ceil(el.getBoundingClientRect().height)+14;
