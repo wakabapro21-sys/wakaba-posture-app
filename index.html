@@ -3611,11 +3611,13 @@ body.v214-simple #v285LocalDetails{display:none!important}
   ctx.clearRect(0,0,pw,ph);
   ctx.save();ctx.scale(pw/w,ph/h);
   ctx.strokeStyle='rgba(255,255,255,0.65)';ctx.lineWidth=1;
-  // Equal spacing in photo coordinates, independent of portrait/landscape aspect ratio.
-  const segments=4;
-  for(let i=1;i<segments;i++){
-   const x=w*i/segments,y=h*i/segments;
+  // Square grid as in the earlier analysis screen: equal pixel intervals on both axes.
+  // Ten columns across the displayed photo; rows continue at the SAME interval.
+  const step=w/10;
+  for(let x=step;x<w-0.5;x+=step){
    ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();
+  }
+  for(let y=step;y<h-0.5;y+=step){
    ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();
   }
   ctx.restore();
