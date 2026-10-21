@@ -362,7 +362,7 @@ html,body{
 <style id="v361-manual-style">.v361manual{font-size:14px}.v361manual .v361lead{color:#475569;line-height:1.8}.v361steps{display:grid;gap:12px;margin:18px 0}.v361step{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;border:1px solid #dbeafe;background:#f8fafc;border-radius:14px;padding:13px}.v361num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#0f766e;color:white;font-weight:900}.v361step h3{margin:0 0 8px;font-size:15px;color:#172033}.v361step p{font-size:12px;line-height:1.8;margin:9px 0 0}.v361diagram{background:#fff;border:1px solid #cbd5e1;border-radius:10px;padding:12px 9px;color:#0f766e;text-align:center;font-weight:800;font-size:12px;line-height:1.8}.v361three{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.v361three span{display:grid;justify-items:center;font-size:25px}.v361three small{font-size:11px;color:#0f766e}.v361details{border:1px solid #cbd5e1;border-radius:12px;margin:12px 0;overflow:hidden}.v361details summary{cursor:pointer;padding:16px;background:#ecfeff;color:#115e59;font-weight:900}.v361inside{padding:12px;overflow-wrap:anywhere}.v361inside p{font-size:12px}.v361inside .v341table td{min-width:0}.v361foot{font-size:11px;color:#64748b}</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V363</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V380</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3633,7 +3633,17 @@ body.v214-simple #v285LocalDetails{display:none!important}
   });
   obs.observe(root,{childList:true,subtree:true});
   window.addEventListener('resize',refresh);window.addEventListener('load',refresh);
-  types.forEach(t=>{const stage=document.getElementById('stage-'+t);if(stage)new ResizeObserver(refresh).observe(stage);});
+  // Image sources are assigned asynchronously after upload/camera capture.
+  // Observe their load events and source changes, not just DOM child insertions.
+  types.forEach(t=>{
+   const stage=document.getElementById('stage-'+t);if(!stage)return;
+   new ResizeObserver(refresh).observe(stage);
+   const img=stage.querySelector('img');if(!img)return;
+   img.addEventListener('load',refresh);
+   new MutationObserver(refresh).observe(img,{attributes:true,attributeFilter:['src','style','class']});
+  });
+  // Brief startup retry for photos restored after asynchronous UI initialization.
+  let checks=0;const retry=setInterval(()=>{refresh();if(++checks>=12)clearInterval(retry)},500);
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
