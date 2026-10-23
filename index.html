@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V427 ログイン画面整理版</title>
+<title>AI姿勢＆3次元歪み分析システム V428 ログイン安定化版</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -390,7 +390,7 @@ if(btn)btn.addEventListener('click',async()=>{
 </script>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V427 ログイン画面整理版</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V428 ログイン安定化版</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -2511,30 +2511,48 @@ function dateOf(v){try{if(!v)return null;if(v.toDate)return v.toDate();if(typeof
 function hideGate(){restoreRegistration();gate.classList.remove('on');window.__wakabaSubscriptionAccess=true}
 function restoreRegistration(){const f=document.getElementById('v382Register'),anchor=document.getElementById('v382ShowRegister');if(f&&anchor&&f.parentElement?.id==='v397EnrollmentSlot'){anchor.insertAdjacentElement('afterend',f);f.hidden=true}}
 function blockGate(title,message){window.__wakabaSubscriptionAccess=false;gate.classList.add('on');card.innerHTML='<h2>🔒 '+title+'</h2><p>'+message+'</p><p style="font-size:12px;color:#64748b">患者情報・数値履歴は契約終了後も所定期間保管されます。写真の長期保存は行いません。</p><button id="v148Restart" style="background:#635bff">契約を再開する</button><button id="v141Retry" type="button" onclick="window.v151Recheck && window.v151Recheck(this); return false;" style="background:#fff;color:#334155;position:relative;z-index:2147483647;pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,0,0,.08)">契約状態を再確認</button><div id="v149CheckMsg" style="margin-top:9px;font-size:13px;font-weight:700;color:#475569"></div><button id="v128Logout">ログアウト</button><div id="v148RestartMsg" style="margin-top:8px;font-size:12px;color:#64748b"></div>';document.getElementById('v148Restart').onclick=()=>{const b=document.getElementById('v148Restart');if(typeof window.v147StartCheckout==='function')window.v147StartCheckout(b);else{const m=document.getElementById('v148RestartMsg');if(m)m.textContent='Stripe接続を準備中です。数秒後にもう一度押してください。'}};/* V151: old retry onclick disabled; stable handler is installed below. */ document.getElementById('v141Retry').dataset.v151='ready'; document.getElementById('v128Logout').onclick=()=>signOut(getAuth(getApp()));}
+let v428GateRequest=0;
 async function check141(u){
- if(!u){window.__wakabaSubscriptionAccess=false;hideGate();window.__wakabaSubscriptionAccess=false;return}
+ const requestId=++v428GateRequest;
+ if(!u){
+  window.__wakabaSubscriptionAccess=false;
+  restoreRegistration();
+  gate.classList.remove('on'); // Login UI stays accessible when signed out.
+  return;
+ }
  window.__wakabaSubscriptionAccess=false;
  gate.classList.add('on');
+ card.innerHTML='<h2>契約状態を確認しています</h2><p>ログイン情報と利用権限を確認中です。</p>';
  try{
   const result=await httpsCallable(getFunctions(getApp(),'asia-northeast1'),'checkSubscriptionEntitlement')({});
-  if(getAuth(getApp()).currentUser?.uid!==u.uid)return;
-  if(result?.data?.allowed===true){hideGate();return}
-  const snap=await getDocFromServer(doc(getFirestore(getApp()),'clinics',u.uid,'subscription','status'));
-  if(getAuth(getApp()).currentUser?.uid!==u.uid)return;
-  if(!snap.exists()){
+  if(requestId!==v428GateRequest || getAuth(getApp()).currentUser?.uid!==u.uid)return;
+  if(result?.data?.allowed===true){hideGate();return;}
+  // Firestore is consulted ONLY to distinguish new registration from an existing
+  // account. It NEVER overrides a denial from the server entitlement function.
+  let isNew=false;
+  try{
+   const snap=await getDocFromServer(doc(getFirestore(getApp()),'clinics',u.uid,'subscription','status'));
+   if(requestId!==v428GateRequest || getAuth(getApp()).currentUser?.uid!==u.uid)return;
+   isNew=!snap.exists();
+  }catch(e){console.warn('V428 registration status lookup',e);}
+  if(isNew){
    window.__wakabaSubscriptionAccess=false;
    gate.classList.add('on');
    if(document.getElementById('v397EnrollmentSlot')?.contains(document.getElementById('v382Register')))return;
-   card.innerHTML='<h2>7日間無料体験の登録</h2><p>まだ無料体験が開始されていません。カード登録は不要で、自動課金もありません。</p><div id="v397EnrollmentSlot"></div><button id="v397CheckAgain" type="button">登録完了後に契約状態を確認</button><button id="v397Logout" type="button">ログアウト</button>';
+   card.innerHTML='<h2>7日間無料体験の登録</h2><p>無料体験の登録を完了してください。カード登録は不要で、自動課金もありません。</p><div id="v397EnrollmentSlot"></div><button id="v397CheckAgain" type="button">登録完了後に契約状態を確認</button><button id="v397Logout" type="button">ログアウト</button>';
    const slot=document.getElementById('v397EnrollmentSlot');
    const form=document.getElementById('v382Register');
-   if(form){if(!form.dataset.v397Home){form.dataset.v397Home='v382ShowRegister';}form.hidden=false;slot.appendChild(form)}
+   if(form){if(!form.dataset.v397Home)form.dataset.v397Home='v382ShowRegister';form.hidden=false;slot.appendChild(form);}
    document.getElementById('v397CheckAgain').onclick=()=>check141(getAuth(getApp()).currentUser);
-   document.getElementById('v397Logout').onclick=()=>{restoreRegistration();signOut(getAuth(getApp()))};
+   document.getElementById('v397Logout').onclick=()=>{restoreRegistration();signOut(getAuth(getApp()));};
    return;
   }
   blockGate('契約状態の確認が必要です','有効な無料体験・有料契約を確認できませんでした。');
- }catch(e){console.error('V426 entitlement check',e);blockGate('契約状態を確認できません','通信状態を確認し、再確認してください。')}
+ }catch(e){
+  if(requestId!==v428GateRequest || getAuth(getApp()).currentUser?.uid!==u.uid)return;
+  console.error('V428 entitlement check',e);
+  blockGate('契約状態を確認できません','通信状態を確認し、再確認してください。');
+ }
 }
 function mount141(){const wait=()=>{if(!getApps().length){setTimeout(wait,300);return}onAuthStateChanged(getAuth(getApp()),u=>{check141(u);if(window.__wakabaExpiryTimer)clearInterval(window.__wakabaExpiryTimer);if(u)window.__wakabaExpiryTimer=setInterval(()=>check141(u),60000)})};wait()}
 window.addEventListener('wakaba:trial-started',()=>{
@@ -2663,8 +2681,7 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 
   window.v139CheckSubscription=v139CheckSubscription;
   window.addEventListener('load',()=>{
-    setTimeout(v139CheckSubscription,1800);
-    setInterval(v139CheckSubscription,V139_CHECK_MS);
+    /* V428: old Firestore-only warning checks retired; authoritative server gate remains active. */
   });
 })();
 </script>
