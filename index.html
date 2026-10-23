@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V428 ログイン安定化版</title>
+<title>AI姿勢＆3次元歪み分析システム V430 契約判定修正版</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -375,6 +375,13 @@ body:not(.v271-signed-out) #v427EmailLogin>summary{display:none}
 body:not(.v271-signed-out) #v427EmailLogin{display:contents}
 body:not(.v271-signed-out) #v382ShowRegister{display:none!important}
 body:not(.v271-signed-out) #v382Register:not([hidden]){display:none!important}
+
+/* V429: email login uses the same compact modal width as Google login. */
+body.v271-signed-out #v100Cloud #v427EmailLogin[open]{width:100%;max-width:100%;box-sizing:border-box}
+body.v271-signed-out #v100Cloud #v427EmailLogin[open] .v100row{display:flex;flex-direction:column;gap:8px;width:100%;max-width:100%;margin-top:9px}
+body.v271-signed-out #v100Cloud #v427EmailLogin[open] .v100row input{width:100%;max-width:100%;min-width:0;box-sizing:border-box;font-size:16px;padding:12px}
+body.v271-signed-out #v100Cloud #v427EmailLogin[open] #v100SignIn{width:100%;min-height:46px;font-size:15px;padding:12px}
+body.v271-signed-out #v100Cloud #v427EmailLogin[open] #v266ResetPanel{max-width:100%;box-sizing:border-box}
 </style>
 <script type="module" id="v427-google-login">
 import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
@@ -2505,6 +2512,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
 import {getAuth,onAuthStateChanged,signOut} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
 import {getFirestore,doc,getDocFromServer} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
+import {getFunctions,httpsCallable} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-functions.js';
 const gate=document.getElementById('v128Gate'),card=document.getElementById('v128GateCard');
 window.__wakabaSubscriptionAccess=false;
 function dateOf(v){try{if(!v)return null;if(v.toDate)return v.toDate();if(typeof v==='number')return new Date(v<1e12?v*1000:v);return new Date(v)}catch(e){return null}}
