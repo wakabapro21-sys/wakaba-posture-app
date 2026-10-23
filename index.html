@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V426 最小修正版</title>
+<title>AI姿勢＆3次元歪み分析システム V427 ログイン画面整理版</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -361,9 +361,36 @@ html,body{
 <style id="v222-hide-sales-plan">#v129SalesPlan{display:none !important}</style>
 <style id="v361-manual-style">.v361manual{font-size:14px}.v361manual .v361lead{color:#475569;line-height:1.8}.v361steps{display:grid;gap:12px;margin:18px 0}.v361step{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;border:1px solid #dbeafe;background:#f8fafc;border-radius:14px;padding:13px}.v361num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#0f766e;color:white;font-weight:900}.v361step h3{margin:0 0 8px;font-size:15px;color:#172033}.v361step p{font-size:12px;line-height:1.8;margin:9px 0 0}.v361diagram{background:#fff;border:1px solid #cbd5e1;border-radius:10px;padding:12px 9px;color:#0f766e;text-align:center;font-weight:800;font-size:12px;line-height:1.8}.v361three{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.v361three span{display:grid;justify-items:center;font-size:25px}.v361three small{font-size:11px;color:#0f766e}.v361details{border:1px solid #cbd5e1;border-radius:12px;margin:12px 0;overflow:hidden}.v361details summary{cursor:pointer;padding:16px;background:#ecfeff;color:#115e59;font-weight:900}.v361inside{padding:12px;overflow-wrap:anywhere}.v361inside p{font-size:12px}.v361inside .v341table td{min-width:0}.v361foot{font-size:11px;color:#64748b}</style>
 
+
+<style id="v427-compact-auth">
+body.v271-signed-out #v100Cloud{width:min(370px,calc(100vw - 28px))!important;padding:16px!important;max-height:calc(100dvh - 24px)!important}
+body.v271-signed-out #v100Cloud .v100head{padding:4px 0 10px!important}
+body.v271-signed-out #v100Cloud #v382ShowRegister{background:#fff!important;color:#0f766e!important;border:1px solid #0f766e!important;font-size:14px!important;padding:12px!important}
+body.v271-signed-out #v100Cloud #v382Register{padding:12px!important;max-width:100%;overflow-x:hidden}
+body.v271-signed-out #v100Cloud #v382Register .v100btn{font-size:12px}
+body.v271-signed-out #v100Cloud #v427EmailLogin:not([open])> :not(summary){display:none!important}
+body.v271-signed-out #v100Cloud #v427GoogleLogin{display:block}
+body:not(.v271-signed-out) #v427GoogleLogin{display:none}
+body:not(.v271-signed-out) #v427EmailLogin>summary{display:none}
+body:not(.v271-signed-out) #v427EmailLogin{display:contents}
+body:not(.v271-signed-out) #v382ShowRegister{display:none!important}
+body:not(.v271-signed-out) #v382Register:not([hidden]){display:none!important}
+</style>
+<script type="module" id="v427-google-login">
+import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
+import {getAuth,GoogleAuthProvider,signInWithPopup} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
+const btn=document.getElementById('v427GoogleLogin');
+if(btn)btn.addEventListener('click',async()=>{
+ if(!getApps().length){alert('ログインの準備中です。少し待ってからお試しください。');return}
+ btn.disabled=true;
+ try{await signInWithPopup(getAuth(getApp()),new GoogleAuthProvider());}
+ catch(e){console.error('V427 Google login',e);alert('Googleログインできませんでした。もう一度お試しください。')}
+ finally{btn.disabled=false}
+});
+</script>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V426 最小修正版</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V427 ログイン画面整理版</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1808,12 +1835,15 @@ body.v271-signed-out #v100Cloud #v101CloudClose{display:none}
 <div id="v100Cloud">
  <div class="v100head"><span>☁ データ管理</span><span id="v100Status" class="v100badge">未接続</span></div>
  <div id="v100Login">
+  <button id="v427GoogleLogin" type="button" class="v100btn" style="width:100%;font-size:15px;padding:13px;background:#0f766e">Googleでログイン</button>
+  <details id="v427EmailLogin" style="margin-top:10px"><summary style="cursor:pointer;text-align:center;color:#475569;font-size:12px;padding:8px">メールアドレスでログイン</summary>
   <div class="v100row"><input id="v100Email" type="email" autocomplete="username" placeholder="Firebase管理者メール"></div>
   <div class="v100row"><input id="v100Pass" type="password" autocomplete="current-password" placeholder="パスワード"><button id="v100SignIn" class="v100btn">ログイン</button></div>
   <div style="margin-top:9px"><button type="button" id="v266Forgot" style="border:0;background:none;color:#0f766e;text-decoration:underline;padding:6px 0;font-size:12px">パスワードを忘れた方はこちら</button></div>
   <div id="v266ResetPanel" hidden style="margin:8px 0;padding:10px;background:#f0fdfa;border-radius:10px;font-size:12px"><b>パスワード再設定</b><p>上のメールアドレス宛てに再設定メールを送ります。</p><button type="button" id="v266SendReset" class="v100btn">再設定メールを送信</button><div id="v266ResetMsg" role="status" style="margin-top:7px;overflow-wrap:anywhere"></div></div>
   <div style="margin:10px 0;font-size:12px;line-height:1.7"><label style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" id="v266Agree" style="margin-top:5px;flex:none"><span><a href="#" id="v266Terms">利用規約</a>および<a href="#" id="v266Privacy">プライバシーポリシー</a>を確認し、同意します。</span></label><div id="v266AgreeMsg" role="status" style="color:#b91c1c"></div></div>
  </div>
+  </details>
   <button type="button" id="v382ShowRegister" class="v100btn secondary" style="margin-top:8px;width:100%">新規登録（7日間無料・カード不要）</button>
 <div id="v382Register" hidden style="margin-top:12px;padding:12px;border:1px solid #cbd5e1;border-radius:12px;background:#f8fafc;font-size:13px">
  <b>新規登録・7日間無料体験（カード不要）</b><p style="font-size:11px">メール認証後に無料体験を開始します。自動課金はありません。</p>
