@@ -1269,6 +1269,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  var worstSideResult=rightSideResult&&leftSideResult?
    (rightSideResult.penalty>=leftSideResult.penalty?rightSideResult:leftSideResult):
    (rightSideResult||leftSideResult);
+ var rawSide=(sideDeviation(photos.right)+sideDeviation(photos.left))/2; if(!Number.isFinite(rawSide))rawSide=0;
  var sidePenalty=worstSideResult?worstSideResult.penalty:0;
  var sideScore=worstSideResult?clampScore(100-sidePenalty):clampScore(100-Math.max(0,((sideDeviation(photos.right)+sideDeviation(photos.left))/2)-.35)*3.25);
  /* V76: 回旋スコアは胸郭と骨盤の絶対向きではなく、相対捻れを主評価にする。
