@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V430 契約判定修正版</title>
+<title>AI姿勢＆3次元歪み分析システム V431 契約管理統一版</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -3131,77 +3131,136 @@ import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase
 import {getAuth,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
 import {getFirestore,doc,getDocFromServer} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
 import {getFunctions,httpsCallable} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-functions.js';
-const labels={trial:'無料体験中',trialing:'無料体験中',active:'契約中',canceled:'解約済み',cancelled:'解約済み',expired:'期限切れ',past_due:'お支払いの確認が必要',unpaid:'未払い',incomplete:'手続き未完了',setup:'準備中'};
-function date(v){if(!v)return '未確認';try{const d=v.toDate?v.toDate():new Date(typeof v==='number'&&v<1e12?v*1000:v);return Number.isNaN(d.getTime())?'未確認':d.toLocaleDateString('ja-JP')}catch{return '未確認'}}
-function mount(){const sales=document.getElementById('v130Sales');if(!sales||document.getElementById('v213ContractOverview'))return;
-const el=document.createElement('section');el.id='v213ContractOverview';
-el.innerHTML='<h3>💳 ご契約状況</h3><div class="v213grid"><div class="v213cell">契約状態<strong id="v213State">確認中…</strong></div><div class="v213cell">プラン<strong>スタンダード</strong></div><div class="v213cell">無料体験<strong id="v213TrialStatus">7日間</strong></div><div class="v213cell">月額料金<strong>3,980円（税込）</strong></div><div class="v213cell" id="v213TrialRow">無料体験終了日<strong id="v213Trial">未確認</strong></div><div class="v213cell">次回更新・契約期限<strong id="v213Renew">未確認</strong></div></div><div class="v213actions"><button type="button" id="v213Refresh">契約状態を再確認</button><button type="button" id="v386PortalOpen">契約内容の確認・解約（Stripe）</button></div><div class="v213fine" id="v213Message">契約状態はFirebaseの院アカウントから読み取ります。</div><div class="v213fine">契約管理は本番Stripeの有料契約がある場合に利用できます。</div>';
-sales.insertAdjacentElement('beforebegin',el);
-const state=el.querySelector('#v213State'),trial=el.querySelector('#v213Trial'),trialStatus=el.querySelector('#v213TrialStatus'),trialRow=el.querySelector('#v213TrialRow'),renew=el.querySelector('#v213Renew'),msg=el.querySelector('#v213Message'),btn=el.querySelector('#v213Refresh');
-const portalButton=el.querySelector('#v386PortalOpen');
-portalButton.addEventListener('click',async()=>{
- if(portalButton.disabled)return;
- // Open a blank window during the click gesture so popup blockers do not interfere.
- const popup=window.open('about:blank','_blank');
- portalButton.disabled=true;
- msg.textContent='Stripeの契約管理画面を準備しています…';
- try{
-  if(!getApps().length)throw new Error('Firebaseへの接続が完了していません。');
-  const app=getApp(), user=getAuth(app).currentUser;
-  if(!user)throw new Error('先にログインしてください。');
-  const callable=httpsCallable(getFunctions(app,'asia-northeast1'),'createBillingPortalSession');
-  const result=await callable({});
-  const url=result?.data?.url;
-  if(typeof url!=='string'||!/^https:\/\/billing\.stripe\.com\//.test(url))throw new Error('Stripeの契約管理URLを取得できませんでした。');
-  if(popup&&!popup.closed){popup.location.replace(url);}else{window.location.assign(url);}
-  msg.textContent='Stripeの契約管理画面を開きました。';
- }catch(e){
-  if(popup&&!popup.closed)popup.close();
-  msg.textContent='契約管理を開けませんでした：'+(e?.message||'接続状況をご確認ください。')+' Firebase Functionsの本番デプロイ後に利用できます。';
- }finally{portalButton.disabled=false;}
-});
-let refreshing=false;
-async function refresh(){
- if(refreshing)return;
- refreshing=true;
- state.textContent='確認中…';
- msg.textContent='ボタンを受け付けました。Firebaseに確認しています…';
- btn.disabled=true;
- const started=Date.now();
- try{
-  if(!getApps().length)throw Error('Firebase接続待ち');
-  const u=getAuth(getApp()).currentUser;
-  if(!u){state.textContent='ログインが必要';msg.textContent='Firebase同期からログインしてください。';return;}
-  const snap=await Promise.race([
-   getDocFromServer(doc(getFirestore(getApp()),'clinics',u.uid,'subscription','status')),
-   new Promise((_,reject)=>setTimeout(()=>reject(Error('通信がタイムアウトしました')),12000))
-  ]);
-  if(!snap.exists()){state.textContent='契約情報なし';msg.textContent='Firebaseに契約情報がありません。Stripeとの同期状態を確認してください。';return;}
-  const d=snap.data()||{},st=String(d.stripeStatus||d.status||'').toLowerCase();
-  const remaining=Math.max(0,1200-(Date.now()-started));
-  if(remaining)await new Promise(resolve=>setTimeout(resolve,remaining));
-  // Cardless trial expiry must be computed from the server-recorded deadline.
-  const trialDeadline=d.trialEndsAt??d.trialEnd??d.trial_end??d.trialEndAt;
-  const trialDate=trialDeadline?.toDate?trialDeadline.toDate():
-    (typeof trialDeadline==='number'?new Date(trialDeadline<1e12?trialDeadline*1000:trialDeadline):
-    (trialDeadline?new Date(trialDeadline):null));
-  const cardlessTrial=st==='trial'&&d.source==='server-cardless-v1'&&d.hasUsedTrial===true;
-  const trialExpired=cardlessTrial&&trialDate&&Number.isFinite(trialDate.getTime())&&Date.now()>=trialDate.getTime();
-  state.textContent=trialExpired?'期限切れ':(labels[st]||'確認が必要');
-  // V333: display-only trial presentation. Do not change Stripe/Firebase/access logic.
-  const savedTrialEnd=d.trialEndsAt??d.trialEnd??d.trial_end??d.trialEndAt;
-  const inTrial=cardlessTrial&&!trialExpired&&!!trialDate&&Number.isFinite(trialDate.getTime());
-  trialStatus.textContent=inTrial?'7日間':(savedTrialEnd?'利用済み':'7日間');
-  trialRow.hidden=!inTrial;
-  trial.textContent=inTrial?date(trialDeadline):'';
-  renew.textContent=date(d.currentPeriodEnd??d.current_period_end);
-  msg.textContent='再確認完了：'+new Date().toLocaleTimeString('ja-JP')+'。Firebaseの契約情報を取得しました。Stripe側の最新状態とは限りません。';
- }catch(e){state.textContent='取得できません';msg.textContent='再確認に失敗しました：'+(e?.message||'通信・ログイン状態をご確認ください。');}
- finally{btn.disabled=false;refreshing=false;}
+
+const dateText = value => {
+  if (!value) return '—';
+  const n = typeof value === 'number' ? value : Number(value);
+  const d = Number.isFinite(n) ? new Date(n < 1e12 ? n * 1000 : n) :
+    (value.toDate ? value.toDate() : new Date(value));
+  return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString('ja-JP');
+};
+function mount(){
+  const sales=document.getElementById('v130Sales');
+  if(!sales || document.getElementById('v213ContractOverview'))return;
+  const el=document.createElement('section');
+  el.id='v213ContractOverview';
+  el.innerHTML='<h3>💳 ご契約状況</h3><div class="v213grid"><div class="v213cell">契約状態<strong id="v213State">確認中…</strong></div><div class="v213cell">プラン<strong>スタンダード</strong></div><div class="v213cell">無料体験<strong id="v213TrialStatus">7日間</strong></div><div class="v213cell">月額料金<strong>3,980円（税込）</strong></div><div class="v213cell" id="v213TrialRow">無料体験終了日<strong id="v213Trial">—</strong></div><div class="v213cell">次回更新・契約期限<strong id="v213Renew">—</strong></div></div><div class="v213actions"><button type="button" id="v213Refresh">契約状態を再確認</button><button type="button" id="v386PortalOpen">契約内容の確認・解約（Stripe）</button></div><div class="v213fine" id="v213Message" role="status">サーバーの契約判定を確認します。</div><div class="v213fine">Stripeで有料契約中の場合のみ契約管理を利用できます。</div>';
+  sales.insertAdjacentElement('beforebegin',el);
+  const state=el.querySelector('#v213State');
+  const trial=el.querySelector('#v213Trial');
+  const trialStatus=el.querySelector('#v213TrialStatus');
+  const trialRow=el.querySelector('#v213TrialRow');
+  const renew=el.querySelector('#v213Renew');
+  const msg=el.querySelector('#v213Message');
+  const refreshButton=el.querySelector('#v213Refresh');
+  const portalButton=el.querySelector('#v386PortalOpen');
+  let requestId=0;
+  let portalEligible=false;
+  const setPortal=allowed=>{
+    portalEligible=allowed;
+    portalButton.disabled=!allowed;
+    portalButton.title=allowed?'Stripeの契約管理画面を開く':'Stripeの有料契約がある場合に利用できます';
+  };
+  setPortal(false);
+  async function refresh(){
+    const seq=++requestId;
+    state.textContent='確認中…';
+    msg.textContent='サーバーで利用権限を確認しています…';
+    refreshButton.disabled=true;
+    setPortal(false);
+    trial.textContent='—'; renew.textContent='—'; trialRow.hidden=true;
+    try{
+      if(!getApps().length)throw new Error('Firebaseの初期化を確認できません');
+      const app=getApp(),user=getAuth(app).currentUser;
+      if(!user){
+        state.textContent='ログインが必要';
+        msg.textContent='先にログインしてください。';
+        return;
+      }
+      const result=await httpsCallable(getFunctions(app,'asia-northeast1'),'checkSubscriptionEntitlement')({});
+      if(seq!==requestId || getAuth(app).currentUser?.uid!==user.uid)return;
+      const data=result?.data||{};
+      const reason=String(data.reason||'');
+      if(data.allowed===true){
+        if(reason==='developer' || data.status==='developer'){
+          state.textContent='開発者（利用可能）';
+          trialStatus.textContent='対象外';
+          msg.textContent='開発者アカウントとして利用できます。Stripe契約は不要です。';
+          return;
+        }
+        if(reason==='cardless_trial' || data.status==='trial' || data.status==='trialing'){
+          state.textContent='無料体験中';
+          trialStatus.textContent='7日間';
+          trialRow.hidden=false;
+          trial.textContent=dateText(data.expiresAtMs);
+          msg.textContent='サーバーで無料体験の利用権限を確認しました。';
+          return;
+        }
+        state.textContent='契約中';
+        trialStatus.textContent='利用済み';
+        renew.textContent=dateText(data.expiresAtMs);
+        msg.textContent='サーバーで有効な契約を確認しました。';
+        // Display metadata only; Firestore never overrides the server entitlement.
+        try{
+          const snap=await getDocFromServer(doc(getFirestore(app),'clinics',user.uid,'subscription','status'));
+          if(seq!==requestId || getAuth(app).currentUser?.uid!==user.uid)return;
+          if(snap.exists()){
+            const saved=snap.data()||{};
+            const paid=saved.stripeMode==='live' &&
+              !!saved.stripeSubscriptionId && !!saved.stripeCustomerId &&
+              String(saved.stripeStatus||'').toLowerCase()==='active';
+            setPortal(paid);
+          }
+        }catch(e){
+          console.warn('Contract metadata unavailable',e);
+          msg.textContent+=' Stripe管理情報は取得できませんでした。';
+        }
+        return;
+      }
+      state.textContent='利用権限なし';
+      trialStatus.textContent='7日間';
+      msg.textContent='有効な無料体験・有料契約を確認できませんでした。';
+    }catch(e){
+      if(seq!==requestId)return;
+      console.error('V431 entitlement display',e);
+      state.textContent='確認できません';
+      msg.textContent='契約確認に失敗しました：'+(e?.message||'通信状態をご確認ください。');
+    }finally{
+      if(seq===requestId)refreshButton.disabled=false;
+    }
+  }
+  refreshButton.addEventListener('click',refresh);
+  portalButton.addEventListener('click',async()=>{
+    if(!portalEligible || portalButton.disabled)return;
+    const popup=window.open('about:blank','_blank');
+    portalButton.disabled=true;
+    msg.textContent='Stripe契約管理を準備しています…';
+    try{
+      const app=getApp();
+      if(!getAuth(app).currentUser)throw new Error('ログインが必要です。');
+      const result=await httpsCallable(getFunctions(app,'asia-northeast1'),'createBillingPortalSession')({});
+      const url=result?.data?.url;
+      if(typeof url!=='string'||!/^https:\/\/billing\.stripe\.com\//.test(url))
+        throw new Error('契約管理URLを取得できませんでした。');
+      if(popup&&!popup.closed)popup.location.replace(url);
+      else window.location.assign(url);
+      msg.textContent='Stripeの契約管理画面を開きました。';
+    }catch(e){
+      if(popup&&!popup.closed)popup.close();
+      msg.textContent='契約管理を開けませんでした：'+(e?.message||'通信状態をご確認ください。');
+    }finally{portalButton.disabled=!portalEligible;}
+  });
+  if(getApps().length)onAuthStateChanged(getAuth(getApp()),refresh);
+  else{
+    let attempts=0;
+    const timer=setInterval(()=>{
+      if(getApps().length){clearInterval(timer);onAuthStateChanged(getAuth(getApp()),refresh);}
+      else if(++attempts>30){clearInterval(timer);state.textContent='接続待ち';}
+    },400);
+  }
 }
-btn.addEventListener('click',refresh);if(getApps().length)onAuthStateChanged(getAuth(getApp()),refresh);else{let n=0;const t=setInterval(()=>{if(getApps().length){clearInterval(t);onAuthStateChanged(getAuth(getApp()),refresh)}else if(++n>30){clearInterval(t);state.textContent='接続待ち'}},400)}
-}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);
+else mount();
 new MutationObserver(mount).observe(document.documentElement,{childList:true,subtree:true});
 </script>
 
