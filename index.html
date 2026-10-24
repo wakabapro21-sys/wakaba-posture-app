@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V446 契約確認1時間版</title>
+<title>AI姿勢＆3次元歪み分析システム V448 契約確認1時間版</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -383,6 +383,21 @@ body.v271-signed-out #v100Cloud #v427EmailLogin[open] .v100row input{width:100%;
 body.v271-signed-out #v100Cloud #v427EmailLogin[open] #v100SignIn{width:100%;min-height:46px;font-size:15px;padding:12px}
 body.v271-signed-out #v100Cloud #v427EmailLogin[open] #v266ResetPanel{max-width:100%;box-sizing:border-box}
 </style>
+<style id="v448-email-login-button">
+/* Signed-out email entry matches Google button; native details toggle remains intact. */
+body.v271-signed-out #v100Cloud #v427EmailLogin{width:100%;box-sizing:border-box}
+body.v271-signed-out #v100Cloud #v427EmailLogin > summary{
+ display:flex!important;align-items:center;justify-content:center;
+ width:100%;min-height:48px;box-sizing:border-box;
+ padding:13px!important;margin:0;border-radius:10px;
+ background:#0f766e;color:#fff!important;font-size:15px!important;
+ font-weight:900;line-height:1.4;text-align:center;cursor:pointer;
+ list-style:none;appearance:none;-webkit-appearance:none;
+}
+body.v271-signed-out #v100Cloud #v427EmailLogin > summary::-webkit-details-marker{display:none}
+body.v271-signed-out #v100Cloud #v427EmailLogin > summary::marker{content:""}
+body.v271-signed-out #v100Cloud #v427EmailLogin > summary:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
+</style>
 <script type="module" id="v427-google-login">
 import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
 import {getAuth,GoogleAuthProvider,signInWithPopup} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
@@ -410,7 +425,7 @@ body.v61-analysis main #patientReport [style*="grid-template-columns:repeat(3,1f
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V446 契約確認1時間版</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V448 契約確認1時間版</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -471,7 +486,7 @@ body.v61-analysis main #patientReport [style*="grid-template-columns:repeat(3,1f
 <div class="v61modal" id="v61Modal"><div class="v61sheet"><h2>新規顧客登録</h2><div class="v61field"><label>患者ID（自動発行）</label><div id="v246NewPatientId" style="padding:12px;border:1px solid #cbd5e1;border-radius:10px;background:#f1f5f9;color:#334155;font-weight:700;user-select:text" aria-live="polite">登録時に発行</div></div><div class="v61field"><label>カタカナ *</label><input id="v61Kana" inputmode="text" autocomplete="off" placeholder="例：ヤマダ タロウ"></div><div class="v61field"><label>性別</label><select id="v61Sex"><option value="">未設定</option><option>男性</option><option>女性</option><option>その他</option></select></div><div class="v61field"><label>生年月日</label><input id="v61Birth" type="date"></div><div class="v61actions"><button class="v61btn v61ghost" id="v61Cancel">キャンセル</button><button class="v61btn" id="v61Save">登録</button></div></div></div>
 <main>
 <div class="card intro"><b>撮影条件をそろえて分析精度を高めます。</b><br>ガイド撮影では中央・水平・全身位置をそろえます。撮影後はAIランドマークを検出し、3方向を統合して姿勢を可視化します。</div>
-<div role="note" style="margin:10px 0 16px;padding:14px 15px;border:2px solid #0f766e;border-radius:12px;background:#ecfdf5;color:#134e4a;font-size:15px;line-height:1.8;font-weight:800">📷 撮影時のお願い：同じ条件で撮影するために、写真のような足位置マット（足形ガイド）と、三脚・水平器の使用をおすすめします。撮影距離・カメラの高さ・向きも毎回そろえてください。</div>
+<div role="note" style="margin:10px 0 16px;padding:14px 15px;border:2px solid #0f766e;border-radius:12px;background:#ecfdf5;color:#134e4a;font-size:15px;line-height:1.8;font-weight:800">📷 撮影時のお願い：同じ条件で撮影するために、足位置マット（足形ガイド）と、三脚・水平器の使用をおすすめします。撮影距離・カメラの高さ・向きも毎回そろえてください。</div>
 <div class="views">
 <div class="card"><div class="head"><b>① 正面</b><span class="badge" id="badge-front">未登録</span></div><div class="stage" id="stage-front"><span>正面写真を登録</span></div><div class="actions" style="grid-template-columns:1fr 1fr"><label class="btn gallery">📁 写真を選択<input id="gallery-front" type="file" accept="image/*"></label><button type="button" class="btn guideBtn" data-guide="front" style="border:0;background:#172033;color:#fff;min-height:48px;border-radius:11px;font-size:11px;font-weight:900">📐 ガイド撮影</button></div><button type="button" class="adjustBtn" data-adjust="front" style="display:none;width:100%;margin-top:8px;border:1px solid #fdba74;background:#fff7ed;color:#9a3412;border-radius:11px;padding:11px;font-size:12px;font-weight:900">✋ ランドマークを微調整</button><div class="note">約2〜3m離れ、スマホは胸〜みぞおちの高さ。頭から足先まで入るように撮影</div></div>
 <div class="card"><div class="head"><b>② 右側面</b><span class="badge" id="badge-right">未登録</span></div><div class="stage" id="stage-right"><span>右側面写真を登録</span></div><div class="actions" style="grid-template-columns:1fr 1fr"><label class="btn gallery">📁 写真を選択<input id="gallery-right" type="file" accept="image/*"></label><button type="button" class="btn guideBtn" data-guide="right" style="border:0;background:#172033;color:#fff;min-height:48px;border-radius:11px;font-size:11px;font-weight:900">📐 ガイド撮影</button></div><button type="button" class="adjustBtn" data-adjust="right" style="display:none;width:100%;margin-top:8px;border:1px solid #fdba74;background:#fff7ed;color:#9a3412;border-radius:11px;padding:11px;font-size:12px;font-weight:900">✋ ランドマークを微調整</button><div class="note">約2〜3m離れ、右側をカメラへ。スマホは胸〜みぞおちの高さ</div></div>
