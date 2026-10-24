@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V431 契約管理統一版</title>
+<title>AI姿勢＆3次元歪み分析システム V432 契約管理整理版</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -395,9 +395,14 @@ if(btn)btn.addEventListener('click',async()=>{
  finally{btn.disabled=false}
 });
 </script>
+<style id="v432-contract-cleanup">
+/* Legacy contract UI only. Current entitlement is provided by Cloud Functions. */
+#v119Subscription,#v121SubscriptionControl,#v128Subscription,#v129Plan,#v221AccessSummary{display:none!important}
+#v386PortalOpen[hidden],#v394PaidCheckout[hidden]{display:none!important}
+</style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V428 ログイン安定化版</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V432 契約管理整理版</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3159,6 +3164,8 @@ function mount(){
   const setPortal=allowed=>{
     portalEligible=allowed;
     portalButton.disabled=!allowed;
+    portalButton.hidden=!allowed;
+    portalButton.style.display=allowed?'':'none';
     portalButton.title=allowed?'Stripeの契約管理画面を開く':'Stripeの有料契約がある場合に利用できます';
   };
   setPortal(false);
@@ -3230,6 +3237,7 @@ function mount(){
     }
   }
   refreshButton.addEventListener('click',refresh);
+  window.addEventListener('wakaba:trial-started',refresh);
   portalButton.addEventListener('click',async()=>{
     if(!portalEligible || portalButton.disabled)return;
     const popup=window.open('about:blank','_blank');
