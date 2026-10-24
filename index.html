@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V452 契約確認1時間版</title>
+<title>AI姿勢＆3次元歪み分析システム V453 契約確認1時間版</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -425,7 +425,7 @@ body.v61-analysis main #patientReport [style*="grid-template-columns:repeat(3,1f
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V452 契約確認1時間版</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V453 契約確認1時間版</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3807,9 +3807,9 @@ for(const [key,label] of [['front','正面'],['right','右側面'],['left','左�
  }root.appendChild(pics);
 for(const id of ids){const src=document.getElementById(id);if(!src)continue;const clone=src.cloneNode(true);clone.removeAttribute('id');clone.style.display='block';clone.style.width='100%';clone.style.boxSizing='border-box';clone.style.margin='0 0 16px';clone.style.fontSize='21px';clone.style.lineHeight='1.5';clone.querySelectorAll('*').forEach(e=>{const tag=e.tagName;const isHeading=/^H[1-6]$/.test(tag);const isSmall=/^(SMALL|SUP|SUB)$/.test(tag);const fs=parseFloat(getComputedStyle(e).fontSize)||14;const target=isHeading?26:(isSmall?19:21);if(!['SVG','PATH','LINE','CIRCLE','RECT','POLYLINE','POLYGON','CANVAS'].includes(tag)){e.style.setProperty('font-size',Math.max(target,Math.min(30,fs))+'px','important');e.style.setProperty('line-height','1.5','important');e.style.overflowWrap='anywhere';}});clone.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));clone.querySelectorAll('details').forEach(e=>{if(e.textContent.includes('内部検証'))e.remove()});root.appendChild(clone)}
 const foot=document.createElement('div');foot.textContent='※ 写真とランドマークから得た参考評価です。医学的診断ではありません。';foot.style.cssText='font-size:23px;color:#64748b;line-height:1.6';root.appendChild(foot);document.body.appendChild(root);return root;}
-function toBlob(canvas){return new Promise((res,rej)=>canvas.toBlob(b=>b?res(b):rej(Error('PNG生成に失敗')),'image/png'));}
+function toBlob(canvas){return new Promise((res,rej)=>canvas.toBlob(b=>b?res(b):rej(Error('JPEG生成に失敗')),'image/jpeg',0.75));}
 function save(blob,name){const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);}
-// V452: Bundle generated PNGs into one standards-compliant ZIP (stored entries; PNG is already compressed).
+// V453: Bundle nine JPEG report images into one standards-compliant ZIP (stored entries).
 async function zipReportImages(files){
  const enc=new TextEncoder(), chunks=[], directory=[];let offset=0;
  const crcTable=new Uint32Array(256);
@@ -3877,12 +3877,12 @@ async function create(button){
     });
    }
 
-   try{const canvas=await window.html2canvas(sheet,{backgroundColor:'#ffffff',scale:2,useCORS:true,logging:false,windowWidth:600});files.push(new File([await toBlob(canvas)],'姿勢分析_'+date+'_'+String(i+1).padStart(2,'0')+'.png',{type:'image/png'}));}
+   try{const canvas=await window.html2canvas(sheet,{backgroundColor:'#ffffff',scale:900/540,useCORS:true,logging:false,windowWidth:600});files.push(new File([await toBlob(canvas)],'姿勢分析_'+date+'_'+String(i+1).padStart(2,'0')+'.jpg',{type:'image/jpeg'}));}
    finally{sheet.remove();}
   }
   const archive=await zipReportImages(files);
   save(archive,'姿勢分析レポート_'+date+'_'+files.length+'枚.zip');
-  alert(files.length+'枚の画像を1つのZIPにまとめてダウンロードしました。ZIPを開くと各PNG画像をLINEで送信できます。');
+  alert(files.length+'枚の画像を1つのZIPにまとめてダウンロードしました。ZIPを開くと各JPEG画像をLINEで送信できます。');
  }catch(e){console.error('V332 share',e);alert('分析画面の画像化に失敗しました。'+(e.message||e));}
  finally{if(root)root.remove();button.disabled=false;button.textContent=original;}
 }
