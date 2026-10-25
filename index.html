@@ -3887,7 +3887,7 @@ async function create(button){
  }catch(e){console.error('V332 share',e);alert('分析画面の画像化に失敗しました。'+(e.message||e));}
  finally{if(root)root.remove();button.disabled=false;button.textContent=original;}
 }
-function mount(){const panel=document.getElementById('scorePanel');if(!panel||document.getElementById('v322ShareBtn'))return;const btn=document.createElement('button');btn.id='v322ShareBtn';btn.type='button';btn.textContent='読みやすい画像で共有（骨格表示以外）';btn.addEventListener('click',()=>create(btn));const note=document.createElement('div');note.id='v322ShareStatus';note.textContent='写真・スコア・姿勢タイプ・筋バランス・分析詳細を読みやすい複数枚の画像にします。対応端末では共有画面が開きます。';panel.after(note);panel.after(btn)}
+function mount(){const panel=document.getElementById('scorePanel');if(!panel||document.getElementById('v322ShareBtn'))return;const btn=document.createElement('button');btn.id='v322ShareBtn';btn.type='button';btn.textContent='LINE共有画像を作成';btn.addEventListener('click',()=>create(btn));const note=document.createElement('div');note.id='v322ShareStatus';note.textContent='写真・スコア・姿勢タイプ・筋バランス・分析詳細を読みやすい複数枚の画像にします。対応端末では共有画面が開きます。';panel.after(note);panel.after(btn)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 })();
 </script>
