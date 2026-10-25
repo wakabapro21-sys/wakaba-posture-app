@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI姿勢＆3次元歪み分析システム V454 契約確認1時間版</title>
+<title>AI姿勢＆3次元歪み分析システム </title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f7f8;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
@@ -425,7 +425,7 @@ body.v61-analysis main #patientReport [style*="grid-template-columns:repeat(3,1f
 </style>
 </head>
 <body>
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span style="font-size:9px;opacity:.75">V454 契約確認1時間版</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 </p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -448,7 +448,7 @@ body.v61-analysis main #patientReport [style*="grid-template-columns:repeat(3,1f
 <div class="v361step"><span class="v361num">7</span><div><h3>履歴を確認・比較</h3><div class="v361diagram">🗂️ 分析履歴 → 2回分を選択 → 比較</div><p>保存された数値・所見を確認し、過去と今回の変化を比較できます。過去の写真は保存されません。</p></div></div>
 </div>
 <details class="v361details"><summary>📍 ランドマークの基準位置を見る</summary><div class="v361inside"><p>写真上の推定点を、身体の目安となる部位と照らし合わせます。AIが骨の位置を直接測定するわけではありません。</p><table class="v341table"><tr><td><b>部位名</b></td><td><b>確認する位置の目安</b></td></tr><tr><td>頭部・左右の耳</td><td>頭の位置と左右の耳の周辺</td></tr><tr><td>左右の肩峰</td><td>左右の肩先付近（AIの肩推定点）</td></tr><tr><td>左右の肘</td><td>肘関節付近</td></tr><tr><td>左右の手首</td><td>手首付近</td></tr><tr><td>左右の大転子</td><td>股関節外側の目安（AIの股関節推定点であり、大転子そのものの測定ではありません）</td></tr><tr><td>左右の膝</td><td>膝関節付近</td></tr><tr><td>左右の足首</td><td>足首付近</td></tr></table><p>左右側面では身体の重なりを考慮した補正が入るため、AIの元の推定位置と異なることがあります。</p></div></details>
-<details class="v361details"><summary>📐 姿勢スコアの計算根拠・注意事項</summary><div class="v361inside"><h3>点数の計算根拠（独自比較スコア）</h3><p>以下は診断基準や公的な標準スコアではなく、施術前後の比較のために設定されたアプリ独自の指標です。</p><h4>正面スコア（V444試行基準）</h4><p>100点から肩・骨盤の傾き、頭部偏位、中心線の位置関係によって減点します。固定減点はありません。</p><p>正面減点 = max(0, |肩傾斜角|−0.20)×8 + max(0, |骨盤傾斜角|−0.35)×10 + max(0, |頭部偏位%|−0.15)×4 + 正中線減点。</p><p>正中線減点は、頭とASIS中点がともに許容範囲内なら0点、両方同じ側に外れたら10点、片方だけ外れたら15点、両方が反対側に外れたら20点です。許容幅は頭から足首までの画像上の縦距離の1%（最低0.003）です。</p><h4>側面スコア（V444試行基準）</h4><p>外くるぶしを通る垂直線を基準に、頭・肩・股関節の水平距離を頭から足首までの画像上の縦距離で正規化します。左右を別々に採点し、減点が大きい側を採用します。固定減点はありません。</p><p>頭：垂直線から3%超過分×5点、または肩との距離2.5%超過分×5点の大きい方（最大30点）。肩：垂直線から2%超過分×4点（最大20点）。股関節：垂直線から4%超過分×4点（最大20点）。3部位の減点を合計します。</p><p>各数値は医学的正常値ではなく、写真比較用の暫定基準です。左右いずれかの側面で必要な点が欠ける場合は、旧方式に切り替えず採点を保留します。ランドマークを補正するか、再撮影してください。</p><h4>回旋スコア（V452試行基準）</h4><p>左右側面の非対称性をもとに、上半身・下半身を別々に評価します。左右側面の差は身体の画像上の縦距離で正規化した参考指標で、解剖学的な回旋角度を直接測定したものではありません。</p><p>各部位の点数 = max(30, 100 − 8 × max(0, 非対称性% − 0.5)) を四捨五入。0.5%以下は100点、下限は30点です。上半身と下半身の点数の平均を四捨五入して回旋スコアとします。</p><p>段階ラベルは従来どおり、1%未満＝ほぼなし、1%以上1.5%未満＝ごく軽度、1.5%以上2.5%未満＝軽度、2.5%以上4.5%未満＝中等度、4.5%以上＝強いです。3D模式表示の方向・強度は変更しません。判定に必要な点がない場合は判定不可です。</p><h4>総合スコア</h4><p>回旋を判定できる場合：正面×0.45 + 側面×0.40 + 回旋×0.15 を四捨五入。</p><p>回旋を判定できない場合：(正面×0.45 + 側面×0.40)÷0.85 を四捨五入。</p><h3>4. 精度と注意事項</h3><p>- 写真の角度、距離、服装、姿勢、AI検出誤差、ランドマーク補正で結果は変動します。比較時は撮影条件をそろえてください。</p><p>- スコアはアプリ独自の比較用参考値です。臨床的な妥当性、再現性、正常値の根拠となる研究を確認したものではありません。</p><p>- 緊張・機能低下の筋肉表示は写真からの推定候補であり、筋力や筋緊張を直接測定していません。</p><p>- 回旋の3D表示は模式的な可視化であり、実測の三次元骨格回旋ではありません。</p><p>- 患者さんには医療上の診断ではないことを説明してください。</p></div></details>
+<details class="v361details"><summary>📐 姿勢スコアの計算根拠・注意事項</summary><div class="v361inside"><h3>点数の計算根拠（独自比較スコア）</h3><p>以下は診断基準や公的な標準スコアではなく、施術前後の比較のために設定されたアプリ独自の指標です。</p><h4>正面スコア</h4><p>100点から肩・骨盤の傾き、頭部偏位、中心線の位置関係によって減点します。固定減点はありません。</p><p>正面減点 = max(0, |肩傾斜角|−0.20)×8 + max(0, |骨盤傾斜角|−0.35)×10 + max(0, |頭部偏位%|−0.15)×4 + 正中線減点。</p><p>正中線減点は、頭とASIS中点がともに許容範囲内なら0点、両方同じ側に外れたら10点、片方だけ外れたら15点、両方が反対側に外れたら20点です。許容幅は頭から足首までの画像上の縦距離の1%（最低0.003）です。</p><h4>側面スコア</h4><p>外くるぶしを通る垂直線を基準に、頭・肩・股関節の水平距離を頭から足首までの画像上の縦距離で正規化します。左右を別々に採点し、減点が大きい側を採用します。固定減点はありません。</p><p>頭：垂直線から3%超過分×5点、または肩との距離2.5%超過分×5点の大きい方（最大30点）。肩：垂直線から2%超過分×4点（最大20点）。股関節：垂直線から4%超過分×4点（最大20点）。3部位の減点を合計します。</p><p>各数値は医学的正常値ではなく、写真比較用の暫定基準です。左右いずれかの側面で必要な点が欠ける場合は、旧方式に切り替えず採点を保留します。ランドマークを補正するか、再撮影してください。</p><h4>回旋スコア</h4><p>左右側面の非対称性をもとに、上半身・下半身を別々に評価します。左右側面の差は身体の画像上の縦距離で正規化した参考指標で、解剖学的な回旋角度を直接測定したものではありません。</p><p>各部位の点数 = max(30, 100 − 8 × max(0, 非対称性% − 0.5)) を四捨五入。0.5%以下は100点、下限は30点です。上半身と下半身の点数の平均を四捨五入して回旋スコアとします。</p><p>段階ラベルは従来どおり、1%未満＝ほぼなし、1%以上1.5%未満＝ごく軽度、1.5%以上2.5%未満＝軽度、2.5%以上4.5%未満＝中等度、4.5%以上＝強いです。3D模式表示の方向・強度は変更しません。判定に必要な点がない場合は判定不可です。</p><h4>総合スコア</h4><p>回旋を判定できる場合：正面×0.45 + 側面×0.40 + 回旋×0.15 を四捨五入。</p><p>回旋を判定できない場合：(正面×0.45 + 側面×0.40)÷0.85 を四捨五入。</p><h3>4. 精度と注意事項</h3><p>- 写真の角度、距離、服装、姿勢、AI検出誤差、ランドマーク補正で結果は変動します。比較時は撮影条件をそろえてください。</p><p>- スコアはアプリ独自の比較用参考値です。臨床的な妥当性、再現性、正常値の根拠となる研究を確認したものではありません。</p><p>- 緊張・機能低下の筋肉表示は写真からの推定候補であり、筋力や筋緊張を直接測定していません。</p><p>- 回旋の3D表示は模式的な可視化であり、実測の三次元骨格回旋ではありません。</p><p>- 患者さんには医療上の診断ではないことを説明してください。</p></div></details>
 <p class="v361foot">※ 本システムは写真に基づく姿勢評価の参考ツールであり、医療上の診断や骨格の実測を行うものではありません。</p>
 </div></section>
 <section class="v77page" id="v77Help">
@@ -494,13 +494,13 @@ body.v61-analysis main #patientReport [style*="grid-template-columns:repeat(3,1f
 <div class="card"><div class="head"><b>③ 左側面</b><span class="badge" id="badge-left">未登録</span></div><div class="stage" id="stage-left"><span>左側面写真を登録</span></div><div class="actions" style="grid-template-columns:1fr 1fr"><label class="btn gallery">📁 写真を選択<input id="gallery-left" type="file" accept="image/*"></label><button type="button" class="btn guideBtn" data-guide="left" style="border:0;background:#172033;color:#fff;min-height:48px;border-radius:11px;font-size:11px;font-weight:900">📐 ガイド撮影</button></div><button type="button" class="adjustBtn" data-adjust="left" style="display:none;width:100%;margin-top:8px;border:1px solid #fdba74;background:#fff7ed;color:#9a3412;border-radius:11px;padding:11px;font-size:12px;font-weight:900">✋ ランドマークを微調整</button><div class="note">約2〜3m離れ、左側をカメラへ。スマホは胸〜みぞおちの高さ</div></div>
 </div>
 <div class="card">
- <div class="okbox" id="status">0 / 3 枚登録済み</div><div style="font-size:9px;color:#94a3b8;margin-top:4px;text-align:right">解析エンジン V46</div>
+ <div class="okbox" id="status">0 / 3 枚登録済み</div>
  <div style="margin-top:8px;padding:10px;border-radius:11px;background:#fff7ed;border:1px solid #fed7aa;font-size:11px;line-height:1.6;color:#9a3412">
   <b>✋ 手動微調整</b>　AI検出後、写真上のオレンジ色のポイントを指でドラッグして位置を修正できます。修正した位置が3D分析とスコアに反映されます。
  </div>
 </div>
 <div class="card" id="modelCard">
- <div class="head"><b>④ 3方向統合・姿勢可視化モデル <span style="font-size:10px;color:#0f766e;background:#ccfbf1;border-radius:999px;padding:4px 7px;margin-left:4px">V56</span></b><span class="badge" id="modelBadge">待機中</span></div>
+ <div class="head"><b>④ 3方向統合・姿勢可視化モデル <span style="font-size:10px;color:#0f766e;background:#ccfbf1;border-radius:999px;padding:4px 7px;margin-left:4px"></span></b><span class="badge" id="modelBadge">待機中</span></div>
  <button id="make3d" type="button" style="width:100%;border:0;border-radius:11px;padding:14px;background:#f97316;color:#fff;font-weight:900;font-size:14px">3方向のランドマークから3D分析を作成</button>
  <div id="scorePanel" style="margin-top:10px;border:2px solid #0f766e;border-radius:14px;padding:12px;background:linear-gradient(135deg,#f0fdfa,#ecfeff);box-shadow:0 4px 14px rgba(15,118,110,.12)">
   <div style="font-size:12px;font-weight:900;color:#172033;margin-bottom:8px">姿勢バランススコア <span style="font-size:9px;color:#64748b;font-weight:500">独自基準・参考評価</span></div>
@@ -542,7 +542,7 @@ body.v61-analysis main #patientReport [style*="grid-template-columns:repeat(3,1f
   <div class="v309TwistNote" style="font-size:10px;color:#64748b;line-height:1.6;margin-top:9px">※捻じれは写真だけでは正確に測定できないため、参考評価となります。</div>
  </div>
  <div id="alignmentPanel" style="margin-top:10px;border:1px solid #bae6fd;border-radius:16px;padding:13px;background:linear-gradient(135deg,#f0fdfa,#f8fafc)">
-  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b style="font-size:15px;color:#172033">脚軸・推定重心・骨盤/脊柱マップ</b><span style="font-size:9px;background:#ccfbf1;color:#0f766e;padding:5px 8px;border-radius:999px;font-weight:800">V76</span></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b style="font-size:15px;color:#172033">脚軸・推定重心・骨盤/脊柱マップ</b><span style="font-size:9px;background:#ccfbf1;color:#0f766e;padding:5px 8px;border-radius:999px;font-weight:800"></span></div>
   <div style="font-size:9px;color:#64748b;line-height:1.5;margin-top:5px">正面・側面写真のランドマークから算出する参考推定です。足圧計・X線・医学的診断の代用ではありません。</div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
    <div style="background:#fff;border-radius:12px;padding:10px"><div style="font-size:10px;color:#64748b">X脚・O脚の参考傾向</div><b id="legAxisType" style="display:block;font-size:18px;color:#0f766e;margin-top:4px">分析後に表示</b><div id="legAxisDiagram" style="height:180px;margin-top:8px;border-radius:12px;background:#f8fafc;overflow:hidden"><svg viewBox="0 0 200 180" width="100%" height="100%" aria-label="脚軸模式図"><text x="100" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="#475569">股関節 → 膝 → 足首</text><line x1="100" y1="28" x2="100" y2="160" stroke="#cbd5e1" stroke-dasharray="5 5"/><polyline id="legLineL" points="55,38 60,95 58,155" fill="none" stroke="#14b8a6" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><polyline id="legLineR" points="145,38 140,95 142,155" fill="none" stroke="#14b8a6" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="55" cy="38" r="7" fill="#0f766e"/><circle cx="145" cy="38" r="7" fill="#0f766e"/><circle id="legKneeL" cx="60" cy="95" r="9" fill="#f59e0b"/><circle id="legKneeR" cx="140" cy="95" r="9" fill="#f59e0b"/><circle cx="58" cy="155" r="7" fill="#0f766e"/><circle cx="142" cy="155" r="7" fill="#0f766e"/><text x="55" y="174" text-anchor="middle" font-size="10" fill="#64748b">左脚</text><text x="145" y="174" text-anchor="middle" font-size="10" fill="#64748b">右脚</text></svg></div><div id="legAxisDetail" style="font-size:10px;color:#475569;line-height:1.55;margin-top:4px">--</div></div>
@@ -1161,7 +1161,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  /* V318: 境界付近は低得点に統一し、骨盤側面対称性の根拠を表示する。 */
  (function(){
    var out=document.getElementById('v317TwistAuditText');if(!out)return;
-   var lines=['【V332 新方式による正式判定】','上半身：'+(thoraxGrade.score==null?'判定不可':thoraxGrade.score+'点')+'／下半身：'+(pelvisGrade.score==null?'判定不可':pelvisGrade.score+'点')];
+   var lines=['【回旋の判定】','上半身：'+(thoraxGrade.score==null?'判定不可':thoraxGrade.score+'点')+'／下半身：'+(pelvisGrade.score==null?'判定不可':pelvisGrade.score+'点')];
    // V332: 新方式の採点根拠のみを表示。旧方式は診断画面から除外。
    (function(){
      function get(rec,key){var q=rec&&rec.points&&rec.points[key];return q&&Number.isFinite(q.x)&&Number.isFinite(q.y)?q:null;}
@@ -1178,7 +1178,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
        return {ear:offset(head),shoulder:offset(shoulder),hip:offset(hip),height:height};
      }
      var r=side(photos.right,1),l=side(photos.left,-1);
-     lines.push('【V332 足首自動垂直線・左右前後差（採点に反映）】');
+     lines.push('【足首基準の左右前後差（採点に反映）】');
      if(!r||!l){lines.push('必要な足首・肩・股関節ランドマークが不足しています。');return;}
      function signed(v){return v==null?'未取得':(v>=0?'+':'')+(v*100).toFixed(2)+'%';}
      function diff(a,b){return a==null||b==null?null:Math.abs(a-b);}
@@ -1192,10 +1192,10 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
      function band(v){if(v==null||!Number.isFinite(v))return '判定不可';
        return v<.01?'ほぼなし':v<.015?'ごく軽度':v<.025?'軽度':v<.045?'中等度':'強い';}
      var upper=Math.max(sh==null?0:sh,ear==null?0:ear,rel==null?0:rel);
-     lines.push('【左右非対称性（V452連続採点・段階ラベルは従来基準）】');
+     lines.push('【左右非対称性（連続採点）】');
      lines.push('頭頸部：'+band(ear)+'／肩・上半身：'+band(upper)+'／股関節・下半身：'+band(hip));
      lines.push('上半身指標：肩差・耳差・肩と股関節の相対差の最大値 '+signed(upper));
-     lines.push('V332正式判定：上半身 '+thoraxGrade.label+'（'+(thoraxGrade.score==null?'判定不可':thoraxGrade.score+'点')+'）／下半身 '+pelvisGrade.label+'（'+(pelvisGrade.score==null?'判定不可':pelvisGrade.score+'点')+'）');
+     lines.push('判定：上半身 '+thoraxGrade.label+'（'+(thoraxGrade.score==null?'判定不可':thoraxGrade.score+'点')+'）／下半身 '+pelvisGrade.label+'（'+(pelvisGrade.score==null?'判定不可':pelvisGrade.score+'点')+'）');
      lines.push('点数：100−8×max(0,非対称性%−0.5)、下限30。段階ラベル境界：1%/1.5%/2.5%/4.5%。臨床的妥当性・再現性は未検証。');
      lines.push('※左右の側面で同一姿勢・同じカメラ距離・鉛直が維持される前提です。足首ランドマークは外くるぶしそのものではありません。');
 
