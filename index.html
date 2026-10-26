@@ -383,6 +383,10 @@ body.v271-signed-out #v100Cloud #v427EmailLogin[open] .v100row input{width:100%;
 body.v271-signed-out #v100Cloud #v427EmailLogin[open] #v100SignIn{width:100%;min-height:46px;font-size:15px;padding:12px}
 body.v271-signed-out #v100Cloud #v427EmailLogin[open] #v266ResetPanel{max-width:100%;box-sizing:border-box}
 </style>
+<style id="wakaba-register-entry-fix">
+/* Signed-out screen: keep registration as the third full-width action. */
+body.v271-signed-out #v100Cloud #v382ShowRegister{display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;min-height:48px!important;margin-top:10px!important;box-sizing:border-box!important;background:#0f766e!important;color:#fff!important;border:0!important;font-size:15px!important;padding:13px!important}
+</style>
 <style id="v448-email-login-button">
 /* Signed-out email entry matches Google button; native details toggle remains intact. */
 body.v271-signed-out #v100Cloud #v427EmailLogin{width:100%;box-sizing:border-box}
@@ -1917,7 +1921,7 @@ body.v271-signed-out #v100Cloud #v101CloudClose{display:none}
   <div style="margin:10px 0;font-size:12px;line-height:1.7"><label style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" id="v266Agree" style="margin-top:5px;flex:none"><span><a href="#" id="v266Terms">利用規約</a>および<a href="#" id="v266Privacy">プライバシーポリシー</a>を確認し、同意します。</span></label><div id="v266AgreeMsg" role="status" style="color:#b91c1c"></div></div>
  </div>
   </details>
-  <button type="button" id="v382ShowRegister" class="v100btn secondary" style="margin-top:8px;width:100%">新規登録（7日間無料・カード不要）</button>
+  <button type="button" id="v382ShowRegister" class="v100btn secondary" style="display:block;margin-top:10px;width:100%;min-height:48px;font-size:15px;padding:13px;background:#0f766e;color:#fff">新規登録（7日間無料・カード不要）</button>
 <div id="v382Register" hidden style="margin-top:12px;padding:12px;border:1px solid #cbd5e1;border-radius:12px;background:#f8fafc;font-size:13px">
  <b>新規登録・7日間無料体験（カード不要）</b><p style="font-size:11px">メール認証後に無料体験を開始します。自動課金はありません。</p>
  <form id="v382Form" autocomplete="on">
