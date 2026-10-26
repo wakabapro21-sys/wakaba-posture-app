@@ -1647,21 +1647,6 @@ host.addEventListener('pointermove',e=>{if(!dragging||activePointer!==e.pointerI
 host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel',endDrag);
 </script>
 
-<script id="v172-early-dataguard-recovery">
-(function(){
- const CUSTOMER='wakaba_v61_customers',DB='wakaba_local_dataguard_v116',STORE='kv';
- const home=document.getElementById('v61Home'); if(home)home.style.visibility='hidden';
- function finish(){if(home)home.style.visibility='';}
- let cur=[]; try{cur=JSON.parse(localStorage.getItem(CUSTOMER)||'[]')}catch(e){}
- if(Array.isArray(cur)){finish();return;}
- try{
-  const r=indexedDB.open(DB,1);
-  r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(STORE))r.result.createObjectStore(STORE)};
-  r.onerror=finish;
-  r.onsuccess=()=>{const db=r.result;try{const g=db.transaction(STORE,'readonly').objectStore(STORE).get(CUSTOMER);g.onerror=()=>{db.close();finish()};g.onsuccess=()=>{const bak=g.result;db.close();let arr=[];try{arr=JSON.parse(bak||'[]')}catch(e){}if(Array.isArray(arr)&&arr.length){localStorage.setItem(CUSTOMER,bak);location.reload();return;}finish();};}catch(e){db.close();finish();}};
- }catch(e){finish();}
-})();
-</script>
 <script id="v61-customer-js">
 (function(){
  const KEY='wakaba_v61_customers'; const $=id=>document.getElementById(id);
@@ -1935,17 +1920,16 @@ body.v271-signed-out #v100Cloud #v101CloudClose{display:none}
  <div id="v382Result" role="status" style="margin-top:8px;overflow-wrap:anywhere"></div>
  </form></div>
  </div>
- <div id="v139AutoRestore" style="margin:8px 0;padding:9px 10px;border:1px solid #86efac;border-radius:10px;background:#f0fdf4;color:#166534;font-size:10px;font-weight:800;line-height:1.55">🛡 V139 自動復元保護 ON<br>ログイン時に端末患者が0件で、院別Firebaseに患者が存在する場合のみ自動復元します。既存データは削除・上書きしません。</div>
-<div id="v100Actions" style="display:none"><div class="v100row"><div style="flex:1;padding:8px 10px;border-radius:10px;background:#ecfdf5;color:#047857;font-size:10px;font-weight:900">✓ V114 院別保存 ON（旧 /patients はバックアップとして保持）</div></div><div id="v112ClinicAccount" style="margin:8px 0 10px;padding:11px 12px;border:1px solid #bfdbfe;border-radius:12px;background:#eff6ff;font-size:10px;line-height:1.65;color:#1e3a8a"><b style="font-size:12px">🏥 院アカウント</b><div id="v112ClinicEmail">ログイン確認中…</div><div id="v112ClinicId" style="word-break:break-all;color:#64748b"></div><div style="margin-top:5px;color:#475569">院ごとに患者情報・履歴を管理します。</div></div>
+ 
+<div id="v100Actions" style="display:none"><div class="v100row"><div style="flex:1;padding:8px 10px;border-radius:10px;background:#ecfdf5;color:#047857;font-size:10px;font-weight:900">✓ 院別Firebase保存</div></div><div id="v112ClinicAccount" style="margin:8px 0 10px;padding:11px 12px;border:1px solid #bfdbfe;border-radius:12px;background:#eff6ff;font-size:10px;line-height:1.65;color:#1e3a8a"><b style="font-size:12px">🏥 院アカウント</b><div id="v112ClinicEmail">ログイン確認中…</div><div id="v112ClinicId" style="word-break:break-all;color:#64748b"></div><div style="margin-top:5px;color:#475569">院ごとに患者情報・履歴を管理します。</div></div>
   <details id="v280AdminData" style="margin-top:12px;border:1px solid #cbd5e1;border-radius:12px;padding:12px;background:#f8fafc">
    <summary style="cursor:pointer;font-weight:800;color:#334155;font-size:13px">管理者用データ操作（必要なときだけ開く）</summary>
    <div id="v280AdminDataBody" style="margin-top:12px">
-    <div class="v100row"><button id="v100Sync" class="v100btn secondary" style="flex:1">端末→Firebaseへコピー</button></div>
     <div class="v100row"><button id="v102Restore" class="v100btn" style="flex:1;background:#0f766e">Firebase→この端末へ安全復元</button><button id="v100SignOut" class="v100btn gray" style="display:none">ログアウト</button></div>
    </div>
   </details>
  </div>
- <div id="v100Msg" class="v100note">端末データが原本です。同期しても端末の顧客・履歴は削除しません。写真はクラウドへ送りません。</div>
+ <div id="v100Msg" class="v100note">新規患者・分析履歴はFirebaseへ保存します。写真はクラウドへ送りません。</div>
 </div>
 <div id="v101CloudBackdrop" style="display:none;position:fixed;inset:0;background:#0f172a88;z-index:1301"></div>
 <script id="v101-menu-wire">
@@ -2014,110 +1998,15 @@ async function v104SyncPatient(c){
  }catch(e){console.error('V104 patient auto sync',e);status.textContent='同期失敗';msg.innerHTML='<span class="v100err">端末保存は成功しましたが、Firebase自動保存に失敗しました。端末データは残っています。</span>';return false}
 }
 async function v104SyncLatestHistory(id){if(!auth.currentUser||!v230OwnerAllowed(auth.currentUser)||!id)return;try{const hs=histories(id);if(!hs.length)return;const h=hs[0],hid=String(h.date||'history_latest').replaceAll('/','-');await setDoc(doc(db,'clinics',auth.currentUser.uid,'patients',String(id),'histories',hid),{...h,patientId:String(id),updatedAt:serverTimestamp()},{merge:true});status.textContent='自動同期済み'}catch(e){console.error('V104 history auto sync',e);status.textContent='履歴同期失敗'}}
-async function v104SyncAllPatients(){
- if(!auth.currentUser||!v230OwnerAllowed(auth.currentUser))return null;
-
- // V110: First guarantee that every local patient has a UNIQUE patient ID.
- // V107 counted duplicate local IDs twice, which could show "Firebase 2" while
- // Firestore actually contained only one document.
- let list=patients();
- const seen=new Set();
- let idFixed=0;
-
- for(let i=0;i<list.length;i++){
-  const c=list[i];
-  if(!c)continue;
-  let id=(c.id==null||String(c.id).trim()==='') ? '' : String(c.id);
-
-  if(!id || seen.has(id)){
-   const oldId=id;
-   let newId='p_'+Date.now().toString(36)+'_'+i+'_'+Math.random().toString(36).slice(2,8);
-   while(seen.has(newId)) newId='p_'+Date.now().toString(36)+'_'+i+'_'+Math.random().toString(36).slice(2,10);
-   c.id=newId;
-   id=newId;
-   idFixed++;
-
-   // Never delete old history. If a duplicate-ID patient has no own history key yet,
-   // copy the old history to the new key so no local data is lost.
-   if(oldId){
-    const oldKey='wakaba_v63_history_'+oldId;
-    const newKey='wakaba_v63_history_'+newId;
-    if(localStorage.getItem(oldKey) && !localStorage.getItem(newKey)){
-     localStorage.setItem(newKey,localStorage.getItem(oldKey));
-    }
-   }
-  }
-  seen.add(id);
- }
-
- if(idFixed){
-  localStorage.setItem('wakaba_v61_customers',JSON.stringify(list));
- }
-
- const valid=list.filter(c=>c&&c.id!=null&&String(c.id).trim()!=='');
- const localIds=[...new Set(valid.map(c=>String(c.id)))];
-
- // Read the REAL /patients collection from the Firebase server first.
- let beforeSnap;
- try{
-  beforeSnap=await getDocsFromServer(collection(db,'clinics',auth.currentUser.uid,'patients'));
- }catch(e){
-  console.error('V110 initial server collection read',e);
-  return {local:localIds.length,cloud:null,missing:localIds,idFixed,verifyError:true};
- }
-
- const beforeIds=new Set(beforeSnap.docs.map(d=>String(d.id)));
- let added=0;
- const failed=[];
-
- // Add ONLY IDs that do not already exist. Existing documents are untouched.
- for(const c of valid){
-  const id=String(c.id);
-  if(beforeIds.has(id)||JSON.parse(localStorage.getItem('wakaba_v297_deleted_patient_ids')||'[]').includes(id))continue;
-  try{
-   const safe={...c};
-   delete safe.photos; delete safe.photo; delete safe.images;
-   delete safe.frontPhoto; delete safe.rightPhoto; delete safe.leftPhoto;
-   await setDoc(doc(db,'clinics',auth.currentUser.uid,'patients',id),{...safe,localId:id,updatedAt:serverTimestamp()});
-   added++;
-  }catch(e){
-   console.error('V110 missing-only create',id,e);
-   failed.push(id);
-  }
- }
-
- // Re-read the WHOLE collection from SERVER. This snap.size is the only
- // Firebase count shown to the user.
- let afterSnap;
- try{
-  afterSnap=await getDocsFromServer(collection(db,'clinics',auth.currentUser.uid,'patients'));
- }catch(e){
-  console.error('V110 final server collection read',e);
-  return {local:localIds.length,cloud:null,missing:localIds,idFixed,added,failed,verifyError:true};
- }
-
- const afterIds=new Set(afterSnap.docs.map(d=>String(d.id)));
- const missing=localIds.filter(id=>!afterIds.has(id));
-
- return {
-  local:localIds.length,
-  cloud:afterSnap.size,
-  cloudIds:[...afterIds],
-  missing,
-  idFixed,
-  added,
-  failed
- };
-}
 window.addEventListener('wakaba:v300-patient-deleted',async e=>{
  const id=String(e.detail?.id||'');if(!id||!auth.currentUser||!v230OwnerAllowed(auth.currentUser))return;
  try{await setDoc(doc(db,'clinics',auth.currentUser.uid,'patients',id),{deleted:true,deletedAt:serverTimestamp()},{merge:true});status.textContent='削除状態を同期済み'}
  catch(err){console.error('V300 deletion sync',err);status.textContent='削除状態の同期失敗';}
 });
 window.addEventListener('wakaba:v216-patient-edited',e=>{if(e.detail)v104SyncPatient(e.detail)});
-window.addEventListener('wakaba:v103-patient-saved',()=>v104SyncAllPatients());
+window.addEventListener('wakaba:v103-patient-saved',e=>{if(e.detail)v104SyncPatient(e.detail)});
 window.addEventListener('wakaba:v103-history-saved',e=>v104SyncLatestHistory(e.detail&&e.detail.id));
-document.getElementById('v61Save')?.addEventListener('click',()=>setTimeout(()=>v104SyncAllPatients(),180),true);
+
 async function restoreAll(){
  if(!v230OwnerAllowed(auth.currentUser)){v230Block(auth.currentUser);return}
  const btn=$('v102Restore'); if(btn)btn.disabled=true; status.textContent='復元中'; msg.textContent='Firebaseを確認しています…';
@@ -2139,27 +2028,6 @@ async function restoreAll(){
  }catch(e){console.error(e);status.textContent='復元失敗';msg.innerHTML='<span class="v100err">復元に失敗しました。端末データは変更していません。</span>'}finally{if(btn)btn.disabled=false}
 }
 
-async function uploadAll(){
- if(!v230OwnerAllowed(auth.currentUser)){v230Block(auth.currentUser);return}
- const list=patients();
- if(!list.length){msg.innerHTML='<span class="v100err">端末に顧客が0件のためコピーしていません。</span>';return}
- $('v100Sync').disabled=true; status.textContent='同期中';
- try{
-  const r=await v104SyncAllPatients();
-  if(!r || r.cloud===null) throw new Error('server verification failed');
-  if(r.missing.length){
-   status.textContent='未同期あり';
-   msg.innerHTML='<span class="v100err">⚠ 同期後も院別Firebaseに存在しない患者 '+r.missing.length+'件（ID: '+r.missing.join(', ')+'）。既存データは削除していません。</span>';
-  }else{
-   localStorage.setItem('wakaba_v100_last_cloud_copy',new Date().toISOString());
-   status.textContent='サーバー確認済み';
-   msg.innerHTML='<span class="v100ok">✓ V110同期完了：端末 '+r.local+'件 / 院別Firebase実在 '+r.cloud+'件。新規追加 '+r.added+'件'+(r.idFixed?'、端末の重複患者IDを '+r.idFixed+'件安全に補正':'')+'。既存院別Firebase患者は上書き・削除していません。写真は送信していません。</span>';
-  }
- }catch(e){
-  console.error(e); status.textContent='同期失敗';
-  msg.innerHTML='<span class="v100err">Firebase同期に失敗しました。既存データは削除していません。</span>';
- }finally{$('v100Sync').disabled=false}
-}
 const V139_LOGIN_GUARD_KEY='wakaba_v139_login_guard';
 function v139ReadGuard(){try{return JSON.parse(localStorage.getItem(V139_LOGIN_GUARD_KEY)||'{}')}catch(e){return {}}}
 function v139WriteGuard(v){try{localStorage.setItem(V139_LOGIN_GUARD_KEY,JSON.stringify(v))}catch(e){}}
@@ -2180,24 +2048,9 @@ $('v266SendReset').onclick=async()=>{const email=$('v100Email').value.trim(),out
 function v266ShowLegal(index){const help=document.getElementById('v77Help');if(!help){alert('メニューの「お問い合わせ・ヘルプ」から規約をご確認ください。');return;}const panel=document.getElementById('v235LegalPanel'+index);if(panel){const win=window.open('','_blank');if(win){win.document.write('<!doctype html><html lang=ja><meta name=viewport content=width=device-width,initial-scale=1><meta charset=utf-8><title>規約の確認</title><body style="font-family:sans-serif;line-height:1.8;padding:20px">'+panel.innerHTML+'\n</body></html>');win.document.close();}else alert('お問い合わせ・ヘルプから規約を確認してください。');}else alert('お問い合わせ・ヘルプから規約を確認してください。');}
 $('v266Terms').onclick=e=>{e.preventDefault();v266ShowLegal(1)}; $('v266Privacy').onclick=e=>{e.preventDefault();v266ShowLegal(0)};
 document.getElementById('v270MenuLogout')?.addEventListener('click',()=>{document.getElementById('v77Menu')?.classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu');document.getElementById('v100SignOut')?.click();});
-$('v100SignOut').onclick=async()=>{sessionStorage.setItem('wakaba_v269_login_return','1');sessionStorage.setItem('wakaba_v165_page','home');document.getElementById('v77Menu')?.classList.remove('on');await signOut(auth);if(auth.currentUser!==null)throw new Error('ログアウト状態を確認できません');v271AuthView(false);sessionStorage.removeItem('wakaba_logout_pending');sessionStorage.setItem('wakaba_logout_done','1');document.getElementById('wakabaLogoutDone').hidden=false;};$('v100Sync').onclick=uploadAll;$('v102Restore').onclick=restoreAll;
-onAuthStateChanged(auth,async u=>{v271AuthView(!!u);if(u){sessionStorage.removeItem('wakaba_logout_done');document.getElementById('wakabaLogoutDone').hidden=true;if(!v230Block(u))return;localStorage.setItem('wakaba_clinic_uid',u.uid);localStorage.setItem('wakaba_clinic_email',u.email||'');const ce=$('v112ClinicEmail'),ci=$('v112ClinicId');if(ce)ce.textContent='ログイン：'+(u.email||'メール未設定');if(ci)ci.textContent='院ID：'+u.uid;status.textContent='ログイン済み';$('v100Login').style.display='none';$('v100Actions').style.display='block';/* V270: successful authentication returns to the customer list; cloud controls remain accessible from MENU */$('v100Cloud').style.display='none';$('v101CloudBackdrop').style.display='none';document.getElementById('v77Menu')?.classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu');sessionStorage.setItem('wakaba_v165_page','home');sessionStorage.removeItem('wakaba_v269_login_return');document.querySelectorAll('#v77Patient,#v77Reports,#v77Mypage,#v77News,#v77Help,#v77Settings,#v341Manual').forEach(e=>e.classList.remove('on'));document.getElementById('v61Home')?.classList.remove('v77hidden');document.body.classList.remove('v61-analysis');msg.innerHTML='<span class="v100ok">V139：端末データを安全確認中です。自動復元を停止しています。必要な場合のみ管理画面から確認してください。</span>';
-try{
- if(false && patients().length===0){
-  status.textContent='クラウド確認中';
-  const cloudCheck=await getDocsFromServer(collection(db,'clinics',u.uid,'patients'));
-  if(cloudCheck.size>0){
-   status.textContent='自動復元中';
-   msg.innerHTML='<span class="v100ok">V139自動保護：端末の患者が0件ですが、Firebaseに '+cloudCheck.size+'件あります。既存Firebaseデータを変更せず、この端末へ安全復元します…</span>';
-   await restoreAll();
-   return;
-  }
- }
-}catch(e){
- console.error('V139 startup safe restore check',e);
- msg.innerHTML='<span class="v100err">V139自動復元の確認に失敗しました。Firebase・端末の既存データは変更していません。手動の「Firebase→この端末へ安全復元」は利用できます。</span>';
-}
-const r=await v104SyncAllPatients();if(r){if(r.cloud!==null && r.missing.length===0){status.textContent='サーバー確認済み';msg.innerHTML='<span class="v100ok">✓ V110安定版：サーバー実在確認OK：端末 '+r.local+'件 / 院別Firebase実在 '+r.cloud+'件。新規追加 '+(r.added||0)+'件'+(r.idFixed?'、重複患者IDを '+r.idFixed+'件安全に補正':'')+'。端末の患者IDはすべて院別Firebase上に存在します。</span>'}else if(r.cloud!==null){status.textContent='未同期あり';msg.innerHTML='<span class="v100err">⚠ サーバー確認：端末 '+r.local+'件 / Firebase '+r.cloud+'件。Firebaseに見つからない患者 '+r.missing.length+'件（ID: '+r.missing.join(', ')+'）。端末データは残っています。</span>'}else{status.textContent='確認失敗';msg.innerHTML='<span class="v100err">Firebaseへの書き込み後、サーバー実在確認に失敗しました。端末データは残っています。</span>'}}}else{status.textContent='未接続';$('v100Login').style.display='block';$('v100Actions').style.display='none';msg.textContent='端末データが原本です。Firebaseへ自動同期するにはログインしてください。写真は送信しません。'}});
+$('v100SignOut').onclick=async()=>{sessionStorage.setItem('wakaba_v269_login_return','1');sessionStorage.setItem('wakaba_v165_page','home');document.getElementById('v77Menu')?.classList.remove('on');await signOut(auth);if(auth.currentUser!==null)throw new Error('ログアウト状態を確認できません');v271AuthView(false);sessionStorage.removeItem('wakaba_logout_pending');sessionStorage.setItem('wakaba_logout_done','1');document.getElementById('wakabaLogoutDone').hidden=false;};$('v102Restore').onclick=restoreAll;
+onAuthStateChanged(auth,async u=>{v271AuthView(!!u);if(u){sessionStorage.removeItem('wakaba_logout_done');document.getElementById('wakabaLogoutDone').hidden=true;if(!v230Block(u))return;localStorage.setItem('wakaba_clinic_uid',u.uid);localStorage.setItem('wakaba_clinic_email',u.email||'');const ce=$('v112ClinicEmail'),ci=$('v112ClinicId');if(ce)ce.textContent='ログイン：'+(u.email||'メール未設定');if(ci)ci.textContent='院ID：'+u.uid;status.textContent='ログイン済み';$('v100Login').style.display='none';$('v100Actions').style.display='block';/* V270: successful authentication returns to the customer list; cloud controls remain accessible from MENU */$('v100Cloud').style.display='none';$('v101CloudBackdrop').style.display='none';document.getElementById('v77Menu')?.classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu');sessionStorage.setItem('wakaba_v165_page','home');sessionStorage.removeItem('wakaba_v269_login_return');document.querySelectorAll('#v77Patient,#v77Reports,#v77Mypage,#v77News,#v77Help,#v77Settings,#v341Manual').forEach(e=>e.classList.remove('on'));document.getElementById('v61Home')?.classList.remove('v77hidden');document.body.classList.remove('v61-analysis');msg.innerHTML='<span class="v100ok">端末内の旧データは自動復元しません。</span>';
+status.textContent='ログイン済み';msg.textContent='既存の端末患者は自動再登録しません。新規患者の保存時のみFirebaseへ同期します。';}else{status.textContent='未接続';$('v100Login').style.display='block';$('v100Actions').style.display='none';msg.textContent='患者情報は登録時にFirebaseへ保存します。写真は送信しません。'}});
 </script>
 
 
@@ -2323,138 +2176,6 @@ document.addEventListener('DOMContentLoaded',()=>{
  document.addEventListener('DOMContentLoaded',()=>{const modal=document.getElementById('v91DetailModal');if(modal)observer.observe(modal,{attributes:true,attributeFilter:['class']})});
 })();
 </script>
-<script id="v116-dataguard-local">
-(function(){
- const DB='wakaba_local_dataguard_v116', STORE='kv', CUSTOMER='wakaba_v61_customers', HP='wakaba_v63_history_';
- function relevant(k){return k===CUSTOMER || k.startsWith(HP) || k==='wakaba_v66_current'}
- function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(STORE))r.result.createObjectStore(STORE)};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
- async function idbPut(k,v){try{const db=await openDB();await new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put(v,k);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)});db.close()}catch(e){console.warn('V116 IDB backup',e)}}
- async function idbGet(k){try{const db=await openDB();const v=await new Promise((res,rej)=>{const r=db.transaction(STORE,'readonly').objectStore(STORE).get(k);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});db.close();return v}catch(e){return undefined}}
- // V227: Preserve existing photo-rich snapshots for matching history entries.
- function parseHistory(v){try{const a=JSON.parse(v||'[]');return Array.isArray(a)?a:[]}catch(e){return []}}
- function mergePhotos(current,backup){
-  const byDate=new Map(backup.filter(h=>h&&h.date).map(h=>[String(h.date),h]));
-  let changed=false;
-  const merged=current.map(h=>{
-   if(!h||!h.date)return h;
-   const old=byDate.get(String(h.date));if(!old)return h;
-   const photos={...(h.photos||{})};let itemChanged=false;
-   for(const k of ['front','right','left']){
-    if(!photos[k]&&old.photos&&typeof old.photos[k]==='string'&&old.photos[k].startsWith('data:image/')){photos[k]=old.photos[k];itemChanged=true;changed=true}
-   }
-   return itemChanged?{...h,photos}:h;
-  });
-  return {merged,changed};
- }
- async function keepPhotoBackup(k,v){
-  if(!k.startsWith(HP)){await idbPut(k,v);return}
-  const old=parseHistory(await idbGet(k)),incoming=parseHistory(v);
-  if(!old.length){await idbPut(k,v);return}
-  const {merged}=mergePhotos(incoming,old);
-  // Do not restore records deliberately deleted by the user.
-  await idbPut(k,JSON.stringify(merged));
- }
- async function recoverMissingPhotos(){
-  const keys=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(HP))keys.push(k)}
-  for(const k of keys){
-   const raw=localStorage.getItem(k);if(!raw)continue;
-   const cur=parseHistory(raw),bak=parseHistory(await idbGet(k));if(!cur.length||!bak.length)continue;
-   const {merged,changed}=mergePhotos(cur,bak);
-   if(changed){try{origSet.call(localStorage,k,JSON.stringify(merged))}catch(e){console.warn('V227 photo recovery storage full',e)}}
-  }
- }
- async function mirrorAll(){for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(relevant(k)){const v=localStorage.getItem(k);if(v!=null)await keepPhotoBackup(k,v)}}}
- async function recoverIfNeeded(){
-  let cur=[];try{cur=JSON.parse(localStorage.getItem(CUSTOMER)||'[]')}catch(e){}
-  if(Array.isArray(cur)&&cur.length)return false;
-  const bak=await idbGet(CUSTOMER);if(!bak)return false;
-  let arr=[];try{arr=JSON.parse(bak||'[]')}catch(e){}
-  if(!Array.isArray(arr)||!arr.length)return false;
-  localStorage.setItem(CUSTOMER,bak);
-  for(const c of arr){if(!c||c.id==null)continue;const k=HP+String(c.id);if(!localStorage.getItem(k)){const h=await idbGet(k);if(h)localStorage.setItem(k,h)}}
-  sessionStorage.setItem('wakaba_v116_recovered','1');return true;
- }
- // V204: history photos are stored locally at max 1280 px / JPEG 0.72. No photo is uploaded to Firebase.
- const origSet=Storage.prototype.setItem, origRemove=Storage.prototype.removeItem;
- Storage.prototype.setItem=function(k,v){const out=origSet.apply(this,arguments);if(this===localStorage&&relevant(String(k)))keepPhotoBackup(String(k),String(v));return out};
- Storage.prototype.removeItem=function(k){if(this===localStorage&&relevant(String(k))){const old=this.getItem(k);if(old!=null)idbPut(String(k),old)}return origRemove.apply(this,arguments)};
- async function boot(){
-  const recovered=false; // V297: 空一覧を削除状態と区別できないため自動復元停止
-  if(recovered){setTimeout(()=>location.reload(),150);return}
-  await recoverMissingPhotos();
-  await mirrorAll();
-  setTimeout(()=>{
-   const anchor=document.getElementById('v115SecurityPrep')||document.getElementById('v114Mode');
-   if(anchor&&!document.getElementById('v116DataGuard')){const d=document.createElement('div');d.id='v116DataGuard';d.innerHTML='💾 <b>V116 ローカルDataGuard ON</b><br>患者・履歴・縮小写真を端末内のIndexedDBへ二重保存します。履歴写真は長辺1280px・JPEG品質72%で、タブレットでも確認しやすいサイズです。<br><span style="color:#1d4ed8">写真はFirebaseへ送信しません。端末データが空でも自動復元は行いません。バックアップは保持します。</span>';anchor.insertAdjacentElement('afterend',d)}
-  },650);
- }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
- window.addEventListener('wakaba:v103-history-saved',()=>setTimeout(mirrorAll,50));
- window.addEventListener('wakaba:v103-patient-saved',()=>setTimeout(mirrorAll,50));
-})();
-</script>
-
-
-<style id="v117-dataguard-check-style">
-#v117DataGuardCheck{margin:8px 0;padding:12px;border:1px solid #86efac;border-radius:12px;background:#f0fdf4;color:#14532d;font-size:10px;line-height:1.55}
-#v117DataGuardCheck b{font-size:11px}#v117DataGuardCheck .v117grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}
-#v117DataGuardCheck .v117cell{background:#fff;border:1px solid #bbf7d0;border-radius:9px;padding:8px}#v117DataGuardCheck .v117num{font-size:15px;font-weight:800;color:#166534}
-#v117Refresh{margin-top:9px;width:100%;border:0;border-radius:9px;padding:9px;background:#15803d;color:white;font-weight:800}
-</style>
-<script id="v117-dataguard-check">
-(function(){
- const DB='wakaba_local_dataguard_v116', STORE='kv', CUSTOMER='wakaba_v61_customers', HP='wakaba_v63_history_';
- function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(STORE))r.result.createObjectStore(STORE)};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
- async function getAll(){const db=await openDB();const rows=await new Promise((res,rej)=>{const out=[];const req=db.transaction(STORE,'readonly').objectStore(STORE).openCursor();req.onsuccess=e=>{const c=e.target.result;if(c){out.push([c.key,c.value]);c.continue()}else res(out)};req.onerror=()=>rej(req.error)});db.close();return rows}
- function arr(v){try{const x=JSON.parse(v||'[]');return Array.isArray(x)?x:[]}catch(e){return[]}}
- function photoCount(h){let n=0;const walk=x=>{if(!x)return;if(typeof x==='string'){if(x.startsWith('data:image/'))n++;return}if(Array.isArray(x)){x.forEach(walk);return}if(typeof x==='object')Object.values(x).forEach(walk)};walk(h);return n}
- async function stats(){
-  const localPatients=arr(localStorage.getItem(CUSTOMER)); const rows=await getAll(); const m=new Map(rows);
-  const backupPatients=arr(m.get(CUSTOMER)); let histories=0, photos=0;
-  for(const [k,v] of rows){if(String(k).startsWith(HP)){const h=arr(v);histories+=h.length;photos+=photoCount(h)}}
-  const stamp=new Date().toLocaleString('ja-JP'); localStorage.setItem('wakaba_v117_lastcheck',stamp);
-  return {lp:localPatients.length,bp:backupPatients.length,histories,photos,stamp,ok:localPatients.length===backupPatients.length&&backupPatients.length>0};
- }
- async function render(){
-  let box=document.getElementById('v117DataGuardCheck'); if(!box)return; try{const s=await stats();box.innerHTML='🛡️ <b>V117 DataGuardバックアップ確認</b><div class="v117grid"><div class="v117cell">端末の患者<br><span class="v117num">'+s.lp+'件</span></div><div class="v117cell">バックアップ患者<br><span class="v117num">'+s.bp+'件</span></div><div class="v117cell">バックアップ履歴<br><span class="v117num">'+s.histories+'件</span></div><div class="v117cell">保存画像データ<br><span class="v117num">'+s.photos+'個</span></div></div><div style="margin-top:8px;font-weight:700">'+(s.ok?'✓ 患者数は一致しています':'⚠ 患者数が一致していません。削除操作はせず、再確認してください')+'</div><div style="margin-top:3px;color:#4b5563">確認：'+s.stamp+'　※写真はFirebaseへ送信しません。</div><button id="v117Refresh">バックアップ状態を再確認</button>';document.getElementById('v117Refresh').onclick=render}catch(e){box.innerHTML='🛡️ <b>V117 DataGuardバックアップ確認</b><br>⚠ IndexedDBの確認に失敗しました。データ削除は行っていません。'}
- }
- window.v192RefreshBackup=render;
- function mount(){setTimeout(()=>{const anchor=document.getElementById('v116DataGuard');if(anchor&&!document.getElementById('v117DataGuardCheck')){const d=document.createElement('div');d.id='v117DataGuardCheck';d.innerHTML='🛡️ <b>V117 DataGuardバックアップ確認</b><br>確認中…';anchor.insertAdjacentElement('afterend',d);render()}},850)}
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
-})();
-</script>
-
-
-<style id="v118-style">
-#v118ClinicCheck{margin:8px 0;padding:10px 12px;border:1px solid #67e8f9;border-radius:12px;background:#ecfeff;color:#164e63;font-size:10px;line-height:1.6}
-#v118ClinicCheck b{font-size:11px}.v118grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.v118cell{background:#fff;border:1px solid #a5f3fc;border-radius:9px;padding:8px}.v118num{font-size:15px;font-weight:900;color:#0e7490}#v118Refresh{width:100%;margin-top:8px;border:0;border-radius:10px;padding:10px;background:#0891b2;color:#fff;font-weight:900}.v118ok{color:#047857;font-weight:800}.v118warn{color:#b45309;font-weight:800}
-</style>
-<script type="module" id="v118-clinic-check">
-import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
-import {getAuth,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
-import {getFirestore,collection,getDocsFromServer} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
-function localPatients(){try{const a=JSON.parse(localStorage.getItem('wakaba_v61_customers')||'[]');return Array.isArray(a)?a:[]}catch(e){return[]}}
-function localHistoryCount(list){let n=0;for(const p of list){try{const a=JSON.parse(localStorage.getItem('wakaba_v63_history_'+p.id)||'[]');if(Array.isArray(a))n+=a.length}catch(e){}}return n}
-async function check(){
- const box=document.getElementById('v118ClinicCheck'); if(!box)return;
- try{
-  if(!getApps().length)throw new Error('Firebase初期化待ち');
-  const app=getApp(),auth=getAuth(app),u=auth.currentUser;if(!u){box.innerHTML='🏥 <b>V118 院別完全移行確認</b><br>Firebaseへログインすると確認します。';return}
-  box.innerHTML='🏥 <b>V118 院別完全移行確認</b><br>院別Firebaseをサーバー確認中…';
-  const db=getFirestore(app),lp=localPatients();
-  const ps=await getDocsFromServer(collection(db,'clinics',u.uid,'patients'));
-  let ch=0; for(const d of ps.docs){const hs=await getDocsFromServer(collection(db,'clinics',u.uid,'patients',d.id,'histories'));ch+=hs.size}
-  const lh=localHistoryCount(lp), patientOK=lp.length===ps.size, historyOK=lh<=ch;
-  box.innerHTML='🏥 <b>V118 院別完全移行確認</b><div class="v118grid"><div class="v118cell">端末患者<br><span class="v118num">'+lp.length+'件</span></div><div class="v118cell">院別Firebase患者<br><span class="v118num">'+ps.size+'件</span></div><div class="v118cell">端末履歴<br><span class="v118num">'+lh+'件</span></div><div class="v118cell">院別Firebase履歴<br><span class="v118num">'+ch+'件</span></div></div><div style="margin-top:8px" class="'+(patientOK&&historyOK?'v118ok':'v118warn')+'">'+(patientOK&&historyOK?'✓ 通常の保存・復元先は院別領域だけで確認できました。Security Rules変更準備OKです。':'⚠ 件数を確認してください。まだSecurity Rulesは変更しません。')+'</div><div style="margin-top:4px">確認先：/clinics/{ログインUID}/patients<br>※旧 /patients は読み書きせず、削除もしません。</div><button id="v118Refresh">院別データを再確認</button>';
-  document.getElementById('v118Refresh').onclick=check;
- }catch(e){console.error('V118 check',e);box.innerHTML='🏥 <b>V118 院別完全移行確認</b><br><span class="v118warn">⚠ 院別Firebaseの確認に失敗しました。データの削除・変更はしていません。</span><button id="v118Refresh">再確認</button>';document.getElementById('v118Refresh').onclick=check}
-}
-window.v192RefreshClinic=check;
-function mount(){setTimeout(()=>{const a=document.getElementById('v117DataGuardCheck')||document.getElementById('v116DataGuard');if(a&&!document.getElementById('v118ClinicCheck')){const d=document.createElement('div');d.id='v118ClinicCheck';d.innerHTML='🏥 <b>V118 院別完全移行確認</b><br>確認待ち…';a.insertAdjacentElement('afterend',d)};if(getApps().length){onAuthStateChanged(getAuth(getApp()),u=>{if(u)check()})}},1000)}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
-</script>
-
-
 <style id="v119-style">
 #v119Subscription{margin:8px 0;padding:12px;border:1px solid #c4b5fd;border-radius:12px;background:#f5f3ff;color:#4c1d95;font-size:10px;line-height:1.6}
 #v119Subscription b{font-size:11px}.v119grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.v119cell{background:#fff;border:1px solid #ddd6fe;border-radius:9px;padding:8px}.v119num{font-size:13px;font-weight:900;color:#5b21b6}.v119ok{color:#047857;font-weight:800}.v119warn{color:#b45309;font-weight:800}#v119Refresh{width:100%;margin-top:8px;border:0;border-radius:10px;padding:10px;background:#6d28d9;color:#fff;font-weight:900}
@@ -3402,43 +3123,6 @@ body.v214-simple #v213ContractOverview .v213fine{font-size:11px}
  setTimeout(()=>clearInterval(poll),15000);
 })();
 </script>
-<script id="v231-private-photo-folder">
-/* V233: Dedicated origin-private OPFS folder; no Firebase photo uploads. */
-(()=>{'use strict';
-const PREFIX='wakaba_v63_history_',FOLDER='Wakaba_Posture_Photos';
-const supported=!!(navigator.storage&&navigator.storage.getDirectory);
-const keys=['front','right','left'];
-const isPhoto=x=>typeof x==='string'&&/^data:image\/(?:jpeg|jpg|png|webp);base64,/i.test(x);
-const name=(id,date,k)=>encodeURIComponent(String(id))+'__'+encodeURIComponent(String(date))+'__'+k+'.txt';
-let folderPromise;
-function folder(){if(!supported)return Promise.reject(Error('OPFS unsupported'));return folderPromise||(folderPromise=navigator.storage.getDirectory().then(root=>root.getDirectoryHandle(FOLDER,{create:true})).catch(e=>{folderPromise=null;throw e}))}
-async function write(id,date,k,data){if(!isPhoto(data))return false;const dir=await folder(),f=await dir.getFileHandle(name(id,date,k),{create:true});const w=await f.createWritable();try{await w.write(data);await w.close();const check=await(await f.getFile()).text();if(check!==data)throw Error('写真の保存後照合に失敗');return true}catch(e){try{await w.abort()}catch(_){}throw e}}
-async function read(id,date,k){try{const dir=await folder(),f=await dir.getFileHandle(name(id,date,k)),data=await(await f.getFile()).text();return isPhoto(data)?data:null}catch(e){return null}}
-const pending=new Map();
-async function backupHistory(id,h){if(!Array.isArray(h))return;let count=0,failed=0;for(const x of h){if(!x||!x.date)continue;for(const k of keys){const photo=x.photos&&x.photos[k];if(isPhoto(photo)){try{if(await write(id,x.date,k,photo))count++}catch(e){failed++;console.warn('V238 OPFS verified save failed',e)}}}}if(count||failed)window.dispatchEvent(new CustomEvent('wakaba:v236-photo-backup',{detail:{count,failed}}));return count}
-function queueBackup(id,value){if(!supported)return;let h;try{h=JSON.parse(value)}catch(e){return}const old=pending.get(id)||Promise.resolve();const task=old.catch(()=>{}).then(()=>backupHistory(id,h));pending.set(id,task);task.finally(()=>{if(pending.get(id)===task)pending.delete(id)}).catch(()=>{})}
-const original=Storage.prototype.setItem;
-Storage.prototype.setItem=function(k,v){const r=original.apply(this,arguments);if(this===localStorage&&String(k).startsWith(PREFIX))queueBackup(String(k).slice(PREFIX.length),String(v));return r};
-async function restoreDisplay(){const ctx=window.wakabaV227Current,body=document.getElementById('v91DetailBody');if(!ctx||!body||!document.getElementById('v91DetailModal')?.classList.contains('on'))return;
-const signature=String(ctx.patientId)+'|'+String(ctx.date);if(body.dataset.v231Restoring===signature)return;body.dataset.v231Restoring=signature;
-const blocks=body.querySelectorAll('.v91photos .v91photo');if(blocks.length!==3)return;
-let recovered=0;
-for(let i=0;i<3;i++){const block=blocks[i],img=block.querySelector('img');if(img&&img.getAttribute('src')&&isPhoto(img.getAttribute('src')))continue;
-const data=await read(ctx.patientId,ctx.date,keys[i]);if(!data)continue;
-if(!document.getElementById('v91DetailModal')?.classList.contains('on')||window.wakabaV227Current?.date!==ctx.date||window.wakabaV227Current?.patientId!==ctx.patientId)return;
-block.replaceChildren();const el=document.createElement('img');el.src=data;el.alt=['正面','右側面','左側面'][i];block.appendChild(el);recovered++;
-}
-if(recovered){let note=body.querySelector('#v231AutoNote');if(!note){note=document.createElement('div');note.id='v231AutoNote';note.style.cssText='font-size:11px;color:#0f766e;margin:8px 0';body.appendChild(note)}note.textContent='端末内の専用保存領域から写真'+recovered+'枚を自動表示しました（Firebase送信なし）'}
-}
-let scheduled=false;function scan(){if(scheduled)return;scheduled=true;setTimeout(()=>{scheduled=false;restoreDisplay().catch(console.warn)},60)}
-function setup(){const modal=document.getElementById('v91DetailModal');if(modal){new MutationObserver(scan).observe(modal,{attributes:true,attributeFilter:['class']});const body=document.getElementById('v91DetailBody');if(body)new MutationObserver(scan).observe(body,{childList:true,subtree:false})}
-if(supported){try{navigator.storage.persist?.().catch(()=>{})}catch(e){}
-setTimeout(()=>{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(PREFIX))queueBackup(k.slice(PREFIX.length),localStorage.getItem(k))}},1500)}
-}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
-window.wakabaV233PhotoFolder={supported,folder:FOLDER,read};
-})();
-</script>
 <style id="v279-legal-layout">
 /* Legal rows in subscription panel: override generic contract action buttons. */
 #v213ContractOverview #v235LegalBox{margin:18px 0 0;background:#fff;border:1px solid #e2e8f0;overflow:hidden;border-radius:12px}
@@ -3476,15 +3160,6 @@ if(!placeInContract()){
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(mount,750));else setTimeout(mount,750);
 })();</script>
-
-<style id="v236-photo-status-style">#v236PhotoStatus{position:fixed;bottom:12px;left:12px;right:12px;max-width:520px;margin:auto;z-index:29000;padding:10px 14px;border-radius:12px;background:#f0fdfa;border:1px solid #14b8a6;color:#115e59;font-size:12px;box-shadow:0 3px 12px #0002;display:none}#v236PhotoStatus.warn{background:#fff7ed;border-color:#f97316;color:#9a3412}</style>
-<script id="v236-photo-verified-status">
-(()=>{'use strict';
-let el,timer;function status(msg,warn){if(!el){el=document.createElement('div');el.id='v236PhotoStatus';el.setAttribute('role','status');document.body.appendChild(el)}el.textContent=msg;el.classList.toggle('warn',!!warn);el.style.display='block';clearTimeout(timer);timer=setTimeout(()=>{if(!warn)el.style.display='none'},6500)}
-window.addEventListener('wakaba:v236-photo-backup',e=>{const d=e.detail||{};if(d.failed)status('写真の端末内バックアップに失敗しました（'+d.failed+'枚）。端末の空き容量・ブラウザ設定を確認してください。既存データは削除していません。',true);/* 正常時の写真照合通知は非表示。失敗時の警告のみ表示。 */});
-if(navigator.storage&&navigator.storage.persist){navigator.storage.persist().catch(()=>{})}
-})();
-</script>
 
 <style id="v251-hide-old-photo-tools">#v227PhotoControls{display:none!important}</style>
 <style id="v250-style">#v250FromHistory,#v250FromLine{display:block;width:100%;border:0;border-radius:12px;background:#06c755;color:#fff;font-weight:900;padding:14px;margin:12px 0;font-size:15px}#v250Status{font-size:12px;color:#0f766e;line-height:1.5}</style>
@@ -4055,5 +3730,5 @@ if(!mount()){
 </script>
 <style id="wakaba-final-ui">#wakabaBuild{position:absolute;right:14px;top:12px;color:#fff;background:#0b766f;padding:4px 9px;border-radius:7px;font-size:12px;font-weight:800;z-index:2}header{position:relative}#wakabaLogoutDone[hidden]{display:none!important}#wakabaLogoutDone{position:fixed;inset:0;z-index:2147483000;background:#f4f6f8;display:flex;align-items:center;justify-content:center;padding:24px}#wakabaLogoutDone .doneCard{background:white;border-radius:18px;padding:30px 20px;width:min(100%,420px);text-align:center;box-shadow:0 12px 30px #0002}#wakabaLogoutDone button{background:#0f766e;color:#fff;border:0;border-radius:10px;padding:15px 24px;width:100%;font-size:17px;font-weight:800}#v382Register #v382Terms,#v382Register #v382Privacy{color:#0f766e;text-decoration:underline;font-weight:800}</style>
 <div id="wakabaLogoutDone" hidden role="dialog" aria-modal="true" aria-labelledby="wakabaLogoutTitle"><div class="doneCard"><h2 id="wakabaLogoutTitle">ログアウトしました</h2><p>安全にログアウトしました。</p><p>再度ご利用になる場合は、下のボタンからログインしてください。</p><button type="button" id="wakabaLoginReturn">ログイン画面へ</button></div></div>
-<script id="wakaba-final-behavior">(()=>{'use strict';const done=document.getElementById('wakabaLogoutDone');document.getElementById('wakabaLoginReturn').addEventListener('click',()=>{done.hidden=true;sessionStorage.removeItem('wakaba_logout_done');});const header=document.querySelector('header');if(header&&!document.getElementById('wakabaBuild')){const b=document.createElement('span');b.id='wakabaBuild';b.textContent='V465';header.appendChild(b)}if(sessionStorage.getItem('wakaba_logout_done')==='1'&&document.body.classList.contains('v271-signed-out'))done.hidden=false;})();</script>
+<script id="wakaba-final-behavior">(()=>{'use strict';const done=document.getElementById('wakabaLogoutDone');document.getElementById('wakabaLoginReturn').addEventListener('click',()=>{done.hidden=true;sessionStorage.removeItem('wakaba_logout_done');});const header=document.querySelector('header');if(header&&!document.getElementById('wakabaBuild')){const b=document.createElement('span');b.id='wakabaBuild';b.textContent='V466';header.appendChild(b)}if(sessionStorage.getItem('wakaba_logout_done')==='1'&&document.body.classList.contains('v271-signed-out'))done.hidden=false;})();</script>
 </html>
