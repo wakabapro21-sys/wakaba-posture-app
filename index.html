@@ -719,7 +719,13 @@ function setupDrag(type){var cv=document.getElementById("canvas-"+type);if(!cv||
  var mb=document.getElementById("modelBadge");if(mb){mb.textContent="補正後・再分析してください";mb.className="badge"}
 };cv.onpointerup=cv.onpointercancel=function(){drag=null};
 }
-function enqueueAI(type){queue=queue.filter(x=>x!==type);queue.push(type);runQueue()}
+function enqueueAI(type){queue=queue.filter(x=>x!==type);queue.push(type);if(!poseReady){var b=document.getElementById("badge-"+type);if(b){b.textContent="AI準備中";b.className="badge";}wakabaEnsureAI();}runQueue()}
+var wakabaAILoading=false,wakabaAIRetry=0;
+function wakabaAIStatus(message){photoTypes.forEach(function(t){var r=photos[t],b=document.getElementById("badge-"+t);if(r&&!r.ai&&b&&queue.indexOf(t)!==-1){b.textContent=message;b.className="badge"}})}
+function wakabaEnsureAI(){if(poseReady||wakabaAILoading)return;wakabaAILoading=true;loadAI()}
+function wakabaAIRetryLoad(){if(poseReady)return;wakabaAILoading=false;wakabaAIRetry++;wakabaAIStatus("AI再接続中");wakabaEnsureAI()}
+window.wakabaRetryAI=wakabaAIRetryLoad;
+photoTypes.forEach(function(t){var b=document.getElementById("badge-"+t);if(b)b.addEventListener("click",function(){if(photos[t]&&!photos[t].ai&&!poseReady){wakabaAIRetry=0;wakabaAIRetryLoad()}})});
 // V332: identical image bytes + same view reuse the original AI landmarks within this browser tab.
 // Only landmark coordinates are cached; never cache the photograph or send data to Firebase.
 async function v331CacheKey(type,file){
@@ -876,7 +882,7 @@ if(type!=="front" && v186SideHipRaw && p.leftShoulder && p.leftKnee){
 if(!rec.manualAdjusted)rec.points=p;rec.ai=true;rec.aiSide=type==="front"?"both":chooseSidePrefix(lm,type);
  // Cache only the first AI result, not manually adjusted coordinates.
  if(rec.v331CacheKey&&!rec.manualAdjusted){try{sessionStorage.setItem(rec.v331CacheKey,JSON.stringify({points:rec.points,rawLandmarks:rec.rawLandmarks,aiSide:rec.aiSide}));}catch(cacheError){console.warn('V332 landmark cache write',cacheError)}}
- b.textContent="AI検出済み";b.className="badge ok";draw(type)}else if(b){b.textContent="手動補正";b.className="badge ok"}busy=false;runQueue()});poseReady=true;runQueue()}catch(e){poseReady=false}}
+ b.textContent="AI検出済み";b.className="badge ok";draw(type)}else if(b){b.textContent="手動補正";b.className="badge ok"}busy=false;runQueue()});poseReady=true;wakabaAILoading=false;wakabaAIRetry=0;runQueue()}catch(e){poseReady=false;wakabaAILoading=false;wakabaAIStatus("AI起動失敗・再試行");console.warn("Pose init failed",e)}}
 var adjustType=null,adjustDrag=null,AC=document.getElementById("adjustCanvas"),AI=document.getElementById("adjustImg"),AS=document.getElementById("adjustStage");
 function adjustLayout(){
  if(!adjustType||!photos[adjustType]||!AI.naturalWidth)return null;
@@ -909,7 +915,10 @@ AC.onpointermove=function(e){if(!adjustDrag||!adjustType)return;var g=adjustLayo
  drawAdjust();e.preventDefault()};
 AC.onpointerup=AC.onpointercancel=function(){adjustDrag=null};
 addEventListener("resize",function(){if(adjustType)drawAdjust()});
-function loadAI(){var sc=document.createElement("script");sc.src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js";sc.async=true;sc.onload=attachPose;sc.onerror=function(){console.warn("AI library load failed; photo controls remain available")};document.body.appendChild(sc)}
+function loadAI(){if(window.Pose){attachPose();return;}var sc=document.createElement("script");sc.src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js";sc.async=true;sc.onload=function(){wakabaAILoading=false;attachPose()};sc.onerror=function(){wakabaAILoading=false;wakabaAIStatus("AI読込失敗・再試行");console.warn("AI library load failed; photo controls remain available")};document.body.appendChild(sc)}
+// On iPad Safari a previously failed CDN request can leave the engine unavailable.
+// Retry only when a photo is pending; do not change landmark calculations.
+setInterval(function(){if(!poseReady&&queue.length&&!wakabaAILoading&&wakabaAIRetry<2){wakabaAIRetry++;wakabaEnsureAI()}},5000);
 window.wakabaResetAnalysisSession=function(){
  queue=[];busy=false;pending=null;try{window.dispatchEvent(new CustomEvent("wakaba-reset-3d"))}catch(e){}resetPoseEngine();
  photoTypes.forEach(function(t){var r=photos[t];if(r&&r.url)try{URL.revokeObjectURL(r.url)}catch(e){}photos[t]=null;var st=document.getElementById("stage-"+t);if(st)st.innerHTML="<span>"+(t==="front"?"正面":t==="right"?"右側面":"左側面")+"写真を登録</span>";var b=document.getElementById("badge-"+t);if(b){b.textContent="未登録";b.className="badge"}var ab=document.querySelector('.adjustBtn[data-adjust="'+t+'"]');if(ab)ab.style.display="none"});
@@ -917,7 +926,7 @@ window.wakabaResetAnalysisSession=function(){
  var mb=document.getElementById("modelBadge");if(mb){mb.textContent="待機中";mb.className="badge"}count();
  setTimeout(function(){attachPose()},120);
 };
-addEventListener("resize",()=>photoTypes.forEach(draw));setTimeout(loadAI,0);
+addEventListener("resize",()=>photoTypes.forEach(draw));setTimeout(wakabaEnsureAI,0);
 
 var guideStream=null,guideType=null,guideScale=1,guideRoll=null,guideSensorTimer=null,GV=document.getElementById("guideVideo"),GO=document.getElementById("guideOverlay");
 function guideName(t){return t==="front"?"正面":t==="right"?"右側面":"左側面"}
