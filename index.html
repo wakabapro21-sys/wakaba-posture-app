@@ -1813,7 +1813,7 @@ body.v271-signed-out #v100Cloud #v101CloudClose{display:none}
  <label style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" name="agreed" required style="width:auto;margin-top:4px;flex:none"><span><a href="#" id="v382Terms">利用規約</a>・<a href="#" id="v382Privacy">プライバシーポリシー</a>に同意します</span></label>
  <button type="submit" id="v382EmailRegister" class="v100btn" style="width:100%;margin-top:8px">メールで登録して認証メールを送る</button>
  <button type="button" id="v382GoogleRegister" class="v100btn secondary" style="width:100%;margin-top:8px">Googleで登録・ログイン</button>
- <button type="button" id="v382StartTrial" class="v100btn" style="width:100%;margin-top:8px;background:#7c3aed">メール認証後、7日間無料体験を開始</button>
+ <button type="button" id="v382StartTrial" hidden class="v100btn" style="width:100%;margin-top:8px;background:#7c3aed">メール認証後、7日間無料体験を開始</button>
  <div id="v382Result" role="status" style="margin-top:8px;overflow-wrap:anywhere"></div>
  </form></div>
  </div>
@@ -3527,15 +3527,37 @@ body.v271-signed-out #v100Cloud{height:auto!important;bottom:auto!important;max-
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
 </script>
-<style id="v382-register-style">#v382Register[hidden]{display:none!important}#v382Register label:not([style]){display:block;margin:8px 0 3px;font-weight:700}#v382Register label:not([style]) input{display:block;width:100%;box-sizing:border-box;border:1px solid #cbd5e1;border-radius:8px;padding:9px;font-size:14px;margin-top:3px}</style>
+<style id="v382-register-style">#v382StartTrial[hidden]{display:none!important}#v382Register[hidden]{display:none!important}#v382Register label:not([style]){display:block;margin:8px 0 3px;font-weight:700}#v382Register label:not([style]) input{display:block;width:100%;box-sizing:border-box;border:1px solid #cbd5e1;border-radius:8px;padding:9px;font-size:14px;margin-top:3px}</style>
 <script type="module" id="v382-registration-module">
 import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
-import {getAuth,createUserWithEmailAndPassword,sendEmailVerification,GoogleAuthProvider,signInWithPopup,signOut} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
+import {getAuth,createUserWithEmailAndPassword,sendEmailVerification,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
 import {getFunctions,httpsCallable} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-functions.js';
 const el=id=>document.getElementById(id), panel=el('v382Register'),form=el('v382Form'),out=el('v382Result');
 const show=m=>{out.textContent=m};
 const getAppReady=()=>getApps().length?getApp():null;
 const termsVersion='2026-10-21-v1',privacyVersion='2026-10-21-v1';
+// Show the enrollment action only after Firebase reports a verified email.
+// No new authentication or subscription state is stored locally.
+const trialButton=el('v382StartTrial');
+async function refreshTrialAction(reload=false){
+ const app=getAppReady();const user=app?getAuth(app).currentUser:null;
+ if(!user){trialButton.hidden=true;return}
+ if(reload){try{await user.reload()}catch(e){console.warn('Verification refresh',e)}}
+ // Prevent an older async refresh from exposing the button after sign-out.
+ trialButton.hidden=!(getAuth(app).currentUser?.uid===user.uid && getAuth(app).currentUser.emailVerified);
+}
+let authObserverAttached=false;
+function attachAuthObserver(){
+ const app=getAppReady();if(!app||authObserverAttached)return;
+ authObserverAttached=true;
+ onAuthStateChanged(getAuth(app),()=>{refreshTrialAction(false)});
+}
+attachAuthObserver();
+const observerRetry=setInterval(()=>{attachAuthObserver();if(authObserverAttached)clearInterval(observerRetry)},500);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshTrialAction(true)});
+window.addEventListener('focus',()=>refreshTrialAction(true));
+el('v382ShowRegister').addEventListener('click',()=>refreshTrialAction(true));
+
 el('v382ShowRegister').addEventListener('click',()=>{panel.hidden=!panel.hidden;});
 el('v382Terms').addEventListener('click',e=>{e.preventDefault();el('v266Terms')?.click();});
 el('v382Privacy').addEventListener('click',e=>{e.preventDefault();el('v266Privacy')?.click();});
@@ -3546,14 +3568,14 @@ form.addEventListener('submit',async e=>{
  const d=new FormData(form),email=String(d.get('email')||'').trim(),pass=String(d.get('password')||'');
  if(pass.length<8){show('パスワードは8文字以上で入力してください。');return}
  const btn=el('v382EmailRegister');btn.disabled=true;
- try{const c=await createUserWithEmailAndPassword(getAuth(app),email,pass);await sendEmailVerification(c.user);show('確認メールを送信しました。メール内のリンクで認証後、この画面に戻って「無料体験を開始」を押してください。');}
+ try{const c=await createUserWithEmailAndPassword(getAuth(app),email,pass);await sendEmailVerification(c.user);await refreshTrialAction(false);show('確認メールを送信しました。メール内のリンクで認証後、この画面に戻ると無料体験の開始ボタンが表示されます。');}
  catch(err){console.error('Registration',err);show('登録できませんでした。入力内容またはメールアドレスの登録状況を確認してください。')}
  finally{btn.disabled=false}
 });
 el('v382GoogleRegister').addEventListener('click',async()=>{
  if(!form.querySelector('[name=agreed]').checked){show('規約への同意が必要です。');return}
  const app=getAppReady();if(!app){show('Firebase初期化中です。');return}
- try{await signInWithPopup(getAuth(app),new GoogleAuthProvider());show('Googleログインできました。登録情報を入力して無料体験を開始してください。');}
+ try{await signInWithPopup(getAuth(app),new GoogleAuthProvider());await refreshTrialAction(true);show('Googleログインできました。登録情報を入力して無料体験を開始してください。');}
  catch(err){console.error('Google login',err);show('Googleログインに失敗しました。FirebaseのGoogleログイン設定も確認してください。')}
 });
 el('v382StartTrial').addEventListener('click',async()=>{
@@ -3627,5 +3649,5 @@ if(!mount()){
 </script>
 <style id="wakaba-final-ui">#wakabaBuild{position:absolute;right:14px;top:12px;color:#fff;background:#0b766f;padding:4px 9px;border-radius:7px;font-size:12px;font-weight:800;z-index:2}header{position:relative}#wakabaLogoutDone[hidden]{display:none!important}#wakabaLogoutDone{position:fixed;inset:0;z-index:2147483000;background:#f4f6f8;display:flex;align-items:center;justify-content:center;padding:24px}#wakabaLogoutDone .doneCard{background:white;border-radius:18px;padding:30px 20px;width:min(100%,420px);text-align:center;box-shadow:0 12px 30px #0002}#wakabaLogoutDone button{background:#0f766e;color:#fff;border:0;border-radius:10px;padding:15px 24px;width:100%;font-size:17px;font-weight:800}#v382Register #v382Terms,#v382Register #v382Privacy{color:#0f766e;text-decoration:underline;font-weight:800}</style>
 <div id="wakabaLogoutDone" hidden role="dialog" aria-modal="true" aria-labelledby="wakabaLogoutTitle"><div class="doneCard"><h2 id="wakabaLogoutTitle">ログアウトしました</h2><p>安全にログアウトしました。</p><p>再度ご利用になる場合は、下のボタンからログインしてください。</p><button type="button" id="wakabaLoginReturn">ログイン画面へ</button></div></div>
-<script id="wakaba-final-behavior">(()=>{'use strict';const done=document.getElementById('wakabaLogoutDone');document.getElementById('wakabaLoginReturn').addEventListener('click',()=>{done.hidden=true;sessionStorage.removeItem('wakaba_logout_done');});const header=document.querySelector('header');if(header&&!document.getElementById('wakabaBuild')){const b=document.createElement('span');b.id='wakabaBuild';b.textContent='V474 テスト';header.appendChild(b)}if(sessionStorage.getItem('wakaba_logout_done')==='1'&&document.body.classList.contains('v271-signed-out'))done.hidden=false;})();</script>
+<script id="wakaba-final-behavior">(()=>{'use strict';const done=document.getElementById('wakabaLogoutDone');document.getElementById('wakabaLoginReturn').addEventListener('click',()=>{done.hidden=true;sessionStorage.removeItem('wakaba_logout_done');});const header=document.querySelector('header');if(header&&!document.getElementById('wakabaBuild')){const b=document.createElement('span');b.id='wakabaBuild';b.textContent='V475 テスト';header.appendChild(b)}if(sessionStorage.getItem('wakaba_logout_done')==='1'&&document.body.classList.contains('v271-signed-out'))done.hidden=false;})();</script>
 </html>
