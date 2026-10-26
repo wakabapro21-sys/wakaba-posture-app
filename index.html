@@ -383,12 +383,6 @@ body.v271-signed-out #v100Cloud #v427EmailLogin[open] .v100row input{width:100%;
 body.v271-signed-out #v100Cloud #v427EmailLogin[open] #v100SignIn{width:100%;min-height:46px;font-size:15px;padding:12px}
 body.v271-signed-out #v100Cloud #v427EmailLogin[open] #v266ResetPanel{max-width:100%;box-sizing:border-box}
 </style>
-<style id="wakaba-register-entry-fix">
-/* Signed-out screen: keep registration as the third full-width action. */
-body.v271-signed-out #v100Cloud #v382ShowRegister{display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;min-height:48px!important;margin-top:10px!important;box-sizing:border-box!important;background:#0f766e!important;color:#fff!important;border:0!important;font-size:15px!important;padding:13px!important}
-/* The login panel itself controls registration visibility, even if body state updates late. */
-#v100Cloud #v100Login #v382ShowRegister{display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;min-height:48px!important;background:#0f766e!important;color:#fff!important;border:0!important;font-size:15px!important;padding:13px!important;box-sizing:border-box!important}
-</style>
 <style id="v448-email-login-button">
 /* Signed-out email entry matches Google button; native details toggle remains intact. */
 body.v271-signed-out #v100Cloud #v427EmailLogin{width:100%;box-sizing:border-box}
@@ -429,9 +423,8 @@ body.v61-analysis main .btn,body.v61-analysis main button,body.v61-analysis main
 body.v61-analysis main #scorePanel [style*="grid-template-columns:1.25fr"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 body.v61-analysis main #patientReport [style*="grid-template-columns:repeat(3,1fr)"]{grid-template-columns:repeat(3,minmax(0,1fr))!important}
 </style>
-<style id="wakaba-dev-version-style">#wakabaDevVersion{position:fixed;right:12px;top:8px;font-size:12px;font-weight:700;color:#fff;background:#0b4d4a;padding:4px 9px;border-radius:7px;z-index:10;pointer-events:none}header{position:relative}</style>
 </head>
-<body><div id="wakabaDevVersion" aria-label="開発版 V458">V458</div>
+<body>
 <header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 </p></header>
 
 
@@ -1922,9 +1915,8 @@ body.v271-signed-out #v100Cloud #v101CloudClose{display:none}
   <div style="margin-top:9px"><button type="button" id="v266Forgot" style="border:0;background:none;color:#0f766e;text-decoration:underline;padding:6px 0;font-size:12px">パスワードを忘れた方はこちら</button></div>
   <div id="v266ResetPanel" hidden style="margin:8px 0;padding:10px;background:#f0fdfa;border-radius:10px;font-size:12px"><b>パスワード再設定</b><p>上のメールアドレス宛てに再設定メールを送ります。</p><button type="button" id="v266SendReset" class="v100btn">再設定メールを送信</button><div id="v266ResetMsg" role="status" style="margin-top:7px;overflow-wrap:anywhere"></div></div>
   <div style="margin:10px 0;font-size:12px;line-height:1.7"><label style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" id="v266Agree" style="margin-top:5px;flex:none"><span><a href="#" id="v266Terms">利用規約</a>および<a href="#" id="v266Privacy">プライバシーポリシー</a>を確認し、同意します。</span></label><div id="v266AgreeMsg" role="status" style="color:#b91c1c"></div></div>
- </div>
   </details>
-  <button type="button" id="v382ShowRegister" class="v100btn secondary" style="display:block;margin-top:10px;width:100%;min-height:48px;font-size:15px;padding:13px;background:#0f766e;color:#fff">新規登録（7日間無料・カード不要）</button>
+  <button type="button" id="v382ShowRegister" class="v100btn secondary" style="margin-top:8px;width:100%">新規登録（7日間無料・カード不要）</button>
 <div id="v382Register" hidden style="margin-top:12px;padding:12px;border:1px solid #cbd5e1;border-radius:12px;background:#f8fafc;font-size:13px">
  <b>新規登録・7日間無料体験（カード不要）</b><p style="font-size:11px">メール認証後に無料体験を開始します。自動課金はありません。</p>
  <form id="v382Form" autocomplete="on">
@@ -2185,13 +2177,10 @@ $('v100SignIn').onclick=async()=>{
 };
 $('v266Forgot').onclick=()=>{$('v266ResetPanel').hidden=!$('v266ResetPanel').hidden};
 $('v266SendReset').onclick=async()=>{const email=$('v100Email').value.trim(),out=$('v266ResetMsg'),btn=$('v266SendReset');if(!email||!/^\S+@\S+\.\S+$/.test(email)){out.textContent='登録したメールアドレスを入力してください。';return;}btn.disabled=true;out.textContent='送信中…';try{await sendPasswordResetEmail(auth,email);out.textContent='再設定メールの送信を受け付けました。メールが届かない場合は迷惑メールもご確認ください。';}catch(e){console.error('password reset',e);out.textContent='送信できませんでした。時間をおいて再度お試しください。';}finally{btn.disabled=false}};
-function v266ShowLegal(index){const help=document.getElementById('v77Help');if(!help){alert('メニューの「お問い合わせ・ヘルプ」から規約をご確認ください。');return;}const panel=document.getElementById('v235LegalPanel'+index);if(panel){const win=window.open('','_blank');if(win){win.document.write('<!doctype html><html lang=ja><meta name=viewport content=width=device-width,initial-scale=1><meta charset=utf-8><title>規約の確認</title><body style="font-family:sans-serif;line-height:1.8;padding:20px">'+panel.innerHTML+'\n</body><style id="v458-logout-style">#v458LogoutComplete{position:fixed;inset:0;z-index:2147483646;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:24px;box-sizing:border-box}#v458LogoutComplete.on{display:flex}#v458LogoutComplete .v458box{background:#fff;border-radius:20px;width:min(420px,100%);padding:28px 22px;text-align:center;box-shadow:0 18px 55px #0003;color:#0f172a}#v458LogoutComplete button{width:100%;border:0;border-radius:11px;background:#0f766e;color:white;font-size:16px;font-weight:800;padding:16px;margin-top:20px}</style>
-<div id="v458LogoutComplete" role="dialog" aria-modal="true" aria-labelledby="v458LogoutTitle"><div class="v458box"><div style="color:#0f766e;font-size:42px" aria-hidden="true">✓</div><h2 id="v458LogoutTitle">ログアウトしました</h2><p>安全にログアウトしました。</p><p>再度ご利用になる場合は、下のボタンからログインしてください。</p><button type="button" id="v458ReturnLogin">ログイン画面へ</button></div></div>
-<script>window.v458ShowLogoutComplete=function(){document.getElementById('v458LogoutComplete')?.classList.add('on')};document.getElementById('v458ReturnLogin')?.addEventListener('click',function(){document.getElementById('v458LogoutComplete')?.classList.remove('on');document.getElementById('v100Cloud').style.display='block';document.getElementById('v101CloudBackdrop').style.display='block';});</script>
-</html>');win.document.close();}else alert('お問い合わせ・ヘルプから規約を確認してください。');}else alert('お問い合わせ・ヘルプから規約を確認してください。');}
+function v266ShowLegal(index){const help=document.getElementById('v77Help');if(!help){alert('メニューの「お問い合わせ・ヘルプ」から規約をご確認ください。');return;}const panel=document.getElementById('v235LegalPanel'+index);if(panel){const win=window.open('','_blank');if(win){win.document.write('<!doctype html><html lang=ja><meta name=viewport content=width=device-width,initial-scale=1><meta charset=utf-8><title>規約の確認</title><body style="font-family:sans-serif;line-height:1.8;padding:20px">'+panel.innerHTML+'\n</body></html>');win.document.close();}else alert('お問い合わせ・ヘルプから規約を確認してください。');}else alert('お問い合わせ・ヘルプから規約を確認してください。');}
 $('v266Terms').onclick=e=>{e.preventDefault();v266ShowLegal(1)}; $('v266Privacy').onclick=e=>{e.preventDefault();v266ShowLegal(0)};
 document.getElementById('v270MenuLogout')?.addEventListener('click',()=>{document.getElementById('v77Menu')?.classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu');document.getElementById('v100SignOut')?.click();});
-$('v100SignOut').onclick=async()=>{sessionStorage.setItem('wakaba_v269_login_return','1');sessionStorage.setItem('wakaba_v165_page','home');document.getElementById('v77Menu')?.classList.remove('on');try{await signOut(auth);v271AuthView(false);window.v458ShowLogoutComplete?.();}catch(e){console.error('logout failed',e);alert('ログアウトできませんでした。もう一度お試しください。');}};$('v100Sync').onclick=uploadAll;$('v102Restore').onclick=restoreAll;
+$('v100SignOut').onclick=async()=>{sessionStorage.setItem('wakaba_v269_login_return','1');sessionStorage.setItem('wakaba_v165_page','home');document.getElementById('v77Menu')?.classList.remove('on');await signOut(auth);v271AuthView(false);window.wakabaShowLogoutDone?.();};$('v100Sync').onclick=uploadAll;$('v102Restore').onclick=restoreAll;
 onAuthStateChanged(auth,async u=>{v271AuthView(!!u);if(u){if(!v230Block(u))return;localStorage.setItem('wakaba_clinic_uid',u.uid);localStorage.setItem('wakaba_clinic_email',u.email||'');const ce=$('v112ClinicEmail'),ci=$('v112ClinicId');if(ce)ce.textContent='ログイン：'+(u.email||'メール未設定');if(ci)ci.textContent='院ID：'+u.uid;status.textContent='ログイン済み';$('v100Login').style.display='none';$('v100Actions').style.display='block';/* V270: successful authentication returns to the customer list; cloud controls remain accessible from MENU */$('v100Cloud').style.display='none';$('v101CloudBackdrop').style.display='none';document.getElementById('v77Menu')?.classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu');sessionStorage.setItem('wakaba_v165_page','home');sessionStorage.removeItem('wakaba_v269_login_return');document.querySelectorAll('#v77Patient,#v77Reports,#v77Mypage,#v77News,#v77Help,#v77Settings,#v341Manual').forEach(e=>e.classList.remove('on'));document.getElementById('v61Home')?.classList.remove('v77hidden');document.body.classList.remove('v61-analysis');msg.innerHTML='<span class="v100ok">V139：端末データを安全確認中です。自動復元を停止しています。必要な場合のみ管理画面から確認してください。</span>';
 try{
  if(false && patients().length===0){
@@ -4064,7 +4053,9 @@ if(!mount()){
  obs.observe(document.documentElement,{childList:true,subtree:true});
 }
 </script>
-<style id="v458-logout-style">#v458LogoutComplete{position:fixed;inset:0;z-index:2147483646;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:24px;box-sizing:border-box}#v458LogoutComplete.on{display:flex}#v458LogoutComplete .v458box{background:#fff;border-radius:20px;width:min(420px,100%);padding:28px 22px;text-align:center;box-shadow:0 18px 55px #0003;color:#0f172a}#v458LogoutComplete button{width:100%;border:0;border-radius:11px;background:#0f766e;color:white;font-size:16px;font-weight:800;padding:16px;margin-top:20px}</style>
-<div id="v458LogoutComplete" role="dialog" aria-modal="true" aria-labelledby="v458LogoutTitle"><div class="v458box"><div style="color:#0f766e;font-size:42px" aria-hidden="true">✓</div><h2 id="v458LogoutTitle">ログアウトしました</h2><p>安全にログアウトしました。</p><p>再度ご利用になる場合は、下のボタンからログインしてください。</p><button type="button" id="v458ReturnLogin">ログイン画面へ</button></div></div>
-<script>window.v458ShowLogoutComplete=function(){document.getElementById('v458LogoutComplete')?.classList.add('on')};document.getElementById('v458ReturnLogin')?.addEventListener('click',function(){document.getElementById('v458LogoutComplete')?.classList.remove('on');document.getElementById('v100Cloud').style.display='block';document.getElementById('v101CloudBackdrop').style.display='block';});</script>
+
+<style id="wakaba-release-ui">#wakabaRelease{position:fixed;right:9px;top:9px;z-index:1500;background:#0f766e;color:white;font:700 12px sans-serif;padding:4px 8px;border-radius:8px}#wakabaLogoutDone{display:none;position:fixed;inset:0;z-index:2000;background:#f3f6f8;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}#wakabaLogoutDone .panel{background:white;border-radius:18px;padding:30px 22px;max-width:400px;width:100%;text-align:center;box-shadow:0 8px 28px #0002}#wakabaLogoutDone button{background:#0f766e;color:white;border:0;border-radius:10px;padding:15px 25px;font-size:16px;font-weight:700;width:100%}</style>
+<div id="wakabaRelease">V459</div>
+<div id="wakabaLogoutDone" role="dialog" aria-modal="true" aria-label="ログアウト完了"><div class="panel"><div style="color:#0f766e;font-size:32px">✓</div><h2>ログアウトしました</h2><p>安全にログアウトしました。</p><p>再度ご利用になる場合は、下のボタンからログインしてください。</p><button type="button" id="wakabaBackToLogin">ログイン画面へ</button></div></div>
+<script>window.wakabaShowLogoutDone=function(){document.getElementById('wakabaLogoutDone').style.display='flex'};document.getElementById('wakabaBackToLogin').addEventListener('click',function(){document.getElementById('wakabaLogoutDone').style.display='none'});</script>
 </html>
