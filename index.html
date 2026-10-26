@@ -386,6 +386,8 @@ body.v271-signed-out #v100Cloud #v427EmailLogin[open] #v266ResetPanel{max-width:
 <style id="wakaba-register-entry-fix">
 /* Signed-out screen: keep registration as the third full-width action. */
 body.v271-signed-out #v100Cloud #v382ShowRegister{display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;min-height:48px!important;margin-top:10px!important;box-sizing:border-box!important;background:#0f766e!important;color:#fff!important;border:0!important;font-size:15px!important;padding:13px!important}
+/* The login panel itself controls registration visibility, even if body state updates late. */
+#v100Cloud #v100Login #v382ShowRegister{display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;min-height:48px!important;background:#0f766e!important;color:#fff!important;border:0!important;font-size:15px!important;padding:13px!important;box-sizing:border-box!important}
 </style>
 <style id="v448-email-login-button">
 /* Signed-out email entry matches Google button; native details toggle remains intact. */
