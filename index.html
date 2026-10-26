@@ -459,6 +459,7 @@ body.v61-analysis main #patientReport [style*="grid-template-columns:repeat(3,1f
 <details><summary><b>顧客データについて</b><span>›</span></summary><div class="helpBody"><b>保存されるデータ</b><p>顧客情報と分析履歴を保存し、過去の分析結果を確認・比較できます。</p><p>分析時の写真はFirebaseに保存されません。撮影・分析中はブラウザ内で一時的に扱われますが、画面を閉じるなどすると失われる場合があり、後からの復元はできません。必要な結果は分析当日にLINE等で共有してください。</p><p>不要な履歴や顧客データは、各画面の削除機能から削除できます。</p></div></details>
 <details><summary><b>お問い合わせ</b><span>›</span></summary><div class="helpBody"><div id="v204InlineContact" style="margin-top:18px;padding-top:16px;border-top:1px solid #e5e7eb">
   <div style="font-size:15px;font-weight:800;color:#0f172a;margin-bottom:10px">お問い合わせフォーム</div>
+  <p style="font-size:13px;font-weight:700;color:#9a3412;line-height:1.7;margin:0 0 12px">※ 電話での受付はしておりません。お問い合わせは下記フォームからお願いいたします。</p>
   <form id="v204Form" novalidate>
     <label style="display:block;font-size:13px;font-weight:700;margin:10px 0 5px">お名前</label>
     <input id="v204Name" maxlength="80" required placeholder="例：山田 太郎" style="box-sizing:border-box;width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px">
@@ -773,7 +774,17 @@ function chooseSidePrefix(lm,type){
  var L=[11,13,15,23,25,27],R=[12,14,16,24,26,28];
  function score(ids){return ids.reduce(function(a,i){var v=lm[i]&&lm[i].visibility;return a+(isFinite(v)?v:0)},0)}
  var sl=score(L),sr=score(R),preferred=type==="left"?"left":type==="right"?"right":null;
- if(preferred&&Math.abs(sl-sr)<1.15)return preferred;
+ /* Keep the photographed side stable. Visibility rankings alone can fluctuate
+    between near-identical side photographs and swap every landmark. Only switch
+    if the expected side is clearly occluded and the other is reliably visible. */
+ if(preferred){
+   var expected=preferred==="left"?L:R,other=preferred==="left"?R:L;
+   var expectedCore=[expected[0],expected[3],expected[4],expected[5]];
+   var otherCore=[other[0],other[3],other[4],other[5]];
+   var ev=score(expectedCore)/expectedCore.length,ov=score(otherCore)/otherCore.length;
+   if(ev>=.35||ov<.65)return preferred;
+   return preferred==="left"?"right":"left";
+ }
  return sl>=sr?"left":"right";
 }
 function stabilizeFront(p){
@@ -873,10 +884,17 @@ if(type!=="front" && v186SideHipRaw && p.leftShoulder && p.leftKnee){
   /* V291: no arbitrary hip displacement */
   p.leftHip={x:finalHip.x,y:finalHip.y};p.rightHip={x:finalHip.x,y:finalHip.y};
 }
-if(!rec.manualAdjusted)rec.points=p;rec.ai=true;rec.aiSide=type==="front"?"both":chooseSidePrefix(lm,type);
+/* Detection quality is advisory: never alter the user's corrected points or scores. */
+var sideQualityWarning=false;
+if(type!=="front"){
+ var sideIds=pre==="left"?[7,11,23,25,27]:[8,12,24,26,28];
+ sideQualityWarning=sideIds.some(function(i){var q=lm[i];return !q||!isFinite(q.x)||!isFinite(q.y)||!isFinite(q.visibility)||q.visibility<.50});
+ rec.aiSideQualityWarning=sideQualityWarning;
+}
+if(!rec.manualAdjusted)rec.points=p;rec.ai=true;rec.aiSide=type==="front"?"both":pre;
  // Cache only the first AI result, not manually adjusted coordinates.
  if(rec.v331CacheKey&&!rec.manualAdjusted){try{sessionStorage.setItem(rec.v331CacheKey,JSON.stringify({points:rec.points,rawLandmarks:rec.rawLandmarks,aiSide:rec.aiSide}));}catch(cacheError){console.warn('V332 landmark cache write',cacheError)}}
- b.textContent="AI検出済み";b.className="badge ok";draw(type)}else if(b){b.textContent="手動補正";b.className="badge ok"}busy=false;runQueue()});poseReady=true;runQueue()}catch(e){poseReady=false}}
+ b.textContent=sideQualityWarning?"AI検出・側面の点を要確認":"AI検出済み";b.className=sideQualityWarning?"badge":"badge ok";draw(type)}else if(b){b.textContent="手動補正";b.className="badge ok"}busy=false;runQueue()});poseReady=true;runQueue()}catch(e){poseReady=false}}
 var adjustType=null,adjustDrag=null,AC=document.getElementById("adjustCanvas"),AI=document.getElementById("adjustImg"),AS=document.getElementById("adjustStage");
 function adjustLayout(){
  if(!adjustType||!photos[adjustType]||!AI.naturalWidth)return null;
@@ -982,128 +1000,8 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  var frontHeight=Math.max(.35,Math.abs(photos.front.points.head.y-(photos.front.points.leftAnkle.y+photos.front.points.rightAnkle.y)/2));
  var depthScale=Number.isFinite(frontHeight)&&frontHeight>.1?2.15/frontHeight:3;
  names.forEach(function(n){var f=photos.front.points[n];pts3[n]={x:(f.x-.5)*2,y:(.98-f.y)*3,z:(Number.isFinite(profileDepth(n))?profileDepth(n):0)*depthScale}});
- /* V291: 左右側面の観測を別々に検証。正面の左右幅を用い、
-    右側面は画面右=前、左側面は画面左=前として同一前後軸へ変換。
-    両側面が食い違うときは撮影・遮蔽誤差とみなし回旋方向を確定しない。 */
- /* V300: 回旋は実測角ではなく3段階の写真由来の参考指標。
-    側面の隠れた反対側関節は推定誤差が大きいため、矛盾する2枚から角度を捏造しない。 */
- function profilePairYaw(aName,bName,side){
-   var rec=photos[side],a=raw(rec,aName),b=raw(rec,bName);
-   if(!a||!b||!pts3[aName]||!pts3[bName])return null;
-   var weight=Math.min(Number(a.visibility??.5),Number(b.visibility??.5));
-   // V312: 側面で奥側の股関節は遮蔽されやすい。骨盤のみ可視度の下限を緩め、
-   // 2枚の側面が整合する場合に限って参考評価に使う。
-   var minVisibility=(aName==="leftHip"&&bName==="rightHip")?.08:.25;
-   if(!Number.isFinite(weight)||weight<minVisibility)return null;
-   var orient=side==="right"?1:-1;
-   var dz=(b.x-a.x)*orient*depthScale;
-   var dx=Math.abs(pts3[bName].x-pts3[aName].x);
-   if(!Number.isFinite(dx)||dx<.12||!Number.isFinite(dz))return null;
-   var angle=Math.atan2(dz,dx)*180/Math.PI;
-   if(!Number.isFinite(angle)||Math.abs(angle)>65)return null;
-   return {angle:angle,weight:weight};
- }
- function yawFromProfiles(aName,bName){
-   var r=profilePairYaw(aName,bName,"right"),l=profilePairYaw(aName,bName,"left");
-   var fa=raw(photos.front,aName),fb=raw(photos.front,bName);
-   var frontA=photos.front.points[aName],frontB=photos.front.points[bName];
-   var width=frontA&&frontB?Math.abs(frontB.x-frontA.x):NaN;
-   var bodyHeight=frontHeight;
-   // 正面の左右幅は回旋の補助指標。体格差を考慮し、幅だけでは方向を決めない。
-   var ratio=Number.isFinite(width)?width/Math.max(.25,bodyHeight):NaN;
-   var narrow=Number.isFinite(ratio)&&ratio<(aName==="leftShoulder"?.205:.115);
-   // MediaPipeの正面奥行き(z)は相対量であり、強い根拠としては使わない。
-   var frontDepth=fa&&fb&&Number.isFinite(fa.z)&&Number.isFinite(fb.z)?fb.z-fa.z:null;
-   var candidates=[r,l].filter(Boolean);
-   if(!candidates.length)return {yaw:null,reliable:false,reason:"側面ランドマークが不足（右・左とも検出条件未達）"};
-   var chosen=null;
-   if(r&&l){
-     // V310: 両側面とも微小角なら、符号の不一致は撮影ノイズとして扱う。
-     // 十分なランドマークが揃う場合に限り「ほぼなし」を判定できるようにする。
-     var lowSignal=Math.max(Math.abs(r.angle),Math.abs(l.angle))<6;
-     if(lowSignal){
-       chosen=0;
-     }else if(r.angle*l.angle>=0||Math.abs(r.angle)<4||Math.abs(l.angle)<4){
-       chosen=(r.angle*r.weight+l.angle*l.weight)/(r.weight+l.weight);
-     }else{
-       // 側面同士が矛盾するときは、正面の相対奥行きで方向が合う場合のみ採用。
-       // 左右側面の撮影条件が異なる場合、誤判定より判定保留を優先。
-       var sign=frontDepth!=null&&Math.abs(frontDepth)>.035?Math.sign(frontDepth):0;
-       var supported=candidates.filter(function(c){return sign&&Math.sign(c.angle)===sign});
-       if(supported.length&&narrow)chosen=supported[0].angle;
-       else {
-         // V312: 方向が逆でも、左右とも小さい回旋信号ならゼロ近傍として扱う。
-         // 大きい矛盾は無理に良好判定しない。
-         var nearNeutral=Math.max(Math.abs(r.angle),Math.abs(l.angle))<=11 &&
-           Math.abs((r.angle*r.weight+l.angle*l.weight)/(r.weight+l.weight))<=3.5 &&
-           Number.isFinite(ratio) && ratio>0.07;
-         if(nearNeutral)chosen=0;
-         else {
-           /* V315: 逆方向の側面推定は、遮蔽ランドマークの投影誤差の可能性が高い。
-              絶対値から強さを作るV313処理は誤判定につながるため撤回。
-              正面写真から回旋の実角度は得られないので、ゼロ判定も強制しない。 */
-           return {yaw:null,reliable:false,directionKnown:false,
-             reason:"左右側面の推定が不整合（右"+r.angle.toFixed(1)+"°／左"+l.angle.toFixed(1)+"°）。左右の撮影角度または肩ランドマークの投影差が影響した可能性があります。正面・左右を同じ立ち位置で、カメラを胸～みぞおちの高さに固定し、真横から撮影し直してください。根拠のない回旋点数は出しません。"};
-         }
-       }
-     }
-   }else{
-     // 一方の側面が遮蔽されても、正面の奥行き差が同方向なら参考判定する。
-     var c=candidates[0],sign=frontDepth!=null&&Math.abs(frontDepth)>.035?Math.sign(frontDepth):0;
-     if(sign&&Math.sign(c.angle)===sign&&narrow)chosen=c.angle;
-     else return {yaw:null,reliable:false,reason:"正面と側面の照合が不足"};
-   }
-   if(!Number.isFinite(chosen))return {yaw:null,reliable:false,reason:"角度計算に失敗"};
-   var magnitude=Math.abs(chosen),tier=magnitude<4?0:magnitude<10?5:magnitude<20?10:15;
-   var yaw=tier===0?0:Math.sign(chosen)*tier;
-   return {yaw:yaw,reliable:true,directionKnown:true,reason:"",level:tier===0?"ほぼなし":tier===5?"軽度":tier===10?"中程度":"大きい"};
- }
- /* V315: 奥側股関節の見かけの左右差を回旋角に換算しない。
-    右・左側面の外形ランドマークを鏡像化し、各写真の足首-肩の長さで正規化した
-    前後位置の一致度を「側面対称性の参考指標」として利用する。
-    これは解剖学的な骨盤回旋角や回旋方向の測定ではない。 */
- function sideSymmetryProxy(){
-   var right=photos.right,left=photos.left;
-   function point(rec,n){var q=rec&&rec.points&&rec.points[n];return q&&Number.isFinite(q.x)&&Number.isFinite(q.y)?q:null}
-   function center(rec,names){var v=names.map(n=>point(rec,n)).filter(Boolean);return v.length?v.reduce((a,q)=>a+q.x,0)/v.length:null}
-   function level(rec,names){var v=names.map(n=>point(rec,n)).filter(Boolean);return v.length?v.reduce((a,q)=>a+q.y,0)/v.length:null}
-   function metric(rec,orientation){
-     var shoulder=center(rec,['leftShoulder','rightShoulder']),hip=center(rec,['leftHip','rightHip']);
-     var knee=center(rec,['leftKnee','rightKnee']),ankle=center(rec,['leftAnkle','rightAnkle']);
-     var shY=level(rec,['leftShoulder','rightShoulder']),anY=level(rec,['leftAnkle','rightAnkle']);
-     if([shoulder,hip,knee,ankle,shY,anY].some(v=>!Number.isFinite(v)))return null;
-     var h=Math.abs(anY-shY);if(h<.20)return null;
-     // 両側面を身体の前方が正になる座標に揃え、肩を基準に並進・縮尺を除去。
-     return {hip:orientation*(hip-shoulder)/h,knee:orientation*(knee-shoulder)/h,
-             ankle:orientation*(ankle-shoulder)/h};
-   }
-   var r=metric(right,1),l=metric(left,-1);
-   if(!r||!l)return {yaw:null,reliable:false,reason:'左右側面の位置合わせに必要なランドマークが不足'};
-   // 骨盤の側面輪郭と下肢の重心線を併用。単独の奥側股関節を使用しない。
-   var dif=Math.abs(r.hip-l.hip)*.65+Math.abs(r.knee-l.knee)*.22+Math.abs(r.ankle-l.ankle)*.13;
-   if(!Number.isFinite(dif))return {yaw:null,reliable:false,reason:'左右側面の一致度を計算できません'};
-   // しきい値は臨床検証前の仮基準。点数は回旋角ではなく側面対称性の参考値。
-   var tier=dif<.027?0:dif<.067?5:dif<.132?10:15; // V318: 各境界の手前0.008以内は低い点数に統一
-   return {yaw:0,reliable:true,directionKnown:false,magnitudeProxy:tier, audit:{difference:dif,hip:Math.abs(r.hip-l.hip),knee:Math.abs(r.knee-l.knee),ankle:Math.abs(r.ankle-l.ankle),right:r,left:l},
-           reason:'左右側面の鏡像比較による参考評価（回旋方向・実角度は判定しません）',
-           level:tier===0?'ほぼなし':tier===5?'軽度':tier===10?'中等度':'強い'};
- }
- var thoraxResult=yawFromProfiles("leftShoulder","rightShoulder");
- var pelvisResult=sideSymmetryProxy();
- thoraxYaw=thoraxResult.reliable?thoraxResult.yaw:null;pelvisYaw=pelvisResult.reliable?pelvisResult.yaw:null;
- /* 低信頼・ほぼ完全側面での微小ノイズを抑制 */
- if(thoraxYaw!==null&&Math.abs(thoraxYaw)<.35)thoraxYaw=0;if(pelvisYaw!==null&&Math.abs(pelvisYaw)<.35)pelvisYaw=0;
- var twistAvailable=thoraxResult.reliable&&pelvisResult.reliable;
- var tw=twistAvailable&&thoraxResult.directionKnown!==false&&pelvisResult.directionKnown!==false?thoraxYaw-pelvisYaw:null;
- /* V310: 推定角度は内部の3D描画用のみ。患者向けは胸郭・骨盤の独立した4段階評価。 */
- function rotationGrade(result){
-   if(!result.reliable)return {label:"判定不可",score:null,side:"",color:"#94a3b8"};
-   var magnitude=Number.isFinite(result.magnitudeProxy)?result.magnitudeProxy:Math.abs(result.yaw),score=magnitude<1.5?90:magnitude<7.5?80:magnitude<12.5?60:40;
-   var label=score===90?"ほぼなし":score===80?"軽度":score===60?"中等度":"強い";
-   return {label:label,score:score,side:result.directionKnown===false?"方向未確定（左右側面の鏡像一致度による参考評価）":score===90?"":(result.yaw>0?"左回旋傾向": "右回旋傾向"),color:score===90?"#16a34a":score===80?"#65a30d":score===60?"#eab308":"#ea580c"};
- }
- // V332: use ankle-origin bilateral asymmetry for patient-facing twist grades.
- // Keep the former profile-yaw estimator only for internal diagnostics and 3D directional safety.
+ /* V474: 回旋評価は足首起点の左右側面の肩・股関節位置差に一本化。旧profilePairYaw / sideSymmetryProxyを撤去。 */
+ var twistAvailable=false;
  function v327Point(rec,key){var q=rec&&rec.points&&rec.points[key];return q&&Number.isFinite(q.x)&&Number.isFinite(q.y)?q:null;}
  function v327Mid(rec,a,b){var p=v327Point(rec,a),q=v327Point(rec,b);return p&&q?{x:(p.x+q.x)/2,y:(p.y+q.y)/2}:p||q;}
  function v327Side(rec,orientation){
@@ -1130,8 +1028,8 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    hip:v327Difference(v327Right.hip,v327Left.hip),
    relative:v327Difference(v327Right.shoulder-v327Right.hip,v327Left.shoulder-v327Left.hip)
  }:null;
- var v327Upper=v327Diffs?Math.max(v327Diffs.shoulder==null?0:v327Diffs.shoulder,v327Diffs.ear==null?0:v327Diffs.ear,v327Diffs.relative==null?0:v327Diffs.relative):null;
- if(v327Diffs&&v327Diffs.shoulder==null&&v327Diffs.ear==null&&v327Diffs.relative==null)v327Upper=null;
+ var v327Upper=v327Diffs?v327Diffs.shoulder:null;
+
  var v327Lower=v327Diffs?v327Diffs.hip:null;
  function v327Grade(value){var g=v327Band(value);return {label:g.label,score:g.score,legacyScore:g.legacyScore,side:g.score==null?'必要なランドマークが不足しています':'左右の非対称性 '+(value*100).toFixed(2)+'%（参考指標・回旋角ではありません）',color:g.legacyScore===90?'#16a34a':g.legacyScore===80?'#65a30d':g.legacyScore===70?'#84cc16':g.legacyScore===60?'#eab308':g.legacyScore===40?'#ea580c':'#94a3b8'};}
  // V332: signed bilateral profile differences drive only the illustrative 3D yaw.
@@ -1144,7 +1042,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    return sign*amount;
  }
  var v332ThoraxSigned=v327Right&&v327Left?
-   (v327Right.shoulder-v327Right.hip)-(v327Left.shoulder-v327Left.hip):null;
+   v327Right.shoulder-v327Left.shoulder:null;
  var v332PelvisSigned=v327Right&&v327Left?v327Right.hip-v327Left.hip:null;
  var thoraxGrade=v327Grade(v327Upper),pelvisGrade=v327Grade(v327Lower);
  var v332ThoraxYaw=v332DisplayYaw(v332ThoraxSigned,thoraxGrade.legacyScore);
@@ -1154,7 +1052,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
  function showGrade(prefix,grade){
    document.getElementById(prefix+"Score").textContent=grade.score==null?"--":grade.score+"点";
    document.getElementById(prefix+"Deg").textContent=grade.label+"の捻じれ";
-   document.getElementById(prefix+"Text").textContent=grade.side|| (grade.score==null?(prefix==="pelvis"?"要確認："+pelvisResult.reason:"要確認："+thoraxResult.reason):"左右差が小さい状態");
+   document.getElementById(prefix+"Text").textContent=grade.side||"左右差が小さい状態";
    var bar=document.getElementById(prefix+"Bar");bar.style.width=(grade.score||0)+"%";bar.style.background=grade.color;
  }
  showGrade("thorax",thoraxGrade);showGrade("pelvis",pelvisGrade);
@@ -1191,10 +1089,10 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
      var rel=diff(r.shoulder-r.hip,l.shoulder-l.hip);
      function band(v){if(v==null||!Number.isFinite(v))return '判定不可';
        return v<.01?'ほぼなし':v<.015?'ごく軽度':v<.025?'軽度':v<.045?'中等度':'強い';}
-     var upper=Math.max(sh==null?0:sh,ear==null?0:ear,rel==null?0:rel);
+     var upper=sh;
      lines.push('【左右非対称性（連続採点）】');
-     lines.push('頭頸部：'+band(ear)+'／肩・上半身：'+band(upper)+'／股関節・下半身：'+band(hip));
-     lines.push('上半身指標：肩差・耳差・肩と股関節の相対差の最大値 '+signed(upper));
+     lines.push('頭頸部（採点対象外）：'+band(ear)+'／肩・上半身：'+band(upper)+'／股関節・下半身：'+band(hip));
+     lines.push('上半身指標：くるぶし基準の肩の左右差 '+signed(upper));
      lines.push('判定：上半身 '+thoraxGrade.label+'（'+(thoraxGrade.score==null?'判定不可':thoraxGrade.score+'点')+'）／下半身 '+pelvisGrade.label+'（'+(pelvisGrade.score==null?'判定不可':pelvisGrade.score+'点')+'）');
      lines.push('点数：100−8×max(0,非対称性%−0.5)、下限30。段階ラベル境界：1%/1.5%/2.5%/4.5%。臨床的妥当性・再現性は未検証。');
      lines.push('※左右の側面で同一姿勢・同じカメラ距離・鉛直が維持される前提です。足首ランドマークは外くるぶしそのものではありません。');
@@ -1408,8 +1306,7 @@ function build(){var photos=window.WAKABA_PHOTOS;if(!photos||!photos.front||!pho
    add(care,"肩・骨盤の高さに加え、荷重、股関節、肩甲帯にも左右差の傾向があります");
  }
  if(twistAvailable && twistScore!==null && twistScore<70){
-   var rotSide=tw>=0?"右":"左";
-   add(tight,"体幹：胸郭・骨盤の相対回旋に伴う斜腹筋群、脊柱起立筋、多裂筋の左右差候補（"+rotSide+"回旋方向を要確認）");
+   add(tight,"体幹：肩・股関節の左右側面非対称性に伴う腹斜筋群、脊柱起立筋、多裂筋の左右差候補（回旋方向は参考推定）");
    add(weak,"体幹：腹斜筋群・多裂筋など回旋制御筋の協調性低下候補");
    add(care,"胸郭と骨盤の回旋可動性に左右差があり、回旋制御にも改善余地があります");
  }
@@ -1430,8 +1327,8 @@ function mid(a,b,t){return{x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,z:a.z+(b.z-a.z)*t
 function arrow2(x1,y1,x2,y2,col,label){ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=8;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();var a=Math.atan2(y2-y1,x2-x1);ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-18*Math.cos(a-.55),y2-18*Math.sin(a-.55));ctx.lineTo(x2-18*Math.cos(a+.55),y2-18*Math.sin(a+.55));ctx.closePath();ctx.fill();ctx.font="bold 12px -apple-system,sans-serif";ctx.fillText(label,x1+8,y1-10)}
 function drawTop(){var box=C.getBoundingClientRect(),cx=box.width/2,cy=box.height/2,rx=Math.min(box.width*.31,125),ry=58;ctx.fillStyle="#cbd5e1";ctx.font="bold 13px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("上から見た捻じれバランス（参考イメージ）",cx,35);ctx.textAlign="start";ctx.strokeStyle="#475569";ctx.lineWidth=2;ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(cx,65);ctx.lineTo(cx,box.height-55);ctx.stroke();ctx.setLineDash([]);
  function ellipseYaw(y,yaw,col,label){ctx.save();ctx.translate(cx,y);ctx.rotate(yaw*twistBoost*Math.PI/180);ctx.strokeStyle=col;ctx.lineWidth=7;ctx.globalAlpha=.9;ctx.beginPath();ctx.ellipse(0,0,rx,ry,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;arrow2(-rx*.72,0,rx*.82,0,col,label+" 実測推定 "+Math.abs(yaw).toFixed(1)+"°");ctx.restore()}
- if(thoraxResult.reliable&&thoraxResult.directionKnown!==false)ellipseYaw(cy-85,thoraxYaw,"#14b8a6","胸郭");if(pelvisResult.reliable&&pelvisResult.directionKnown!==false)ellipseYaw(cy+90,pelvisYaw,"#f97316","骨盤");var v327DisplayAvailable=thoraxGrade.score!=null&&pelvisGrade.score!=null;
- var tw=v327DisplayAvailable&&thoraxResult.directionKnown!==false&&pelvisResult.directionKnown!==false?thoraxYaw-pelvisYaw:null;ctx.fillStyle="#f8fafc";ctx.font="bold 18px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("総合回旋バランス "+(v327DisplayAvailable?twistScore+"点":"判定不可")+"｜参考表示",cx,box.height-22);ctx.textAlign="start"}
+ if(v332ThoraxYaw!==null)ellipseYaw(cy-85,v332ThoraxYaw,"#14b8a6","胸郭");if(v332PelvisYaw!==null)ellipseYaw(cy+90,v332PelvisYaw,"#f97316","骨盤");var v327DisplayAvailable=thoraxGrade.score!=null&&pelvisGrade.score!=null;
+ ctx.fillStyle="#f8fafc";ctx.font="bold 18px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("総合回旋バランス "+(v327DisplayAvailable?twistScore+"点":"判定不可")+"｜参考表示",cx,box.height-22);ctx.textAlign="start"}
 function meshRing(center,rx,rz,n){var arr=[];for(var i=0;i<n;i++){var a=i*Math.PI*2/n;arr.push({x:center.x+Math.cos(a)*rx,y:center.y,z:center.z+Math.sin(a)*rz})}return arr}
 function drawRing(ring,col,alpha,w){for(var i=0;i<ring.length;i++)line(ring[i],ring[(i+1)%ring.length],w,col,alpha)}
 function connectRings(a,b,col,alpha,w){var n=Math.min(a.length,b.length);for(var i=0;i<n;i++)line(a[i],b[i],w,col,alpha)}
@@ -1905,13 +1802,13 @@ body.v271-signed-out #v100Cloud #v101CloudClose{display:none}
 <div id="v382Register" hidden style="margin-top:12px;padding:12px;border:1px solid #cbd5e1;border-radius:12px;background:#f8fafc;font-size:13px">
  <b>新規登録・7日間無料体験（カード不要）</b><p style="font-size:11px">メール認証後に無料体験を開始します。自動課金はありません。</p>
  <form id="v382Form" autocomplete="on">
- <label>お名前 *<input name="name" required maxlength="100" autocomplete="name"></label>
- <label>店舗・院名 *<input name="clinicName" required maxlength="150" autocomplete="organization"></label>
- <label>郵便番号 *<input name="postalCode" required inputmode="numeric" placeholder="123-4567" pattern="[0-9]{3}-?[0-9]{4}" autocomplete="postal-code"></label>
- <label>住所 *<input name="address" required maxlength="300" autocomplete="street-address" placeholder="都道府県・市区町村・番地"></label>
+ <label>お名前 ※（必須）<input name="name" required maxlength="100" autocomplete="name"></label>
+ <label>店舗・院名 ※（必須）<input name="clinicName" required maxlength="150" autocomplete="organization"></label>
+ <label>郵便番号 ※（必須）<input name="postalCode" required inputmode="numeric" placeholder="123-4567" pattern="[0-9]{3}-?[0-9]{4}" autocomplete="postal-code"></label>
+ <label>住所 ※（必須）<input name="address" required maxlength="300" autocomplete="street-address" placeholder="都道府県・市区町村・番地"></label>
  <label>建物名・部屋番号（任意）<input name="building" maxlength="100"></label>
- <label>電話番号 *<input name="phone" required type="tel" maxlength="30" autocomplete="tel"></label>
- <label>メールアドレス *<input name="email" required type="email" autocomplete="email"></label>
+ <label>電話番号 ※（必須）<input name="phone" required type="tel" maxlength="30" autocomplete="tel"></label>
+ <label>メールアドレス ※（必須）<input name="email" required type="email" autocomplete="email"></label>
  <label>パスワード（メール登録の場合）<input name="password" type="password" minlength="8" autocomplete="new-password"></label>
  <label style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" name="agreed" required style="width:auto;margin-top:4px;flex:none"><span><a href="#" id="v382Terms">利用規約</a>・<a href="#" id="v382Privacy">プライバシーポリシー</a>に同意します</span></label>
  <button type="submit" id="v382EmailRegister" class="v100btn" style="width:100%;margin-top:8px">メールで登録して認証メールを送る</button>
@@ -3730,5 +3627,5 @@ if(!mount()){
 </script>
 <style id="wakaba-final-ui">#wakabaBuild{position:absolute;right:14px;top:12px;color:#fff;background:#0b766f;padding:4px 9px;border-radius:7px;font-size:12px;font-weight:800;z-index:2}header{position:relative}#wakabaLogoutDone[hidden]{display:none!important}#wakabaLogoutDone{position:fixed;inset:0;z-index:2147483000;background:#f4f6f8;display:flex;align-items:center;justify-content:center;padding:24px}#wakabaLogoutDone .doneCard{background:white;border-radius:18px;padding:30px 20px;width:min(100%,420px);text-align:center;box-shadow:0 12px 30px #0002}#wakabaLogoutDone button{background:#0f766e;color:#fff;border:0;border-radius:10px;padding:15px 24px;width:100%;font-size:17px;font-weight:800}#v382Register #v382Terms,#v382Register #v382Privacy{color:#0f766e;text-decoration:underline;font-weight:800}</style>
 <div id="wakabaLogoutDone" hidden role="dialog" aria-modal="true" aria-labelledby="wakabaLogoutTitle"><div class="doneCard"><h2 id="wakabaLogoutTitle">ログアウトしました</h2><p>安全にログアウトしました。</p><p>再度ご利用になる場合は、下のボタンからログインしてください。</p><button type="button" id="wakabaLoginReturn">ログイン画面へ</button></div></div>
-<script id="wakaba-final-behavior">(()=>{'use strict';const done=document.getElementById('wakabaLogoutDone');document.getElementById('wakabaLoginReturn').addEventListener('click',()=>{done.hidden=true;sessionStorage.removeItem('wakaba_logout_done');});const header=document.querySelector('header');if(header&&!document.getElementById('wakabaBuild')){const b=document.createElement('span');b.id='wakabaBuild';b.textContent='V466';header.appendChild(b)}if(sessionStorage.getItem('wakaba_logout_done')==='1'&&document.body.classList.contains('v271-signed-out'))done.hidden=false;})();</script>
+<script id="wakaba-final-behavior">(()=>{'use strict';const done=document.getElementById('wakabaLogoutDone');document.getElementById('wakabaLoginReturn').addEventListener('click',()=>{done.hidden=true;sessionStorage.removeItem('wakaba_logout_done');});const header=document.querySelector('header');if(header&&!document.getElementById('wakabaBuild')){const b=document.createElement('span');b.id='wakabaBuild';b.textContent='V474 テスト';header.appendChild(b)}if(sessionStorage.getItem('wakaba_logout_done')==='1'&&document.body.classList.contains('v271-signed-out'))done.hidden=false;})();</script>
 </html>
