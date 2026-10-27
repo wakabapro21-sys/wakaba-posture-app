@@ -423,7 +423,11 @@ body.v61-analysis main .btn,body.v61-analysis main button,body.v61-analysis main
 body.v61-analysis main #scorePanel [style*="grid-template-columns:1.25fr"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 body.v61-analysis main #patientReport [style*="grid-template-columns:repeat(3,1fr)"]{grid-template-columns:repeat(3,minmax(0,1fr))!important}
 </style>
-<style id="wakaba-v464-auth-guard">body.v271-signed-out #v101CloudBackdrop{display:block!important;pointer-events:auto!important}body.v271-signed-out #v100Cloud{display:block!important}body.v271-signed-out #v382ShowRegister{display:block!important}body.v271-signed-out #v100Login{display:block!important}</style></head>
+<style id="wakaba-v464-auth-guard">body.v271-signed-out #v101CloudBackdrop{display:block!important;pointer-events:auto!important}body.v271-signed-out #v100Cloud{display:block!important}body.v271-signed-out #v382ShowRegister{display:block!important}body.v271-signed-out #v100Login{display:block!important}</style><style id="v476-ipad-menu-cleanup">
+.v77MenuSlot{background:transparent!important;border:0!important;box-shadow:none!important;outline:0!important;padding:0!important;overflow:visible!important}
+#v77MenuBtn{box-shadow:none!important;outline-offset:0!important}
+</style>
+</head>
 <body class="v271-signed-out">
 <header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 </p></header>
 
@@ -3367,7 +3371,7 @@ for(const [key,label] of [['front','正面'],['right','右側面'],['left','左�
  cx.drawImage(source,0,0);
  // Keep the photograph's intrinsic aspect ratio; draw guides in the same coordinate system.
  const pts=window.v344ReportLandmarks&&window.v344ReportLandmarks(key);
- const p=pts&&(key==='front'?(pts.leftHip&&pts.rightHip?{x:(pts.leftHip.x+pts.rightHip.x)/2}:pts.nose):(pts.leftAnkle||pts.rightAnkle));
+ const p=pts&&(key==='front'?(pts.leftHip&&pts.rightHip?{x:(pts.leftHip.x+pts.rightHip.x)/2}:pts.nose):(key==='right'?(pts.rightAnkle||pts.leftAnkle):(pts.leftAnkle||pts.rightAnkle)));
  const gw=cv.width,gh=cv.height;
  cx.save(); // V360: no white grid in shared report images.
  if(p&&Number.isFinite(p.x)){const xx=Math.max(0,Math.min(gw,gw*p.x));cx.beginPath();cx.strokeStyle='#ef4444';cx.lineWidth=Math.max(2,gw/240);cx.moveTo(xx,0);cx.lineTo(xx,gh);cx.stroke();}
@@ -3378,7 +3382,7 @@ for(const [key,label] of [['front','正面'],['right','右側面'],['left','左�
  item.appendChild(frame);pics.appendChild(item);
  }root.appendChild(pics);
 for(const id of ids){const src=document.getElementById(id);if(!src)continue;const clone=src.cloneNode(true);clone.removeAttribute('id');clone.style.display='block';clone.style.width='100%';clone.style.boxSizing='border-box';clone.style.margin='0 0 16px';clone.style.fontSize='21px';clone.style.lineHeight='1.5';clone.querySelectorAll('*').forEach(e=>{const tag=e.tagName;const isHeading=/^H[1-6]$/.test(tag);const isSmall=/^(SMALL|SUP|SUB)$/.test(tag);const fs=parseFloat(getComputedStyle(e).fontSize)||14;const target=isHeading?26:(isSmall?19:21);if(!['SVG','PATH','LINE','CIRCLE','RECT','POLYLINE','POLYGON','CANVAS'].includes(tag)){e.style.setProperty('font-size',Math.max(target,Math.min(30,fs))+'px','important');e.style.setProperty('line-height','1.5','important');e.style.overflowWrap='anywhere';}});clone.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));clone.querySelectorAll('details').forEach(e=>{if(e.textContent.includes('内部検証'))e.remove()});root.appendChild(clone)}
-const foot=document.createElement('div');foot.textContent='※ 写真とランドマークから得た参考評価です。医学的診断ではありません。';foot.style.cssText='font-size:23px;color:#64748b;line-height:1.6';root.appendChild(foot);document.body.appendChild(root);return root;}
+document.body.appendChild(root);return root;}
 function toBlob(canvas){return new Promise((res,rej)=>canvas.toBlob(b=>b?res(b):rej(Error('JPEG生成に失敗')),'image/jpeg',0.75));}
 function save(blob,name){const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);}
 // V453: Bundle nine JPEG report images into one standards-compliant ZIP (stored entries).
