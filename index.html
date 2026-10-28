@@ -427,6 +427,7 @@ body.v61-analysis main #patientReport [style*="grid-template-columns:repeat(3,1f
 .v77MenuSlot{background:transparent!important;border:0!important;box-shadow:none!important;outline:0!important;padding:0!important;overflow:visible!important}
 #v77MenuBtn{box-shadow:none!important;outline-offset:0!important}
 </style>
+<style id="v477-data-cleanup">#v112ClinicAccount,#v114Mode,#v115SecurityPrep{display:none!important}</style>
 </head>
 <body class="v271-signed-out">
 <header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 </p></header>
@@ -1822,7 +1823,7 @@ body.v271-signed-out #v100Cloud #v101CloudClose{display:none}
  </form></div>
  </div>
  
-<div id="v100Actions" style="display:none"><div class="v100row"><div style="flex:1;padding:8px 10px;border-radius:10px;background:#ecfdf5;color:#047857;font-size:10px;font-weight:900">✓ 院別Firebase保存</div></div><div id="v112ClinicAccount" style="margin:8px 0 10px;padding:11px 12px;border:1px solid #bfdbfe;border-radius:12px;background:#eff6ff;font-size:10px;line-height:1.65;color:#1e3a8a"><b style="font-size:12px">🏥 院アカウント</b><div id="v112ClinicEmail">ログイン確認中…</div><div id="v112ClinicId" style="word-break:break-all;color:#64748b"></div><div style="margin-top:5px;color:#475569">院ごとに患者情報・履歴を管理します。</div></div>
+<div id="v100Actions" style="display:none"><div class="v100row"><div style="flex:1;padding:8px 10px;border-radius:10px;background:#ecfdf5;color:#047857;font-size:10px;font-weight:900">✓ 院別Firebase保存</div></div><div id="v112ClinicAccount" style="display:none!important;margin:8px 0 10px;padding:11px 12px;border:1px solid #bfdbfe;border-radius:12px;background:#eff6ff;font-size:10px;line-height:1.65;color:#1e3a8a"><b style="font-size:12px">🏥 院アカウント</b><div id="v112ClinicEmail">ログイン確認中…</div><div id="v112ClinicId" style="word-break:break-all;color:#64748b"></div><div style="margin-top:5px;color:#475569">院ごとに患者情報・履歴を管理します。</div></div>
   <details id="v280AdminData" style="margin-top:12px;border:1px solid #cbd5e1;border-radius:12px;padding:12px;background:#f8fafc">
    <summary style="cursor:pointer;font-weight:800;color:#334155;font-size:13px">管理者用データ操作（必要なときだけ開く）</summary>
    <div id="v280AdminDataBody" style="margin-top:12px">
@@ -1955,25 +1956,10 @@ status.textContent='ログイン済み';msg.textContent='既存の端末患者�
 </script>
 
 
-<style id="v114-style">#v114Mode{margin:8px 0;padding:10px 12px;border:1px solid #86efac;border-radius:12px;background:#f0fdf4;color:#166534;font-size:10px;line-height:1.6;font-weight:700}</style>
-<script id="v114-ui">document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{const a=document.getElementById('v112ClinicAccount');if(a&&!document.getElementById('v114Mode')){const d=document.createElement('div');d.id='v114Mode';d.innerHTML='🔒 <b>V114 院別保存モード</b><br>新規患者・分析履歴・復元はログイン中の院ID専用領域を使用します。旧 /patients はバックアップとして残し、削除・変更しません。';a.insertAdjacentElement('afterend',d)}},500)});</script>
-<style id="v115-style">
-#v115SecurityPrep{margin:8px 0;padding:10px 12px;border:1px solid #c4b5fd;border-radius:12px;background:#f5f3ff;color:#4c1d95;font-size:10px;line-height:1.6}
-#v115SecurityPrep b{font-size:11px}
-</style>
-<script id="v115-ui">
-document.addEventListener('DOMContentLoaded',()=>{
- setTimeout(()=>{
-  const anchor=document.getElementById('v114Mode') || document.getElementById('v112ClinicAccount');
-  if(anchor && !document.getElementById('v115SecurityPrep')){
-   const d=document.createElement('div');
-   d.id='v115SecurityPrep';
-   d.innerHTML='🛡️ <b>V115 院別アクセス分離・準備</b><br>アプリ側はログイン中のUIDを院IDとして院別領域だけを参照します。次の段階でFirestore Security Rulesを設定し、サーバー側でも他院領域へのアクセスを遮断します。<br><span style="color:#6d28d9">※ V114の院別保存・既存患者・履歴・旧 /patients バックアップは変更しません。</span>';
-   anchor.insertAdjacentElement('afterend',d);
-  }
- },550);
-});
-</script>
+
+
+
+
 
 
 <style id="v116-dataguard-style">
@@ -2193,6 +2179,31 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #v128Gate.on #v128GateCard button{font-size:13px;padding:9px;margin-top:7px}
 </style>
 <div id="v128Gate"><div id="v128GateCard"><h2>契約状態を確認しています</h2><p>院専用Firebaseの契約情報を確認中です。</p></div></div>
+<script type="module" id="v481-entitlement-service">
+/* One authoritative entitlement request path. Never grants access from local/Firestore data. */
+import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
+import {getAuth} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
+import {getFunctions,httpsCallable} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-functions.js';
+let inFlight=null;
+window.wakabaCheckEntitlement=async function(options={}){
+ if(!getApps().length)throw new Error('Firebaseの初期化を確認できません');
+ const app=getApp(),user=getAuth(app).currentUser;
+ if(!user)throw new Error('院アカウントへログインしてください');
+ if(!options.force && inFlight && inFlight.uid===user.uid)return inFlight.promise;
+ const uid=user.uid;
+ const promise=(async()=>{
+  const response=await httpsCallable(getFunctions(app,'asia-northeast1'),'checkSubscriptionEntitlement')({});
+  if(getAuth(app).currentUser?.uid!==uid)throw new Error('ログイン状態が変更されました');
+  const data=response?.data;
+  if(!data || typeof data.allowed!=='boolean')throw new Error('契約確認の応答が不正です');
+  window.__wakabaEntitlement={uid,allowed:data.allowed,status:String(data.status||''),reason:String(data.reason||''),expiresAtMs:data.expiresAtMs??null};
+  window.dispatchEvent(new CustomEvent('wakaba:entitlement-updated',{detail:window.__wakabaEntitlement}));
+  return data;
+ })();
+ inFlight={uid,promise};
+ try{return await promise}finally{if(inFlight?.promise===promise)inFlight=null}
+};
+</script>
 <script type="module" id="v128-access-gate">
 /* V141: Stripe Webhook -> Firestore authoritative subscription gate.
    This gate never deletes or rewrites patient/history/photo/DataGuard data. */
@@ -2219,7 +2230,7 @@ async function check141(u){
  gate.classList.add('on');
  card.innerHTML='<h2>契約状態を確認しています</h2><p>ログイン情報と利用権限を確認中です。</p>';
  try{
-  const result=await httpsCallable(getFunctions(getApp(),'asia-northeast1'),'checkSubscriptionEntitlement')({});
+  const result=await window.wakabaCheckEntitlement({force:true});
   if(requestId!==v428GateRequest || getAuth(getApp()).currentUser?.uid!==u.uid)return;
   if(result?.data?.allowed===true){hideGate();return;}
   // Firestore is consulted ONLY to distinguish new registration from an existing
@@ -2255,6 +2266,7 @@ window.addEventListener('wakaba:trial-started',()=>{
  if(u)check141(u);
 });
 mount141();
+window.addEventListener('focus',()=>{const u=getApps().length?getAuth(getApp()).currentUser:null;if(u)check141(u)});
 </script>
 
 
@@ -2430,79 +2442,10 @@ function mount(){const s=document.getElementById('v77Settings');if(!s){setTimeou
 #v146Lock .b{display:none!important}
 </style>
 <div id="v146Lock"><div class="b"><h2>契約状態をご確認ください</h2><p id="v146Reason">姿勢分析機能は一時停止されています。</p><div class="v146safe">契約終了後も患者情報・数値・文章の分析履歴は原則6か月間保管する方針です。期間内の再契約では引き継げます。写真は長期保存の対象外です。6か月後の自動削除機能は未実装です。</div><button id="v147Restart" type="button" style="width:100%;margin-top:16px;border:0;border-radius:13px;padding:15px;background:#635bff;color:#fff;font-size:16px;font-weight:900">月額3,980円で契約する</button><button id="v147Recheck" type="button" style="width:100%;margin-top:9px;border:1px solid #cbd5e1;border-radius:13px;padding:13px;background:#fff;color:#334155;font-size:14px;font-weight:900;position:relative;z-index:2;pointer-events:auto;touch-action:manipulation">契約状態を再確認</button><div id="v152RecheckMsg" style="margin-top:10px;font-size:13px;font-weight:700;color:#475569"></div><div style="margin-top:8px;font-size:12px;color:#92400e;line-height:1.6">無料体験は原則として初回の1回のみです。有料契約の料金・請求開始日は、決済前にStripe画面で確認してください。</div><div id="v147RestartMsg" style="margin-top:10px;font-size:12px;line-height:1.5;color:#64748b"></div></div></div>
-<script type="module" id="v146-lock-script">
-import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
-import {getAuth,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
-import {getFirestore,doc,getDocFromServer} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
-
-const BAD=new Set(['canceled','cancelled','expired','past_due','unpaid','suspended','inactive','incomplete_expired']);
-function show(status){
-  const l=document.getElementById('v146Lock');
-  const r=document.getElementById('v146Reason');
-  if(!l)return;
-  r.textContent='現在の契約状態：'+status+'。姿勢分析機能は一時停止されています。契約を再開すると、保存済みの患者情報・履歴を引き続き利用できます。';
-  l.style.display='flex';
-}
-function hide(){const l=document.getElementById('v146Lock');if(l)l.style.display='none'}
-async function check(u){
-  if(!u){hide();return}
-  try{
-    const snap=await getDocFromServer(doc(getFirestore(getApp()),'clinics',u.uid,'subscription','status'));
-    if(!snap.exists()){hide();return}
-    const d=snap.data()||{};
-    const st=String(d.stripeStatus||d.status||d.plan||'').trim().toLowerCase();
-    if(BAD.has(st)) show(st); else hide();
-  }catch(e){console.error('V146 subscription lock',e)}
-}
-function boot(){
-  if(!getApps().length){setTimeout(boot,250);return}
-  onAuthStateChanged(getAuth(getApp()),u=>check(u));
-}
-boot();
-(function bindV147Restart(){
-  const restart=document.getElementById('v147Restart');
-  const recheck=document.getElementById('v147Recheck');
-  if(restart) restart.onclick=()=>{
-    if(typeof window.v147StartCheckout==='function') window.v147StartCheckout(restart);
-    else {
-      const msg=document.getElementById('v147RestartMsg');
-      if(msg) msg.textContent='Stripe接続を準備中です。数秒後にもう一度押してください。';
-    }
-  };
-  if(recheck) recheck.onclick=async()=>{
-    const m=document.getElementById('v152RecheckMsg');
-    const oldText=recheck.textContent;
-    recheck.disabled=true; recheck.textContent='確認中…';
-    if(m){m.style.color='#475569';m.textContent='Firestoreの最新契約状態を確認しています…';}
-    try{
-      if(!getApps().length) throw new Error('Firebaseの初期化を確認できません');
-      const u=getAuth(getApp()).currentUser;
-      if(!u) throw new Error('院アカウントへログインしてください');
-      const snap=await getDocFromServer(doc(getFirestore(getApp()),'clinics',u.uid,'subscription','status'));
-      if(!snap.exists()){
-        if(m){m.style.color='#b91c1c';m.textContent='契約情報がまだ登録されていません。';}
-        return;
-      }
-      const d=snap.data()||{};
-      const st=String(d.stripeStatus||d.status||d.plan||'未確認').trim().toLowerCase();
-      if(st==='active'){
-        if(m){m.style.color='#047857';m.textContent='契約状態：'+st+'。利用を再開します。';}
-        hide();
-        setTimeout(()=>location.reload(),500);
-      }else{
-        if(m){m.style.color='#b91c1c';m.textContent='現在の契約状態は「'+st+'」です。';}
-        show(st);
-      }
-    }catch(e){
-      console.error('V152 front lock recheck',e);
-      if(m){m.style.color='#b91c1c';m.textContent='確認できませんでした：'+(e?.message||e);}
-    }finally{
-      recheck.disabled=false; recheck.textContent=oldText;
-    }
-  };
-})();
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&getApps().length)check(getAuth(getApp()).currentUser)});
-window.addEventListener('focus',()=>{if(getApps().length)check(getAuth(getApp()).currentUser)});
+<script id="v481-retire-legacy-lock">
+/* Legacy V146 Firestore-only entitlement lock retired. V128 is the sole access gate.
+   The original V146 DOM remains hidden for compatibility; no patient data is modified. */
+(function(){const el=document.getElementById('v146Lock');if(el)el.style.display='none';})();
 </script>
 
 
@@ -2521,7 +2464,7 @@ window.v151Recheck = async function(btn){
   if(!getApps().length)throw Error('Firebaseの初期化を確認できません');
   const app=getApp(),user=getAuth(app).currentUser;
   if(!user)throw Error('院アカウントへログインしてください');
-  const result=await httpsCallable(getFunctions(app,'asia-northeast1'),'checkSubscriptionEntitlement')({});
+  const result=await window.wakabaCheckEntitlement({force:true});
   const data=result?.data||{};
   if(data.allowed===true){
    if(msg){msg.style.color='#047857';msg.textContent=(data.reason==='cardless_trial'?'無料体験中':'有料契約中')+'です。利用状態を更新します。';}
@@ -2854,6 +2797,7 @@ function mount(){
   async function refresh(){
     const seq=++requestId;
     state.textContent='確認中…';
+    state.dataset.allowed='';state.dataset.status='';state.dataset.reason='';
     msg.textContent='サーバーで利用権限を確認しています…';
     refreshButton.disabled=true;
     setPortal(false);
@@ -2866,10 +2810,13 @@ function mount(){
         msg.textContent='先にログインしてください。';
         return;
       }
-      const result=await httpsCallable(getFunctions(app,'asia-northeast1'),'checkSubscriptionEntitlement')({});
+      const result=await window.wakabaCheckEntitlement({force:true});
       if(seq!==requestId || getAuth(app).currentUser?.uid!==user.uid)return;
       const data=result?.data||{};
       const reason=String(data.reason||'');
+      state.dataset.allowed=String(data.allowed===true);
+      state.dataset.status=String(data.status||'').toLowerCase();
+      state.dataset.reason=reason;
       if(data.allowed===true){
         if(reason==='developer' || data.status==='developer'){
           state.textContent='開発者（利用可能）';
@@ -2907,6 +2854,9 @@ function mount(){
         return;
       }
       state.textContent='利用権限なし';
+      state.dataset.allowed='false';
+      state.dataset.status=String(data.status||'').toLowerCase();
+      state.dataset.reason=reason;
       trialStatus.textContent='7日間';
       msg.textContent='有効な無料体験・有料契約を確認できませんでした。';
     }catch(e){
@@ -3621,11 +3571,14 @@ function mount(){
  const state=document.getElementById('v213State');
  const msg=document.getElementById('v213Message');
  function update(){
-  const label=(state?.textContent||'').trim();
-  // Fail closed for unknown states; backend independently checks active subscriptions.
-  btn.hidden=!['期限切れ','解約済み','契約情報なし','無料体験終了','お支払いの確認が必要','未払い','手続き未完了'].includes(label);
+  const denied=state?.dataset.allowed==='false';
+  const status=String(state?.dataset.status||'').toLowerCase();
+  const reason=String(state?.dataset.reason||'').toLowerCase();
+  const billingProblem=['past_due','unpaid','incomplete','payment_failed'].some(v=>status.includes(v)||reason.includes(v));
+  const developer=status==='developer'||reason==='developer';
+  btn.hidden=!(denied&&!billingProblem&&!developer);
  }
- if(state)new MutationObserver(update).observe(state,{childList:true,subtree:true,characterData:true});
+ if(state)new MutationObserver(update).observe(state,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['data-allowed','data-status','data-reason']});
  update();
  btn.addEventListener('click',async()=>{
   btn.disabled=true;
@@ -3653,5 +3606,5 @@ if(!mount()){
 </script>
 <style id="wakaba-final-ui">#wakabaBuild{position:absolute;right:14px;top:12px;color:#fff;background:#0b766f;padding:4px 9px;border-radius:7px;font-size:12px;font-weight:800;z-index:2}header{position:relative}#wakabaLogoutDone[hidden]{display:none!important}#wakabaLogoutDone{position:fixed;inset:0;z-index:2147483000;background:#f4f6f8;display:flex;align-items:center;justify-content:center;padding:24px}#wakabaLogoutDone .doneCard{background:white;border-radius:18px;padding:30px 20px;width:min(100%,420px);text-align:center;box-shadow:0 12px 30px #0002}#wakabaLogoutDone button{background:#0f766e;color:#fff;border:0;border-radius:10px;padding:15px 24px;width:100%;font-size:17px;font-weight:800}#v382Register #v382Terms,#v382Register #v382Privacy{color:#0f766e;text-decoration:underline;font-weight:800}</style>
 <div id="wakabaLogoutDone" hidden role="dialog" aria-modal="true" aria-labelledby="wakabaLogoutTitle"><div class="doneCard"><h2 id="wakabaLogoutTitle">ログアウトしました</h2><p>安全にログアウトしました。</p><p>再度ご利用になる場合は、下のボタンからログインしてください。</p><button type="button" id="wakabaLoginReturn">ログイン画面へ</button></div></div>
-<script id="wakaba-final-behavior">(()=>{'use strict';const done=document.getElementById('wakabaLogoutDone');document.getElementById('wakabaLoginReturn').addEventListener('click',()=>{done.hidden=true;sessionStorage.removeItem('wakaba_logout_done');});const header=document.querySelector('header');if(header&&!document.getElementById('wakabaBuild')){const b=document.createElement('span');b.id='wakabaBuild';b.textContent='V475 テスト';header.appendChild(b)}if(sessionStorage.getItem('wakaba_logout_done')==='1'&&document.body.classList.contains('v271-signed-out'))done.hidden=false;})();</script>
+<script id="wakaba-final-behavior">(()=>{'use strict';const done=document.getElementById('wakabaLogoutDone');document.getElementById('wakabaLoginReturn').addEventListener('click',()=>{done.hidden=true;sessionStorage.removeItem('wakaba_logout_done');});const header=document.querySelector('header');if(header&&!document.getElementById('wakabaBuild')){const b=document.createElement('span');b.id='wakabaBuild';b.textContent='V481 テスト';header.appendChild(b)}if(sessionStorage.getItem('wakaba_logout_done')==='1'&&document.body.classList.contains('v271-signed-out'))done.hidden=false;})();</script>
 </html>
