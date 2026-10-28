@@ -685,6 +685,7 @@ function save(type,file){
     var hc=document.createElement("canvas");hc.width=w;hc.height=h;
     hc.getContext("2d").drawImage(img,0,0,w,h);
     photos[type].historyThumb=hc.toDataURL("image/jpeg",.62);
+    hc.width=0;hc.height=0; // V485: release temporary thumbnail canvas backing store
   }catch(e){console.warn("V204 history thumb preload",type,e)}
 };
  var b=document.getElementById("badge-"+type);b.textContent="登録済み";b.className="badge ok";
@@ -1625,7 +1626,7 @@ host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel'
  const types='<div class="v93typeRow"><div class="v93typeBox">'+esc(before.type||'--')+'</div><div class="v70arrow">→</div><div class="v93typeBox">'+esc(after.type||'--')+'</div></div>';
  $('v64CompareBody').innerHTML=dates+'<div class="v70hero"><div class="v70scoreline"><div class="v70scorebox"><small>Before・総合</small><strong>'+before.total+'</strong></div><div class="v70arrow">→</div><div class="v70scorebox"><small>After・総合</small><strong>'+after.total+'</strong></div></div><div class="v70change">総合スコア変化　'+sign+scoreDelta+'点</div></div>'+types+'<div class="v93compareLead">選択した2回の分析結果を、スコアと姿勢の測定値で比較しています。写真は保存されていないため表示しません。</div>'+'<div class="v67section">スコア詳細</div><div class="v70metricRow" style="font-weight:900;color:#64748b"><span>項目</span><b>Before</b><b>After</b><span>差</span></div>'+scoreRow('総合',before.total,after.total)+scoreRow('正面',before.front,after.front)+scoreRow('側面',before.side,after.side)+scoreRow('回旋',before.twist,after.twist)+'<div class="v67section">姿勢数値の変化</div><div class="v70metricRow" style="font-weight:900;color:#64748b"><span>項目</span><b>Before</b><b>After</b><span>変化</span></div>'+rows+'<div class="v64note">※「改善」は写真上の左右差・偏位・回旋の絶対値が小さくなった場合の比較表示です。医学的な診断や治療効果の判定ではありません。同じ位置・距離・姿勢条件で撮影してください。</div>';
  $('v63HistoryModal').classList.remove('on');$('v64CompareModal').classList.add('on')}
- function makeThumb(type){try{const rec=window.WAKABA_PHOTOS&&window.WAKABA_PHOTOS[type];if(!rec)return null;if(rec.historyThumb)return rec.historyThumb;const img=document.querySelector('#stage-'+type+' img');if(!img||!img.naturalWidth)return null;const maxSide=960,scale=Math.min(1,maxSide/Math.max(img.naturalWidth,img.naturalHeight)),w=Math.max(1,Math.round(img.naturalWidth*scale)),h=Math.max(1,Math.round(img.naturalHeight*scale)),cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);rec.historyThumb=cv.toDataURL('image/jpeg',.62);return rec.historyThumb}catch(e){console.error('V204 history photo error',type,e);return null}}
+ function makeThumb(type){try{const rec=window.WAKABA_PHOTOS&&window.WAKABA_PHOTOS[type];if(!rec)return null;if(rec.historyThumb)return rec.historyThumb;const img=document.querySelector('#stage-'+type+' img');if(!img||!img.naturalWidth)return null;const maxSide=960,scale=Math.min(1,maxSide/Math.max(img.naturalWidth,img.naturalHeight)),w=Math.max(1,Math.round(img.naturalWidth*scale)),h=Math.max(1,Math.round(img.naturalHeight*scale)),cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);rec.historyThumb=cv.toDataURL('image/jpeg',.62);cv.width=0;cv.height=0;return rec.historyThumb}catch(e){console.error('V204 history photo error',type,e);return null}}
  function saveAnalysisHistory(total,front,side,twist,type){try{const raw=sessionStorage.getItem('wakaba_v61_current')||localStorage.getItem('wakaba_v66_current');const c=JSON.parse(raw||'null');if(!c||!c.id){console.warn('V67 history: current customer missing');return false}const d=window.WAKABA_3D_DATA||{};const metrics={shoulderTilt:Number(d.shoulderTilt),pelvisTilt:Number(d.pelvisTilt),headShift:Number(d.headShift),thoraxYaw:d.thoraxYaw==null?null:Number(d.thoraxYaw),pelvisYaw:d.pelvisYaw==null?null:Number(d.pelvisYaw),relativeTwist:d.pelvisReliable===false||d.thoraxReliable===false||d.relativeTwist==null?null:Number(d.relativeTwist),sideDeviation:Number(d.sideDeviation)};const read=id=>document.getElementById(id)?.textContent?.trim()||'';const h=getHistory(c.id);h.unshift({version:342,date:new Date().toISOString(),total:Number(total),front:Number(front),side:Number(side),twist:twist==null||twist==="判定不可"?null:Number(twist),type:String(type||''),metrics,mainFinding:read('mainFinding'),mainFindingDetail:read('mainFindingDetail'),muscleTight:read('muscleTight'),muscleWeak:read('muscleWeak'),careDirection:read('careDirection')});let keep=h.slice(0,30);try{localStorage.setItem(historyKey(c.id),JSON.stringify(keep))}catch(q){console.error('V227: history storage quota, existing history preserved',q);alert('分析履歴を保存できませんでした。端末の保存容量が不足している可能性があります。既存の履歴は削除していません。');return false}try{window.dispatchEvent(new CustomEvent('wakaba:v103-history-saved',{detail:{id:c.id}}))}catch(e){}return true}catch(e){console.error('V67 history save error',e);return false}}
  window.saveAnalysisHistory=saveAnalysisHistory;
  window.addEventListener('wakaba-analysis',function(){
@@ -2043,7 +2044,7 @@ status.textContent='ログイン済み';msg.textContent='既存の端末患者�
     const h=JSON.parse(localStorage.getItem(task.key)||'[]');
     const hits=h.filter(x=>String(x.date||'').replace(/[^0-9]/g,'').slice(0,14)===task.stamp);
     if(hits.length!==1||validImage(hits[0].photos&&hits[0].photos[task.side])){skipped++;continue}
-    hits[0].photos=hits[0].photos||{};hits[0].photos[task.side]=canvas.toDataURL('image/jpeg',.62);
+    hits[0].photos=hits[0].photos||{};hits[0].photos[task.side]=canvas.toDataURL('image/jpeg',.62);canvas.width=0;canvas.height=0;
     localStorage.setItem(task.key,JSON.stringify(h));restored++;
    }catch(e){console.warn('V228 auto restore failed',e);failed++}
   }
@@ -2081,7 +2082,7 @@ status.textContent='ログイン済み';msg.textContent='既存の端末患者�
     const img=new Image();await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=url});
     const canvas=document.createElement('canvas'),scale=Math.min(1,960/Math.max(img.naturalWidth,img.naturalHeight));canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
     const latest=read();if(validImage(latest.x.photos&&latest.x.photos[side]))continue;
-    latest.x.photos=latest.x.photos||{};latest.x.photos[side]=canvas.toDataURL('image/jpeg',.62);
+    latest.x.photos=latest.x.photos||{};latest.x.photos[side]=canvas.toDataURL('image/jpeg',.62);canvas.width=0;canvas.height=0;
     localStorage.setItem(histKey(initial.d.patientId),JSON.stringify(latest.h));changed++;
    }catch(e){console.warn('V233 manual restore error',e);alert('写真の保存に失敗しました。既存写真は上書きしていません。');return}
   }
@@ -3355,7 +3356,7 @@ for(const [key,label] of [['front','正面'],['right','右側面'],['left','左�
  cx.save(); // V360: no white grid in shared report images.
  if(p&&Number.isFinite(p.x)){const xx=Math.max(0,Math.min(gw,gw*p.x));cx.beginPath();cx.strokeStyle='#ef4444';cx.lineWidth=Math.max(2,gw/240);cx.moveTo(xx,0);cx.lineTo(xx,gh);cx.stroke();}
  cx.restore();
- const im=document.createElement('img');im.src=cv.toDataURL('image/png');
+ const im=document.createElement('img');im.src=cv.toDataURL('image/png');cv.width=0;cv.height=0;
  im.style.cssText='max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block';
  frame.appendChild(im);
  item.appendChild(frame);pics.appendChild(item);
@@ -3432,7 +3433,7 @@ async function create(button){
     });
    }
 
-   try{const canvas=await window.html2canvas(sheet,{backgroundColor:'#ffffff',scale:900/540,useCORS:true,logging:false,windowWidth:600});files.push(new File([await toBlob(canvas)],'姿勢分析_'+date+'_'+String(i+1).padStart(2,'0')+'.jpg',{type:'image/jpeg'}));}
+   try{let canvas=null;try{canvas=await window.html2canvas(sheet,{backgroundColor:'#ffffff',scale:900/540,useCORS:true,logging:false,windowWidth:600});files.push(new File([await toBlob(canvas)],'姿勢分析_'+date+'_'+String(i+1).padStart(2,'0')+'.jpg',{type:'image/jpeg'}));}finally{if(canvas){canvas.width=0;canvas.height=0;}}}
    finally{sheet.remove();}
   }
   const archive=await zipReportImages(files);
@@ -3635,5 +3636,5 @@ if(!mount()){
 </script>
 <style id="wakaba-final-ui">#wakabaBuild{position:absolute;right:14px;top:12px;color:#fff;background:#0b766f;padding:4px 9px;border-radius:7px;font-size:12px;font-weight:800;z-index:2}header{position:relative}#wakabaLogoutDone[hidden]{display:none!important}#wakabaLogoutDone{position:fixed;inset:0;z-index:2147483000;background:#f4f6f8;display:flex;align-items:center;justify-content:center;padding:24px}#wakabaLogoutDone .doneCard{background:white;border-radius:18px;padding:30px 20px;width:min(100%,420px);text-align:center;box-shadow:0 12px 30px #0002}#wakabaLogoutDone button{background:#0f766e;color:#fff;border:0;border-radius:10px;padding:15px 24px;width:100%;font-size:17px;font-weight:800}#v382Register #v382Terms,#v382Register #v382Privacy{color:#0f766e;text-decoration:underline;font-weight:800}</style>
 <div id="wakabaLogoutDone" hidden role="dialog" aria-modal="true" aria-labelledby="wakabaLogoutTitle"><div class="doneCard"><h2 id="wakabaLogoutTitle">ログアウトしました</h2><p>安全にログアウトしました。</p><p>再度ご利用になる場合は、下のボタンからログインしてください。</p><button type="button" id="wakabaLoginReturn">ログイン画面へ</button></div></div>
-<script id="wakaba-final-behavior">(()=>{'use strict';const done=document.getElementById('wakabaLogoutDone');document.getElementById('wakabaLoginReturn').addEventListener('click',()=>{done.hidden=true;sessionStorage.removeItem('wakaba_logout_done');});const header=document.querySelector('header');if(header&&!document.getElementById('wakabaBuild')){const b=document.createElement('span');b.id='wakabaBuild';b.textContent='V484 テスト';header.appendChild(b)}if(sessionStorage.getItem('wakaba_logout_done')==='1'&&document.body.classList.contains('v271-signed-out'))done.hidden=false;})();</script>
+<script id="wakaba-final-behavior">(()=>{'use strict';const done=document.getElementById('wakabaLogoutDone');document.getElementById('wakabaLoginReturn').addEventListener('click',()=>{done.hidden=true;sessionStorage.removeItem('wakaba_logout_done');});const header=document.querySelector('header');if(header&&!document.getElementById('wakabaBuild')){const b=document.createElement('span');b.id='wakabaBuild';b.textContent='V485 テスト';header.appendChild(b)}if(sessionStorage.getItem('wakaba_logout_done')==='1'&&document.body.classList.contains('v271-signed-out'))done.hidden=false;})();</script>
 </html>
