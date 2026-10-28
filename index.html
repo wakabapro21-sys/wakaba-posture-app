@@ -693,10 +693,16 @@ function save(type,file){
 }
 photoTypes.forEach(function(type){var g=document.getElementById("gallery-"+type),c=document.getElementById("camera-"+type);
  g.addEventListener("change",function(){var f=g.files&&g.files[0];if(f)save(type,f);g.value=""});
- if(c)c.addEventListener("change",function(){var f=c.files&&c.files[0];if(!f)return;pending={type:type,file:f,input:c};document.getElementById("preview").src=URL.createObjectURL(f);document.getElementById("review").classList.add("show")});
+ if(c)c.addEventListener("change",function(){var f=c.files&&c.files[0];if(!f)return;clearPendingPreview();pending={type:type,file:f,input:c};pendingPreviewURL=URL.createObjectURL(f);document.getElementById("preview").src=pendingPreviewURL;document.getElementById("review").classList.add("show")});
 });
-document.getElementById("retry").onclick=function(){var p=pending;document.getElementById("review").classList.remove("show");pending=null;if(p){p.input.value="";setTimeout(()=>p.input.click(),100)}};
-document.getElementById("use").onclick=function(){if(!pending)return;var p=pending;document.getElementById("review").classList.remove("show");pending=null;p.input.value="";save(p.type,p.file)};
+var pendingPreviewURL=null;
+function clearPendingPreview(){
+ var preview=document.getElementById("preview");
+ if(preview)preview.removeAttribute("src");
+ if(pendingPreviewURL){try{URL.revokeObjectURL(pendingPreviewURL)}catch(e){}pendingPreviewURL=null}
+}
+document.getElementById("retry").onclick=function(){var p=pending;document.getElementById("review").classList.remove("show");clearPendingPreview();pending=null;if(p){p.input.value="";setTimeout(()=>p.input.click(),100)}};
+document.getElementById("use").onclick=function(){if(!pending)return;var p=pending;document.getElementById("review").classList.remove("show");clearPendingPreview();pending=null;p.input.value="";save(p.type,p.file)};
 // Read-only normalized landmarks for the patient report; never modify analysis data.
 window.v344ReportLandmarks=function(type){var r=photos[type];return r&&r.points?JSON.parse(JSON.stringify(r.points)):null};
 function geometry(type){var stage=document.getElementById("stage-"+type),img=stage.querySelector("img"),cv=document.getElementById("canvas-"+type);if(!img||!cv)return null;var sr=stage.getBoundingClientRect(),ir=img.getBoundingClientRect();return {cv:cv,sr:sr,ir:ir,ox:ir.left-sr.left,oy:ir.top-sr.top,w:ir.width,h:ir.height}}
@@ -746,7 +752,7 @@ async function runQueue(){if(busy||!poseReady||!queue.length)return;busy=true;va
  }catch(cacheError){console.warn('V332 landmark cache read',cacheError)}
  if(photos[type]!==rec){busy=false;runQueue();return;}
  window.__wakabaCurrent=type;await pose.send({image:await blobImage(rec.file)})}catch(e){console.warn("Pose send failed",e);var retry=Number(rec.aiRetry||0);busy=false;if(retry<1){rec.aiRetry=retry+1;b.textContent="AI再初期化中";b.className="badge";queue.unshift(type);resetPoseEngine();setTimeout(function(){attachPose()},180);return}rec.aiFailed=true;b.textContent="AI解析失敗・再選択";b.className="badge";resetPoseEngine();alert("AI解析を再初期化しました。\nこの写真をもう一度選択してください。");}}
-function blobImage(blob){return new Promise(function(resolve,reject){var u=URL.createObjectURL(blob),i=new Image();i.onload=function(){URL.revokeObjectURL(u);resolve(i)};i.onerror=reject;i.src=u})}
+function blobImage(blob){return new Promise(function(resolve,reject){var u=URL.createObjectURL(blob),i=new Image();i.onload=function(){URL.revokeObjectURL(u);resolve(i)};i.onerror=function(err){URL.revokeObjectURL(u);reject(err)};i.src=u})}
 function resetPoseEngine(){try{if(pose&&typeof pose.close==="function")pose.close()}catch(e){}pose=null;poseReady=false;busy=false;window.__wakabaCurrent=null}
 window.wakabaResetPoseEngine=resetPoseEngine;
 /* V204: landmark precision helpers.
@@ -934,7 +940,7 @@ AC.onpointerup=AC.onpointercancel=function(){adjustDrag=null};
 addEventListener("resize",function(){if(adjustType)drawAdjust()});
 function loadAI(){var sc=document.createElement("script");sc.src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js";sc.async=true;sc.onload=attachPose;sc.onerror=function(){console.warn("AI library load failed; photo controls remain available")};document.body.appendChild(sc)}
 window.wakabaResetAnalysisSession=function(){
- queue=[];busy=false;pending=null;try{window.dispatchEvent(new CustomEvent("wakaba-reset-3d"))}catch(e){}resetPoseEngine();
+ queue=[];busy=false;pending=null;clearPendingPreview();try{window.dispatchEvent(new CustomEvent("wakaba-reset-3d"))}catch(e){}resetPoseEngine();
  photoTypes.forEach(function(t){var r=photos[t];if(r&&r.url)try{URL.revokeObjectURL(r.url)}catch(e){}photos[t]=null;var st=document.getElementById("stage-"+t);if(st)st.innerHTML="<span>"+(t==="front"?"正面":t==="right"?"右側面":"左側面")+"写真を登録</span>";var b=document.getElementById("badge-"+t);if(b){b.textContent="未登録";b.className="badge"}var ab=document.querySelector('.adjustBtn[data-adjust="'+t+'"]');if(ab)ab.style.display="none"});
  ["scoreTotal","scoreFront","scoreSide","scoreTwist"].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent="--"});
  var mb=document.getElementById("modelBadge");if(mb){mb.textContent="待機中";mb.className="badge"}count();
@@ -1534,10 +1540,33 @@ function rotateBy(dx){
  pivot.rotation.y+=dx*.012;
 }
 function endDrag(){dragging=false;activePointer=null;}
-let renderActive=true;function loop(){if(!renderActive)return;requestAnimationFrame(loop);if(renderer&&ready)renderer.render(scene,camera);}loop();
+// V484: 3Dが画面外・非表示の間はWebGLの連続描画を停止する。
+// 再表示時に再開する。3Dモデル、姿勢計算、画質は変更しない。
+let renderActive=true,renderFrameId=0,renderVisible=true;
+function canRender3D(){return renderActive&&renderVisible&&!document.hidden;}
+function loop(){
+ renderFrameId=0;
+ if(!canRender3D())return;
+ if(renderer&&ready)renderer.render(scene,camera);
+ renderFrameId=requestAnimationFrame(loop);
+}
+function resume3D(){if(canRender3D()&&!renderFrameId)renderFrameId=requestAnimationFrame(loop);}
+if('IntersectionObserver' in window){
+ const observer=new IntersectionObserver(entries=>{
+  renderVisible=entries.some(entry=>entry.isIntersecting);
+  if(renderVisible)resume3D();
+  else if(renderFrameId){cancelAnimationFrame(renderFrameId);renderFrameId=0;}
+ },{threshold:0});
+ observer.observe(host);
+}
+document.addEventListener('visibilitychange',()=>{
+ if(document.hidden){if(renderFrameId){cancelAnimationFrame(renderFrameId);renderFrameId=0;}}
+ else resume3D();
+});
+resume3D();
 window.addEventListener('resize',()=>{if(ready)fitCamera(topMode?'top':'front');});
-window.addEventListener('wakaba-reset-3d',()=>{try{renderActive=false;ready=false;if(renderer){renderer.dispose();const gl=renderer.getContext&&renderer.getContext();const ext=gl&&gl.getExtension&&gl.getExtension('WEBGL_lose_context');if(ext)ext.loseContext();if(renderer.domElement&&renderer.domElement.parentNode)renderer.domElement.parentNode.removeChild(renderer.domElement);}renderer=null;scene=null;camera=null;pivot=null;model=null;parts={};thoraxRing=null;pelvisRing=null;old.style.visibility='visible';old.style.pointerEvents='auto';host.style.display='none';const labels=document.getElementById('v304YawLabels');if(labels)labels.style.display='none';document.getElementById('threeHint').style.display='block';}catch(e){console.warn('3D dispose',e)}});
-window.addEventListener('wakaba-analysis',e=>{const wasStopped=!renderActive;renderActive=true;if(wasStopped)loop();init().then(()=>apply(e.detail));});
+window.addEventListener('wakaba-reset-3d',()=>{try{renderActive=false;ready=false;if(renderFrameId){cancelAnimationFrame(renderFrameId);renderFrameId=0;}if(renderer){renderer.dispose();const gl=renderer.getContext&&renderer.getContext();const ext=gl&&gl.getExtension&&gl.getExtension('WEBGL_lose_context');if(ext)ext.loseContext();if(renderer.domElement&&renderer.domElement.parentNode)renderer.domElement.parentNode.removeChild(renderer.domElement);}renderer=null;scene=null;camera=null;pivot=null;model=null;parts={};thoraxRing=null;pelvisRing=null;old.style.visibility='visible';old.style.pointerEvents='auto';host.style.display='none';const labels=document.getElementById('v304YawLabels');if(labels)labels.style.display='none';document.getElementById('threeHint').style.display='block';}catch(e){console.warn('3D dispose',e)}});
+window.addEventListener('wakaba-analysis',e=>{renderActive=true;resume3D();init().then(()=>{apply(e.detail);resume3D();});});
 
 // 旧Canvasのonclickを解除して、V42のWebGL操作だけを使う。
 const viewBtns=[...document.querySelectorAll('.view3d[data-a]')];viewBtns.forEach(b=>{b.onclick=null;b.addEventListener('click',e=>{e.preventDefault();const a=+b.dataset.a;setView(a===90?'right':a===-90?'left':Math.abs(a)===35?'diag':'front');});});
@@ -3606,5 +3635,5 @@ if(!mount()){
 </script>
 <style id="wakaba-final-ui">#wakabaBuild{position:absolute;right:14px;top:12px;color:#fff;background:#0b766f;padding:4px 9px;border-radius:7px;font-size:12px;font-weight:800;z-index:2}header{position:relative}#wakabaLogoutDone[hidden]{display:none!important}#wakabaLogoutDone{position:fixed;inset:0;z-index:2147483000;background:#f4f6f8;display:flex;align-items:center;justify-content:center;padding:24px}#wakabaLogoutDone .doneCard{background:white;border-radius:18px;padding:30px 20px;width:min(100%,420px);text-align:center;box-shadow:0 12px 30px #0002}#wakabaLogoutDone button{background:#0f766e;color:#fff;border:0;border-radius:10px;padding:15px 24px;width:100%;font-size:17px;font-weight:800}#v382Register #v382Terms,#v382Register #v382Privacy{color:#0f766e;text-decoration:underline;font-weight:800}</style>
 <div id="wakabaLogoutDone" hidden role="dialog" aria-modal="true" aria-labelledby="wakabaLogoutTitle"><div class="doneCard"><h2 id="wakabaLogoutTitle">ログアウトしました</h2><p>安全にログアウトしました。</p><p>再度ご利用になる場合は、下のボタンからログインしてください。</p><button type="button" id="wakabaLoginReturn">ログイン画面へ</button></div></div>
-<script id="wakaba-final-behavior">(()=>{'use strict';const done=document.getElementById('wakabaLogoutDone');document.getElementById('wakabaLoginReturn').addEventListener('click',()=>{done.hidden=true;sessionStorage.removeItem('wakaba_logout_done');});const header=document.querySelector('header');if(header&&!document.getElementById('wakabaBuild')){const b=document.createElement('span');b.id='wakabaBuild';b.textContent='V482 テスト';header.appendChild(b)}if(sessionStorage.getItem('wakaba_logout_done')==='1'&&document.body.classList.contains('v271-signed-out'))done.hidden=false;})();</script>
+<script id="wakaba-final-behavior">(()=>{'use strict';const done=document.getElementById('wakabaLogoutDone');document.getElementById('wakabaLoginReturn').addEventListener('click',()=>{done.hidden=true;sessionStorage.removeItem('wakaba_logout_done');});const header=document.querySelector('header');if(header&&!document.getElementById('wakabaBuild')){const b=document.createElement('span');b.id='wakabaBuild';b.textContent='V484 テスト';header.appendChild(b)}if(sessionStorage.getItem('wakaba_logout_done')==='1'&&document.body.classList.contains('v271-signed-out'))done.hidden=false;})();</script>
 </html>
