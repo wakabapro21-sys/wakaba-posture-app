@@ -403,10 +403,10 @@ import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase
 import {getAuth,GoogleAuthProvider,signInWithPopup} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
 const btn=document.getElementById('v427GoogleLogin');
 if(btn)btn.addEventListener('click',async()=>{
- if(!getApps().length){alert('ログインの準備中です。少し待ってからお試しください。');return}
+ if(!getApps().length){wakabaNotify('ログインの準備中です。少し待ってからお試しください。');return}
  btn.disabled=true;
  try{await signInWithPopup(getAuth(getApp()),new GoogleAuthProvider());}
- catch(e){console.error('V427 Google login',e);alert('Googleログインできませんでした。もう一度お試しください。')}
+ catch(e){console.error('V427 Google login',e);wakabaNotify('Googleログインできませんでした。もう一度お試しください。')}
  finally{btn.disabled=false}
 });
 </script>
@@ -428,9 +428,32 @@ body.v61-analysis main #patientReport [style*="grid-template-columns:repeat(3,1f
 #v77MenuBtn{box-shadow:none!important;outline-offset:0!important}
 </style>
 <style id="v477-data-cleanup">#v112ClinicAccount,#v114Mode,#v115SecurityPrep{display:none!important}</style>
+<style id="wakaba-toast-style">
+#wakabaToastHost{position:fixed;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom));z-index:2147483600;display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 12px;pointer-events:none}
+.wakabaToast{pointer-events:auto;max-width:min(520px,100%);box-sizing:border-box;padding:12px 16px;border-radius:12px;background:#172033;color:#fff;font-size:14px;font-weight:700;line-height:1.6;white-space:pre-line;overflow-wrap:anywhere;box-shadow:0 6px 24px rgba(15,23,42,.35);border-left:5px solid #14b8a6;cursor:pointer}
+.wakabaToast.err{border-left-color:#ef4444}
+</style>
+<script id="wakaba-toast">
+/* alert()の代わりに使う非ブロッキング通知。タップで閉じる。確認が必要な操作はconfirm()を継続使用。 */
+(function(){
+ var host=null;
+ window.wakabaNotify=function(message){
+  var text=String(message==null?'':message);
+  if(!host){host=document.createElement('div');host.id='wakabaToastHost';host.setAttribute('role','status');host.setAttribute('aria-live','polite');(document.body||document.documentElement).appendChild(host)}
+  var el=document.createElement('div');
+  el.className='wakabaToast'+(/失敗|できません|できませんでした|エラー|見つかりません|不足|確認できません/.test(text)?' err':'');
+  el.textContent=text;
+  function close(){if(el.parentNode)el.parentNode.removeChild(el)}
+  el.addEventListener('click',close);
+  host.appendChild(el);
+  while(host.children.length>3)host.removeChild(host.firstChild);
+  setTimeout(close,el.classList.contains('err')?15000:Math.min(10000,3500+text.length*70)); /* V489: error toasts stay longer so failures (e.g. save errors) are not missed. */
+ };
+})();
+</script>
 </head>
 <body class="v271-signed-out">
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V487</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V490</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1646,7 +1669,7 @@ host.addEventListener('pointerup',endDrag);host.addEventListener('pointercancel'
  function start(c){const raw=JSON.stringify(c);sessionStorage.setItem('wakaba_v61_current',raw);localStorage.setItem('wakaba_v66_current',raw); if(typeof window.wakabaResetAnalysisSession==='function')window.wakabaResetAnalysisSession(); $('v61CurrentName').textContent=c.name||'ゲスト'; document.body.classList.add('v61-analysis'); window.scrollTo(0,0)}
  function home(){document.body.classList.remove('v61-analysis');window.scrollTo(0,0);render()}
  let v246PendingId=null; $('v61Add').onclick=()=>{const ids=new Set(customers().map(c=>String(c.id)));let last=Number(localStorage.getItem('wakaba_v300_last_patient_number')||0);for(const id of ids){if(/^\d{5}$/.test(id))last=Math.max(last,Number(id))}let next=last+1;while(next<=99999&&ids.has(String(next).padStart(5,'0')))next++;if(next>99999){alert('5桁の患者IDが上限に達しました');return}v246PendingId=String(next).padStart(5,'0');$('v246NewPatientId').textContent=v246PendingId;$('v61Modal').classList.add('on');$('v61Kana').focus()}; $('v61Cancel').onclick=()=>$('v61Modal').classList.remove('on'); $('v61Back').onclick=home;
- $('v61Save').onclick=()=>{const kana=$('v61Kana').value.trim().normalize('NFKC');if(!kana){alert('カタカナを入力してください');return}if(!/^[ァ-ヶー・･\s]+$/.test(kana)){alert('カタカナで入力してください');return}const a=customers();a.unshift({id:v246PendingId,name:kana,kana,sex:$('v61Sex').value,birth:$('v61Birth').value,tel:'',created:new Date().toISOString()});put(a);localStorage.setItem('wakaba_v300_last_patient_number',String(Number(v246PendingId)));try{window.dispatchEvent(new CustomEvent('wakaba:v103-patient-saved',{detail:a[0]}))}catch(e){};['v61Kana','v61Birth'].forEach(id=>$(id).value='');$('v61Sex').value='';$('v61Modal').classList.remove('on');v246PendingId=null;render()};
+ $('v61Save').onclick=()=>{const kana=$('v61Kana').value.trim().normalize('NFKC');if(!kana){wakabaNotify('カタカナを入力してください');return}if(!/^[ァ-ヶー・･\s]+$/.test(kana)){alert('カタカナで入力してください');return}const a=customers();a.unshift({id:v246PendingId,name:kana,kana,sex:$('v61Sex').value,birth:$('v61Birth').value,tel:'',created:new Date().toISOString()});put(a);localStorage.setItem('wakaba_v300_last_patient_number',String(Number(v246PendingId)));try{window.dispatchEvent(new CustomEvent('wakaba:v103-patient-saved',{detail:a[0]}))}catch(e){};['v61Kana','v61Birth'].forEach(id=>$(id).value='');$('v61Sex').value='';$('v61Modal').classList.remove('on');v246PendingId=null;render()};
  $('v91DetailClose').onclick=()=>$('v91DetailModal').classList.remove('on');$('v91DetailModal').addEventListener('click',e=>{if(e.target===$('v91DetailModal'))$('v91DetailModal').classList.remove('on')});
  $('v61Modal').addEventListener('click',e=>{if(e.target===$('v61Modal'))$('v61Modal').classList.remove('on')}); $('v63HistoryClose').onclick=()=>$('v63HistoryModal').classList.remove('on'); $('v64CompareClose').onclick=()=>$('v64CompareModal').classList.remove('on'); $('v63HistoryModal').addEventListener('click',e=>{if(e.target===$('v63HistoryModal'))$('v63HistoryModal').classList.remove('on')});
  render();
@@ -1693,7 +1716,7 @@ $('v216EditCancel').onclick=()=>{$('v216EditModal').style.display='none'};
 $('v216EditModal').addEventListener('click',e=>{if(e.target===$('v216EditModal'))$('v216EditModal').style.display='none'});
 $('v216EditSave').onclick=()=>{
  if(!selected)return;
- const kana=$('v216_kana').value.trim().normalize('NFKC');if(!kana||!/^[ァ-ヶー・･\s]+$/.test(kana)){alert('カタカナを入力してください');return}
+ const kana=$('v216_kana').value.trim().normalize('NFKC');if(!kana||!/^[ァ-ヶー・･\s]+$/.test(kana)){wakabaNotify('カタカナを入力してください');return}
  const arr=cs(),idx=arr.findIndex(c=>String(c.id)===String(selected.id));
  if(idx<0){alert('患者情報が見つかりません。再読み込みしてください。');return}
  const updated={...arr[idx],name:kana,kana,sex:$('v216_sex').value,birth:$('v216_birth').value,tel:''};
@@ -1706,7 +1729,7 @@ $('v216EditSave').onclick=()=>{
   selected=updated;patient(updated);
   $('v216EditModal').style.display='none';
   window.dispatchEvent(new CustomEvent('wakaba:v216-patient-edited',{detail:updated}));
-  alert('登録情報を保存しました。');
+  wakabaNotify('登録情報を保存しました。');
  }catch(e){console.error(e);alert('保存できませんでした。端末の空き容量などを確認してください。')}
 };
 document.addEventListener('click',e=>{const row=e.target.closest?.('.v61row');if(!row||e.target.closest('button'))return;const id=row.dataset.patientId,c=cs().find(x=>String(x.id)===id);if(c)patient(c)});
@@ -2793,11 +2816,16 @@ const dateText = value => {
 };
 function mount(){
   const sales=document.getElementById('v130Sales');
-  if(!sales || document.getElementById('v213ContractOverview'))return;
+  if(document.getElementById('v213ContractOverview'))return;
+   const actions=document.getElementById('v100Actions');
+   const cloud=document.getElementById('v100Cloud');
+   if(!sales&&!actions&&!cloud)return;
   const el=document.createElement('section');
   el.id='v213ContractOverview';
   el.innerHTML='<h3>💳 ご契約状況</h3><div class="v213grid"><div class="v213cell">契約状態<strong id="v213State">確認中…</strong></div><div class="v213cell">プラン<strong>スタンダード</strong></div><div class="v213cell">無料体験<strong id="v213TrialStatus">7日間</strong></div><div class="v213cell">月額料金<strong>3,980円（税込）</strong></div><div class="v213cell" id="v213TrialRow">無料体験終了日<strong id="v213Trial">—</strong></div><div class="v213cell">次回更新・契約期限<strong id="v213Renew">—</strong></div></div><div class="v213actions"><button type="button" id="v213Refresh">契約状態を再確認</button><button type="button" id="v386PortalOpen">契約内容の確認・解約（Stripe）</button></div><div class="v213fine" id="v213Message" role="status">サーバーの契約判定を確認します。</div><div class="v213fine">Stripeで有料契約中の場合のみ契約管理を利用できます。</div>';
-  sales.insertAdjacentElement('beforebegin',el);
+  if(sales)sales.insertAdjacentElement('beforebegin',el);
+   else if(actions)actions.insertAdjacentElement('afterend',el);
+   else cloud.appendChild(el);
   const state=el.querySelector('#v213State');
   const trial=el.querySelector('#v213Trial');
   const trialStatus=el.querySelector('#v213TrialStatus');
@@ -3411,7 +3439,7 @@ async function zipReportImages(files){
 }
 
 async function create(button){
- if(!isAnalyzed()){alert('先に3方向の写真を分析してください。');return;}
+ if(!isAnalyzed()){wakabaNotify('先に3方向の写真を分析してください。');return;}
  const original=button.textContent;button.disabled=true;button.textContent='読みやすい画像を作成しています…';let root=null;
  try{
   await loadRenderer();root=await makeSheet();await Promise.all(Array.from(root.querySelectorAll('img')).map(async im=>{if(im.decode)await im.decode();else if(!im.complete)await new Promise((resolve,reject)=>{im.onload=resolve;im.onerror=reject});if(!im.naturalWidth)throw Error('共有画像の写真を読み込めませんでした');}));
@@ -3661,7 +3689,7 @@ if(!mount()){
 </script>
 <style id="wakaba-final-ui">#wakabaBuild{position:absolute;right:14px;top:12px;color:#fff;background:#0b766f;padding:4px 9px;border-radius:7px;font-size:12px;font-weight:800;z-index:2}header{position:relative}#wakabaLogoutDone[hidden]{display:none!important}#wakabaLogoutDone{position:fixed;inset:0;z-index:2147483000;background:#f4f6f8;display:flex;align-items:center;justify-content:center;padding:24px}#wakabaLogoutDone .doneCard{background:white;border-radius:18px;padding:30px 20px;width:min(100%,420px);text-align:center;box-shadow:0 12px 30px #0002}#wakabaLogoutDone button{background:#0f766e;color:#fff;border:0;border-radius:10px;padding:15px 24px;width:100%;font-size:17px;font-weight:800}#v382Register #v382Terms,#v382Register #v382Privacy{color:#0f766e;text-decoration:underline;font-weight:800}</style>
 <div id="wakabaLogoutDone" hidden role="dialog" aria-modal="true" aria-labelledby="wakabaLogoutTitle"><div class="doneCard"><h2 id="wakabaLogoutTitle">ログアウトしました</h2><p>安全にログアウトしました。</p><p>再度ご利用になる場合は、下のボタンからログインしてください。</p><button type="button" id="wakabaLoginReturn">ログイン画面へ</button></div></div>
-<script id="wakaba-final-behavior">(()=>{'use strict';const done=document.getElementById('wakabaLogoutDone');document.getElementById('wakabaLoginReturn').addEventListener('click',()=>{done.hidden=true;sessionStorage.removeItem('wakaba_logout_done');});const header=document.querySelector('header');/* V487: header version label restored; existing behavior unchanged. */if(sessionStorage.getItem('wakaba_logout_done')==='1'&&document.body.classList.contains('v271-signed-out'))done.hidden=false;})();</script>
+<script id="wakaba-final-behavior">(()=>{'use strict';const done=document.getElementById('wakabaLogoutDone');document.getElementById('wakabaLoginReturn').addEventListener('click',()=>{done.hidden=true;sessionStorage.removeItem('wakaba_logout_done');});const header=document.querySelector('header');/* V486: production build shows no test badge. */if(sessionStorage.getItem('wakaba_logout_done')==='1'&&document.body.classList.contains('v271-signed-out'))done.hidden=false;})();</script>
 
 <!-- V486 trial-end banner (2026-10-28)
   Shows a non-modal banner on the customer list when the cardless trial has
@@ -3706,7 +3734,7 @@ if(!mount()){
    if(span)span.textContent=d<=0?'無料体験は本日までです。終了後も自動課金はありません。':'無料体験はあと'+d+'日です。終了後も自動課金はありません。';
   }else if(banner){banner.remove();}
  }
- setInterval(sweep,1500);
+ setInterval(sweep,60000);
  document.addEventListener('DOMContentLoaded',sweep);
 })();
 </script>
