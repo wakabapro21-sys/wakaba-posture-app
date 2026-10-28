@@ -2179,7 +2179,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #v128Gate.on #v128GateCard button{font-size:13px;padding:9px;margin-top:7px}
 </style>
 <div id="v128Gate"><div id="v128GateCard"><h2>契約状態を確認しています</h2><p>院専用Firebaseの契約情報を確認中です。</p></div></div>
-<script type="module" id="v481-entitlement-service">
+<script type="module" id="v482-entitlement-service">
 /* One authoritative entitlement request path. Never grants access from local/Firestore data. */
 import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
 import {getAuth} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
@@ -2232,7 +2232,7 @@ async function check141(u){
  try{
   const result=await window.wakabaCheckEntitlement({force:true});
   if(requestId!==v428GateRequest || getAuth(getApp()).currentUser?.uid!==u.uid)return;
-  if(result?.data?.allowed===true){hideGate();return;}
+  if(result?.allowed===true){hideGate();return;}
   // Firestore is consulted ONLY to distinguish new registration from an existing
   // account. It NEVER overrides a denial from the server entitlement function.
   let isNew=false;
@@ -2465,7 +2465,7 @@ window.v151Recheck = async function(btn){
   const app=getApp(),user=getAuth(app).currentUser;
   if(!user)throw Error('院アカウントへログインしてください');
   const result=await window.wakabaCheckEntitlement({force:true});
-  const data=result?.data||{};
+  const data=result||{};
   if(data.allowed===true){
    if(msg){msg.style.color='#047857';msg.textContent=(data.reason==='cardless_trial'?'無料体験中':'有料契約中')+'です。利用状態を更新します。';}
    setTimeout(()=>location.reload(),650);
@@ -2812,7 +2812,7 @@ function mount(){
       }
       const result=await window.wakabaCheckEntitlement({force:true});
       if(seq!==requestId || getAuth(app).currentUser?.uid!==user.uid)return;
-      const data=result?.data||{};
+      const data=result||{};
       const reason=String(data.reason||'');
       state.dataset.allowed=String(data.allowed===true);
       state.dataset.status=String(data.status||'').toLowerCase();
@@ -3606,5 +3606,5 @@ if(!mount()){
 </script>
 <style id="wakaba-final-ui">#wakabaBuild{position:absolute;right:14px;top:12px;color:#fff;background:#0b766f;padding:4px 9px;border-radius:7px;font-size:12px;font-weight:800;z-index:2}header{position:relative}#wakabaLogoutDone[hidden]{display:none!important}#wakabaLogoutDone{position:fixed;inset:0;z-index:2147483000;background:#f4f6f8;display:flex;align-items:center;justify-content:center;padding:24px}#wakabaLogoutDone .doneCard{background:white;border-radius:18px;padding:30px 20px;width:min(100%,420px);text-align:center;box-shadow:0 12px 30px #0002}#wakabaLogoutDone button{background:#0f766e;color:#fff;border:0;border-radius:10px;padding:15px 24px;width:100%;font-size:17px;font-weight:800}#v382Register #v382Terms,#v382Register #v382Privacy{color:#0f766e;text-decoration:underline;font-weight:800}</style>
 <div id="wakabaLogoutDone" hidden role="dialog" aria-modal="true" aria-labelledby="wakabaLogoutTitle"><div class="doneCard"><h2 id="wakabaLogoutTitle">ログアウトしました</h2><p>安全にログアウトしました。</p><p>再度ご利用になる場合は、下のボタンからログインしてください。</p><button type="button" id="wakabaLoginReturn">ログイン画面へ</button></div></div>
-<script id="wakaba-final-behavior">(()=>{'use strict';const done=document.getElementById('wakabaLogoutDone');document.getElementById('wakabaLoginReturn').addEventListener('click',()=>{done.hidden=true;sessionStorage.removeItem('wakaba_logout_done');});const header=document.querySelector('header');if(header&&!document.getElementById('wakabaBuild')){const b=document.createElement('span');b.id='wakabaBuild';b.textContent='V481 テスト';header.appendChild(b)}if(sessionStorage.getItem('wakaba_logout_done')==='1'&&document.body.classList.contains('v271-signed-out'))done.hidden=false;})();</script>
+<script id="wakaba-final-behavior">(()=>{'use strict';const done=document.getElementById('wakabaLogoutDone');document.getElementById('wakabaLoginReturn').addEventListener('click',()=>{done.hidden=true;sessionStorage.removeItem('wakaba_logout_done');});const header=document.querySelector('header');if(header&&!document.getElementById('wakabaBuild')){const b=document.createElement('span');b.id='wakabaBuild';b.textContent='V482 テスト';header.appendChild(b)}if(sessionStorage.getItem('wakaba_logout_done')==='1'&&document.body.classList.contains('v271-signed-out'))done.hidden=false;})();</script>
 </html>
