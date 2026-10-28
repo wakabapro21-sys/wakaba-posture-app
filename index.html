@@ -430,7 +430,7 @@ body.v61-analysis main #patientReport [style*="grid-template-columns:repeat(3,1f
 <style id="v477-data-cleanup">#v112ClinicAccount,#v114Mode,#v115SecurityPrep{display:none!important}</style>
 </head>
 <body class="v271-signed-out">
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 </p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V487</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -2246,7 +2246,7 @@ window.__wakabaSubscriptionAccess=false;
 function dateOf(v){try{if(!v)return null;if(v.toDate)return v.toDate();if(typeof v==='number')return new Date(v<1e12?v*1000:v);return new Date(v)}catch(e){return null}}
 function hideGate(){restoreRegistration();gate.classList.remove('on');window.__wakabaSubscriptionAccess=true}
 function restoreRegistration(){const f=document.getElementById('v382Register'),anchor=document.getElementById('v382ShowRegister');if(f&&anchor&&f.parentElement?.id==='v397EnrollmentSlot'){anchor.insertAdjacentElement('afterend',f);f.hidden=true}}
-function blockGate(title,message){window.__wakabaSubscriptionAccess=false;gate.classList.add('on');card.innerHTML='<h2>🔒 '+title+'</h2><p>'+message+'</p><p style="font-size:12px;color:#64748b">患者情報・数値履歴は契約終了後も所定期間保管されます。写真の長期保存は行いません。</p><button id="v148Restart" style="background:#635bff">契約を再開する</button><button id="v141Retry" type="button" onclick="window.v151Recheck && window.v151Recheck(this); return false;" style="background:#fff;color:#334155;position:relative;z-index:2147483647;pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,0,0,.08)">契約状態を再確認</button><div id="v149CheckMsg" style="margin-top:9px;font-size:13px;font-weight:700;color:#475569"></div><button id="v128Logout">ログアウト</button><div id="v148RestartMsg" style="margin-top:8px;font-size:12px;color:#64748b"></div>';document.getElementById('v148Restart').onclick=()=>{const b=document.getElementById('v148Restart');if(typeof window.v147StartCheckout==='function')window.v147StartCheckout(b);else{const m=document.getElementById('v148RestartMsg');if(m)m.textContent='Stripe接続を準備中です。数秒後にもう一度押してください。'}};/* V151: old retry onclick disabled; stable handler is installed below. */ document.getElementById('v141Retry').dataset.v151='ready'; document.getElementById('v128Logout').onclick=()=>signOut(getAuth(getApp()));}
+function blockGate(title,message){window.__wakabaSubscriptionAccess=false;gate.classList.add('on');card.innerHTML='<h2>🔒 '+title+'</h2><p>'+message+'</p><p style="font-size:12px;color:#64748b">患者情報・数値履歴は契約終了後も原則6か月間保管されます。写真の長期保存は行いません。</p><button id="v148Restart" style="background:#635bff">契約を再開する</button><button id="v141Retry" type="button" onclick="window.v151Recheck && window.v151Recheck(this); return false;" style="background:#fff;color:#334155;position:relative;z-index:2147483647;pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,0,0,.08)">契約状態を再確認</button><div id="v149CheckMsg" style="margin-top:9px;font-size:13px;font-weight:700;color:#475569"></div><button id="v128Logout">ログアウト</button><div id="v148RestartMsg" style="margin-top:8px;font-size:12px;color:#64748b"></div>';document.getElementById('v148Restart').onclick=()=>{const b=document.getElementById('v148Restart');if(typeof window.v147StartCheckout==='function')window.v147StartCheckout(b);else{const m=document.getElementById('v148RestartMsg');if(m)m.textContent='Stripe接続を準備中です。数秒後にもう一度押してください。'}};/* V151: old retry onclick disabled; stable handler is installed below. */ document.getElementById('v141Retry').dataset.v151='ready'; document.getElementById('v128Logout').onclick=()=>signOut(getAuth(getApp()));}
 let v428GateRequest=0;
 async function check141(u){
  const requestId=++v428GateRequest;
@@ -2463,18 +2463,10 @@ import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase
 function fmt(v){try{if(!v)return '未設定';const d=v.toDate?v.toDate():new Date(typeof v==='number'&&v<1e12?v*1000:v);return isNaN(d)?'未設定':d.toLocaleString('ja-JP')}catch(e){return '未設定'}}
 function mount(){const s=document.getElementById('v77Settings');if(!s){setTimeout(mount,300);return}if(document.getElementById('v143SubscriptionCard'))return;const c=document.createElement('div');c.id='v143SubscriptionCard';c.innerHTML='<b>Stripe契約状態</b><div id="v143SubscriptionText">確認中…</div>';const t=s.querySelector('.v77card');if(t)t.insertAdjacentElement('afterend',c);else s.appendChild(c);const wait=()=>{if(!getApps().length){setTimeout(wait,300);return}onAuthStateChanged(getAuth(getApp()),async u=>{const o=document.getElementById('v143SubscriptionText');if(!u){o.textContent='院アカウントへログインすると確認できます。';return}try{const z=await getDocFromServer(doc(getFirestore(getApp()),'clinics',u.uid,'subscription','status'));if(!z.exists()){o.textContent='契約情報はまだ登録されていません。';return}const x=z.data()||{},st=String(x.stripeStatus||x.status||'未確認'),trialEnd=x.trialEndsAt??x.trialEnd??x.trial_end??x.trialEndAt,renewalEnd=x.currentPeriodEnd;o.innerHTML='状態：<b>'+st+'</b><br>無料体験終了：'+fmt(trialEnd)+'<br>有料契約更新日：'+fmt(renewalEnd)+'<br>契約情報：'+(x.source||'確認中')}catch(e){o.textContent='契約状態を取得できませんでした。'}})};wait()}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 </script>
-<style id="v146-lock-style">
-#v146Lock{position:fixed;inset:0;z-index:2147483647;background:rgba(248,250,252,.985);display:none;align-items:center;justify-content:center;padding:24px}
-#v146Lock .b{width:min(460px,100%);background:#fff;border:1px solid #fecaca;border-radius:20px;padding:26px;text-align:center;box-shadow:0 18px 50px rgba(15,23,42,.12)}
-#v146Lock h2{margin:0 0 12px;color:#991b1b}.v146safe{margin-top:16px;padding:12px;background:#f0fdfa;border-radius:12px;color:#115e59;font-size:13px;line-height:1.6}
-/* V416: secondary contract notice must not obstruct patient list/history. */
-#v146Lock{pointer-events:none!important;inset:auto 10px 10px 10px!important;z-index:2147482900!important;padding:0!important;justify-content:flex-start!important;background:transparent!important}
-#v146Lock .b{display:none!important}
-</style>
-<div id="v146Lock"><div class="b"><h2>契約状態をご確認ください</h2><p id="v146Reason">姿勢分析機能は一時停止されています。</p><div class="v146safe">契約終了後も患者情報・数値・文章の分析履歴は原則6か月間保管する方針です。期間内の再契約では引き継げます。写真は長期保存の対象外です。6か月後の自動削除機能は未実装です。</div><button id="v147Restart" type="button" style="width:100%;margin-top:16px;border:0;border-radius:13px;padding:15px;background:#635bff;color:#fff;font-size:16px;font-weight:900">月額3,980円で契約する</button><button id="v147Recheck" type="button" style="width:100%;margin-top:9px;border:1px solid #cbd5e1;border-radius:13px;padding:13px;background:#fff;color:#334155;font-size:14px;font-weight:900;position:relative;z-index:2;pointer-events:auto;touch-action:manipulation">契約状態を再確認</button><div id="v152RecheckMsg" style="margin-top:10px;font-size:13px;font-weight:700;color:#475569"></div><div style="margin-top:8px;font-size:12px;color:#92400e;line-height:1.6">無料体験は原則として初回の1回のみです。有料契約の料金・請求開始日は、決済前にStripe画面で確認してください。</div><div id="v147RestartMsg" style="margin-top:10px;font-size:12px;line-height:1.5;color:#64748b"></div></div></div>
+<!-- V486: legacy V146 lock styles removed together with its DOM. V128 is the sole access gate. -->
 <script id="v481-retire-legacy-lock">
 /* Legacy V146 Firestore-only entitlement lock retired. V128 is the sole access gate.
-   The original V146 DOM remains hidden for compatibility; no patient data is modified. */
+   V486 removed the unused V146 DOM and styles entirely; no patient data is modified. */
 (function(){const el=document.getElementById('v146Lock');if(el)el.style.display='none';})();
 </script>
 
@@ -2818,6 +2810,7 @@ function mount(){
   let portalEligible=false;
   const setPortal=allowed=>{
     portalEligible=allowed;
+    state.dataset.portal=allowed?'1':'';
     portalButton.disabled=!allowed;
     portalButton.hidden=!allowed;
     portalButton.style.display=allowed?'':'none';
@@ -2856,10 +2849,18 @@ function mount(){
         }
         if(reason==='cardless_trial' || data.status==='trial' || data.status==='trialing'){
           state.textContent='無料体験中';
-          trialStatus.textContent='7日間';
           trialRow.hidden=false;
           trial.textContent=dateText(data.expiresAtMs);
-          msg.textContent='サーバーで無料体験の利用権限を確認しました。';
+          const endMs=Number(data.expiresAtMs||0);
+          const daysLeft=endMs?Math.max(0,Math.ceil((endMs-Date.now())/86400000)):null;
+          trialStatus.textContent=daysLeft===null?'7日間':'あと'+daysLeft+'日';
+          if(daysLeft!==null&&daysLeft<=1){
+            msg.textContent='無料体験はまもなく終了します（'+trial.textContent+'まで）。終了後も自動課金はありません。継続する場合は有料契約をお申込みください。';
+          }else if(daysLeft!==null&&daysLeft<=3){
+            msg.textContent='無料体験の終了が近づいています（'+trial.textContent+'まで・あと'+daysLeft+'日）。終了後も自動課金はありません。';
+          }else{
+            msg.textContent='サーバーで無料体験の利用権限を確認しました。';
+          }
           return;
         }
         state.textContent='契約中';
@@ -2872,9 +2873,10 @@ function mount(){
           if(seq!==requestId || getAuth(app).currentUser?.uid!==user.uid)return;
           if(snap.exists()){
             const saved=snap.data()||{};
+            const stripeState=String(saved.stripeStatus||'').toLowerCase();
             const paid=saved.stripeMode==='live' &&
               !!saved.stripeSubscriptionId && !!saved.stripeCustomerId &&
-              String(saved.stripeStatus||'').toLowerCase()==='active';
+              ['active','trialing','past_due','unpaid'].includes(stripeState);
             setPortal(paid);
           }
         }catch(e){
@@ -2883,12 +2885,29 @@ function mount(){
         }
         return;
       }
-      state.textContent='利用権限なし';
+      const deniedStatus=String(data.status||'').toLowerCase();
+      const labelMap={past_due:'お支払いの確認が必要',unpaid:'未払い',canceled:'解約済み',cancelled:'解約済み',expired:'期限切れ',trial_expired:'無料体験終了',trial_ended:'無料体験終了',incomplete:'手続き未完了',incomplete_expired:'手続き未完了'};
+      state.textContent=labelMap[deniedStatus]||'利用権限なし';
       state.dataset.allowed='false';
-      state.dataset.status=String(data.status||'').toLowerCase();
+      state.dataset.status=deniedStatus;
       state.dataset.reason=reason;
       trialStatus.textContent='7日間';
-      msg.textContent='有効な無料体験・有料契約を確認できませんでした。';
+      if(deniedStatus==='past_due'||deniedStatus==='unpaid'){
+        msg.textContent='お支払いが確認できていません。契約管理（Stripe）からお支払い方法をご確認ください。';
+        renew.textContent=dateText(data.expiresAtMs);
+      }else{
+        msg.textContent='有効な無料体験・有料契約を確認できませんでした。';
+      }
+      // V486: users who already have a Stripe subscription (e.g. past_due)
+      // must still be able to open the Billing Portal from this panel.
+      try{
+        const snap=await getDocFromServer(doc(getFirestore(app),'clinics',user.uid,'subscription','status'));
+        if(seq!==requestId || getAuth(app).currentUser?.uid!==user.uid)return;
+        if(snap.exists()){
+          const saved=snap.data()||{};
+          if(saved.stripeMode==='live' && !!saved.stripeSubscriptionId && !!saved.stripeCustomerId)setPortal(true);
+        }
+      }catch(e){console.warn('Contract metadata unavailable',e);}
     }catch(e){
       if(seq!==requestId)return;
       console.error('V431 entitlement display',e);
@@ -3022,8 +3041,8 @@ function mount(){if(document.getElementById('v235LegalBox'))return;
 const box=document.createElement('div');box.id='v235LegalBox';
 const warn='';
 const entries=[
-['プライバシーポリシー',`<p>事業者：わかば整体院・接骨院（運営責任者：南 昇吾）。所在地・電話番号は特商法表示の請求時開示方式に従います。</p><p>取得する情報：登録者氏名、院名、郵便番号、住所、電話番号、メールアドレス、Firebase認証ID、規約同意の日時・版、無料体験の開始・終了時刻、Stripeの顧客・契約ID、契約状態、アプリ内の分析数値・文章および操作上必要な技術情報。分析用の撮影写真はFirebaseに保存しません。分析中はブラウザ内で一時的に取り扱い、ブラウザや端末の状態により消失する場合があります。</p><p>利用目的：登録情報の確認、登録・認証、無料体験の管理、不正利用防止、契約・決済・解約管理、サービス提供、サポート、セキュリティ確保、法令対応。</p><p>外部サービス：Google/Firebase・Google Cloud（ログイン認証、契約・登録情報等の保存・処理）、Stripe（有料契約の決済・管理）を利用します。分析結果のLINE共有を利用者が選択した場合は、利用者の操作によりLINEに情報が送られます。各サービスによる情報の取扱いについては、各提供事業者のプライバシーポリシー等をご確認ください。</p><p>患者情報：利用者は撮影対象者から必要な同意を取得し、個人情報保護法等を遵守してください。写真や分析結果をLINE等で共有する際は、送信先・対象者の確認を行ってください。</p><p>保管・削除：分析用の撮影写真はFirebaseに保存せず、分析中のブラウザ内で取り扱います。月額契約の解約後も、クラウドに保存された患者情報・分析履歴は直ちに削除されません。再契約した場合、保存されている情報を引き継げる場合があります。運営者は必要性・安全性を考慮して保存期間を管理し、保存の必要がなくなった情報を削除します。退会・削除の申し出は下記問い合わせ先で受け付け、本人確認および法令上の保存義務等を確認して対応します。端末・ブラウザ内の情報は運営者側から削除できない場合があります。契約・決済記録、規約同意記録、無料体験利用履歴は、会計・法令対応、不正利用防止、紛争対応等のため患者データとは別に必要な期間保管します。 保存期間やバックアップの取扱いは、実際の運用に応じて定め、必要な情報を案内します。</p><p>開示等の請求・問い合わせ：wakaba.pro21@gmail.com（メールで受付。本人確認のうえ法令に従い対応します。お問い合わせフォームからもご連絡いただけます）</p><p>改定日：2026年10月22日（同意記録用識別子：2026-10-21-v1）</p>`],
-['利用規約',`<p>第1条（適用） 本規約は、当サービス「3次元姿勢分析」の利用条件を定めます。利用者は登録時に本規約に同意するものとします。</p><p>第2条（アカウント） 利用者は正確な氏名、院名、住所、電話番号、メールアドレスを登録し、認証情報を適切に管理してください。第三者へのアカウント譲渡・貸与は禁止します。</p><p>第3条（サービス内容） 本サービスは写真等を用いた姿勢の参考分析を提供するもので、医師による診断、疾病の発見、治療効果を保証するものではありません。撮影対象者の適法な同意取得と説明は利用者の責任です。</p><p>第4条（無料体験） 新規登録者は、当社所定の条件を満たす場合、登録・認証後にカード登録不要の7日間無料体験を利用できます。無料体験は初めてご利用になる事業者を対象に、1事業者につき1回限りです。過去に無料体験を利用した事業者や、同一事業者が別のアカウント（別のメールアドレス等）を作成して重複利用することはできません。登録時は事業所名・代表者名・住所・電話番号等の正確な情報をご入力ください。これらの情報は無料体験の重複利用防止および登録情報の確認に利用します。入力内容に不備や誤りがある場合は、確認または修正をお願いすることがあります。虚偽の登録情報や無料体験の重複利用その他の不正利用が確認された場合、事前通知なくアカウントの利用停止またはサービスの利用制限を行うことがあります。無料体験終了時に利用権限は終了します。自動的な有料契約・課金は発生しません。</p><p>第5条（有料契約） 利用者が別途申し込んだ場合に限り、月額3,980円（税込）の有料サブスクリプションが開始します。決済はStripeを利用します。料金、更新日、支払方法は申込画面に表示します。</p><p>第6条（解約） 利用者はアプリ内から案内するStripeの契約管理画面で解約手続を行えます。次回の請求を止めるには、次回更新前に手続を完了してください。解約後も支払済み契約期間の満了までは利用でき、原則として日割り返金は行いません。契約期間満了後は有料機能を利用できません。法令上返金が必要な場合その他運営者が認める場合はこの限りではありません。</p><p>第7条（禁止事項） 不正アクセス、権限のない患者情報の利用、第三者の権利侵害、システムの不正解析・妨害、無料体験の不正取得等を禁止します。</p><p>第8条（データ） 撮影写真はFirebaseに保存せず、分析時のブラウザ内で取り扱います。利用者は必要な結果を適切に保存・共有し、端末消去やブラウザの仕様によるデータ消失に備えてください。保存する数値・文章・登録情報の範囲はプライバシーポリシーに従います。月額契約の解約後も、支払済み契約期間の満了時点で患者情報・分析履歴が直ちに削除されるわけではありません。解約とアカウントの退会は別の手続です。退会・データ削除を希望する場合は、運営者へお問い合わせください。保存期間と削除方法については、プライバシーポリシーに従います。</p><p>第9条（サービス変更・停止） 保守、障害、法令上の必要その他合理的な理由によりサービスを変更・停止する場合があります。</p><p>第10条（免責・責任） 法令で許される範囲で、分析結果の正確性や特定目的への適合性を保証しません。本条は消費者契約法その他強行法規による責任を免除するものではありません。</p><p>第11条（規約改定・連絡） 重要な変更は合理的な方法で事前告知します。問い合わせ先は特商法表示の連絡先とします。</p><p>第12条（準拠法・管轄） 日本法を準拠法とします。裁判管轄は適用法令に従います。</p>`],
+['プライバシーポリシー',`<p>事業者：わかば整体院・接骨院（運営責任者：南 昇吾）。所在地・電話番号は特商法表示の請求時開示方式に従います。</p><p>取得する情報：登録者氏名、院名、郵便番号、住所、電話番号、メールアドレス、Firebase認証ID、規約同意の日時・版、無料体験の開始・終了時刻、Stripeの顧客・契約ID、契約状態、アプリ内の分析数値・文章および操作上必要な技術情報。分析用の撮影写真はFirebaseに保存しません。分析中はブラウザ内で一時的に取り扱い、ブラウザや端末の状態により消失する場合があります。</p><p>利用目的：登録情報の確認、登録・認証、無料体験の管理、不正利用防止、契約・決済・解約管理、サービス提供、サポート、セキュリティ確保、法令対応。</p><p>外部サービス：Google/Firebase・Google Cloud（ログイン認証、契約・登録情報等の保存・処理）、Stripe（有料契約の決済・管理）を利用します。分析結果のLINE共有を利用者が選択した場合は、利用者の操作によりLINEに情報が送られます。各サービスによる情報の取扱いについては、各提供事業者のプライバシーポリシー等をご確認ください。</p><p>患者情報：利用者は撮影対象者から必要な同意を取得し、個人情報保護法等を遵守してください。写真や分析結果をLINE等で共有する際は、送信先・対象者の確認を行ってください。</p><p>保管・削除：分析用の撮影写真はFirebaseに保存せず、分析中のブラウザ内で取り扱います。月額契約の解約・契約期間満了後も、クラウドに保存された患者情報・分析履歴は原則6か月間保管し、その期間は再契約した場合に引き継げます。保管期間を過ぎた情報は削除または匿名化します。法令上の保存義務がある情報はこの限りではありません。退会・削除の申し出は下記問い合わせ先で受け付け、本人確認および法令上の保存義務等を確認して対応します。端末・ブラウザ内の情報は運営者側から削除できない場合があります。契約・決済記録、規約同意記録、無料体験利用履歴は、会計・法令対応、不正利用防止、紛争対応等のため患者データとは別に必要な期間保管します。 保存期間やバックアップの取扱いは、実際の運用に応じて定め、必要な情報を案内します。</p><p>開示等の請求・問い合わせ：wakaba.pro21@gmail.com（メールで受付。本人確認のうえ法令に従い対応します。お問い合わせフォームからもご連絡いただけます）</p><p>改定日：2026年10月22日（同意記録用識別子：2026-10-21-v1）</p>`],
+['利用規約',`<p>第1条（適用） 本規約は、当サービス「3次元姿勢分析」の利用条件を定めます。利用者は登録時に本規約に同意するものとします。</p><p>第2条（アカウント） 利用者は正確な氏名、院名、住所、電話番号、メールアドレスを登録し、認証情報を適切に管理してください。第三者へのアカウント譲渡・貸与は禁止します。</p><p>第3条（サービス内容） 本サービスは写真等を用いた姿勢の参考分析を提供するもので、医師による診断、疾病の発見、治療効果を保証するものではありません。撮影対象者の適法な同意取得と説明は利用者の責任です。</p><p>第4条（無料体験） 新規登録者は、当社所定の条件を満たす場合、登録・認証後にカード登録不要の7日間無料体験を利用できます。無料体験は初めてご利用になる事業者を対象に、1事業者につき1回限りです。過去に無料体験を利用した事業者や、同一事業者が別のアカウント（別のメールアドレス等）を作成して重複利用することはできません。登録時は事業所名・代表者名・住所・電話番号等の正確な情報をご入力ください。これらの情報は無料体験の重複利用防止および登録情報の確認に利用します。入力内容に不備や誤りがある場合は、確認または修正をお願いすることがあります。虚偽の登録情報や無料体験の重複利用その他の不正利用が確認された場合、事前通知なくアカウントの利用停止またはサービスの利用制限を行うことがあります。無料体験終了時に利用権限は終了します。自動的な有料契約・課金は発生しません。</p><p>第5条（有料契約） 利用者が別途申し込んだ場合に限り、月額3,980円（税込）の有料サブスクリプションが開始します。決済はStripeを利用します。料金、更新日、支払方法は申込画面に表示します。</p><p>第6条（解約） 利用者はアプリ内から案内するStripeの契約管理画面で解約手続を行えます。次回の請求を止めるには、次回更新前に手続を完了してください。解約後も支払済み契約期間の満了までは利用でき、原則として日割り返金は行いません。契約期間満了後は有料機能を利用できません。法令上返金が必要な場合その他運営者が認める場合はこの限りではありません。</p><p>第7条（禁止事項） 不正アクセス、権限のない患者情報の利用、第三者の権利侵害、システムの不正解析・妨害、無料体験の不正取得等を禁止します。</p><p>第8条（データ） 撮影写真はFirebaseに保存せず、分析時のブラウザ内で取り扱います。利用者は必要な結果を適切に保存・共有し、端末消去やブラウザの仕様によるデータ消失に備えてください。保存する数値・文章・登録情報の範囲はプライバシーポリシーに従います。月額契約の解約後も、支払済み契約期間の満了時点で患者情報・分析履歴は直ちに削除されず、原則として満了後6か月間保管し、その後削除または匿名化します。解約とアカウントの退会は別の手続です。退会・データ削除を希望する場合は、運営者へお問い合わせください。保存期間と削除方法については、プライバシーポリシーに従います。</p><p>第9条（サービス変更・停止） 保守、障害、法令上の必要その他合理的な理由によりサービスを変更・停止する場合があります。</p><p>第10条（免責・責任） 法令で許される範囲で、分析結果の正確性や特定目的への適合性を保証しません。本条は消費者契約法その他強行法規による責任を免除するものではありません。</p><p>第11条（規約改定・連絡） 重要な変更は合理的な方法で事前告知します。問い合わせ先は特商法表示の連絡先とします。</p><p>第12条（準拠法・管轄） 日本法を準拠法とします。裁判管轄は適用法令に従います。</p>`],
 ['特定商取引法に基づく表記',`<p>販売事業者：わかば整体院・接骨院</p><p>運営責任者：南 昇吾</p><p>所在地・電話番号：特定商取引法第11条ただし書に基づき表示を省略しています。開示をご希望の場合はアプリ内のお問い合わせフォームからご請求ください。お申込みの判断に先立って十分な時間的余裕をもって、所在地・電話番号を電子メール等で遅滞なく提供します。</p><p>メールアドレス：Wakaba.pro21@gmail.com</p><p>サービス名：わかば姿勢分析アプリ</p><p>販売価格：月額3,980円（税込）</p><p>商品代金以外の費用：インターネット通信費・端末購入費等</p><p>決済方法：クレジットカード決済（Stripe）</p><p>支払時期：有料契約の申込時に初回決済し、その後は各契約更新日に決済します。実際の請求日・金額はStripeの申込画面で確認できます。</p><p>サービス提供時期：無料体験は登録・認証と利用開始処理の完了後、有料契約は決済確認後に利用できます。</p><p>契約更新：有料契約は1か月ごとに自動更新されます。7日間のカード不要無料体験は自動課金されません。</p><p>解約方法：アプリの契約管理からStripeカスタマーポータルに進み、解約手続きを行います。解約は請求期間の終了時に適用されます。</p><p>返品・返金：サービスの性質上、原則として日割り返金は行いません。ただし、法令上必要な場合を除きます。</p><p>動作環境：カメラ・JavaScriptが利用できるブラウザが必要です。OS・ブラウザや端末の設定により一部の機能が利用できない場合があります。</p>`]
 ];
 entries.forEach((e,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='v199helpRow';btn.innerHTML='<span></span><span class="arr">›</span>';btn.querySelector('span').textContent=e[0];const panel=document.createElement('div');panel.className='v235legalpanel';panel.id='v235LegalPanel'+i;panel.innerHTML='<h3>'+e[0]+'</h3>'+warn+e[1];btn.addEventListener('click',()=>panel.classList.toggle('on'));box.append(btn,panel)});
@@ -3604,11 +3623,17 @@ function mount(){
   const denied=state?.dataset.allowed==='false';
   const status=String(state?.dataset.status||'').toLowerCase();
   const reason=String(state?.dataset.reason||'').toLowerCase();
-  const billingProblem=['past_due','unpaid','incomplete','payment_failed'].some(v=>status.includes(v)||reason.includes(v));
+  // V486: 'incomplete_expired' means the previous checkout expired, so a new
+  // checkout must be offered; only an in-progress 'incomplete' is excluded.
+  const billingProblem=['past_due','unpaid','payment_failed'].some(v=>status.includes(v)||reason.includes(v))||status==='incomplete'||reason==='incomplete';
   const developer=status==='developer'||reason==='developer';
-  btn.hidden=!(denied&&!billingProblem&&!developer);
+  const portalAvailable=state?.dataset.portal==='1';
+  // Billing problems should be fixed in the Stripe portal; if the portal is
+  // not available for this account, fall back to offering checkout so the
+  // user is never left without an action.
+  btn.hidden=!(denied&&!developer&&(!billingProblem||!portalAvailable));
  }
- if(state)new MutationObserver(update).observe(state,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['data-allowed','data-status','data-reason']});
+ if(state)new MutationObserver(update).observe(state,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['data-allowed','data-status','data-reason','data-portal']});
  update();
  btn.addEventListener('click',async()=>{
   btn.disabled=true;
@@ -3636,5 +3661,53 @@ if(!mount()){
 </script>
 <style id="wakaba-final-ui">#wakabaBuild{position:absolute;right:14px;top:12px;color:#fff;background:#0b766f;padding:4px 9px;border-radius:7px;font-size:12px;font-weight:800;z-index:2}header{position:relative}#wakabaLogoutDone[hidden]{display:none!important}#wakabaLogoutDone{position:fixed;inset:0;z-index:2147483000;background:#f4f6f8;display:flex;align-items:center;justify-content:center;padding:24px}#wakabaLogoutDone .doneCard{background:white;border-radius:18px;padding:30px 20px;width:min(100%,420px);text-align:center;box-shadow:0 12px 30px #0002}#wakabaLogoutDone button{background:#0f766e;color:#fff;border:0;border-radius:10px;padding:15px 24px;width:100%;font-size:17px;font-weight:800}#v382Register #v382Terms,#v382Register #v382Privacy{color:#0f766e;text-decoration:underline;font-weight:800}</style>
 <div id="wakabaLogoutDone" hidden role="dialog" aria-modal="true" aria-labelledby="wakabaLogoutTitle"><div class="doneCard"><h2 id="wakabaLogoutTitle">ログアウトしました</h2><p>安全にログアウトしました。</p><p>再度ご利用になる場合は、下のボタンからログインしてください。</p><button type="button" id="wakabaLoginReturn">ログイン画面へ</button></div></div>
-<script id="wakaba-final-behavior">(()=>{'use strict';const done=document.getElementById('wakabaLogoutDone');document.getElementById('wakabaLoginReturn').addEventListener('click',()=>{done.hidden=true;sessionStorage.removeItem('wakaba_logout_done');});const header=document.querySelector('header');if(header&&!document.getElementById('wakabaBuild')){const b=document.createElement('span');b.id='wakabaBuild';b.textContent='V485 テスト';header.appendChild(b)}if(sessionStorage.getItem('wakaba_logout_done')==='1'&&document.body.classList.contains('v271-signed-out'))done.hidden=false;})();</script>
+<script id="wakaba-final-behavior">(()=>{'use strict';const done=document.getElementById('wakabaLogoutDone');document.getElementById('wakabaLoginReturn').addEventListener('click',()=>{done.hidden=true;sessionStorage.removeItem('wakaba_logout_done');});const header=document.querySelector('header');/* V487: header version label restored; existing behavior unchanged. */if(sessionStorage.getItem('wakaba_logout_done')==='1'&&document.body.classList.contains('v271-signed-out'))done.hidden=false;})();</script>
+
+<!-- V486 trial-end banner (2026-10-28)
+  Shows a non-modal banner on the customer list when the cardless trial has
+  3 days or less remaining. The trial-end reminder e-mails, the past_due
+  grace-period decision and the 6-month deletion job remain server-side
+  (Cloud Functions) work and are not implemented in this file.
+-->
+<style id="v486-trial-banner-style">
+#v486TrialBanner{margin:0 0 10px;padding:12px 14px;border:1px solid #f59e0b;border-radius:12px;background:#fffbeb;color:#92400e;font-size:13px;font-weight:800;line-height:1.6;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+#v486TrialBanner button{border:0;border-radius:9px;padding:9px 12px;background:#0f766e;color:#fff;font-weight:900;cursor:pointer}
+</style>
+<script id="v486-trial-banner">
+(()=>{'use strict';
+ document.addEventListener('click',e=>{
+  if(e.target&&e.target.id==='v486TrialBannerBtn'){
+   const m=document.getElementById('v210ContractMenu');
+   if(m){m.click();return;}
+   const c=document.getElementById('v101CloudMenu');
+   if(c)c.click();
+  }
+ });
+ function trialDaysLeft(){
+  const s=document.getElementById('v213State');
+  if(!s||s.textContent.trim()!=='無料体験中')return null;
+  const t=document.getElementById('v213Trial');
+  const m=(t&&t.textContent||'').match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
+  if(!m)return null;
+  const end=new Date(+m[1],+m[2]-1,+m[3],23,59,59,999).getTime();
+  return Math.max(0,Math.ceil((end-Date.now())/86400000));
+ }
+ function sweep(){
+  const home=document.getElementById('v61Home');
+  const d=trialDaysLeft();
+  let banner=document.getElementById('v486TrialBanner');
+  if(home&&d!==null&&d<=3){
+   if(!banner){
+    banner=document.createElement('div');banner.id='v486TrialBanner';
+    banner.innerHTML='<span></span><button type="button" id="v486TrialBannerBtn">契約内容を見る</button>';
+    home.prepend(banner);
+   }
+   const span=banner.querySelector('span');
+   if(span)span.textContent=d<=0?'無料体験は本日までです。終了後も自動課金はありません。':'無料体験はあと'+d+'日です。終了後も自動課金はありません。';
+  }else if(banner){banner.remove();}
+ }
+ setInterval(sweep,1500);
+ document.addEventListener('DOMContentLoaded',sweep);
+})();
+</script>
 </html>
