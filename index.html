@@ -281,7 +281,7 @@ body.v61-analysis main #patientReport [style*="grid-template-columns:repeat(3,1f
 </script>
 </head>
 <body class="v271-signed-out">
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V493</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V494</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1676,6 +1676,12 @@ body.v271-signed-out #v100Cloud #v101CloudClose{display:none}
 <div id="v100Cloud">
  <div class="v100head"><span>☁ データ管理</span><span id="v100Status" class="v100badge">未接続</span></div>
  <div id="v100Login">
+  <div id="v494InAppNotice" hidden style="margin:0 0 10px;padding:11px 12px;border:1px solid #f59e0b;border-radius:12px;background:#fffbeb;color:#78350f;font-size:12px;line-height:1.7">
+   <b>LINEなどのアプリ内ブラウザで開いています</b><br>
+   この画面ではGoogleログインが使えません。メールアドレスでのログイン・新規登録は、そのまま使えます。<br>
+   Googleでログインしたい場合は、<span id="v494IosText">画面のメニューから「ブラウザで開く」を選んで、開き直してください。</span>
+   <a id="v494OpenBrowser" href="#" hidden style="margin-top:8px;background:#0f766e;color:#fff;text-align:center;font-weight:900;border-radius:10px;padding:11px;text-decoration:none;font-size:14px">ブラウザで開き直す</a>
+  </div>
   <button id="v427GoogleLogin" type="button" class="v100btn" style="width:100%;font-size:15px;padding:13px;background:#0f766e">Googleでログイン</button>
   <details id="v427EmailLogin" style="margin-top:10px"><summary style="cursor:pointer;text-align:center;color:#475569;font-size:12px;padding:8px">メールアドレスでログイン</summary>
   <div class="v100row"><input id="v100Email" type="email" autocomplete="username" placeholder="Firebase管理者メール"></div>
@@ -1714,6 +1720,37 @@ body.v271-signed-out #v100Cloud #v101CloudClose{display:none}
  </div>
  <div id="v100Msg" class="v100note">新規患者・分析履歴はFirebaseへ保存します。写真はクラウドへ送りません。</div>
 </div>
+<script id="v494-inapp-guard">
+(function(){
+ var ua=navigator.userAgent||'';
+ var inApp=/Line\//i.test(ua)||/FBAN|FBAV|FBIOS/i.test(ua)||/Instagram/i.test(ua)||/Twitter/i.test(ua)||/KAKAOTALK/i.test(ua)||/MicroMessenger/i.test(ua);
+ if(!inApp)return;
+ var APP_URL='https://wakabapro21-sys.github.io/wakaba-posture-app/';
+ var isAndroid=/Android/i.test(ua);
+ var notice=document.getElementById('v494InAppNotice');
+ if(notice){
+  notice.hidden=false;
+  if(isAndroid){
+   var ob=document.getElementById('v494OpenBrowser');
+   if(ob){
+    ob.href='intent://wakabapro21-sys.github.io/wakaba-posture-app/#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(APP_URL)+';end';
+    ob.hidden=false; ob.style.display='block';
+   }
+   var it=document.getElementById('v494IosText');
+   if(it)it.textContent='下のボタンでブラウザで開き直してください。';
+  }
+ }
+ function block(e){
+  e.preventDefault(); e.stopImmediatePropagation();
+  if(notice){notice.hidden=false; notice.scrollIntoView({behavior:'smooth',block:'center'});}
+  if(window.wakabaNotify)wakabaNotify('アプリ内ブラウザではGoogleログインが使えません。メールアドレスでログインするか、ブラウザで開き直してください。');
+ }
+ ['v427GoogleLogin','v382GoogleRegister'].forEach(function(id){
+  var b=document.getElementById(id);
+  if(b)b.addEventListener('click',block,true);
+ });
+})();
+</script>
 <div id="v101CloudBackdrop" style="display:none;position:fixed;inset:0;background:#0f172a88;z-index:1301"></div>
 <script id="v101-menu-wire">
 document.addEventListener('DOMContentLoaded',()=>{
