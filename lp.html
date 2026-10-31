@@ -16,6 +16,9 @@ header.hero p{font-size:15px;margin:0 auto;max-width:600px}
 .pricebadge{display:inline-block;margin-top:20px;background:#fff;color:#0f766e;font-weight:900;font-size:17px;border-radius:999px;padding:9px 20px}
 .cta{display:block;margin:22px auto 0;max-width:420px;background:#f97316;color:#fff;text-decoration:none;font-weight:900;font-size:17px;border-radius:14px;padding:16px 20px;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.18)}
 .cta-sub{font-size:12px;margin-top:10px;opacity:.95}
+.cta-note{font-size:11px;line-height:1.7;margin:8px auto 0;max-width:420px;opacity:.85;text-align:left}
+.cta-note.inapp{background:#fffbeb;border:1px solid #f59e0b;border-radius:10px;padding:10px 12px;color:#78350f;opacity:1}
+.cta-openbrowser{display:block;margin-top:8px;background:#0f766e;color:#fff;text-align:center;font-weight:900;border-radius:10px;padding:11px;text-decoration:none;font-size:14px}
 section{padding:38px 0 6px}
 h2{font-size:21px;margin:0 0 16px;text-align:center}
 .card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:18px;margin-bottom:12px}
@@ -56,6 +59,7 @@ footer a{color:#0f766e}
 <div><span class="pricebadge">月額 3,980円（税込）／初期費用 0円</span></div>
 <a class="cta" href="https://wakabapro21-sys.github.io/wakaba-posture-app/">7日間、無料で試す（カード登録不要）</a>
 <div class="cta-sub">無料体験は自動で課金されません。7日後に自動で有料契約になることもありません。</div>
+<div class="cta-note">※LINE・Instagramなどのアプリ内ブラウザでは、Googleログインがうまく動かない場合があります。その場合は、画面のメニューから「ブラウザで開く」を選んで開き直してください。メールアドレスでの登録・ログインは、そのままご利用いただけます。</div>
 </div>
 </header>
 
@@ -140,6 +144,7 @@ footer a{color:#0f766e}
 <p>試すのにカードも費用もいりません。1人分析すれば、使い勝手も患者さんの反応も分かります。</p>
 <a class="cta" href="https://wakabapro21-sys.github.io/wakaba-posture-app/">7日間、無料で試す（カード登録不要）</a>
 <div class="cta-sub">月額3,980円（税込）／初期費用0円／いつでも解約可能</div>
+<div class="cta-note">※LINE・Instagramなどのアプリ内ブラウザでは、Googleログインがうまく動かない場合があります。その場合は、画面のメニューから「ブラウザで開く」を選んで開き直してください。メールアドレスでの登録・ログインは、そのままご利用いただけます。</div>
 </div>
 
 </main>
@@ -151,5 +156,22 @@ footer a{color:#0f766e}
 </div>
 </footer>
 
+<script>
+(function(){
+ var ua=navigator.userAgent||'';
+ var inApp=/Line\//i.test(ua)||/FBAN|FBAV|FBIOS/i.test(ua)||/Instagram/i.test(ua)||/Twitter/i.test(ua)||/KAKAOTALK/i.test(ua)||/MicroMessenger/i.test(ua);
+ if(!inApp)return;
+ var isAndroid=/Android/i.test(ua);
+ var intent='intent://wakabapro21-sys.github.io/wakaba-posture-app/#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent('https://wakabapro21-sys.github.io/wakaba-posture-app/')+';end';
+ document.querySelectorAll('.cta-note').forEach(function(n){
+  n.classList.add('inapp');
+  if(isAndroid){
+   var a=document.createElement('a');
+   a.className='cta-openbrowser'; a.href=intent; a.textContent='ブラウザでアプリを開く';
+   n.appendChild(a);
+  }
+ });
+})();
+</script>
 </body>
 </html>
