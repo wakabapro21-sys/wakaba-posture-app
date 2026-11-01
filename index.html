@@ -298,7 +298,7 @@ body.v271-signed-out #v100Cloud > div#v100Msg.v100note{display:block!important}
 </style>
 </head>
 <body class="v271-signed-out">
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V500</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V501</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1811,8 +1811,8 @@ function v230Block(u){
  let shield=document.getElementById('v230AccountShield');
  if(!ok&&u){
   if(!shield){shield=document.createElement('div');shield.id='v230AccountShield';shield.style.cssText='position:fixed;inset:0;z-index:2147483647;background:#fff;display:flex;align-items:center;justify-content:center;padding:24px;font-family:sans-serif;color:#7f1d1d';document.body.appendChild(shield)}
-  shield.innerHTML='<div style="max-width:430px;padding:24px;border:2px solid #fca5a5;border-radius:16px;background:#fff7f7"><h2>🔒 院アカウントの切り替えを停止しました</h2><p>この端末には別の院の患者データが残っています。誤同期・混在を防ぐため、操作を停止しています。患者データや写真は削除していません。</p><p>元の院アカウントでログインし直してください。別の院で使う場合は、別のブラウザまたは端末を使用してください。</p><button id="v230Logout" style="padding:12px;background:#991b1b;color:white;border:0;border-radius:8px">ログアウトする</button></div>';
-  shield.querySelector('#v230Logout').onclick=async()=>{try{await signOut(auth)}catch(e){}shield.remove()};
+  shield.innerHTML='<div style="max-width:430px;padding:24px;border:2px solid #fca5a5;border-radius:16px;background:#fff7f7"><h2>🔒 院アカウントの切り替えを停止しました</h2><p>この端末には別の院の患者データが残っています。誤同期・混在を防ぐため、操作を停止しています。患者データや写真は削除していません。</p><p>元の院アカウントでログインし直してください。別の院で使う場合は、別のブラウザまたは端末を使用してください。</p><button id="v230Logout" type="button" style="padding:12px;background:#991b1b;color:white;border:0;border-radius:8px;pointer-events:auto;touch-action:manipulation;cursor:pointer">ログアウトする</button></div>';
+  shield.querySelector('#v230Logout').onclick=()=>{shield.remove();try{const p=signOut(auth);if(p&&p.catch)p.catch(()=>{})}catch(e){}};
   status.textContent='院アカウント不一致・同期停止';
  }else if(shield){shield.remove()}
  return ok;
