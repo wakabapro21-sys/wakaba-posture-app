@@ -9,7 +9,7 @@
 header{background:linear-gradient(135deg,#0f766e,#19b9ad);color:#fff;padding:20px 16px}h1{font-size:21px;margin:0}header p{font-size:11px;margin:5px 0 0}
 main{max-width:1100px;margin:auto;padding:12px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:17px;padding:13px;margin-bottom:12px}.intro{font-size:12px;color:#64748b;line-height:1.6}
 .views{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.head b{font-size:15px}.badge{font-size:10px;background:#f1f5f9;color:#64748b;padding:4px 8px;border-radius:999px}.badge.ok{background:#dcfce7;color:#166534}
-.stage{min-height:330px;border-radius:12px;background:#111827;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}.stage span{color:#94a3b8;font-size:12px}.stage img{width:100%;height:auto;max-height:520px;object-fit:contain;display:block}.landmarkCanvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+.stage{min-height:330px;border-radius:12px;background:#111827;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}.stage span{color:#94a3b8;font-size:12px}.stage img{width:100%;height:auto;max-height:520px;object-fit:contain;display:block}.landmarkCanvas{position:absolute;inset:0;width:100%;height:100%;touch-action:pan-y}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
 label.btn{display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:11px;font-size:12px;font-weight:900;cursor:pointer}
 .gallery{background:#ecfeff;border:1px solid #99f6e4;color:#0f766e}.camera{background:#0f766e;color:#fff}
@@ -298,7 +298,7 @@ body.v271-signed-out #v100Cloud > div#v100Msg.v100note{display:block!important}
 </style>
 </head>
 <body class="v271-signed-out">
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V510</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V511</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -593,12 +593,12 @@ function draw(type){var rec=photos[type],g=geometry(type);if(!rec||!g)return;var
 }
 var drag=null;
 function setupDrag(type){var cv=document.getElementById("canvas-"+type);if(!cv||cv.dataset.dragReady)return;cv.dataset.dragReady="1";
- cv.onpointerdown=function(e){var g=geometry(type),rec=photos[type];if(!g||!rec)return;var xx=e.clientX-g.ir.left,yy=e.clientY-g.ir.top,best=null,bd=32;visibleNames(type).forEach(function(n){var p=rec.points[n],dd=Math.hypot(xx-p.x*g.w,yy-p.y*g.h);if(dd<bd){bd=dd;best=n}});if(best){drag={type:type,name:best};cv.setPointerCapture(e.pointerId)}};
+ cv.onpointerdown=function(e){var g=geometry(type),rec=photos[type];if(!g||!rec)return;var xx=e.clientX-g.ir.left,yy=e.clientY-g.ir.top,best=null,bd=32;visibleNames(type).forEach(function(n){var p=rec.points[n],dd=Math.hypot(xx-p.x*g.w,yy-p.y*g.h);if(dd<bd){bd=dd;best=n}});if(best){drag={type:type,name:best};cv.style.touchAction="none";cv.setPointerCapture(e.pointerId)}};
  cv.onpointermove=function(e){if(!drag||drag.type!==type)return;var g=geometry(type),p=photos[type].points[drag.name];p.x=Math.max(0,Math.min(1,(e.clientX-g.ir.left)/g.w));p.y=Math.max(0,Math.min(1,(e.clientY-g.ir.top)/g.h));
  if(type!=="front"){var map={leftShoulder:"rightShoulder",leftElbow:"rightElbow",leftWrist:"rightWrist",leftHip:"rightHip",leftKnee:"rightKnee",leftAnkle:"rightAnkle"};if(map[drag.name])photos[type].points[map[drag.name]]={x:p.x,y:p.y}}
  photos[type].manualAdjusted=true; draw(type);
  var mb=document.getElementById("modelBadge");if(mb){mb.textContent="補正後・再分析してください";mb.className="badge"}
-};cv.onpointerup=cv.onpointercancel=function(){drag=null};
+};cv.onpointerup=cv.onpointercancel=function(){drag=null;cv.style.touchAction="";};
 }
 function enqueueAI(type){queue=queue.filter(x=>x!==type);queue.push(type);runQueue()}
 // V332: identical image bytes + same view reuse the original AI landmarks within this browser tab.
