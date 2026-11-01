@@ -298,7 +298,7 @@ body.v271-signed-out #v100Cloud > div#v100Msg.v100note{display:block!important}
 </style>
 </head>
 <body class="v271-signed-out">
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V501</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V502</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -317,7 +317,7 @@ body.v271-signed-out #v100Cloud > div#v100Msg.v100note{display:block!important}
 <div class="v361step"><span class="v361num">3</span><div><h3>3方向の写真を撮影</h3><div class="v361diagram v361three"><span>🧍<small>① 正面</small></span><span>🧍<small>② 右側面</small></span><span>🧍<small>③ 左側面</small></span></div><p>頭から足先まで全身を写します。距離は約2〜3m、スマホの高さは胸〜みぞおち付近を目安に、毎回同じ条件で撮影してください。</p></div></div>
 <div class="v361step"><span class="v361num">4</span><div><h3>ランドマークを確認・微調整</h3><div class="v361diagram">🟠 AI検出 → ✋ ランドマークを微調整</div><p>オレンジ色の点が身体の対応部位からずれている場合は、点をドラッグして調整します。調整後の位置は分析に反映されます。</p></div></div>
 <div class="v361step"><span class="v361num">5</span><div><h3>3D分析と結果を確認</h3><div class="v361diagram">📊 3D分析を作成 → スコア・姿勢タイプ・筋肉の推定</div><p>総合・正面・側面・回旋のスコア、姿勢の傾向、3Dモデルを確認します。数値は比較のための参考指標です。</p></div></div>
-<div class="v361step"><span class="v361num">6</span><div><h3>LINEで結果を共有</h3><div class="v361diagram">📋 分析レポート → 🟢 LINEで共有</div><p>患者さんに見せるレポートを確認し、LINEで共有します。写真はFirebaseに保存しない運用です。</p></div></div>
+<div class="v361step"><span class="v361num">6</span><div><h3>LINEで結果を共有</h3><div class="v361diagram">📋 分析レポート → 🟢 LINEで共有</div><p>患者さんに見せるレポートを確認し、LINEで共有します。写真はクラウドに保存しない運用です。</p></div></div>
 <div class="v361step"><span class="v361num">7</span><div><h3>履歴を確認・比較</h3><div class="v361diagram">🗂️ 分析履歴 → 2回分を選択 → 比較</div><p>保存された数値・所見を確認し、過去と今回の変化を比較できます。過去の写真は保存されません。</p></div></div>
 </div>
 <details class="v361details"><summary>📍 ランドマークの基準位置を見る</summary><div class="v361inside"><p>写真上の推定点を、身体の目安となる部位と照らし合わせます。AIが骨の位置を直接測定するわけではありません。</p><table class="v341table"><tr><td><b>部位名</b></td><td><b>確認する位置の目安</b></td></tr><tr><td>頭部・左右の耳</td><td>頭の位置と左右の耳の周辺</td></tr><tr><td>左右の肩峰</td><td>左右の肩先付近（AIの肩推定点）</td></tr><tr><td>左右の肘</td><td>肘関節付近</td></tr><tr><td>左右の手首</td><td>手首付近</td></tr><tr><td>左右の大転子</td><td>股関節外側の目安（AIの股関節推定点であり、大転子そのものの測定ではありません）</td></tr><tr><td>左右の膝</td><td>膝関節付近</td></tr><tr><td>左右の足首</td><td>足首付近</td></tr></table><p>左右側面では身体の重なりを考慮した補正が入るため、AIの元の推定位置と異なることがあります。</p></div></details>
@@ -329,7 +329,7 @@ body.v271-signed-out #v100Cloud > div#v100Msg.v100note{display:block!important}
 <div class="v77pageHead"><button class="v77back" data-v77home>← 戻る</button><h2>ヘルプ・お問い合わせ</h2><span></span></div><div class="v77card wakaba-help">
 <details><summary><b>撮影・カメラについて</b><span>›</span></summary><div class="helpBody"><b>きれいに分析する撮影のコツ</b><p>正面・右側面・左側面の3方向を、頭から足先まで全身が入るように撮影してください。</p><p>約2〜3m離れ、スマホは胸〜みぞおち付近の高さを目安にします。ガイド撮影では中央線と水平・垂直の目安を合わせてください。</p><p>撮影後はランドマークの位置を確認し、必要な場合は「ランドマークを微調整」から修正できます。</p></div></details>
 <details><summary><b>分析について</b><span>›</span></summary><div class="helpBody"><b>分析結果の見方</b><p>3方向の写真とランドマークから、正面・側面・回旋のバランスを参考値として可視化します。</p><p>姿勢スコア、左右差、骨盤・脊柱バランス、脚軸、推定重心などを確認できます。</p><p>分析結果は姿勢評価の参考情報であり、医療上の診断を行うものではありません。</p></div></details>
-<details><summary><b>顧客データについて</b><span>›</span></summary><div class="helpBody"><b>保存されるデータ</b><p>顧客情報と分析履歴を保存し、過去の分析結果を確認・比較できます。</p><p>分析時の写真はFirebaseに保存されません。撮影・分析中はブラウザ内で一時的に扱われますが、画面を閉じるなどすると失われる場合があり、後からの復元はできません。必要な結果は分析当日にLINE等で共有してください。</p><p>不要な履歴や顧客データは、各画面の削除機能から削除できます。</p></div></details>
+<details><summary><b>顧客データについて</b><span>›</span></summary><div class="helpBody"><b>保存されるデータ</b><p>顧客情報と分析履歴を保存し、過去の分析結果を確認・比較できます。</p><p>分析時の写真はクラウドに保存されません。撮影・分析中はブラウザ内で一時的に扱われますが、画面を閉じるなどすると失われる場合があり、後からの復元はできません。必要な結果は分析当日にLINE等で共有してください。</p><p>不要な履歴や顧客データは、各画面の削除機能から削除できます。</p></div></details>
 <details><summary><b>お問い合わせ</b><span>›</span></summary><div class="helpBody"><div id="v204InlineContact" style="margin-top:18px;padding-top:16px;border-top:1px solid #e5e7eb">
   <div style="font-size:15px;font-weight:800;color:#0f172a;margin-bottom:10px">お問い合わせフォーム</div>
   <p style="font-size:13px;font-weight:700;color:#9a3412;line-height:1.7;margin:0 0 12px">※ 電話での受付はしておりません。お問い合わせは下記フォームからお願いいたします。</p>
@@ -1701,7 +1701,7 @@ body.v271-signed-out #v100Cloud #v101CloudClose{display:none}
   </div>
   <button id="v427GoogleLogin" type="button" class="v100btn" style="width:100%;font-size:15px;padding:13px;background:#0f766e">Googleでログイン</button>
   <details id="v427EmailLogin" style="margin-top:10px"><summary style="cursor:pointer;text-align:center;color:#475569;font-size:12px;padding:8px">メールアドレスでログイン</summary>
-  <div class="v100row"><input id="v100Email" type="email" autocomplete="username" placeholder="Firebase管理者メール"></div>
+  <div class="v100row"><input id="v100Email" type="email" autocomplete="username" placeholder="メールアドレス"></div>
   <div class="v100row"><input id="v100Pass" type="password" autocomplete="current-password" placeholder="パスワード"><button id="v100SignIn" class="v100btn">ログイン</button></div>
   <div style="margin-top:9px"><button type="button" id="v266Forgot" style="border:0;background:none;color:#0f766e;text-decoration:underline;padding:6px 0;font-size:12px">パスワードを忘れた方はこちら</button></div>
   <div id="v266ResetPanel" hidden style="margin:8px 0;padding:10px;background:#f0fdfa;border-radius:10px;font-size:12px"><b>パスワード再設定</b><p>上のメールアドレス宛てに再設定メールを送ります。</p><button type="button" id="v266SendReset" class="v100btn">再設定メールを送信</button><div id="v266ResetMsg" role="status" style="margin-top:7px;overflow-wrap:anywhere"></div></div>
@@ -1731,11 +1731,11 @@ body.v271-signed-out #v100Cloud #v101CloudClose{display:none}
   <details id="v280AdminData" style="margin-top:12px;border:1px solid #cbd5e1;border-radius:12px;padding:12px;background:#f8fafc">
    <summary style="cursor:pointer;font-weight:800;color:#334155;font-size:13px">管理者用データ操作（必要なときだけ開く）</summary>
    <div id="v280AdminDataBody" style="margin-top:12px">
-    <div class="v100row"><button id="v102Restore" class="v100btn" style="flex:1;background:#0f766e">Firebase→この端末へ安全復元</button><button id="v100SignOut" class="v100btn gray" style="display:none">ログアウト</button></div>
+    <div class="v100row"><button id="v102Restore" class="v100btn" style="flex:1;background:#0f766e">クラウド→この端末へ安全復元</button><button id="v100SignOut" class="v100btn gray" style="display:none">ログアウト</button></div>
    </div>
   </details>
  </div>
- <div id="v100Msg" class="v100note">新規患者・分析履歴はFirebaseへ保存します。写真はクラウドへ送りません。</div>
+ <div id="v100Msg" class="v100note">新規患者・分析履歴はクラウドへ保存します。写真はクラウドへ送りません。</div>
 </div>
 <script id="v494-inapp-guard">
 (function(){
@@ -1773,7 +1773,7 @@ body.v271-signed-out #v100Cloud #v101CloudClose{display:none}
 document.addEventListener('DOMContentLoaded',()=>{
  const nav=document.querySelector('#v77Menu .v77nav');
  if(nav && !document.getElementById('v101CloudMenu')){
-   const b=document.createElement('button'); b.id='v101CloudMenu'; b.type='button'; b.textContent='☁ Firebase同期'; nav.insertBefore(b,document.getElementById('v270MenuLogout'));
+   const b=document.createElement('button'); b.id='v101CloudMenu'; b.type='button'; b.textContent='☁ クラウド同期'; nav.insertBefore(b,document.getElementById('v270MenuLogout'));
  }
  const cloud=document.getElementById('v100Cloud'), back=document.getElementById('v101CloudBackdrop');
  function openCloud(){ if(cloud) cloud.style.display='block'; if(back) back.style.display='block'; document.getElementById('v77Menu')?.classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu'); }
@@ -1832,9 +1832,9 @@ async function v104SyncPatient(c){
   const chk=await getDoc(doc(db,'clinics',auth.currentUser.uid,'patients',id));
   if(!chk.exists()) throw new Error('write verification failed');
   status.textContent='自動同期済み';
-  msg.innerHTML='<span class="v100ok">✓ 顧客「'+String(c.name||'')+'」をFirebaseへ保存・確認しました。写真は送信していません。</span>';
+  msg.innerHTML='<span class="v100ok">✓ 顧客「'+String(c.name||'')+'」をクラウドへ保存・確認しました。写真は送信していません。</span>';
   return true;
- }catch(e){console.error('V104 patient auto sync',e);status.textContent='同期失敗';msg.innerHTML='<span class="v100err">端末保存は成功しましたが、Firebase自動保存に失敗しました。端末データは残っています。</span>';return false}
+ }catch(e){console.error('V104 patient auto sync',e);status.textContent='同期失敗';msg.innerHTML='<span class="v100err">端末保存は成功しましたが、クラウドへの自動保存に失敗しました。端末データは残っています。</span>';return false}
 }
 async function v104SyncLatestHistory(id){if(!auth.currentUser||!v230OwnerAllowed(auth.currentUser)||!id)return;try{const hs=histories(id);if(!hs.length)return;const h=hs[0],hid=String(h.date||'history_latest').replaceAll('/','-');await setDoc(doc(db,'clinics',auth.currentUser.uid,'patients',String(id),'histories',hid),{...h,patientId:String(id),updatedAt:serverTimestamp()},{merge:true});status.textContent='自動同期済み'}catch(e){console.error('V104 history auto sync',e);status.textContent='履歴同期失敗'}}
 window.addEventListener('wakaba:v300-patient-deleted',async e=>{
@@ -1848,7 +1848,7 @@ window.addEventListener('wakaba:v103-history-saved',e=>v104SyncLatestHistory(e.d
 
 async function restoreAll(){
  if(!v230OwnerAllowed(auth.currentUser)){v230Block(auth.currentUser);return}
- const btn=$('v102Restore'); if(btn)btn.disabled=true; status.textContent='復元中'; msg.textContent='Firebaseを確認しています…';
+ const btn=$('v102Restore'); if(btn)btn.disabled=true; status.textContent='復元中'; msg.textContent='クラウドを確認しています…';
  try{
   const snap=await getDocs(collection(db,'clinics',auth.currentUser.uid,'patients')); const local=patients(); const byId=new Map(local.map(c=>[String(c.id),c])); let added=0,hAdded=0;
   for(const d of snap.docs){
@@ -1862,7 +1862,7 @@ async function restoreAll(){
    lh.sort((a,b)=>String(b.date||b.created||'').localeCompare(String(a.date||a.created||''))); localStorage.setItem('wakaba_v63_history_'+id,JSON.stringify(lh.slice(0,30)));
   }
   localStorage.setItem('wakaba_v61_customers',JSON.stringify(local)); localStorage.setItem('wakaba_v102_last_restore',new Date().toISOString());
-  status.textContent='復元済み'; msg.innerHTML='<span class="v100ok">安全復元完了：Firebase '+snap.size+'件を確認。新しく追加した顧客 '+added+'件、履歴 '+hAdded+'件。端末に既にあるデータは上書きしていません。</span>';
+  status.textContent='復元済み'; msg.innerHTML='<span class="v100ok">安全復元完了：クラウド '+snap.size+'件を確認。新しく追加した顧客 '+added+'件、履歴 '+hAdded+'件。端末に既にあるデータは上書きしていません。</span>';
   setTimeout(()=>location.reload(),1400);
  }catch(e){console.error(e);status.textContent='復元失敗';msg.innerHTML='<span class="v100err">復元に失敗しました。端末データは変更していません。</span>'}finally{if(btn)btn.disabled=false}
 }
@@ -1889,7 +1889,7 @@ $('v266Terms').onclick=e=>{e.preventDefault();v266ShowLegal(1)}; $('v266Privacy'
 document.getElementById('v270MenuLogout')?.addEventListener('click',()=>{document.getElementById('v77Menu')?.classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu');document.getElementById('v100SignOut')?.click();});
 $('v100SignOut').onclick=async()=>{sessionStorage.setItem('wakaba_v269_login_return','1');sessionStorage.setItem('wakaba_v165_page','home');document.getElementById('v77Menu')?.classList.remove('on');await signOut(auth);if(auth.currentUser!==null)throw new Error('ログアウト状態を確認できません');v271AuthView(false);sessionStorage.removeItem('wakaba_logout_pending');sessionStorage.setItem('wakaba_logout_done','1');document.getElementById('wakabaLogoutDone').hidden=false;};$('v102Restore').onclick=restoreAll;
 onAuthStateChanged(auth,async u=>{v271AuthView(!!u);if(!u){document.getElementById('v230AccountShield')?.remove()}if(u){sessionStorage.removeItem('wakaba_logout_done');document.getElementById('wakabaLogoutDone').hidden=true;if(!v230Block(u))return;localStorage.setItem('wakaba_clinic_uid',u.uid);localStorage.setItem('wakaba_clinic_email',u.email||'');const ce=$('v112ClinicEmail'),ci=$('v112ClinicId');if(ce)ce.textContent='ログイン：'+(u.email||'メール未設定');if(ci)ci.textContent='院ID：'+u.uid;status.textContent='ログイン済み';$('v100Login').style.display='none';$('v100Actions').style.display='block';/* V270: successful authentication returns to the customer list; cloud controls remain accessible from MENU */$('v100Cloud').style.display='none';$('v101CloudBackdrop').style.display='none';document.getElementById('v77Menu')?.classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu');sessionStorage.setItem('wakaba_v165_page','home');sessionStorage.removeItem('wakaba_v269_login_return');document.querySelectorAll('#v77Patient,#v77Reports,#v77Mypage,#v77News,#v77Help,#v77Settings,#v341Manual').forEach(e=>e.classList.remove('on'));document.getElementById('v61Home')?.classList.remove('v77hidden');document.body.classList.remove('v61-analysis');msg.innerHTML='<span class="v100ok">端末内の旧データは自動復元しません。</span>';
-status.textContent='ログイン済み';msg.textContent='既存の端末患者は自動再登録しません。新規患者の保存時のみFirebaseへ同期します。';}else{status.textContent='未接続';$('v100Login').style.display='block';$('v100Actions').style.display='none';msg.textContent='患者情報は登録時にFirebaseへ保存します。写真は送信しません。'}});
+status.textContent='ログイン済み';msg.textContent='既存の端末患者は自動再登録しません。新規患者の保存時のみクラウドへ同期します。';}else{status.textContent='未接続';$('v100Login').style.display='block';$('v100Actions').style.display='none';msg.textContent='患者情報は登録時にクラウドへ保存します。写真は送信しません。'}});
 </script>
 
 
@@ -2014,7 +2014,7 @@ status.textContent='ログイン済み';msg.textContent='既存の端末患者�
 #v128Gate.on #v128GateCard p{font-size:12px}
 #v128Gate.on #v128GateCard button{font-size:13px;padding:9px;margin-top:7px}
 </style>
-<div id="v128Gate"><div id="v128GateCard"><h2>契約状態を確認しています</h2><p>院専用Firebaseの契約情報を確認中です。</p></div></div>
+<div id="v128Gate"><div id="v128GateCard"><h2>契約状態を確認しています</h2><p>契約情報を確認中です。</p></div></div>
 <script type="module" id="v482-entitlement-service">
 /* One authoritative entitlement request path. Never grants access from local/Firestore data. */
 import {getApps,getApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
@@ -2022,7 +2022,7 @@ import {getAuth} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.j
 import {getFunctions,httpsCallable} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-functions.js';
 let inFlight=null;
 window.wakabaCheckEntitlement=async function(options={}){
- if(!getApps().length)throw new Error('Firebaseの初期化を確認できません');
+ if(!getApps().length)throw new Error('接続の初期化を確認できません');
  const app=getApp(),user=getAuth(app).currentUser;
  if(!user)throw new Error('院アカウントへログインしてください');
  if(!options.force && inFlight && inFlight.uid===user.uid)return inFlight.promise;
@@ -2124,7 +2124,7 @@ import {getFunctions,httpsCallable} from 'https://www.gstatic.com/firebasejs/12.
 async function v147StartCheckout(btn){
   const old=btn?.textContent||'契約を再開する';
   try{
-    if(!getApps().length) throw new Error('Firebaseの初期化を確認できません');
+    if(!getApps().length) throw new Error('接続の初期化を確認できません');
     const app=getApp();
     const user=getAuth(app).currentUser;
     if(!user) throw new Error('先に院アカウントへログインしてください');
@@ -2167,7 +2167,7 @@ window.v151Recheck = async function(btn){
    import('https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js'),
    import('https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js'),
    import('https://www.gstatic.com/firebasejs/12.4.0/firebase-functions.js')]);
-  if(!getApps().length)throw Error('Firebaseの初期化を確認できません');
+  if(!getApps().length)throw Error('接続の初期化を確認できません');
   const app=getApp(),user=getAuth(app).currentUser;
   if(!user)throw Error('院アカウントへログインしてください');
   const result=await window.wakabaCheckEntitlement({force:true});
@@ -2432,7 +2432,7 @@ function mount(){
     setPortal(false);
     trial.textContent='—'; renew.textContent='—'; trialRow.hidden=true;
     try{
-      if(!getApps().length)throw new Error('Firebaseの初期化を確認できません');
+      if(!getApps().length)throw new Error('接続の初期化を確認できません');
       const app=getApp(),user=getAuth(app).currentUser;
       if(!user){
         state.textContent='ログインが必要';
