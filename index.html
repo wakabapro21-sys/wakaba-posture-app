@@ -298,7 +298,7 @@ body.v271-signed-out #v100Cloud > div#v100Msg.v100note{display:block!important}
 </style>
 </head>
 <body class="v271-signed-out">
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V512</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V513</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1764,6 +1764,23 @@ body.v271-signed-out #v100Cloud #v101CloudClose{display:none}
   if(notice){notice.hidden=false; notice.scrollIntoView({behavior:'smooth',block:'center'});}
   if(window.wakabaNotify)wakabaNotify('アプリ内ブラウザではGoogleログインが使えません。メールアドレスでログインするか、ブラウザで開き直してください。');
  }
+ /* V513: persistent in-app banner steering users to a real browser */
+ try{
+  if(!sessionStorage.getItem('wakaba_v513_bar_closed')){
+   var bar=document.createElement('div');bar.id='v513InAppBar';
+   bar.style.cssText='position:fixed;top:0;left:0;right:0;z-index:2147482500;background:#7c2d12;color:#fff;padding:10px 12px;display:flex;gap:10px;align-items:center;font-size:13px;line-height:1.5;box-shadow:0 2px 8px rgba(0,0,0,.3)';
+   var btnCss='flex:none;background:#fff;color:#7c2d12;font-weight:900;border:0;border-radius:8px;padding:9px 12px;font-size:13px;text-decoration:none';
+   var action=isAndroid
+     ? '<a href="intent://wakabapro21-sys.github.io/wakaba-posture-app/#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(APP_URL)+';end" style="'+btnCss+'">Chromeで開く</a>'
+     : '<button type="button" id="v513IosHow" style="'+btnCss+'">Safariで開く方法</button>';
+   bar.innerHTML='<span style="flex:1">アプリ内ブラウザではガイド撮影・Googleログインが使えません。ブラウザで開くと全部使えます。</span>'+action+'<button type="button" id="v513BarClose" style="flex:none;background:none;border:0;color:#fff;font-size:18px;padding:4px 6px" aria-label="閉じる">×</button>';
+   document.body.appendChild(bar);
+   document.body.style.paddingTop='56px';
+   document.getElementById('v513BarClose').addEventListener('click',function(){try{sessionStorage.setItem('wakaba_v513_bar_closed','1')}catch(e){} bar.remove(); document.body.style.paddingTop='';});
+   var ih=document.getElementById('v513IosHow');
+   if(ih)ih.addEventListener('click',function(){if(window.wakabaNotify)wakabaNotify('画面右上（または右下）のメニューから「Safariで開く」を押してください。');});
+  }
+ }catch(e){}
  ['v427GoogleLogin','v382GoogleRegister'].forEach(function(id){
   var b=document.getElementById(id);
   if(b)b.addEventListener('click',block,true);
