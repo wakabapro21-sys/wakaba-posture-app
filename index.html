@@ -281,7 +281,7 @@ body.v61-analysis main #patientReport [style*="grid-template-columns:repeat(3,1f
 </script>
 </head>
 <body class="v271-signed-out">
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V494</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V495</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1773,6 +1773,7 @@ import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,sendPasswordResetE
 import {getFirestore,doc,setDoc,getDoc,getDocFromServer,serverTimestamp,collection,getDocs,getDocsFromServer} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
 const firebaseConfig={apiKey:'AIzaSyCC4vKry9DQnQxwPWOMEy-xbiAzFJ3n6ic',authDomain:'wakaba-posture.firebaseapp.com',projectId:'wakaba-posture',storageBucket:'wakaba-posture.firebasestorage.app',messagingSenderId:'992802796991',appId:'1:992802796991:web:461ab115f39be2795b5d0a',measurementId:'G-1C96FJQPF6'};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+try{auth.languageCode='ja'}catch(e){} /* V495: 認証・再設定メールを日本語にする */
 // V271: auth state controls only the login presentation; no patient data is modified.
 document.body.classList.add("v271-signed-out");
 function v271AuthView(signedIn){if(!signedIn){document.getElementById('v100Login').style.display='block';document.getElementById('v100Actions').style.display='none';}document.body.classList.toggle("v271-signed-out",!signedIn);const c=document.getElementById("v100Cloud"),b=document.getElementById("v101CloudBackdrop");if(!signedIn){if(c)c.style.display="block";if(b)b.style.display="block";document.getElementById("v77Menu")?.classList.remove("on");sessionStorage.removeItem("wakaba_v165_menu");}else{if(c)c.style.display="none";if(b)b.style.display="none";document.getElementById("v77Menu")?.classList.remove("on");sessionStorage.removeItem("wakaba_v165_menu");}}
@@ -2066,7 +2067,7 @@ async function check141(u){
    const slot=document.getElementById('v397EnrollmentSlot');
    const form=document.getElementById('v382Register');
    if(form){if(!form.dataset.v397Home)form.dataset.v397Home='v382ShowRegister';form.hidden=false;slot.appendChild(form);}
-   document.getElementById('v397CheckAgain').onclick=()=>check141(getAuth(getApp()).currentUser);
+   document.getElementById('v397CheckAgain').onclick=async()=>{if(window.wakabaNotify)window.wakabaNotify('契約状態を確認しています…');await check141(getAuth(getApp()).currentUser);if(gate.classList.contains('on')&&document.getElementById('v397EnrollmentSlot')){if(window.wakabaNotify)window.wakabaNotify('まだ無料体験は開始されていません。先に①メール内のリンクでメール認証、②登録フォーム下の紫色の「メール認証後、7日間無料体験を開始」ボタンを済ませてください。')}};
    document.getElementById('v397Logout').onclick=()=>{restoreRegistration();signOut(getAuth(getApp()));};
    return;
   }
@@ -3127,12 +3128,16 @@ const termsVersion='2026-10-21-v1',privacyVersion='2026-10-21-v1';
 // Show the enrollment action only after Firebase reports a verified email.
 // No new authentication or subscription state is stored locally.
 const trialButton=el('v382StartTrial');
+let v382WasVerified=null;
 async function refreshTrialAction(reload=false){
  const app=getAppReady();const user=app?getAuth(app).currentUser:null;
- if(!user){trialButton.hidden=true;return}
+ if(!user){trialButton.hidden=true;v382WasVerified=null;return}
  if(reload){try{await user.reload()}catch(e){console.warn('Verification refresh',e)}}
  // Prevent an older async refresh from exposing the button after sign-out.
- trialButton.hidden=!(getAuth(app).currentUser?.uid===user.uid && getAuth(app).currentUser.emailVerified);
+ const verifiedNow=!!(getAuth(app).currentUser?.uid===user.uid && getAuth(app).currentUser.emailVerified);
+ trialButton.hidden=!verifiedNow;
+ if(verifiedNow&&v382WasVerified===false){show('メール認証が完了しました。このまま下の「メール認証後、7日間無料体験を開始」ボタンを押してください。')}
+ v382WasVerified=verifiedNow;
 }
 let authObserverAttached=false;
 function attachAuthObserver(){
@@ -3143,6 +3148,7 @@ function attachAuthObserver(){
 attachAuthObserver();
 const observerRetry=setInterval(()=>{attachAuthObserver();if(authObserverAttached)clearInterval(observerRetry)},500);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshTrialAction(true)});
+setInterval(()=>{const a=getAppReady();const u=a?getAuth(a).currentUser:null;if(u&&!u.emailVerified)refreshTrialAction(true)},6000); /* V495: 認証完了を自動で検知する */
 window.addEventListener('focus',()=>refreshTrialAction(true));
 el('v382ShowRegister').addEventListener('click',()=>refreshTrialAction(true));
 
