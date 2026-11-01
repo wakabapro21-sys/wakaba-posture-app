@@ -298,7 +298,7 @@ body.v271-signed-out #v100Cloud > div#v100Msg.v100note{display:block!important}
 </style>
 </head>
 <body class="v271-signed-out">
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V504</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V505</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1702,10 +1702,12 @@ body.v271-signed-out #v100Cloud #v101CloudClose{display:none}
   <button id="v427GoogleLogin" type="button" class="v100btn" style="width:100%;font-size:15px;padding:13px;background:#0f766e">Googleでログイン</button>
   <details id="v427EmailLogin" style="margin-top:10px"><summary style="cursor:pointer;text-align:center;color:#475569;font-size:12px;padding:8px">メールアドレスでログイン</summary>
   <div class="v100row"><input id="v100Email" type="email" autocomplete="username" placeholder="メールアドレス"></div>
-  <div class="v100row"><input id="v100Pass" type="password" autocomplete="current-password" placeholder="パスワード"><button id="v100SignIn" class="v100btn">ログイン</button></div>
+  <div class="v100row"><input id="v100Pass" type="password" autocomplete="current-password" placeholder="パスワード"></div>
+  <div style="margin:10px 0;font-size:12px;line-height:1.7"><label style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" id="v266Agree" style="margin-top:5px;flex:none"><span><a href="#" id="v266Terms">利用規約</a>および<a href="#" id="v266Privacy">プライバシーポリシー</a>を確認し、同意します。</span></label><div id="v266AgreeMsg" role="status" style="color:#b91c1c"></div></div>
+  <div class="v100row"><button id="v100SignIn" class="v100btn" style="flex:1">ログイン</button></div>
   <div style="margin-top:9px"><button type="button" id="v266Forgot" style="border:0;background:none;color:#0f766e;text-decoration:underline;padding:6px 0;font-size:12px">パスワードを忘れた方はこちら</button></div>
   <div id="v266ResetPanel" hidden style="margin:8px 0;padding:10px;background:#f0fdfa;border-radius:10px;font-size:12px"><b>パスワード再設定</b><p>登録したメールアドレス宛てに再設定メールを送ります。</p><div class="v100row"><input id="v266ResetEmail" type="email" autocomplete="email" placeholder="メールアドレス"></div><button type="button" id="v266SendReset" class="v100btn">再設定メールを送信</button><div id="v266ResetMsg" role="status" style="margin-top:7px;overflow-wrap:anywhere"></div></div>
-  <div style="margin:10px 0;font-size:12px;line-height:1.7"><label style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" id="v266Agree" style="margin-top:5px;flex:none"><span><a href="#" id="v266Terms">利用規約</a>および<a href="#" id="v266Privacy">プライバシーポリシー</a>を確認し、同意します。</span></label><div id="v266AgreeMsg" role="status" style="color:#b91c1c"></div></div>
+  
   </details>
   <button type="button" id="v382ShowRegister" class="v100btn secondary" style="margin-top:8px;width:100%">新規登録（7日間無料・カード不要）</button>
 <div id="v382Register" hidden style="margin-top:12px;padding:12px;border:1px solid #cbd5e1;border-radius:12px;background:#f8fafc;font-size:13px">
@@ -1873,6 +1875,7 @@ function v139ReadGuard(){try{return JSON.parse(localStorage.getItem(V139_LOGIN_G
 function v139WriteGuard(v){try{localStorage.setItem(V139_LOGIN_GUARD_KEY,JSON.stringify(v))}catch(e){}}
 function v139GuardState(){const g=v139ReadGuard(),now=Date.now();if(g.lockUntil&&now>=g.lockUntil){v139WriteGuard({fails:0,lockUntil:0});return {fails:0,lockUntil:0}}return g}
 function v139RemainingText(ms){const sec=Math.max(1,Math.ceil(ms/1000));return sec>=60?Math.ceil(sec/60)+'分':sec+'秒'}
+$('v266Agree').addEventListener('change',e=>{if(e.target.checked)$('v266AgreeMsg').textContent=''});
 $('v100SignIn').onclick=async()=>{
  if(!$('v266Agree').checked){$('v266AgreeMsg').textContent='利用規約とプライバシーポリシーへの同意が必要です。';return;}
  $('v266AgreeMsg').textContent='';
