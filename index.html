@@ -298,7 +298,7 @@ body.v271-signed-out #v100Cloud > div#v100Msg.v100note{display:block!important}
 </style>
 </head>
 <body class="v271-signed-out">
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V509</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V510</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3159,8 +3159,10 @@ form.addEventListener('input',saveDraft);form.addEventListener('change',saveDraf
 let v382WasVerified=null;
 async function refreshTrialAction(reload=false){
  const app=getAppReady();const user=app?getAuth(app).currentUser:null;
- if(!user){trialButton.hidden=true;v382WasVerified=null;if(resendButton)resendButton.style.display='none';const rb0=el('v382EmailRegister'),gb0=el('v382GoogleRegister');if(rb0)rb0.style.display='';if(gb0)gb0.style.display='';return}
+ if(!user){trialButton.hidden=true;v382WasVerified=null;if(resendButton)resendButton.style.display='none';const rb0=el('v382EmailRegister'),gb0=el('v382GoogleRegister');if(rb0)rb0.style.display='';if(gb0)gb0.style.display='';const emO=form.querySelector('[name=email]');if(emO){emO.readOnly=false;emO.style.background=''}const pwO=form.querySelector('[name=password]');if(pwO&&pwO.closest('label'))pwO.closest('label').style.display='';return}
  const rb1=el('v382EmailRegister'),gb1=el('v382GoogleRegister');if(rb1)rb1.style.display='none';if(gb1)gb1.style.display='none';
+ const emI=form.querySelector('[name=email]');if(emI){if(user.email)emI.value=user.email;emI.readOnly=true;emI.style.background='#f1f5f9'}
+ const pwI=form.querySelector('[name=password]');if(pwI&&pwI.closest('label'))pwI.closest('label').style.display='none';
  if(reload){try{await user.reload()}catch(e){console.warn('Verification refresh',e)}}
  // Prevent an older async refresh from exposing the button after sign-out.
  const verifiedNow=!!(getAuth(app).currentUser?.uid===user.uid && getAuth(app).currentUser.emailVerified);
