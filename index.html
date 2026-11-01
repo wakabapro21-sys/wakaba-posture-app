@@ -298,7 +298,7 @@ body.v271-signed-out #v100Cloud > div#v100Msg.v100note{display:block!important}
 </style>
 </head>
 <body class="v271-signed-out">
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V513</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V515</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3081,12 +3081,25 @@ async function create(button){
    finally{sheet.remove();}
   }
   const archive=await zipReportImages(files);
-  save(archive,'姿勢分析レポート_'+date+'_'+files.length+'枚.zip');
-  wakabaNotify(files.length+'枚の画像を1つのZIPにまとめてダウンロードしました。ZIPを開くと各JPEG画像をLINEで送信できます。');
+  const zipName='姿勢分析レポート_'+date+'_'+files.length+'枚.zip';
+  save(archive,zipName);
+  const savedMsg=files.length+'枚の画像をZIPで保存しました。ファイル名は「'+zipName+'」です。探すときは、端末の「ファイル」アプリ →「ダウンロード」の中を見てください。ZIPを開くと各JPEG画像をLINEで送信できます。下の「📤 そのまま送る（共有）」なら、開かずに直接送れます。';
+  wakabaNotify(savedMsg);
+  const stEl=document.getElementById('v322ShareStatus');if(stEl)stEl.textContent='✅ '+savedMsg;
+  lastZip={blob:archive,name:zipName,images:files};const sbEl=document.getElementById('v322ShareFileBtn');if(sbEl)sbEl.hidden=false;
  }catch(e){console.error('V332 share',e);wakabaNotify('分析画面の画像化に失敗しました。'+(e.message||e));}
  finally{if(root)root.remove();button.disabled=false;button.textContent=original;}
 }
-function mount(){const panel=document.getElementById('scorePanel');if(!panel||document.getElementById('v322ShareBtn'))return;const btn=document.createElement('button');btn.id='v322ShareBtn';btn.type='button';btn.textContent='LINE共有画像を作成';btn.addEventListener('click',()=>create(btn));const note=document.createElement('div');note.id='v322ShareStatus';note.textContent='写真・スコア・姿勢タイプ・筋バランス・分析詳細を読みやすい複数枚の画像にします。対応端末では共有画面が開きます。';panel.after(note);panel.after(btn)}
+let lastZip=null;
+async function shareLast(){
+ if(!lastZip){wakabaNotify('先に「LINE共有画像を作成」を押してください。');return}
+ const abort=e=>e&&(e.name==='AbortError'||e.code===20);
+ if(lastZip.images&&lastZip.images.length&&navigator.canShare){try{if(navigator.canShare({files:lastZip.images})){await navigator.share({files:lastZip.images,title:'姿勢分析レポート'});return}}catch(e){if(abort(e))return}}
+ const zipFile=new File([lastZip.blob],lastZip.name,{type:'application/zip'});
+ if(navigator.canShare){try{if(navigator.canShare({files:[zipFile]})){await navigator.share({files:[zipFile],title:'姿勢分析レポート'});return}}catch(e){if(abort(e))return}}
+ save(lastZip.blob,lastZip.name);wakabaNotify('この端末では共有が使えないため、もう一度保存しました。「ファイル」アプリ→「ダウンロード」を見てください。');
+}
+function mount(){const panel=document.getElementById('scorePanel');if(!panel||document.getElementById('v322ShareBtn'))return;const btn=document.createElement('button');btn.id='v322ShareBtn';btn.type='button';btn.textContent='LINE共有画像を作成';btn.addEventListener('click',()=>create(btn));const note=document.createElement('div');note.id='v322ShareStatus';note.textContent='写真・スコア・姿勢タイプ・筋バランス・分析詳細を読みやすい複数枚の画像にして、ZIPで端末の「ダウンロード」に保存します。';panel.after(note);panel.after(btn);const sb=document.createElement('button');sb.id='v322ShareFileBtn';sb.type='button';sb.hidden=true;sb.textContent='📤 そのまま送る（共有）';sb.style.marginTop='8px';sb.addEventListener('click',shareLast);note.after(sb)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 })();
 </script>
