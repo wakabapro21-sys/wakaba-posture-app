@@ -298,7 +298,7 @@ body.v271-signed-out #v100Cloud > div#v100Msg.v100note{display:block!important}
 </style>
 </head>
 <body class="v271-signed-out">
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V502</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V503</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1704,7 +1704,7 @@ body.v271-signed-out #v100Cloud #v101CloudClose{display:none}
   <div class="v100row"><input id="v100Email" type="email" autocomplete="username" placeholder="メールアドレス"></div>
   <div class="v100row"><input id="v100Pass" type="password" autocomplete="current-password" placeholder="パスワード"><button id="v100SignIn" class="v100btn">ログイン</button></div>
   <div style="margin-top:9px"><button type="button" id="v266Forgot" style="border:0;background:none;color:#0f766e;text-decoration:underline;padding:6px 0;font-size:12px">パスワードを忘れた方はこちら</button></div>
-  <div id="v266ResetPanel" hidden style="margin:8px 0;padding:10px;background:#f0fdfa;border-radius:10px;font-size:12px"><b>パスワード再設定</b><p>上のメールアドレス宛てに再設定メールを送ります。</p><button type="button" id="v266SendReset" class="v100btn">再設定メールを送信</button><div id="v266ResetMsg" role="status" style="margin-top:7px;overflow-wrap:anywhere"></div></div>
+  <div id="v266ResetPanel" hidden style="margin:8px 0;padding:10px;background:#f0fdfa;border-radius:10px;font-size:12px"><b>パスワード再設定</b><p>登録したメールアドレス宛てに再設定メールを送ります。</p><div class="v100row"><input id="v266ResetEmail" type="email" autocomplete="email" placeholder="メールアドレス"></div><button type="button" id="v266SendReset" class="v100btn">再設定メールを送信</button><div id="v266ResetMsg" role="status" style="margin-top:7px;overflow-wrap:anywhere"></div></div>
   <div style="margin:10px 0;font-size:12px;line-height:1.7"><label style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" id="v266Agree" style="margin-top:5px;flex:none"><span><a href="#" id="v266Terms">利用規約</a>および<a href="#" id="v266Privacy">プライバシーポリシー</a>を確認し、同意します。</span></label><div id="v266AgreeMsg" role="status" style="color:#b91c1c"></div></div>
   </details>
   <button type="button" id="v382ShowRegister" class="v100btn secondary" style="margin-top:8px;width:100%">新規登録（7日間無料・カード不要）</button>
@@ -1732,6 +1732,7 @@ body.v271-signed-out #v100Cloud #v101CloudClose{display:none}
    <summary style="cursor:pointer;font-weight:800;color:#334155;font-size:13px">管理者用データ操作（必要なときだけ開く）</summary>
    <div id="v280AdminDataBody" style="margin-top:12px">
     <div class="v100row"><button id="v102Restore" class="v100btn" style="flex:1;background:#0f766e">クラウド→この端末へ安全復元</button><button id="v100SignOut" class="v100btn gray" style="display:none">ログアウト</button></div>
+    <div class="v100row"><button id="v503PassReset" class="v100btn gray" style="flex:1">パスワードを変更する（再設定メールを送る）</button></div>
    </div>
   </details>
  </div>
@@ -1882,8 +1883,9 @@ $('v100SignIn').onclick=async()=>{
  catch(e){console.error(e);const prev=v139GuardState(),fails=(prev.fails||0)+1;let lockUntil=0;if(fails>=5)lockUntil=Date.now()+15*60*1000;v139WriteGuard({fails:lockUntil?0:fails,lockUntil});if(lockUntil){msg.innerHTML='<span class="v100err">ログインに5回失敗したため、15分間ログインを制限します。</span>'}else{msg.innerHTML='<span class="v100err">ログインできません。メールアドレスとパスワードを確認してください。あと '+(5-fails)+' 回失敗すると15分間制限します。</span>'}if(window.wakabaNotify)window.wakabaNotify(lockUntil?'ログインに5回失敗したため、15分間ログインを制限します。':'ログインできません。メールアドレスとパスワードを確認してください。');}
  finally{btn.disabled=false}
 };
-$('v266Forgot').onclick=()=>{$('v266ResetPanel').hidden=!$('v266ResetPanel').hidden};
-$('v266SendReset').onclick=async()=>{const email=$('v100Email').value.trim(),out=$('v266ResetMsg'),btn=$('v266SendReset');if(!email||!/^\S+@\S+\.\S+$/.test(email)){out.textContent='登録したメールアドレスを入力してください。';return;}btn.disabled=true;out.textContent='送信中…';try{await sendPasswordResetEmail(auth,email);out.textContent='再設定メールの送信を受け付けました。メールが届かない場合は迷惑メールもご確認ください。';}catch(e){console.error('password reset',e);out.textContent='送信できませんでした。時間をおいて再度お試しください。';}finally{btn.disabled=false}};
+$('v266Forgot').onclick=()=>{const p=$('v266ResetPanel');p.hidden=!p.hidden;if(!p.hidden){const r=$('v266ResetEmail');if(r&&!r.value)r.value=$('v100Email').value.trim()}};
+$('v266SendReset').onclick=async()=>{const email=($('v266ResetEmail').value||$('v100Email').value).trim(),out=$('v266ResetMsg'),btn=$('v266SendReset');if(!email||!/^\S+@\S+\.\S+$/.test(email)){out.textContent='登録したメールアドレスを入力してください。';wakabaNotify('登録したメールアドレスを入力してください。');return;}btn.disabled=true;out.textContent='送信中…';try{await sendPasswordResetEmail(auth,email);out.textContent='再設定メールの送信を受け付けました。メールが届かない場合は迷惑メールもご確認ください。';wakabaNotify('再設定メールを送りました。届かない場合は迷惑メールもご確認ください。');}catch(e){console.error('password reset',e);out.textContent='送信できませんでした。時間をおいて再度お試しください。';wakabaNotify('送信できませんでした。時間をおいて再度お試しください。');}finally{btn.disabled=false}};
+$('v503PassReset').onclick=async()=>{const em=(auth.currentUser&&auth.currentUser.email)||'';if(!em){wakabaNotify('ログイン中のメールアドレスが取得できませんでした。');return;}try{await sendPasswordResetEmail(auth,em);wakabaNotify('再設定メールを '+em+' に送りました。届かない場合は迷惑メールもご確認ください。');}catch(e){console.error('password reset (signed-in)',e);wakabaNotify('送信できませんでした。時間をおいて再度お試しください。');}};
 function v266ShowLegal(index){const help=document.getElementById('v77Help');if(!help){wakabaNotify('メニューの「お問い合わせ・ヘルプ」から規約をご確認ください。');return;}const panel=document.getElementById('v235LegalPanel'+index);if(panel){const win=window.open('','_blank');if(win){win.document.write('<!doctype html><html lang=ja><meta name=viewport content=width=device-width,initial-scale=1><meta charset=utf-8><title>規約の確認</title><body style="font-family:sans-serif;line-height:1.8;padding:20px">'+panel.innerHTML+'\n</body></html>');win.document.close();}else wakabaNotify('お問い合わせ・ヘルプから規約を確認してください。');}else wakabaNotify('お問い合わせ・ヘルプから規約を確認してください。');}
 $('v266Terms').onclick=e=>{e.preventDefault();v266ShowLegal(1)}; $('v266Privacy').onclick=e=>{e.preventDefault();v266ShowLegal(0)};
 document.getElementById('v270MenuLogout')?.addEventListener('click',()=>{document.getElementById('v77Menu')?.classList.remove('on');sessionStorage.removeItem('wakaba_v165_menu');document.getElementById('v100SignOut')?.click();});
