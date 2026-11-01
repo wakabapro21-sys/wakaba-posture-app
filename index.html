@@ -280,6 +280,9 @@ body.v61-analysis main #patientReport [style*="grid-template-columns:repeat(3,1f
 })();
 </script>
 <style id="v496-gate-fix">
+/* V498: ログインの成否メッセージ(#v100Msg)は未ログイン時にCSSで非表示にされており、
+   エラーが出ても見えなかった。未ログイン時も必ず表示する。 */
+body.v271-signed-out #v100Cloud > div#v100Msg.v100note{display:block!important}
 /* V496: ログイン中は登録フォームを隠すCSS(v427)がゲート内のフォームにも効いて
    フォームが見えなくなっていた問題の修正。ゲート内では必ず表示する。 */
 #v397EnrollmentSlot #v382Register:not([hidden]){display:block!important;text-align:left}
@@ -292,7 +295,7 @@ body.v61-analysis main #patientReport [style*="grid-template-columns:repeat(3,1f
 </style>
 </head>
 <body class="v271-signed-out">
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V497</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V498</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1869,10 +1872,10 @@ $('v100SignIn').onclick=async()=>{
  if(!$('v266Agree').checked){$('v266AgreeMsg').textContent='利用規約とプライバシーポリシーへの同意が必要です。';return;}
  $('v266AgreeMsg').textContent='';
  const btn=$('v100SignIn'),g=v139GuardState(),now=Date.now();
- if(g.lockUntil&&now<g.lockUntil){msg.innerHTML='<span class="v100err">ログイン試行が続いたため一時制限中です。あと '+v139RemainingText(g.lockUntil-now)+' 後に再試行してください。</span>';return}
+ if(g.lockUntil&&now<g.lockUntil){msg.innerHTML='<span class="v100err">ログイン試行が続いたため一時制限中です。あと '+v139RemainingText(g.lockUntil-now)+' 後に再試行してください。</span>';if(window.wakabaNotify)window.wakabaNotify('ログイン試行が続いたため一時制限中です。しばらく待ってから再試行してください。');return}
  msg.textContent='ログイン確認中…';btn.disabled=true;
  try{await signInWithEmailAndPassword(auth,$('v100Email').value.trim(),$('v100Pass').value);$('v100Pass').value='';v139WriteGuard({fails:0,lockUntil:0})}
- catch(e){console.error(e);const prev=v139GuardState(),fails=(prev.fails||0)+1;let lockUntil=0;if(fails>=5)lockUntil=Date.now()+15*60*1000;v139WriteGuard({fails:lockUntil?0:fails,lockUntil});if(lockUntil){msg.innerHTML='<span class="v100err">ログインに5回失敗したため、15分間ログインを制限します。</span>'}else{msg.innerHTML='<span class="v100err">ログインできません。メールアドレスとパスワードを確認してください。あと '+(5-fails)+' 回失敗すると15分間制限します。</span>'}}
+ catch(e){console.error(e);const prev=v139GuardState(),fails=(prev.fails||0)+1;let lockUntil=0;if(fails>=5)lockUntil=Date.now()+15*60*1000;v139WriteGuard({fails:lockUntil?0:fails,lockUntil});if(lockUntil){msg.innerHTML='<span class="v100err">ログインに5回失敗したため、15分間ログインを制限します。</span>'}else{msg.innerHTML='<span class="v100err">ログインできません。メールアドレスとパスワードを確認してください。あと '+(5-fails)+' 回失敗すると15分間制限します。</span>'}if(window.wakabaNotify)window.wakabaNotify(lockUntil?'ログインに5回失敗したため、15分間ログインを制限します。':'ログインできません。メールアドレスとパスワードを確認してください。');}
  finally{btn.disabled=false}
 };
 $('v266Forgot').onclick=()=>{$('v266ResetPanel').hidden=!$('v266ResetPanel').hidden};
