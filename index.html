@@ -298,7 +298,7 @@ body.v271-signed-out #v100Cloud > div#v100Msg.v100note{display:block!important}
 </style>
 </head>
 <body class="v271-signed-out">
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V517</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V518</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3184,7 +3184,7 @@ const termsVersion='2026-10-21-v1',privacyVersion='2026-10-21-v1';
 // No new authentication or subscription state is stored locally.
 const trialButton=el('v382StartTrial');
 let resendButton=document.getElementById('v382ResendVerify');
-if(!resendButton&&trialButton){resendButton=document.createElement('button');resendButton.type='button';resendButton.id='v382ResendVerify';resendButton.className='v100btn';resendButton.textContent='認証メールを再送する';resendButton.style.cssText='width:100%;margin-top:8px;background:#fff;color:#0f766e;border:1px solid #0f766e;display:none';trialButton.parentNode.insertBefore(resendButton,trialButton);resendButton.addEventListener('click',async()=>{const a=getAppReady();const u=a?getAuth(a).currentUser:null;if(!u){show('先にメール登録またはログインしてください。');return}resendButton.disabled=true;try{await sendEmailVerification(u);show('確認メールを再送しました。メール内のリンクから認証してください。')}catch(err){console.error('Resend verification',err);show('再送できませんでした。しばらく待ってから再度お試しください。')}finally{resendButton.disabled=false}})}
+if(!resendButton&&trialButton){resendButton=document.createElement('button');resendButton.type='button';resendButton.id='v382ResendVerify';resendButton.className='v100btn';resendButton.textContent='認証メールを再送する';resendButton.style.cssText='width:100%;margin-top:8px;background:#fff;color:#0f766e;border:1px solid #0f766e;display:none';trialButton.parentNode.insertBefore(resendButton,trialButton);resendButton.addEventListener('click',async()=>{const a=getAppReady();const u=a?getAuth(a).currentUser:null;if(!u){show('先にメール登録またはログインしてください。');return}resendButton.disabled=true;try{await sendEmailVerification(u);show('確認メールを再送しました。メール内のリンクから認証してください。届かない場合は迷惑メールフォルダもご確認ください。')}catch(err){console.error('Resend verification',err);show('再送できませんでした。しばらく待ってから再度お試しください。')}finally{resendButton.disabled=false}})}
 const DRAFT_KEY='wakaba_v499_reg_draft',draftFields=['name','clinicName','postalCode','address','building','phone','email'];
 function saveDraft(){try{const o={};draftFields.forEach(n=>{const i=form.querySelector('[name='+n+']');if(i)o[n]=i.value});const ag=form.querySelector('[name=agreed]');o.agreed=!!(ag&&ag.checked);localStorage.setItem(DRAFT_KEY,JSON.stringify(o))}catch(e){}}
 function loadDraft(){try{const o=JSON.parse(localStorage.getItem(DRAFT_KEY)||'null');if(!o)return;draftFields.forEach(n=>{const i=form.querySelector('[name='+n+']');if(i&&!i.value&&o[n])i.value=o[n]});const ag=form.querySelector('[name=agreed]');if(ag&&!ag.checked&&o.agreed)ag.checked=true}catch(e){}}
@@ -3227,7 +3227,7 @@ form.addEventListener('submit',async e=>{
  const d=new FormData(form),email=String(d.get('email')||'').trim(),pass=String(d.get('password')||'');
  if(pass.length<8){show('パスワードは8文字以上で入力してください。');return}
  const btn=el('v382EmailRegister');btn.disabled=true;
- try{const c=await createUserWithEmailAndPassword(getAuth(app),email,pass);await sendEmailVerification(c.user);await refreshTrialAction(false);show('確認メールを送信しました。メール内のリンクで認証後、この画面に戻ると無料体験の開始ボタンが表示されます。');}
+ try{const c=await createUserWithEmailAndPassword(getAuth(app),email,pass);await sendEmailVerification(c.user);await refreshTrialAction(false);show('確認メールを送信しました。メール内のリンクで認証後、この画面に戻ると無料体験の開始ボタンが表示されます。届かない場合は迷惑メールフォルダもご確認ください。');}
  catch(err){console.error('Registration',err);const code=String(err&&err.code||'');if(code==='auth/email-already-in-use'){show('このメールアドレスは既に登録されています。この画面のメールログインからログインすると、続きができます。')}else if(code==='auth/invalid-email'){show('メールアドレスの形式が正しくありません。')}else if(code==='auth/weak-password'){show('パスワードが弱すぎます。8文字以上で、英字と数字を混ぜて入力してください。')}else if(code==='auth/too-many-requests'){show('短時間に試行が集中しました。しばらく待ってから再度お試しください。')}else if(code==='auth/network-request-failed'){show('通信に失敗しました。電波の良い場所でもう一度お試しください。')}else{show('登録できませんでした。入力内容またはメールアドレスの登録状況を確認してください。')}}
  finally{btn.disabled=false}
 });
@@ -3251,7 +3251,7 @@ el('v382StartTrial').addEventListener('click',async()=>{
  const btn=el('v382StartTrial');btn.disabled=true;
  try{
   await user.reload();await user.getIdToken(true);
-  if(!auth.currentUser.emailVerified){show('メール認証がまだ完了していません。確認メールをご確認ください。');return}
+  if(!auth.currentUser.emailVerified){show('メール認証がまだ完了していません。確認メールをご確認ください。届いていない場合は迷惑メールフォルダもご確認ください。');return}
   const call=httpsCallable(getFunctions(app,'asia-northeast1'),'startCardlessTrial');
   const data=Object.fromEntries(['name','clinicName','postalCode','address','building','phone'].map(k=>[k,String(d.get(k)||'').trim()]));
   data.phone=phoneN;data.postalCode=postalN;
