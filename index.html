@@ -298,7 +298,7 @@ body.v271-signed-out #v100Cloud > div#v100Msg.v100note{display:block!important}
 </style>
 </head>
 <body class="v271-signed-out">
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V518</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V519</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -3085,7 +3085,7 @@ async function create(button){
   const zipName='姿勢分析レポート_'+date+'_'+files.length+'枚.zip';
   const inAppDl=!!window.__wakabaInAppBrowser;
   if(!inAppDl)save(archive,zipName);
-  const savedMsg=inAppDl?('画像を作成しましたが、LINEなどのアプリ内では保存（ダウンロード）ができません。画面上の茶色いバーのボタンからブラウザで開き直して、もう一度作成してください（ログインし直しになります）。'):(files.length+'枚の画像をZIPで保存しました。ファイル名は「'+zipName+'」です。探すときは、端末の「ファイル」アプリ →「ダウンロード」の中を見てください。ZIPを開くと各JPEG画像をLINEで送信できます。下の「📤 そのまま送る（共有）」なら、開かずに直接送れます。ZIPが開けないときも、そのボタンで大丈夫です。');
+  const savedMsg=inAppDl?('画像を作成しましたが、LINEなどのアプリ内では保存（ダウンロード）ができません。画面上の茶色いバーのボタンからブラウザで開き直して、もう一度作成してください（ログインし直しになります）。'):(files.length+'枚の画像をZIPにしました。ファイル名は「'+zipName+'」です。Safariで「ダウンロードしますか？」と出たら「ダウンロード」を押してください。押したあと、端末の「ファイル」アプリ →「ダウンロード」の中にZIPが入ります。ZIPを開くと各JPEG画像をLINEで送信できます。下の「📤 そのまま送る（共有）」なら、開かずに直接送れます。ZIPが開けないときも、そのボタンで大丈夫です。');
   wakabaNotify(savedMsg);
   const stEl=document.getElementById('v322ShareStatus');if(stEl){stEl.textContent='✅ '+savedMsg;stEl.style.cssText='display:block;margin-top:10px;padding:12px;border:2px solid #0f766e;border-radius:10px;background:#f0fdfa;font-size:15px;font-weight:700;color:#115e59;line-height:1.6';}
   lastZip={blob:archive,name:zipName,images:files};const sbEl=document.getElementById('v322ShareFileBtn');if(sbEl){sbEl.hidden=false;sbEl.style.animation='v499pulse 1.2s ease-in-out 6';setTimeout(()=>sbEl.scrollIntoView({behavior:'smooth',block:'center'}),350);}
@@ -3100,7 +3100,7 @@ async function shareLast(){
  const zipFile=new File([lastZip.blob],lastZip.name,{type:'application/zip'});
  if(navigator.canShare){try{if(navigator.canShare({files:[zipFile]})){await navigator.share({files:[zipFile],title:'姿勢分析レポート'});return}}catch(e){if(abort(e))return}}
  if(window.__wakabaInAppBrowser){wakabaNotify('LINEなどのアプリ内では保存ができません。ブラウザで開き直してください。');return}
- save(lastZip.blob,lastZip.name);wakabaNotify('この端末では共有が使えないため、もう一度保存しました。「ファイル」アプリ→「ダウンロード」を見てください。');
+ save(lastZip.blob,lastZip.name);wakabaNotify('この端末では共有が使えないため、もう一度ダウンロードします。「ダウンロードしますか？」と出たら「ダウンロード」を押してください。「ファイル」アプリ→「ダウンロード」を見てください。');
 }
 function mount(){const panel=document.getElementById('scorePanel');if(!panel||document.getElementById('v322ShareBtn'))return;const btn=document.createElement('button');btn.id='v322ShareBtn';btn.type='button';btn.textContent='LINE共有画像を作成';btn.addEventListener('click',()=>create(btn));const note=document.createElement('div');note.id='v322ShareStatus';note.textContent='写真・スコア・姿勢タイプ・筋バランス・分析詳細を読みやすい複数枚の画像にして、ZIPで端末の「ダウンロード」に保存します。';panel.after(note);panel.after(btn);const sb=document.createElement('button');sb.id='v322ShareFileBtn';sb.type='button';sb.hidden=true;sb.textContent='📤 そのまま送る（共有）';sb.style.marginTop='8px';sb.addEventListener('click',shareLast);note.after(sb)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
