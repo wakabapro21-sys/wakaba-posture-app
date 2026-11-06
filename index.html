@@ -298,7 +298,7 @@ body.v271-signed-out #v100Cloud > div#v100Msg.v100note{display:block!important}
 </style>
 </head>
 <body class="v271-signed-out">
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V519</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V520</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -1729,7 +1729,7 @@ body.v271-signed-out #v100Cloud #v101CloudClose{display:none}
  </form></div>
  </div>
  
-<div id="v100Actions" style="display:none"><div class="v100row"><div style="flex:1;padding:8px 10px;border-radius:10px;background:#ecfdf5;color:#047857;font-size:10px;font-weight:900">✓ 院別Firebase保存</div></div><div id="v112ClinicAccount" style="display:none!important;margin:8px 0 10px;padding:11px 12px;border:1px solid #bfdbfe;border-radius:12px;background:#eff6ff;font-size:10px;line-height:1.65;color:#1e3a8a"><b style="font-size:12px">🏥 院アカウント</b><div id="v112ClinicEmail">ログイン確認中…</div><div id="v112ClinicId" style="word-break:break-all;color:#64748b"></div><div style="margin-top:5px;color:#475569">院ごとに患者情報・履歴を管理します。</div></div>
+<div id="v100Actions" style="display:none"><div class="v100row"><div style="flex:1;padding:8px 10px;border-radius:10px;background:#ecfdf5;color:#047857;font-size:10px;font-weight:900">✓ 院別クラウド保存</div></div><div id="v112ClinicAccount" style="display:none!important;margin:8px 0 10px;padding:11px 12px;border:1px solid #bfdbfe;border-radius:12px;background:#eff6ff;font-size:10px;line-height:1.65;color:#1e3a8a"><b style="font-size:12px">🏥 院アカウント</b><div id="v112ClinicEmail">ログイン確認中…</div><div id="v112ClinicId" style="word-break:break-all;color:#64748b"></div><div style="margin-top:5px;color:#475569">院ごとに患者情報・履歴を管理します。</div></div>
   <details id="v280AdminData" style="margin-top:12px;border:1px solid #cbd5e1;border-radius:12px;padding:12px;background:#f8fafc">
    <summary style="cursor:pointer;font-weight:800;color:#334155;font-size:13px">管理者用データ操作（必要なときだけ開く）</summary>
    <div id="v280AdminDataBody" style="margin-top:12px">
@@ -2368,7 +2368,7 @@ boot();
   b.addEventListener('click',function(){
    const existing=document.getElementById('v101CloudMenu');
    if(existing)existing.click();
-   else { wakabaNotify('契約画面を開けませんでした。Firebase同期からご確認ください。');return; }
+   else { wakabaNotify('契約画面を開けませんでした。クラウド同期からご確認ください。');return; }
    let attempts=0;
    const jump=()=>{
     const target=document.getElementById('v213ContractOverview');
@@ -2791,7 +2791,7 @@ function rows(id){try{const x=JSON.parse(localStorage.getItem(PREFIX+id)||'[]');
 async function save(id,h){if(!getApps().length)throw Error('Firebase準備中');const user=getAuth(getApp()).currentUser;if(!user)throw Error('ログインが必要です');const owner=localStorage.getItem('wakaba_v230_owner_uid');if(owner&&owner!==user.uid)throw Error('院アカウントが一致しません');if(!h?.date)throw Error('分析日時がありません');const hid=encodeURIComponent(String(h.date)).replace(/%/g,'_');const ref=doc(getFirestore(getApp()),'clinics',user.uid,'patients',String(id),'reportSnapshots',hid);const old=await getDoc(ref);if(old.exists())return false;const record=clean(h);const payload={schemaVersion:264,patientId:String(id),analysisDate:String(h.date),report:record,explanation:explain(h),createdAt:serverTimestamp(),photoStorage:'local-only'};const size=new Blob([JSON.stringify({...payload,createdAt:null})]).size;if(size>800000)throw Error('保存内容が大きすぎます');await setDoc(ref,payload);return true}
 async function backup(id){if(queue.has(id))return queue.get(id);const job=(async()=>{let saved=0;for(const h of rows(id)){try{if(await save(id,h))saved++}catch(e){console.warn('V266 snapshot',e);throw e}}return saved})();queue.set(id,job);try{return await job}finally{queue.delete(id)}}
 async function backupAll(){const raw=JSON.parse(localStorage.getItem('wakaba_v61_customers')||'[]');let count=0;for(const p of raw){if(!p?.id)continue;count+=await backup(p.id)}return count}
-function mount(){const body=document.getElementById('v91DetailBody');if(!body||document.getElementById('v264Backup'))return;const btn=document.createElement('button');btn.id='v264Backup';btn.textContent='詳しい分析データをFirebaseに保存';const info=document.createElement('div');info.id='v264CloudStatus';info.textContent='過去の分析も追加保存できます。写真は送信しません。';btn.onclick=async()=>{btn.disabled=true;status('保存・確認中…');try{const n=await backupAll();status('Firebaseへの保存完了。新規追加 '+n+'件（既存データは上書きなし）。')}catch(e){status('保存できませんでした：'+e.message+'。端末データはそのままです。')}finally{btn.disabled=false}};body.append(btn,info)}
+function mount(){const body=document.getElementById('v91DetailBody');if(!body||document.getElementById('v264Backup'))return;const btn=document.createElement('button');btn.id='v264Backup';btn.textContent='詳しい分析データをクラウドに保存';const info=document.createElement('div');info.id='v264CloudStatus';info.textContent='過去の分析も追加保存できます。写真は送信しません。';btn.onclick=async()=>{btn.disabled=true;status('保存・確認中…');try{const n=await backupAll();status('クラウドへの保存完了。新規追加 '+n+'件（既存データは上書きなし）。')}catch(e){status('保存できませんでした：'+e.message+'。端末データはそのままです。')}finally{btn.disabled=false}};body.append(btn,info)}
 window.addEventListener('wakaba:v103-history-saved',e=>{const id=e.detail?.id;if(id)setTimeout(()=>backup(id).catch(e=>console.warn('V266 automatic backup failed',e)),600)});
 const observer=new MutationObserver(mount);function init(){mount();const body=document.getElementById('v91DetailBody');if(body)observer.observe(body,{childList:true});}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 </script>
@@ -3120,7 +3120,7 @@ window.v350ClinicName=()=>ready&&uid?name:'';
 async function load(u){uid=u?.uid||'';name='';ready=false;render();if($('v352ClinicEmail'))$('v352ClinicEmail').textContent=u?.email||'未ログイン';if(!uid){status('');return;}
 try{const snap=await getDocFromServer(doc(getFirestore(getApp()),'clinics',uid));if(getAuth(getApp()).currentUser?.uid!==uid)return;name=String(snap.exists()?(snap.data().clinicName||''):'').trim().slice(0,80);ready=true;render();status('院情報を同期しました');}
 catch(e){ready=false;render();status('院名を取得できません。通信・アクセス権限を確認してください。');console.error('V352 clinic read',e);}}
-async function save(){const u=getApps().length?getAuth(getApp()).currentUser:null;if(!u||u.uid!==uid){status('ログインを確認してください');return;}const val=String($('v350ClinicNameInput')?.value||'').trim();if(!val||val.length>80){status('院名を1〜80文字で入力してください');return;}const btn=$('v350ClinicNameSave');if(btn)btn.disabled=true;status('保存中…');try{await setDoc(doc(getFirestore(getApp()),'clinics',u.uid),{clinicName:val,clinicNameUpdatedAt:serverTimestamp()},{merge:true});if(getAuth(getApp()).currentUser?.uid!==u.uid)return;name=val;ready=true;render();status('Firebaseに保存しました');}catch(e){status('保存できません。Firebaseのアクセス権限を確認してください。');console.error('V352 clinic save',e);}finally{if(btn)btn.disabled=false;}}
+async function save(){const u=getApps().length?getAuth(getApp()).currentUser:null;if(!u||u.uid!==uid){status('ログインを確認してください');return;}const val=String($('v350ClinicNameInput')?.value||'').trim();if(!val||val.length>80){status('院名を1〜80文字で入力してください');return;}const btn=$('v350ClinicNameSave');if(btn)btn.disabled=true;status('保存中…');try{await setDoc(doc(getFirestore(getApp()),'clinics',u.uid),{clinicName:val,clinicNameUpdatedAt:serverTimestamp()},{merge:true});if(getAuth(getApp()).currentUser?.uid!==u.uid)return;name=val;ready=true;render();status('クラウドに保存しました');}catch(e){status('保存できません。Firebaseのアクセス権限を確認してください。');console.error('V352 clinic save',e);}finally{if(btn)btn.disabled=false;}}
 function init(){const btn=$('v350ClinicNameSave');if(btn)btn.addEventListener('click',save);document.addEventListener('click',e=>{if(e.target.closest('[data-v77="mypage"]'))setTimeout(render,0)});const wait=()=>{if(!getApps().length){setTimeout(wait,300);return;}onAuthStateChanged(getAuth(getApp()),load);};wait();}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 </script>
@@ -3145,11 +3145,11 @@ body.v271-signed-out #v100Cloud{height:auto!important;bottom:auto!important;max-
  function start(){
   const cloud=document.getElementById('v100Cloud'),home=document.getElementById('v61Home');
   if(!cloud||!home)return;
-  const quick=document.createElement('button');quick.id='v338RestoreQuick';quick.type='button';quick.textContent='顧客データをFirebaseから復元';
+  const quick=document.createElement('button');quick.id='v338RestoreQuick';quick.type='button';quick.textContent='顧客データをクラウドから復元';
   quick.addEventListener('click',()=>{document.getElementById('v102Restore')?.click()});
   const actions=document.getElementById('v100Actions');if(actions)actions.prepend(quick);
   const notice=document.createElement('div');notice.id='v338RestoreShortcut';
-  notice.innerHTML='<strong>顧客一覧が表示されない場合</strong><div style="font-size:12px;margin-top:6px">Firebaseに保存された顧客データを確認し、この端末に安全復元できます。既存の顧客データは削除しません。</div><button type="button">Firebaseから顧客を復元</button>';
+  notice.innerHTML='<strong>顧客一覧が表示されない場合</strong><div style="font-size:12px;margin-top:6px">クラウドに保存された顧客データを確認し、この端末に安全復元できます。既存の顧客データは削除しません。</div><button type="button">クラウドから顧客を復元</button>';
   notice.querySelector('button').addEventListener('click',()=>{
    const c=document.getElementById('v100Cloud'),b=document.getElementById('v101CloudBackdrop');
    if(c)c.style.display='block';if(b)b.style.display='block';
