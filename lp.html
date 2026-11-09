@@ -1,6 +1,32 @@
 <!doctype html>
 <html lang="ja">
 <head>
+<!-- Google tag -->
+<script async src="https://www.googletagmanager.com/gtm.js?id=AW-798091093"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+</script>
+<!-- Event snippet for 申し込み conversion (CTA click) -->
+<script>
+  function gtag_report_conversion(url) {
+    var callback = function () {
+      if (typeof(url) != 'undefined') {
+        window.location = url;
+      }
+    };
+    gtag('event', 'conversion', {
+        'send_to': 'AW-798091093/oqs8CPei7bQdENXOx_wC',
+        'value': 1.0,
+        'currency': 'JPY',
+        'event_callback': callback,
+        'event_timeout': 2000
+    });
+    return false;
+  }
+</script>
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>わかば姿勢分析｜スマホで撮るだけの姿勢分析アプリ 月額3,980円</title>
@@ -57,7 +83,7 @@ footer a{color:#0f766e}
 <h1>その姿勢、写真と<br>数字で「見える化」<br>しませんか？</h1>
 <p>スマホで3方向から撮るだけ。AIが姿勢のゆがみをスコア化し、患者さんへの説明と、施術前後の比較を助けます。開発したのは、現役の整体院・接骨院の院長です。</p>
 <div><span class="pricebadge">月額 3,980円（税込）／初期費用 0円</span></div>
-<a class="cta" href="https://wakabapro21-sys.github.io/wakaba-posture-app/">7日間、無料で試す（カード登録不要）</a>
+<a class="cta" href="https://wakabapro21-sys.github.io/wakaba-posture-app/" onclick="return gtag_report_conversion('https://wakabapro21-sys.github.io/wakaba-posture-app/');">7日間、無料で試す（カード登録不要）</a>
 <div class="cta-sub">無料体験は自動で課金されません。7日後に自動で有料契約になることもありません。</div>
 <div class="cta-note">※LINE・Instagramなどのアプリ内ブラウザでは、Googleログインがうまく動かない場合があります。その場合は、画面のメニューから「ブラウザで開く」を選んで開き直してください。メールアドレスでの登録・ログインは、そのままご利用いただけます。</div>
 </div>
@@ -142,7 +168,7 @@ footer a{color:#0f766e}
 <div class="final">
 <h2>まずは7日間、自分の院の患者さんで試してください</h2>
 <p>試すのにカードも費用もいりません。1人分析すれば、使い勝手も患者さんの反応も分かります。</p>
-<a class="cta" href="https://wakabapro21-sys.github.io/wakaba-posture-app/">7日間、無料で試す（カード登録不要）</a>
+<a class="cta" href="https://wakabapro21-sys.github.io/wakaba-posture-app/" onclick="return gtag_report_conversion('https://wakabapro21-sys.github.io/wakaba-posture-app/');">7日間、無料で試す（カード登録不要）</a>
 <div class="cta-sub">月額3,980円（税込）／初期費用0円／いつでも解約可能</div>
 <div class="cta-note">※LINE・Instagramなどのアプリ内ブラウザでは、Googleログインがうまく動かない場合があります。その場合は、画面のメニューから「ブラウザで開く」を選んで開き直してください。メールアドレスでの登録・ログインは、そのままご利用いただけます。</div>
 </div>
