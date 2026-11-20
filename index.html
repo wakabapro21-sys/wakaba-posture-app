@@ -298,7 +298,7 @@ body.v271-signed-out #v100Cloud > div#v100Msg.v100note{display:block!important}
 </style>
 </head>
 <body class="v271-signed-out">
-<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V523</span></p></header>
+<header><h1>AI姿勢＆3次元歪み分析システム</h1><p>3方向写真による姿勢バランス分析 <span id="wakabaVersionLabel" style="display:inline-block;margin-left:8px;padding:2px 7px;border:1px solid rgba(255,255,255,.65);border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap">V524</span></p></header>
 
 
 <button id="v77MenuBtn" type="button">☰ MENU</button>
@@ -840,6 +840,12 @@ function drawGuide(){if(document.getElementById("guideCam").style.display==="non
   x.fillStyle="rgba(255,255,255,.96)";x.font="bold 13px -apple-system,sans-serif";
   x.fillText("あたま",Math.max(14,cx-lineHalf-58),headLineY+5);
   x.fillText("つまさき",Math.max(14,cx-lineHalf-70),toeLineY+5);
+  // V524: みぞおち目安線（頭・つまさきを合わせたとき、身長の約63%＝みぞおちが来る位置）
+  var mizoY=toeLineY-(toeLineY-headLineY)*.63;
+  x.strokeStyle="rgba(251,146,60,.95)";x.lineWidth=3;
+  x.beginPath();x.moveTo(cx-lineHalf,mizoY);x.lineTo(cx+lineHalf,mizoY);x.stroke();
+  x.fillStyle="rgba(251,146,60,.98)";x.font="bold 13px -apple-system,sans-serif";
+  x.fillText("みぞおち",Math.max(14,cx-lineHalf-72),mizoY+5);
   return;
  }
  x.lineWidth=2;x.strokeStyle="rgba(255,255,255,.72)";x.setLineDash([8,8]);x.beginPath();x.moveTo(cx,top-30);x.lineTo(cx,floor+18);x.stroke();x.setLineDash([]);x.strokeStyle="rgba(45,212,191,.95)";x.lineWidth=3;x.beginPath();x.moveTo(w*.10,floor);x.lineTo(w*.90,floor);x.stroke();x.strokeStyle="rgba(251,146,60,.9)";x.lineWidth=2;x.beginPath();x.moveTo(w*.24,top);x.lineTo(w*.76,top);x.stroke();
